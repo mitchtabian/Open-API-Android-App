@@ -1,18 +1,22 @@
 package com.codingwithmitch.openapi.ui
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import androidx.annotation.WorkerThread
+
+import com.codingwithmitch.BaseActivity
+import com.codingwithmitch.models.AuthToken
 import com.codingwithmitch.openapi.R
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
+import com.codingwithmitch.openapi.api.OpenApiService
+import retrofit2.Call
 
-class AuthActivity : AppCompatActivity() {
+import retrofit2.Callback
+import retrofit2.Response
+import javax.inject.Inject
 
-    private val activityJob = Job()
-    private val uiScope = CoroutineScope(Dispatchers.Main + activityJob)
+class AuthActivity : BaseActivity() {
+
+    @Inject
+    lateinit var openApiService: OpenApiService
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,15 +26,23 @@ class AuthActivity : AppCompatActivity() {
 
     }
 
-    @WorkerThread
-    suspend fun makeLongRunningRequest(){
-        val result = slowFetch()
 
-        Log.d("Result", result)
-    }
+    fun testRetrieveToken(){
+        openApiService.login("mitchelltabian@gmail.com", "Password1234!")
+            .enqueue(object: Callback<AuthToken>{
 
-    suspend fun slowFetch(): String {
-        Thread.sleep(3000)
-        return "cool"
+                override fun onFailure(call: Call<AuthToken>, t: Throwable) {
+                    Log.e("call", t.message)
+                }
+
+                override fun onResponse(call: Call<AuthToken>, response: Response<AuthToken>) {
+                    Log.d("call", response.message())
+                    Log.d("call", response.body().toString())
+                    Log.d("call", call.request().url().encodedPath())
+                }
+
+            })
     }
 }
+
+

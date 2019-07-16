@@ -2,7 +2,9 @@ package com.codingwithmitch.openapi.util
 
 class Constants {
 
-    public val BASE_URL: String = "open-api.xyz/api"
+    companion object {
+        const val BASE_URL: String = "https://open-api.xyz/api/"
+    }
 }
 
 
