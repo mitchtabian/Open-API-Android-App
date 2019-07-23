@@ -1,4 +1,4 @@
-package com.codingwithmitch.models
+package com.codingwithmitch.openapi.models
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

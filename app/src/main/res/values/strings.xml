@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">OpenAPI</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- Intent extras -->
+    <string name="auth_token">auth_token</string>
+    <string name="password_reset_info">We\'ve emailed you instructions for setting your password. If an account exists with the email you entered.
+        You should receive them shortly.If you don\'t receive an email, please make sure you\'ve entered the address you registered with,
+        and check your spam folder.</string>
+    <string name="password_reset_email_sent">Password reset email sent</string>
+    <string name="return_to_launcher_fragment">Return</string>
 </resources>

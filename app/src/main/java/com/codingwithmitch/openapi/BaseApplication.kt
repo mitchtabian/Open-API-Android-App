@@ -1,6 +1,6 @@
-package com.codingwithmitch
+package com.codingwithmitch.openapi
 
-import com.codingwithmitch.di.DaggerAppComponent
+import com.codingwithmitch.openapi.di.DaggerAppComponent
 import dagger.android.AndroidInjector
 import dagger.android.support.DaggerApplication
 

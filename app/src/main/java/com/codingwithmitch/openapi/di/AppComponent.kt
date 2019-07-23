@@ -1,8 +1,8 @@
-package com.codingwithmitch.di
+package com.codingwithmitch.openapi.di
 
 
 import android.app.Application
-import com.codingwithmitch.BaseApplication
+import com.codingwithmitch.openapi.BaseApplication
 import dagger.BindsInstance
 import dagger.Component
 import dagger.android.AndroidInjectionModule
@@ -14,7 +14,8 @@ import javax.inject.Singleton
     modules = [
         AndroidInjectionModule::class,
         AppModule::class,
-        ActivityBuildersModule::class
+        ActivityBuildersModule::class,
+        ViewModelFactoryModule::class
     ]
 )
 interface AppComponent: AndroidInjector<BaseApplication> {

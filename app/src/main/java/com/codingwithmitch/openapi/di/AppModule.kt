@@ -1,7 +1,10 @@
-package com.codingwithmitch.di
+package com.codingwithmitch.openapi.di
 
-import com.codingwithmitch.openapi.api.OpenApiService
+import android.app.Application
+import android.content.Context
+import android.content.SharedPreferences
 import com.codingwithmitch.openapi.util.Constants
+import com.codingwithmitch.openapi.util.PreferenceKeys
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dagger.Module
@@ -21,14 +24,17 @@ class AppModule{
 
     @Singleton
     @Provides
-    fun provideOpenApiService(gsonBuilder:  Gson): OpenApiService{
+    fun provideRetrofitBuilder(gsonBuilder:  Gson): Retrofit.Builder{
         return Retrofit.Builder()
             .baseUrl(Constants.BASE_URL)
             .addConverterFactory(GsonConverterFactory.create(gsonBuilder))
-            .build()
-            .create(OpenApiService::class.java)
     }
 
+    @Singleton
+    @Provides
+    fun provideSharedPreferences(application: Application): SharedPreferences {
+        return application.getSharedPreferences(PreferenceKeys.APP_PREFERENCES, Context.MODE_PRIVATE)
+    }
 
 }
 

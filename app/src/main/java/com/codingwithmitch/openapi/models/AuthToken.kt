@@ -1,11 +1,12 @@
-package com.codingwithmitch.models
+package com.codingwithmitch.openapi.models
 
 import android.accounts.Account
+import android.os.Parcel
+import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.ForeignKey.CASCADE
-import androidx.room.PrimaryKey
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
@@ -27,7 +28,7 @@ import com.google.gson.annotations.SerializedName
         )
     ]
 )
-data class AuthToken (
+data class AuthToken(
 
     @ColumnInfo(name = "account_pk")
     var account_pk: Int,
@@ -37,8 +38,32 @@ data class AuthToken (
     @SerializedName("token")
     @Expose
     var token: String
-)
+): Parcelable
 {
+    constructor(parcel: Parcel) : this(
+        parcel.readInt(),
+        parcel.readString()
+    ) {
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeInt(account_pk)
+        parcel.writeString(token)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<AuthToken> {
+        override fun createFromParcel(parcel: Parcel): AuthToken {
+            return AuthToken(parcel)
+        }
+
+        override fun newArray(size: Int): Array<AuthToken?> {
+            return arrayOfNulls(size)
+        }
+    }
 
 }
 
