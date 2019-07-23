@@ -11,4 +11,7 @@
         and check your spam folder.</string>
     <string name="password_reset_email_sent">Password reset email sent</string>
     <string name="return_to_launcher_fragment">Return</string>
+    <string name="text_error">Error</string>
+    <string name="text_ok">OK</string>
+    <string name="text_cancel">Cancel</string>
 </resources>

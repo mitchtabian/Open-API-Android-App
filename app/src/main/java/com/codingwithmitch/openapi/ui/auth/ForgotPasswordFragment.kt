@@ -17,6 +17,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.transition.Slide
+import com.afollestad.materialdialogs.MaterialDialog
 
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.ui.auth.AuthActivityViewModel.ViewState.*
@@ -43,6 +44,15 @@ class ForgotPasswordFragment : DaggerFragment() {
 
         override fun onError(errorMessage: String) {
             Log.e(TAG, "onError: $errorMessage")
+
+            MaterialDialog(parentView.context)
+                .title(R.string.text_error)
+                .message(text = errorMessage){
+                    lineSpacing(2F)
+                }
+                .positiveButton(R.string.text_ok)
+                .show()
+
         }
 
         override fun onSuccess(email: String) {
@@ -58,7 +68,6 @@ class ForgotPasswordFragment : DaggerFragment() {
                     viewModel.setViewState(HIDE_PROGRESS)
                 }
             }
-
         }
     }
 
@@ -86,9 +95,9 @@ class ForgotPasswordFragment : DaggerFragment() {
 
         loadPasswordResetWebView()
 
-        return_to_launcher_fragment.setOnClickListener({
+        return_to_launcher_fragment.setOnClickListener {
             navController.popBackStack()
-        })
+        }
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -111,8 +120,8 @@ class ForgotPasswordFragment : DaggerFragment() {
             webView!!.destroy()
             webView = null
 
-            val animation: TranslateAnimation = TranslateAnimation(
-                -passwordResetContainer.width.toFloat(),
+            val animation = TranslateAnimation(
+                passwordResetContainer.width.toFloat(),
                 0f,
                 0f,
                 0f
@@ -154,6 +163,8 @@ class ForgotPasswordFragment : DaggerFragment() {
 
     }
 }
+
+
 
 
 
