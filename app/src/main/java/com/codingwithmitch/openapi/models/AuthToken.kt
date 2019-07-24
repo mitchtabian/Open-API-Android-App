@@ -31,13 +31,13 @@ import com.google.gson.annotations.SerializedName
 data class AuthToken(
 
     @ColumnInfo(name = "account_pk")
-    var account_pk: Int,
+    var account_pk: Int? = -1,
 
 
     @ColumnInfo(name = "token")
     @SerializedName("token")
     @Expose
-    var token: String
+    var token: String? = null
 ): Parcelable
 {
     constructor(parcel: Parcel) : this(
@@ -47,12 +47,16 @@ data class AuthToken(
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeInt(account_pk)
+        account_pk?.let { parcel.writeInt(it) }
         parcel.writeString(token)
     }
 
     override fun describeContents(): Int {
         return 0
+    }
+
+    override fun toString(): String {
+        return "AuthToken(account_pk=$account_pk, token='$token')"
     }
 
     companion object CREATOR : Parcelable.Creator<AuthToken> {
@@ -64,6 +68,8 @@ data class AuthToken(
             return arrayOfNulls(size)
         }
     }
+
+
 
 }
 

@@ -3,8 +3,6 @@ package com.codingwithmitch.openapi.ui.auth
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.transition.Transition
-import android.transition.TransitionManager
 import android.util.Log
 import android.view.*
 import android.view.animation.TranslateAnimation
@@ -16,12 +14,11 @@ import android.widget.LinearLayout
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
-import androidx.transition.Slide
 import com.afollestad.materialdialogs.MaterialDialog
 
 import com.codingwithmitch.openapi.R
-import com.codingwithmitch.openapi.ui.auth.AuthActivityViewModel.ViewState.*
 import com.codingwithmitch.openapi.ui.auth.ForgotPasswordFragment.WebAppInterface.*
+import com.codingwithmitch.openapi.ui.auth.state.ViewState
 import com.codingwithmitch.openapi.util.Constants
 import com.codingwithmitch.openapi.viewmodels.ViewModelProviderFactory
 import dagger.android.support.DaggerFragment
@@ -45,14 +42,15 @@ class ForgotPasswordFragment : DaggerFragment() {
         override fun onError(errorMessage: String) {
             Log.e(TAG, "onError: $errorMessage")
 
-            MaterialDialog(parentView.context)
-                .title(R.string.text_error)
-                .message(text = errorMessage){
-                    lineSpacing(2F)
-                }
-                .positiveButton(R.string.text_ok)
-                .show()
-
+            activity?.also{
+                MaterialDialog(it)
+                    .title(R.string.text_error)
+                    .message(text = errorMessage){
+                        lineSpacing(2F)
+                    }
+                    .positiveButton(R.string.text_ok)
+                    .show()
+            }
         }
 
         override fun onSuccess(email: String) {
@@ -61,13 +59,16 @@ class ForgotPasswordFragment : DaggerFragment() {
         }
 
         override fun onLoading(isLoading: Boolean) {
-            activity!!.runOnUiThread {
-                if(isLoading){
-                    viewModel.setViewState(SHOW_PROGRESS)
-                } else{
-                    viewModel.setViewState(HIDE_PROGRESS)
+            activity?.also {
+                it.runOnUiThread {
+                    if(isLoading){
+                        viewModel.setViewState(ViewState.showProgress())
+                    } else{
+                        viewModel.setViewState(ViewState.hideProgress())
+                    }
                 }
             }
+
         }
     }
 
@@ -102,11 +103,11 @@ class ForgotPasswordFragment : DaggerFragment() {
 
     @SuppressLint("SetJavaScriptEnabled")
     fun loadPasswordResetWebView(){
-        viewModel.setViewState(SHOW_PROGRESS)
+        viewModel.setViewState(ViewState.showProgress())
         webView!!.webViewClient = object: WebViewClient(){
             override fun onPageFinished(view: WebView?, url: String?) {
                 super.onPageFinished(view, url)
-                viewModel.setViewState(HIDE_PROGRESS)
+                viewModel.setViewState(ViewState.hideProgress())
             }
         }
         webView!!.loadUrl(Constants.PASSWORD_RESET_URL)

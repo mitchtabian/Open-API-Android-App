@@ -9,6 +9,10 @@ class RegistrationResponse(
     @Expose
     var response: String,
 
+    @SerializedName("error_message")
+    @Expose
+    var errorMessage: String,
+
     @SerializedName("email")
     @Expose
     var email: String,
@@ -17,12 +21,17 @@ class RegistrationResponse(
     @Expose
     var username: String,
 
+    @SerializedName("pk")
+    @Expose
+    var pk: Int,
+
     @SerializedName("token")
     @Expose
-    var token: String) {
+    var token: String)
+{
 
     override fun toString(): String {
-        return "RegistrationResponse(response='$response', email='$email', username='$username', token='$token')"
+        return "RegistrationResponse(response='$response', errorMessage='$errorMessage', email='$email', username='$username', token='$token')"
     }
 }
 

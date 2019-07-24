@@ -48,14 +48,12 @@ class LauncherFragment : DaggerFragment() {
             ViewModelProviders.of(this, providerFactory).get(AuthActivityViewModel::class.java)
         }?: throw Exception("Invalid Activity")
 
-        viewModel.observeAuthState().observe(viewLifecycleOwner, Observer {
-
-            if(it != null){
-                if (!it.token.equals("")){
-                    navMainActivity(it)
-                }
-            }
-        })
+//        viewModel.observeAuthState().observe(viewLifecycleOwner, Observer {
+//
+//            it.authToken?.takeIf { it.token != null}?.let {
+//                navMainActivity(it)
+//            }
+//        })
 
         register.setOnClickListener({
             navRegistration()
@@ -82,11 +80,11 @@ class LauncherFragment : DaggerFragment() {
         navController.navigate(R.id.action_launcherFragment_to_forgotPasswordFragment)
     }
 
-    fun navMainActivity(token: AuthToken){
-        val intent = Intent(activity, MainActivity::class.java)
-        intent.putExtra(getString(R.string.auth_token), token)
-        startActivity(intent)
-    }
+//    fun navMainActivity(token: AuthToken){
+//        val intent = Intent(activity, MainActivity::class.java)
+//        intent.putExtra(getString(R.string.auth_token), token)
+//        startActivity(intent)
+//    }
 
 
 }
