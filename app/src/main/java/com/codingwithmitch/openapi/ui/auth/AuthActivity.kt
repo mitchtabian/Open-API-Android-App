@@ -65,15 +65,16 @@ class AuthActivity : DaggerAppCompatActivity() {
 
 
         viewModel.observeAuthState().observe(this, Observer {
-
-            it.authToken?.takeIf { it.token != null}?.let {
-
-                navMainActivity(it)
+            it.authToken?.let {
+                if(it.account_pk != -1 && it.token != null){
+                    navMainActivity(it)
+                }
             }
         })
     }
 
     fun navMainActivity(token: AuthToken){
+        Log.d(TAG, "navMainActivity: called.")
         val intent = Intent(this, MainActivity::class.java)
         intent.putExtra(getString(R.string.auth_token), token)
         startActivity(intent)

@@ -88,9 +88,11 @@ class RegisterFragment : DaggerFragment() {
 
         restoreFieldValues()
         initTextWatcher()
+
     }
 
     fun register(){
+
         viewModel.attemptRegistration()
     }
 

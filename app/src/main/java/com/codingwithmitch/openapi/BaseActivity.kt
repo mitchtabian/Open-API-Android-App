@@ -2,10 +2,7 @@ package com.codingwithmitch.openapi
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import androidx.lifecycle.Observer
 import com.codingwithmitch.openapi.ui.auth.AuthActivity
-import com.codingwithmitch.openapi.ui.auth.AuthResource
 import dagger.android.support.DaggerAppCompatActivity
 import javax.inject.Inject
 
@@ -23,19 +20,19 @@ abstract class BaseActivity : DaggerAppCompatActivity(){
     }
 
     fun subscribeObervers(){
-        sessionManager.observeAuthState().observe(this, Observer {
+//        sessionManager.observeAuthState().observe(this, Observer {
 
-            when(it.authStatus){
-
-                AuthResource.AuthStatus.AUTHENTICATED ->{
-                    // do nothing
-                    Log.d(TAG, "authenticated: ")
-
-                }
-                AuthResource.AuthStatus.NOT_AUTHENTICATED ->{
-                    Log.d(TAG, "not authenticated: ")
-                    navAuthActivity()
-                }
+//            when(it.authStatus){
+//
+//                AuthNetworkBoundResource.AuthStatus.AUTHENTICATED ->{
+//                    // do nothing
+//                    Log.d(TAG, "authenticated: ")
+//
+//                }
+//                AuthNetworkBoundResource.AuthStatus.NOT_AUTHENTICATED ->{
+//                    Log.d(TAG, "not authenticated: ")
+//                    navAuthActivity()
+//                }
 //                AuthResource.AuthStatus.LOADING ->{
 //                    Log.d(TAG, "loading: ")
 //                    TODO("show progress bar")
@@ -44,8 +41,8 @@ abstract class BaseActivity : DaggerAppCompatActivity(){
 //                    Log.d(TAG, "error: ")
 //                    TODO("display dialog error")
 //                }
-            }
-        })
+//            }
+//        })
     }
 
     fun navAuthActivity(){

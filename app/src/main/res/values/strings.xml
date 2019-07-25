@@ -20,4 +20,5 @@
     <string name="field_username">Username</string>
     <string name="field_confirm_password">Confirm password</string>
     <string name="field_register">Register</string>
+    <string name="network_error_response">Error</string>
 </resources>

@@ -43,37 +43,5 @@ class LoginFragment : DaggerFragment() {
         }?: throw Exception("Invalid Activity")
     }
 
-    //    fun testLogin(){
-//        openApiAuthService.login("mitchelltabian@gmail.com", "Password1234!")
-//            .enqueue(object: Callback<AuthToken> {
-//
-//                override fun onFailure(call: Call<AuthToken>, t: Throwable) {
-//                    Log.e("call", t.message)
-//                    Toast.makeText(activity, t.message, Toast.LENGTH_SHORT).show()
-//
-//                }
-//
-//                override fun onResponse(call: Call<AuthToken>, response: Response<AuthToken>) {
-//                    Log.d("call", response.message())
-//                    Log.d("call", response.body().toString())
-//                    Log.d("call", call.request().url().encodedPath())
-//
-//                    val token: String? = response.body()?.token
-//                    val pk: Int? = response.body()?.account_pk
-//                    if(token != null && pk != null){
-//                        TODO("Navigate to MainActivity. User is authenticated")
-//                    }
-//                    else{
-//                        if(token == null){
-//                            Log.e("call", "Couldn't retrieve token")
-//                        }
-//                        if(pk == null){
-//                            Log.e("call", "Couldn't retrieve user id")
-//                        }
-//                        Toast.makeText(activity, "Unable to authenticate", Toast.LENGTH_SHORT).show()
-//                    }
-//                }
-//
-//            })
-//    }
+
 }
