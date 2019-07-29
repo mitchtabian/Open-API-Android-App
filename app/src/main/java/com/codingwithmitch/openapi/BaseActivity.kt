@@ -2,6 +2,8 @@ package com.codingwithmitch.openapi
 
 import android.content.Intent
 import android.os.Bundle
+import androidx.lifecycle.Observer
+import com.codingwithmitch.openapi.models.AuthToken
 import com.codingwithmitch.openapi.ui.auth.AuthActivity
 import dagger.android.support.DaggerAppCompatActivity
 import javax.inject.Inject
@@ -16,33 +18,24 @@ abstract class BaseActivity : DaggerAppCompatActivity(){
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         subscribeObervers()
     }
 
     fun subscribeObervers(){
-//        sessionManager.observeAuthState().observe(this, Observer {
+        sessionManager.observeAuthState().observe(this, Observer {
+            if(it.token == null){
+                navAuthActivity()
+            }
+        })
+    }
 
-//            when(it.authStatus){
-//
-//                AuthNetworkBoundResource.AuthStatus.AUTHENTICATED ->{
-//                    // do nothing
-//                    Log.d(TAG, "authenticated: ")
-//
-//                }
-//                AuthNetworkBoundResource.AuthStatus.NOT_AUTHENTICATED ->{
-//                    Log.d(TAG, "not authenticated: ")
-//                    navAuthActivity()
-//                }
-//                AuthResource.AuthStatus.LOADING ->{
-//                    Log.d(TAG, "loading: ")
-//                    TODO("show progress bar")
-//                }
-//                AuthResource.AuthStatus.ERROR ->{
-//                    Log.d(TAG, "error: ")
-//                    TODO("display dialog error")
-//                }
-//            }
-//        })
+    fun setAuthToken(token: AuthToken){
+        sessionManager.setValue(token)
+    }
+
+    fun logout(){
+        sessionManager.logout()
     }
 
     fun navAuthActivity(){

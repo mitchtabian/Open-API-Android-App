@@ -55,10 +55,15 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-reactivestreams-ktx:$lifecycle_version"
     kapt "androidx.lifecycle:lifecycle-compiler:$lifecycle_version"
 
+
     // -- Coroutines
     def coroutines_version = "1.2.1"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
+
+    // LiveData Coroutines
+    def livedata_version = "2.2.0-alpha01"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$livedata_version"
 
     // -- Room
     def room_version = "2.1.0"

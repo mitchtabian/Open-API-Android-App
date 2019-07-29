@@ -4,12 +4,13 @@ import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.room.Room
-import com.codingwithmitch.openapi.api.auth.OpenApiAuthService
+import com.codingwithmitch.openapi.SessionManager
+import com.codingwithmitch.openapi.di.main.MainScope
 import com.codingwithmitch.openapi.persistence.AccountPropertiesDao
 import com.codingwithmitch.openapi.persistence.AppDatabase
 import com.codingwithmitch.openapi.persistence.AppDatabase.Companion.DATABASE_NAME
 import com.codingwithmitch.openapi.persistence.AuthTokenDao
-import com.codingwithmitch.openapi.repository.AuthRepository
+import com.codingwithmitch.openapi.repository.main.MainRepository
 import com.codingwithmitch.openapi.util.Constants
 import com.codingwithmitch.openapi.util.PreferenceKeys
 import com.google.gson.Gson
@@ -70,6 +71,24 @@ class AppModule{
         return db.getAccountPropertiesDao()
     }
 
+    @Singleton
+    @Provides
+    fun provideMainRepository(
+        authTokenDao: AuthTokenDao,
+        accountPropertiesDao: AccountPropertiesDao,
+        editor: SharedPreferences.Editor): MainRepository {
+        return MainRepository(
+            authTokenDao,
+            accountPropertiesDao,
+            editor
+        )
+    }
+
+    @Singleton
+    @Provides
+    fun provideSessionManager(mainRepository: MainRepository): SessionManager {
+        return SessionManager(mainRepository)
+    }
 }
 
 

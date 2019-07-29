@@ -3,24 +3,27 @@ package com.codingwithmitch.openapi.ui.auth
 import android.content.SharedPreferences
 import android.util.Log
 import androidx.lifecycle.*
+import com.codingwithmitch.openapi.SessionManager
 import com.codingwithmitch.openapi.models.AuthToken
-import com.codingwithmitch.openapi.repository.AuthRepository
+import com.codingwithmitch.openapi.repository.auth.AuthRepository
 import com.codingwithmitch.openapi.ui.auth.state.AuthState
 import com.codingwithmitch.openapi.ui.auth.state.AuthState.*
 import com.codingwithmitch.openapi.ui.auth.state.AuthState.RegisterState.*
 import com.codingwithmitch.openapi.ui.auth.state.ViewState
 import com.codingwithmitch.openapi.util.PreferenceKeys
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class AuthActivityViewModel
 @Inject
 constructor(
     val sharedPreferences: SharedPreferences,
-    val authRepository: AuthRepository
+    val authRepository: AuthRepository,
+    val sessionManager: SessionManager
     ): ViewModel()
 {
     private val TAG: String = "AppDebug"
@@ -28,7 +31,6 @@ constructor(
 
     private val viewState = MutableLiveData<ViewState>()
     private val authState = MediatorLiveData<AuthState>()
-
 
     init{
         setAuthState()
@@ -47,7 +49,7 @@ constructor(
 
     fun setViewState(v: ViewState){
         if(v.viewStateValue != viewState.value?.viewStateValue){
-            viewModelScope.launch(Dispatchers.Main) {
+            viewModelScope.launch(Main) {
                 viewState.value = v
             }
         }
@@ -74,7 +76,7 @@ constructor(
     fun retrieveAuthToken(email: String){
         Log.d(TAG, "retrieveAuthToken: found an email saved to preferences: $email. Checking for token in local db...")
 
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(IO) {
 
             authRepository.retrieveAccountPropertiesUsingEmail(email)?.let {
 
@@ -105,7 +107,6 @@ constructor(
                 if(it.isValidForLogin().equals(LoginState.LoginErrors.none())){
 
                     showProgress()
-                    // Non-null assert (!!) is OK here b/c "isValidForRegistration"
 
                     // Non-null assert (!!) is OK here b/c "isValidForRegistration"
                     val source: LiveData<AuthState> = authRepository.attemptLogin(it.email!!,  it.password!!)
@@ -113,6 +114,7 @@ constructor(
 
                         it.authToken?.let {
 
+                            sessionManager.setValue(it)
                             setAuthState(
                                 auth_token = it.token,
                                 auth_account_pk = it.account_pk
@@ -151,6 +153,7 @@ constructor(
 
                         it.authToken?.let {
 
+                            sessionManager.setValue(it)
                             setAuthState(
                                 auth_token = it.token,
                                 auth_account_pk = it.account_pk
@@ -189,7 +192,7 @@ constructor(
         auth_token: String? = null,
         auth_account_pk: Int? = -1
     ){
-        viewModelScope.launch(Dispatchers.Main) {
+        viewModelScope.launch(Main) {
             AuthState.setAuthState(
                 authState,
                 registration_email,
@@ -211,21 +214,26 @@ constructor(
     }
 
     fun showProgress(){
-        viewModelScope.launch(Dispatchers.Main) {
+        viewModelScope.launch(Main) {
             viewState.value = ViewState.showProgress()
         }
     }
 
     fun hideProgress(){
-        viewModelScope.launch(Dispatchers.Main) {
+        viewModelScope.launch(Main) {
             viewState.value = ViewState.hideProgress()
         }
     }
 
     fun showErrorDialog(errorMessage: String){
-        viewModelScope.launch(Dispatchers.Main) {
+        viewModelScope.launch(Main) {
             viewState.value = ViewState.showErrorDialog(errorMessage)
         }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        viewModelScope.cancel()
     }
 }
 

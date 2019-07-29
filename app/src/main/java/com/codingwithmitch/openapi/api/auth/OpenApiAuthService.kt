@@ -10,8 +10,8 @@ import retrofit2.http.*
 interface OpenApiAuthService {
 
     @POST("account/login")
-    @FormUrlEncoded //  ----------------> Do I need this?
-    fun login(
+    @FormUrlEncoded
+    suspend fun login(
         @Field("username") email: String,
         @Field("password") password: String
     ): Response<LoginResponse>
@@ -28,7 +28,7 @@ interface OpenApiAuthService {
 
 
     @GET("account/check_if_account_exists/{email}")
-    fun confirmAccountExists(
+    suspend fun confirmAccountExists(
         @Path("email") email: String
     )
 }

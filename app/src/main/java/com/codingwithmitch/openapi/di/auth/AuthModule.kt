@@ -4,7 +4,7 @@ import android.content.SharedPreferences
 import com.codingwithmitch.openapi.api.auth.OpenApiAuthService
 import com.codingwithmitch.openapi.persistence.AccountPropertiesDao
 import com.codingwithmitch.openapi.persistence.AuthTokenDao
-import com.codingwithmitch.openapi.repository.AuthRepository
+import com.codingwithmitch.openapi.repository.auth.AuthRepository
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit
@@ -27,7 +27,12 @@ class AuthModule{
         accountPropertiesDao: AccountPropertiesDao,
         openApiAuthService: OpenApiAuthService,
         editor: SharedPreferences.Editor): AuthRepository {
-        return AuthRepository(authTokenDao, accountPropertiesDao, openApiAuthService, editor)
+        return AuthRepository(
+            authTokenDao,
+            accountPropertiesDao,
+            openApiAuthService,
+            editor
+        )
     }
 
 }
