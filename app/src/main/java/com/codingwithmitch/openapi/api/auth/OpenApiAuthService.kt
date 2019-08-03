@@ -14,8 +14,7 @@ interface OpenApiAuthService {
     suspend fun login(
         @Field("username") email: String,
         @Field("password") password: String
-    ): Response<LoginResponse>
-
+    ): LoginResponse
 
     @POST("account/register")
     @FormUrlEncoded
@@ -24,13 +23,8 @@ interface OpenApiAuthService {
         @Field("username") username: String,
         @Field("password") password: String,
         @Field("password2") password2: String
-    ): Response<RegistrationResponse>
+    ): RegistrationResponse
 
-
-    @GET("account/check_if_account_exists/{email}")
-    suspend fun confirmAccountExists(
-        @Path("email") email: String
-    )
 }
 
 

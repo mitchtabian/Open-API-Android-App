@@ -4,8 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.room.Room
-import com.codingwithmitch.openapi.SessionManager
-import com.codingwithmitch.openapi.di.main.MainScope
+import com.codingwithmitch.openapi.session.SessionManager
 import com.codingwithmitch.openapi.persistence.AccountPropertiesDao
 import com.codingwithmitch.openapi.persistence.AppDatabase
 import com.codingwithmitch.openapi.persistence.AppDatabase.Companion.DATABASE_NAME
@@ -71,24 +70,19 @@ class AppModule{
         return db.getAccountPropertiesDao()
     }
 
-    @Singleton
-    @Provides
-    fun provideMainRepository(
-        authTokenDao: AuthTokenDao,
-        accountPropertiesDao: AccountPropertiesDao,
-        editor: SharedPreferences.Editor): MainRepository {
-        return MainRepository(
-            authTokenDao,
-            accountPropertiesDao,
-            editor
-        )
-    }
+//    @Singleton
+//    @Provides
+//    fun provideSessionManager(authTokenDao: AuthTokenDao): SessionManager {
+//        return SessionManager(authTokenDao)
+//    }
 
     @Singleton
     @Provides
-    fun provideSessionManager(mainRepository: MainRepository): SessionManager {
-        return SessionManager(mainRepository)
+    fun provideMainRepository(): MainRepository {
+        return MainRepository()
     }
+
+
 }
 
 

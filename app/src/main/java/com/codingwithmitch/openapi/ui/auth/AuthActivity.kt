@@ -2,16 +2,20 @@ package com.codingwithmitch.openapi.ui.auth
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.util.Log
 import android.view.View
+import android.view.ViewTreeObserver
+import android.widget.FrameLayout
 import android.widget.ProgressBar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.afollestad.materialdialogs.MaterialDialog
 
 import com.codingwithmitch.openapi.R
-import com.codingwithmitch.openapi.models.AuthToken
-import com.codingwithmitch.openapi.ui.auth.state.ViewState.ViewStateValue.*
+import com.codingwithmitch.openapi.session.SessionManager
+import com.codingwithmitch.openapi.session.SessionResource
+import com.codingwithmitch.openapi.ui.auth.state.AuthScreenState
 import com.codingwithmitch.openapi.ui.main.MainActivity
 import com.codingwithmitch.openapi.viewmodels.ViewModelProviderFactory
 import dagger.android.support.DaggerAppCompatActivity
@@ -22,62 +26,79 @@ class AuthActivity : DaggerAppCompatActivity() {
     private val TAG: String = "AppDebug"
 
     lateinit var progressBar: ProgressBar
+    lateinit var fragmentContainer: FrameLayout
 
-    lateinit var viewModel: AuthActivityViewModel
+    lateinit var viewModel: AuthViewModel
 
     @Inject
     lateinit var providerFactory: ViewModelProviderFactory
+
+    @Inject
+    lateinit var sessionManager: SessionManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_auth)
         progressBar = findViewById(R.id.progress_bar)
+        fragmentContainer = findViewById(R.id.fragment_container)
 
-        Log.d(TAG, "AuthActivity: started")
-
-        viewModel = ViewModelProviders.of(this, providerFactory).get(AuthActivityViewModel::class.java)
-
+        viewModel = ViewModelProviders.of(this, providerFactory).get(AuthViewModel::class.java)
         subscribeObservers()
+        viewModel.checkPreviousAuthUser()
+
+    }
+
+
+    private fun onFinishCheckPreviousAuthUser(){
+        fragmentContainer.visibility = View.VISIBLE
     }
 
     fun subscribeObservers(){
-        viewModel.observeViewState().observe(this, Observer {
-
-            when(it.viewStateValue){
-
-                CLEAR_ALL -> { // Might not need this?
-                    clearViewState()
-                }
-                SHOW_PROGRESS -> {
+        viewModel.observeAuthScreenState().observe(this, Observer { authScreenState ->
+            when(authScreenState){
+                is AuthScreenState.Loading -> {
                     displayProgressBar(true)
                 }
-                HIDE_PROGRESS -> {
+                is AuthScreenState.Data -> {
+                    authScreenState.authToken?.let{
+                        sessionManager.login(SessionResource(it, null))
+                    }
+                    if (authScreenState.authToken?.token == null){
+                        onFinishCheckPreviousAuthUser()
+                        displayProgressBar(false)
+                    }
+
+                }
+                is AuthScreenState.Error -> {
                     displayProgressBar(false)
-                }
-                SHOW_ERROR_DIALOG -> {
-                    it.message?.let { theMessage -> displayErrorDialog(theMessage) }
-                }
-                else -> {
-                    clearViewState()
+                    displayErrorDialog(authScreenState.errorMessage)
                 }
             }
         })
 
 
-        viewModel.observeAuthState().observe(this, Observer {
-            it.authToken?.let {
-                if(it.account_pk != -1 && it.token != null){
-                    navMainActivity(it)
+        sessionManager.observeSession().observe(this, Observer {
+            it?.let {
+                if(it.authToken?.account_pk != -1 && it.authToken?.token != null){
+                    navMainActivity()
+                }
+                when(it.loading){
+                    true -> displayProgressBar(true)
+                    false -> displayProgressBar(false)
+                    else -> displayProgressBar(false)
+                }
+                it.errorMessage?.let {
+                    displayErrorDialog(it)
                 }
             }
         })
     }
 
-    fun navMainActivity(token: AuthToken){
+    fun navMainActivity(){
         Log.d(TAG, "navMainActivity: called.")
         val intent = Intent(this, MainActivity::class.java)
-        intent.putExtra(getString(R.string.auth_token), token)
         startActivity(intent)
+        finish()
     }
 
     fun displayProgressBar(bool: Boolean){
@@ -99,9 +120,6 @@ class AuthActivity : DaggerAppCompatActivity() {
             .show()
     }
 
-    fun clearViewState(){
-        displayProgressBar(false)
-    }
 }
 
 

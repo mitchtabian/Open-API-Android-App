@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/main_nav_graph"
+            app:startDestination="@id/nav_blog">
+
+
+
+
+
+
+    <!--<action android:id="@+id/action_global_blog_nested_graph"-->
+            <!--app:destination="@id/nav_blog"-->
+
+    <!--/>-->
+
+
+    <!--<action android:id="@+id/action_global_account_nested_graph"-->
+            <!--app:destination="@id/nav_account"-->
+
+    <!--/>-->
+
+    <!--<action android:id="@+id/action_global_create_blog_nested_graph"-->
+            <!--app:destination="@id/nav_create_blog"-->
+
+    <!--/>-->
+
+</navigation>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -4,6 +4,8 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.lifecycle.Observer
 import com.codingwithmitch.openapi.models.AuthToken
+import com.codingwithmitch.openapi.session.SessionManager
+import com.codingwithmitch.openapi.session.SessionResource
 import com.codingwithmitch.openapi.ui.auth.AuthActivity
 import dagger.android.support.DaggerAppCompatActivity
 import javax.inject.Inject
@@ -23,15 +25,11 @@ abstract class BaseActivity : DaggerAppCompatActivity(){
     }
 
     fun subscribeObervers(){
-        sessionManager.observeAuthState().observe(this, Observer {
-            if(it.token == null){
+        sessionManager.observeSession().observe(this, Observer {
+            if(it.authToken == null){
                 navAuthActivity()
             }
         })
-    }
-
-    fun setAuthToken(token: AuthToken){
-        sessionManager.setValue(token)
     }
 
     fun logout(){

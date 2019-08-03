@@ -1,41 +1,87 @@
 package com.codingwithmitch.openapi.ui.auth.state
 
-import com.codingwithmitch.openapi.ui.auth.state.ViewState.ViewStateValue.*
 
 data class ViewState(
-    val viewStateValue: ViewStateValue?,
-    val message: String?
-) {
+    var registrationFields: RegistrationFields? = RegistrationFields(),
+    var loginFields: LoginFields? = LoginFields()
+    )
 
-    enum class ViewStateValue {
-        SHOW_PROGRESS,
-        HIDE_PROGRESS,
-        SHOW_ERROR_DIALOG,
-        CLEAR_ALL,
+
+data class RegistrationFields(
+    var registration_email: String? = null,
+    var registration_username: String? = null,
+    var registration_password: String? = null,
+    var registration_confirm_password: String? = null
+){
+
+    class RegistrationError {
+        companion object{
+
+            fun mustFillAllFields(): String{
+                return "All fields are required."
+            }
+
+            fun passwordsDoNotMatch(): String{
+                return "Passwords must match."
+            }
+
+            fun none():String{
+                return "None"
+            }
+
+        }
     }
 
-
-    companion object{
-
-        fun showProgress(): ViewState {
-            return ViewState(SHOW_PROGRESS, "Showing progress bar...")
+    fun isValidForRegistration(): String{
+        if(registration_email.isNullOrEmpty()
+            || registration_username.isNullOrEmpty()
+            || registration_password.isNullOrEmpty()
+            || registration_confirm_password.isNullOrEmpty()){
+            return RegistrationError.mustFillAllFields()
         }
 
-        fun hideProgress(): ViewState {
-            return ViewState(HIDE_PROGRESS, "Hiding progress bar...")
+        if(!registration_password.equals(registration_confirm_password)){
+            return RegistrationError.passwordsDoNotMatch()
         }
-
-        fun showErrorDialog(message: String): ViewState {
-            return ViewState(SHOW_ERROR_DIALOG, message)
-        }
-
-        fun clearAll(message: String?): ViewState {
-            return ViewState(CLEAR_ALL, message)
-        }
-
-
+        return RegistrationError.none()
     }
 }
+
+data class LoginFields(
+    var login_email: String? = null,
+    var login_password: String? = null
+){
+    class LoginError {
+
+        companion object{
+
+            fun mustFillAllFields(): String{
+                return "You can't login without an email and password."
+            }
+
+            fun none():String{
+                return "None"
+            }
+
+        }
+    }
+    fun isValidForLogin(): String{
+
+        if(login_email.isNullOrEmpty()
+            || login_password.isNullOrEmpty()){
+
+            return LoginError.mustFillAllFields()
+        }
+        return LoginError.none()
+    }
+
+    override fun toString(): String {
+        return "LoginState(email=$login_email, password=$login_password)"
+    }
+}
+
+
+
 
 
 

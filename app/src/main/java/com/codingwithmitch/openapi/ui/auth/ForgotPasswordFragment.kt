@@ -18,22 +18,18 @@ import com.afollestad.materialdialogs.MaterialDialog
 
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.ui.auth.ForgotPasswordFragment.WebAppInterface.*
-import com.codingwithmitch.openapi.ui.auth.state.ViewState
+import com.codingwithmitch.openapi.ui.auth.state.AuthScreenState.*
 import com.codingwithmitch.openapi.util.Constants
-import com.codingwithmitch.openapi.viewmodels.ViewModelProviderFactory
-import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_forgot_password.*
-import javax.inject.Inject
 
 
-class ForgotPasswordFragment : DaggerFragment() {
+class ForgotPasswordFragment : BaseAuthFragment() {
 
-    private val TAG: String = "AppDebug"
 
     lateinit var navController: NavController
     lateinit var parentView: FrameLayout
     lateinit var passwordResetContainer: LinearLayout
-    lateinit var viewModel: AuthActivityViewModel
+    lateinit var viewModel: AuthViewModel
 
     var webView: WebView? = null
 
@@ -62,18 +58,15 @@ class ForgotPasswordFragment : DaggerFragment() {
             activity?.also {
                 it.runOnUiThread {
                     if(isLoading){
-                        viewModel.setViewState(ViewState.showProgress())
+                        viewModel.setScreenState(screen_state = Loading)
                     } else{
-                        viewModel.setViewState(ViewState.hideProgress())
+                        viewModel.setScreenState(screen_state = Data(null))
                     }
                 }
             }
 
         }
     }
-
-    @Inject
-    lateinit var providerFactory: ViewModelProviderFactory
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -91,7 +84,7 @@ class ForgotPasswordFragment : DaggerFragment() {
         passwordResetContainer = view.findViewById(R.id.password_reset_done_container)
 
         viewModel = activity?.run {
-            ViewModelProviders.of(this, providerFactory).get(AuthActivityViewModel::class.java)
+            ViewModelProviders.of(this, providerFactory).get(AuthViewModel::class.java)
         }?: throw Exception("Invalid Activity")
 
         loadPasswordResetWebView()
@@ -103,11 +96,11 @@ class ForgotPasswordFragment : DaggerFragment() {
 
     @SuppressLint("SetJavaScriptEnabled")
     fun loadPasswordResetWebView(){
-        viewModel.setViewState(ViewState.showProgress())
+        viewModel.setScreenState(screen_state = Loading)
         webView!!.webViewClient = object: WebViewClient(){
             override fun onPageFinished(view: WebView?, url: String?) {
                 super.onPageFinished(view, url)
-                viewModel.setViewState(ViewState.hideProgress())
+                viewModel.setScreenState(screen_state = Data(null))
             }
         }
         webView!!.loadUrl(Constants.PASSWORD_RESET_URL)

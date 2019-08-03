@@ -1,35 +1,24 @@
 package com.codingwithmitch.openapi.ui.auth
 
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 
 import com.codingwithmitch.openapi.R
-import com.codingwithmitch.openapi.models.AuthToken
-import com.codingwithmitch.openapi.ui.auth.AuthActivityViewModel.*
-import com.codingwithmitch.openapi.ui.main.MainActivity
-import com.codingwithmitch.openapi.viewmodels.ViewModelProviderFactory
-import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_launcher.*
-import javax.inject.Inject
 
 
-class LauncherFragment : DaggerFragment() {
+class LauncherFragment : BaseAuthFragment() {
 
-    private val TAG: String = "AppDebug"
 
     lateinit var navController: NavController
-    lateinit var viewModel: AuthActivityViewModel
+    lateinit var viewModel: AuthViewModel
 
-    @Inject
-    lateinit var providerFactory: ViewModelProviderFactory
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,15 +34,9 @@ class LauncherFragment : DaggerFragment() {
         navController = Navigation.findNavController(view)
 
         viewModel = activity?.run {
-            ViewModelProviders.of(this, providerFactory).get(AuthActivityViewModel::class.java)
+            ViewModelProviders.of(this, providerFactory).get(AuthViewModel::class.java)
         }?: throw Exception("Invalid Activity")
 
-//        viewModel.observeAuthState().observe(viewLifecycleOwner, Observer {
-//
-//            it.authToken?.takeIf { it.token != null}?.let {
-//                navMainActivity(it)
-//            }
-//        })
 
         register.setOnClickListener({
             navRegistration()
@@ -79,12 +62,6 @@ class LauncherFragment : DaggerFragment() {
     fun navForgotPassword(){
         navController.navigate(R.id.action_launcherFragment_to_forgotPasswordFragment)
     }
-
-//    fun navMainActivity(token: AuthToken){
-//        val intent = Intent(activity, MainActivity::class.java)
-//        intent.putExtra(getString(R.string.auth_token), token)
-//        startActivity(intent)
-//    }
 
 
 }

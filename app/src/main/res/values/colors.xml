@@ -1,11 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#008577</color>
-    <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#D81B60</color>
 
+    <!-- Main theme colors -->
+    <color name="colorPrimary">#fff</color>
+    <color name="colorPrimaryDark">#7d7d7d</color>
+    <color name="colorAccent">#FF4081</color>
+
+    <!-- Secondary theme colors -->
+    <color name="tealDark">#0094DE</color>
+    <color name="tealLight">#9FDAF7</color>
     <color name="link_blue">#0000EE</color>
-    <color name="teal1">#1F9FDF</color>
+
+    <!-- other -->
+    <color name="red">#e22b2b</color>
+    <color name="red2">#fc8b8d</color>
     <color name="grey1">#f2f2f2</color>
     <color name="grey2">#c4c4c4</color>
     <color name="grey3">#a8a8a8</color>
@@ -13,4 +21,7 @@
     <color name="grey5">#5c5c5c</color>
 
     <color name="default_background_color">#EEEEEE</color>
+
+
+
 </resources>
