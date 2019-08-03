@@ -70,12 +70,6 @@ class AppModule{
         return db.getAccountPropertiesDao()
     }
 
-//    @Singleton
-//    @Provides
-//    fun provideSessionManager(authTokenDao: AuthTokenDao): SessionManager {
-//        return SessionManager(authTokenDao)
-//    }
-
     @Singleton
     @Provides
     fun provideMainRepository(): MainRepository {

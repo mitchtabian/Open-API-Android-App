@@ -2,9 +2,6 @@ package com.codingwithmitch.openapi.api.auth
 
 import com.codingwithmitch.openapi.api.auth.network_responses.LoginResponse
 import com.codingwithmitch.openapi.api.auth.network_responses.RegistrationResponse
-import com.codingwithmitch.openapi.models.AuthToken
-import retrofit2.Call
-import retrofit2.Response
 import retrofit2.http.*
 
 interface OpenApiAuthService {

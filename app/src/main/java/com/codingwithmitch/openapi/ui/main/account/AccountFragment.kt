@@ -2,11 +2,12 @@ package com.codingwithmitch.openapi.ui.main.account
 
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.NavOptions
+import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import com.codingwithmitch.openapi.R
 
@@ -15,6 +16,8 @@ import kotlinx.android.synthetic.main.fragment_account.*
 
 
 class AccountFragment : BaseFragment() {
+
+    lateinit var viewModel: AccountViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -30,14 +33,20 @@ class AccountFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        viewModel = ViewModelProviders.of(this, providerFactory).get(AccountViewModel::class.java)
+        Log.d(TAG, "viewmodel : ${viewModel}")
+
         change_password.setOnClickListener{
             findNavController().navigate(R.id.action_accountFragment_to_changePasswordFragment)
         }
 
         logout_button.setOnClickListener {
-            sessionManager.logout()
+            viewModel.logout()
         }
+
     }
+
+
 
 }
 

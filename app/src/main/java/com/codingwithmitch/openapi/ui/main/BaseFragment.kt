@@ -17,9 +17,6 @@ abstract class BaseFragment: DaggerFragment(){
     @Inject
     lateinit var providerFactory: ViewModelProviderFactory
 
-    @Inject
-    lateinit var sessionManager: SessionManager
-
     /*
         @fragmentId is id of fragment from graph to be EXCLUDED from action back bar nav
      */
