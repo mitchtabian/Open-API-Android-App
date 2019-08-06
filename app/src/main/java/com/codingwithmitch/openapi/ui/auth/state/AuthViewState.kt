@@ -1,7 +1,7 @@
 package com.codingwithmitch.openapi.ui.auth.state
 
 
-data class ViewState(
+data class AuthViewState(
     var registrationFields: RegistrationFields? = RegistrationFields(),
     var loginFields: LoginFields? = LoginFields()
     )

@@ -1,77 +1,118 @@
 package com.codingwithmitch.openapi.ui.main.account
 
 import android.util.Log
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.codingwithmitch.openapi.api.main.OpenApiMainService
-import com.codingwithmitch.openapi.api.main.network_responses.AccountPropertiesResponse
+import androidx.lifecycle.*
+import com.codingwithmitch.openapi.models.AccountProperties
+import com.codingwithmitch.openapi.repository.main.AccountRepository
 import com.codingwithmitch.openapi.session.SessionManager
-import com.google.gson.JsonArray
-import com.google.gson.JsonObject
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.launch
-import okhttp3.Callback
-import okhttp3.Response
-import okhttp3.ResponseBody
-import retrofit2.Call
-import java.lang.Exception
+import com.codingwithmitch.openapi.ui.main.account.state.AccountDataState
+import com.codingwithmitch.openapi.ui.main.account.state.AccountViewState
+import kotlinx.coroutines.*
 import javax.inject.Inject
 
 class AccountViewModel
 @Inject
 constructor(
     val sessionManager: SessionManager,
-    val openApiMainService: OpenApiMainService
+    val accountRepository: AccountRepository
 )
     : ViewModel()
 {
 
     private val TAG: String = "AppDebug"
 
+    private val dataState: MediatorLiveData<AccountDataState> = MediatorLiveData()
+    private val viewState: MutableLiveData<AccountViewState> = MutableLiveData()
+
     init {
+        setViewState(message = null)
         getAccountProperties()
     }
 
+    fun observeDataState(): LiveData<AccountDataState>{
+        return dataState
+    }
+
+    fun observeViewState(): LiveData<AccountViewState>{
+        return viewState
+    }
+
+
+    fun saveAccountProperties(email: String, username: String){
+        sessionManager.observeSession().value?.authToken?.let { authToken ->
+            authToken.account_pk?.let {pk ->
+                val source = accountRepository.saveAccountProperties(authToken, AccountProperties(pk, email, username))
+                dataState.addSource(source){
+                    when(it){
+                        is AccountDataState.Error -> {
+                            dataState.removeSource(source)
+                        }
+                        is AccountDataState.Data -> {
+                            Log.d(TAG, "data: ${it.accountProperties}")
+                            setViewState(message = "Saved")
+                            dataState.removeSource(source)
+                        }
+                    }
+                    setDataState(data_state = it)
+                }
+            }
+
+        }
+    }
+
+
     private fun getAccountProperties(){
-
-        sessionManager.observeSession().value?.authToken?.token?.let {
-            viewModelScope.launch {
-
-                val token = "Token 0333ec24e34766df2e1e413874664723d3c62172"
-                Log.d(TAG, ": ${token}")
-                openApiMainService.getAccountProperties2(token).enqueue(object: retrofit2.Callback<AccountPropertiesResponse> {
-
-                    override fun onFailure(call: Call<AccountPropertiesResponse>, t: Throwable) {
-                        Log.e(TAG, "response: ${t.message}")
+        sessionManager.observeSession().value?.authToken?.let {authToken ->
+            val source = accountRepository.getAccountProperties(authToken)
+            dataState.addSource(source){
+                when(it){
+                    is AccountDataState.Error -> {
+                        dataState.removeSource(source)
                     }
-
-                    override fun onResponse(call: Call<AccountPropertiesResponse>, response: retrofit2.Response<AccountPropertiesResponse>) {
-                        if(response.code() == 200){
-                            Log.d(TAG, "response code: ${response.code()}")
-                            Log.d(TAG, "response body: ${response.body().toString()}")
-                            Log.d(TAG, "response body: ${call.request().body().toString()}")
-                            Log.d(TAG, "response headers: ${response.headers()}")
-                        }
-                        else{
-                            Log.d(TAG, "response code: ${response.code()}")
-                            Log.d(TAG, "response body: ${response.body().toString()}")
-                            Log.d(TAG, "response body: ${call.request().body().toString()}")
-                            Log.d(TAG, "response headers: ${response.headers()}")
-                        }
+                    is AccountDataState.Data -> {
+                        dataState.removeSource(source)
                     }
-                })
-
-//                try{
-//                    val token = "Token ${it}"
-//                    Log.d(TAG, "token: ${token}")
-//                    val accountResponse = openApiMainService.getAccountProperties(token)
-//
-//                    Log.d(TAG, "getAccountProperties: ${accountResponse}")
-//                }catch (e: Exception){
-//                    Log.e(TAG, "getAccountProperties: Exception: ${e.message}")
-//                }
+                }
+                setDataState(data_state = it)
             }
         }
+    }
+
+
+
+    fun setDataState(
+        data_state: AccountDataState? = null
+    ){
+        if(data_state != dataState.value){
+            viewModelScope.launch(Dispatchers.Main) {
+                data_state?.let {
+                    dataState.value = it
+                }
+            }
+        }
+    }
+
+    fun setViewState(
+        // Message
+        message: String? = null
+
+    ){
+        viewModelScope.launch(Dispatchers.Main) {
+            viewState.value?.run {
+
+                viewState.value = AccountViewState(
+                    message?.let { AccountViewState.UIMessage(it) }
+                )
+                Log.d(TAG, "setting msg: ${message}")
+
+                // update the LiveData
+                viewState.value = this
+            }?: initViewState(viewState)
+        }
+    }
+
+    fun initViewState(viewState: MutableLiveData<AccountViewState>){
+        viewState.value = AccountViewState()
     }
 
     fun logout(){
@@ -83,3 +124,21 @@ constructor(
         viewModelScope.cancel()
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

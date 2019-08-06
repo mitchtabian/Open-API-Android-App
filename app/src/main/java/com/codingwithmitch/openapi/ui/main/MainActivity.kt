@@ -1,21 +1,24 @@
 package com.codingwithmitch.openapi.ui.main
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.ProgressBar
+import android.widget.Toast
+import android.widget.Toast.LENGTH_SHORT
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
-import androidx.navigation.Navigation.findNavController
-import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
 import com.codingwithmitch.openapi.R
-import androidx.navigation.ui.NavigationUI
 import com.afollestad.materialdialogs.MaterialDialog
 import com.codingwithmitch.openapi.session.SessionManager
 import com.codingwithmitch.openapi.ui.auth.AuthActivity
+import com.codingwithmitch.openapi.ui.main.account.AccountStateChangeListener
+import com.codingwithmitch.openapi.ui.main.account.state.AccountDataState
+import com.codingwithmitch.openapi.ui.main.account.state.AccountViewState
 import com.codingwithmitch.openapi.util.BottomNavController
 import com.codingwithmitch.openapi.util.setUpNavigation
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -23,7 +26,8 @@ import dagger.android.support.DaggerAppCompatActivity
 import javax.inject.Inject
 
 class MainActivity : DaggerAppCompatActivity(),
-    BottomNavController.NavGraphProvider
+    BottomNavController.NavGraphProvider,
+    AccountStateChangeListener
 {
     private val TAG: String = "AppDebug"
 
@@ -124,6 +128,7 @@ class MainActivity : DaggerAppCompatActivity(),
         }
     }
 
+
     fun displayErrorDialog(errorMessage: String){
         MaterialDialog(this)
             .title(R.string.text_error)
@@ -133,6 +138,52 @@ class MainActivity : DaggerAppCompatActivity(),
             .positiveButton(R.string.text_ok)
             .show()
     }
+
+
+    // Update UI when doing things in AccountFragment
+    override fun onAccountDataStateChange(accountDataState: AccountDataState) {
+        when(accountDataState){
+            is AccountDataState.Error ->{
+                displayErrorDialog(accountDataState.errorMessage)
+                displayProgressBar(false)
+            }
+
+            is AccountDataState.Loading ->{
+                displayProgressBar(true)
+            }
+
+            is AccountDataState.Data ->{
+                displayProgressBar(false)
+            }
+        }
+
+    }
+
+    override fun onAccountViewStateChange(accountViewState: AccountViewState) {
+        accountViewState.uiMessage?.let {
+            displayToast(message = it.message)
+        }
+    }
+
+    private fun displayToast(message: String?){
+        Toast.makeText(this, message, LENGTH_SHORT).show()
+    }
+
+
+
+    override fun hideSoftKeyboard() {
+        if (currentFocus != null) {
+            val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            inputMethodManager.hideSoftInputFromWindow(currentFocus!!.windowToken, 0)
+        }
+    }
+
+
+//    fun showSoftKeyboard(view: View) {
+//        val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+//        view.requestFocus()
+//        inputMethodManager.showSoftInput(view, 0)
+//    }
 }
 
 

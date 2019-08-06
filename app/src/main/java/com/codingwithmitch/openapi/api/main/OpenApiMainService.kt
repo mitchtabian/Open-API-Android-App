@@ -1,24 +1,28 @@
 package com.codingwithmitch.openapi.api.main
 
-import com.codingwithmitch.openapi.api.main.network_responses.AccountPropertiesResponse
-import okhttp3.Response
-import okhttp3.ResponseBody
+import androidx.lifecycle.LiveData
+import com.codingwithmitch.openapi.api.GenericApiResponse
+import com.codingwithmitch.openapi.api.GenericResponse
+import com.codingwithmitch.openapi.models.AccountProperties
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.http.*
 
 interface OpenApiMainService {
 
 
     @GET("account/properties")
-    suspend fun getAccountProperties(
+    fun getAccountProperties(
         @Header("Authorization") authorization: String
-    ): AccountPropertiesResponse
+    ): LiveData<GenericApiResponse<AccountProperties>>
 
-    @GET("account/properties")
-    fun getAccountProperties2(
-        @Header("Authorization") authorization: String
-    ): Call<AccountPropertiesResponse>
-
+    @PUT("account/properties/update")
+    @FormUrlEncoded
+    fun saveAccountProperties(
+        @Header("Authorization") authorization: String,
+        @Field("email") email: String,
+        @Field("username") username: String
+    ): LiveData<GenericApiResponse<GenericResponse>>
 
 }
 

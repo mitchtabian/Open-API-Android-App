@@ -4,13 +4,12 @@ import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.room.Room
-import com.codingwithmitch.openapi.session.SessionManager
 import com.codingwithmitch.openapi.persistence.AccountPropertiesDao
 import com.codingwithmitch.openapi.persistence.AppDatabase
 import com.codingwithmitch.openapi.persistence.AppDatabase.Companion.DATABASE_NAME
 import com.codingwithmitch.openapi.persistence.AuthTokenDao
-import com.codingwithmitch.openapi.repository.main.MainRepository
 import com.codingwithmitch.openapi.util.Constants
+import com.codingwithmitch.openapi.util.LiveDataCallAdapterFactory
 import com.codingwithmitch.openapi.util.PreferenceKeys
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -34,6 +33,7 @@ class AppModule{
     fun provideRetrofitBuilder(gsonBuilder:  Gson): Retrofit.Builder{
         return Retrofit.Builder()
             .baseUrl(Constants.BASE_URL)
+            .addCallAdapterFactory(LiveDataCallAdapterFactory())
             .addConverterFactory(GsonConverterFactory.create(gsonBuilder))
     }
 
@@ -68,12 +68,6 @@ class AppModule{
     @Provides
     fun provideAccountPropertiesDao(db: AppDatabase): AccountPropertiesDao{
         return db.getAccountPropertiesDao()
-    }
-
-    @Singleton
-    @Provides
-    fun provideMainRepository(): MainRepository {
-        return MainRepository()
     }
 
 

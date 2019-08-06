@@ -18,7 +18,7 @@ import com.afollestad.materialdialogs.MaterialDialog
 
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.ui.auth.ForgotPasswordFragment.WebAppInterface.*
-import com.codingwithmitch.openapi.ui.auth.state.AuthScreenState.*
+import com.codingwithmitch.openapi.ui.auth.state.AuthDataState.*
 import com.codingwithmitch.openapi.util.Constants
 import kotlinx.android.synthetic.main.fragment_forgot_password.*
 
@@ -58,9 +58,9 @@ class ForgotPasswordFragment : BaseAuthFragment() {
             activity?.also {
                 it.runOnUiThread {
                     if(isLoading){
-                        viewModel.setScreenState(screen_state = Loading)
+                        viewModel.setDataState(data_state = Loading)
                     } else{
-                        viewModel.setScreenState(screen_state = Data(null))
+                        viewModel.setDataState(data_state = Data(null))
                     }
                 }
             }
@@ -96,11 +96,11 @@ class ForgotPasswordFragment : BaseAuthFragment() {
 
     @SuppressLint("SetJavaScriptEnabled")
     fun loadPasswordResetWebView(){
-        viewModel.setScreenState(screen_state = Loading)
+        viewModel.setDataState(data_state = Loading)
         webView!!.webViewClient = object: WebViewClient(){
             override fun onPageFinished(view: WebView?, url: String?) {
                 super.onPageFinished(view, url)
-                viewModel.setScreenState(screen_state = Data(null))
+                viewModel.setDataState(data_state = Data(null))
             }
         }
         webView!!.loadUrl(Constants.PASSWORD_RESET_URL)

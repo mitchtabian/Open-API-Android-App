@@ -13,7 +13,7 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.session.SessionManager
 import com.codingwithmitch.openapi.session.SessionResource
-import com.codingwithmitch.openapi.ui.auth.state.AuthScreenState
+import com.codingwithmitch.openapi.ui.auth.state.AuthDataState
 import com.codingwithmitch.openapi.ui.main.MainActivity
 import com.codingwithmitch.openapi.viewmodels.ViewModelProviderFactory
 import dagger.android.support.DaggerAppCompatActivity
@@ -52,24 +52,24 @@ class AuthActivity : DaggerAppCompatActivity() {
     }
 
     fun subscribeObservers(){
-        viewModel.observeAuthScreenState().observe(this, Observer { authScreenState ->
-            when(authScreenState){
-                is AuthScreenState.Loading -> {
+        viewModel.observeAuthDataState().observe(this, Observer { authDataState ->
+            when(authDataState){
+                is AuthDataState.Loading -> {
                     displayProgressBar(true)
                 }
-                is AuthScreenState.Data -> {
-                    authScreenState.authToken?.let{
+                is AuthDataState.Data -> {
+                    authDataState.authToken?.let{
                         sessionManager.login(SessionResource(it, null))
                     }
-                    if (authScreenState.authToken?.token == null){
+                    if (authDataState.authToken?.token == null){
                         onFinishCheckPreviousAuthUser()
                         displayProgressBar(false)
                     }
 
                 }
-                is AuthScreenState.Error -> {
+                is AuthDataState.Error -> {
                     displayProgressBar(false)
-                    displayErrorDialog(authScreenState.errorMessage)
+                    displayErrorDialog(authDataState.errorMessage)
                 }
             }
         })

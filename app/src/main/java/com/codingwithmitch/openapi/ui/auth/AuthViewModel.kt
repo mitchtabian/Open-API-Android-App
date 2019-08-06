@@ -6,7 +6,7 @@ import androidx.lifecycle.*
 import com.codingwithmitch.openapi.models.AuthToken
 import com.codingwithmitch.openapi.repository.auth.AuthRepository
 import com.codingwithmitch.openapi.ui.auth.state.*
-import com.codingwithmitch.openapi.ui.auth.state.AuthScreenState.*
+import com.codingwithmitch.openapi.ui.auth.state.AuthDataState.*
 import com.codingwithmitch.openapi.util.PreferenceKeys
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
@@ -24,8 +24,8 @@ constructor(
     private val TAG: String = "AppDebug"
 
 
-    private val viewState = MediatorLiveData<ViewState>()
-    private val screenState = MediatorLiveData<AuthScreenState>()
+    private val viewState = MediatorLiveData<AuthViewState>() // fields
+    private val dataState = MediatorLiveData<AuthDataState>() // data
 
     init{
         setViewState()
@@ -33,19 +33,19 @@ constructor(
     }
 
 
-    fun observeViewState(): LiveData<ViewState> {
+    fun observeViewState(): LiveData<AuthViewState> {
         return viewState
     }
 
-    fun observeAuthScreenState(): LiveData<AuthScreenState> {
-        return screenState
+    fun observeAuthDataState(): LiveData<AuthDataState> {
+        return dataState
     }
 
 
     fun checkPreviousAuthUser(){
         Log.d(TAG, "checkPreviousAuthUser: ")
 
-        setScreenState(screen_state = Loading)
+        setDataState(data_state = Loading)
 
         val previousAuthUserEmail: String? = sharedPreferences.getString(PreferenceKeys.PREVIOUS_AUTH_USER, null)
 
@@ -64,15 +64,18 @@ constructor(
 
         viewModelScope.launch(IO) {
 
+            Log.d(TAG, "retrieveAuthToken: searching by email...")
             authRepository.retrieveAccountPropertiesUsingEmail(email)?.let {
 
+                Log.d(TAG, "retrieveAuthToken: searching for token...")
                 authRepository.retrieveTokenFromLocalDb(it.pk)?.run {
 
+                    Log.d(TAG, "got token.: ")
                     this.token?.let {
 
                         Log.d(TAG, "Found Token: ${this}")
 
-                        setScreenState(screen_state = Data(AuthToken(this.account_pk, this.token)))
+                        setDataState(data_state = Data(AuthToken(this.account_pk, this.token)))
 
                     } ?: returnNoTokenFound()
 
@@ -87,21 +90,21 @@ constructor(
         viewState.value?.run {
             this.loginFields?.let {
                 if(it.isValidForLogin().equals(LoginFields.LoginError.none())){
-                    val source = authRepository.attemptLogin(it.login_email!!, it.login_password!!)
-                    screenState.addSource(source) {
-                        setScreenState(screen_state = it)
+                    val source = authRepository.attemptLogin(it.login_email!!.toLowerCase(), it.login_password!!)
+                    dataState.addSource(source) {
+                        setDataState(data_state = it)
                         when(it){
                             is Error -> {
-                                screenState.removeSource(source)
+                                dataState.removeSource(source)
                             }
                             is Data ->{
-                                screenState.removeSource(source)
+                                dataState.removeSource(source)
                             }
                         }
                     }
                 }
                 else{
-                    setScreenState(screen_state = Error(it.isValidForLogin()))
+                    setDataState(data_state = Error(it.isValidForLogin()))
                 }
             }
         }
@@ -118,32 +121,32 @@ constructor(
                         it.registration_username!!,
                         it.registration_password!!,
                         it.registration_confirm_password!!)
-                    screenState.addSource(source){
-                        setScreenState(screen_state = it)
+                    dataState.addSource(source){
+                        setDataState(data_state = it)
                         when(it){
                             is Error -> {
-                                screenState.removeSource(source)
+                                dataState.removeSource(source)
                             }
                             is Data ->{
-                                screenState.removeSource(source)
+                                dataState.removeSource(source)
                             }
                         }
                     }
                 }
                 else{
-                    setScreenState(screen_state = Error(it.isValidForRegistration()))
+                    setDataState(data_state = Error(it.isValidForRegistration()))
                 }
             }
         }
     }
 
 
-    fun setScreenState(
-        screen_state: AuthScreenState? = null
+    fun setDataState(
+        data_state: AuthDataState? = null
     ){
         viewModelScope.launch(Main) {
-            screen_state?.let {
-                screenState.value = it
+            data_state?.let {
+                dataState.value = it
             }
         }
 
@@ -151,20 +154,20 @@ constructor(
 
     fun setViewState(
 
-        // RegistrationState
+        // Registration Fields
         registration_email: String? = null,
         registration_username: String? = null,
         registration_password: String? = null,
         registration_confirm_password: String? = null,
 
-        // LoginState
+        // Login Fields
         login_email: String? = null,
         login_password: String? = null
 
     ){
         viewModelScope.launch(Main) {
             viewState.value?.run {
-                // RegistrationState
+                // Registration Fields
                 if(this.registrationFields == null){
                     this.registrationFields = RegistrationFields()
                 }
@@ -173,7 +176,7 @@ constructor(
                 registration_password?.let {this.registrationFields?.registration_password = it}
                 registration_confirm_password?.let {this.registrationFields?.registration_confirm_password = it}
 
-                // LoginState
+                // Login Fields
                 if(this.loginFields == null){
                     this.loginFields = LoginFields()
                 }
@@ -186,15 +189,15 @@ constructor(
         }
     }
 
-    fun initViewState(viewState: MutableLiveData<ViewState>){
-        viewState.value = ViewState()
+    fun initViewState(viewState: MutableLiveData<AuthViewState>){
+        viewState.value = AuthViewState()
     }
 
 
     fun returnNoTokenFound(){
         Log.d(TAG, "No token found in local db. Waiting for user input...")
         setViewState()
-        setScreenState(screen_state = Data(null))
+        setDataState(data_state = Data(null))
     }
 
     override fun onCleared() {

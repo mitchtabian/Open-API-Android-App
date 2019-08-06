@@ -1,4 +1,4 @@
-package com.codingwithmitch.openapi.api.auth.network_responses
+package com.codingwithmitch.openapi.api
 
 import retrofit2.Response
 
@@ -7,29 +7,35 @@ import retrofit2.Response
  * https://github.com/googlesamples/android-architecture-components/blob/master/GithubBrowserSample/app/src/main/java/com/android/example/github/api/ApiResponse.kt
  */
 @Suppress("unused") // T is used in extending classes
-sealed class ApiResponse<T> {
+sealed class GenericApiResponse<T> {
 
     companion object {
         fun <T> create(error: Throwable): ApiErrorResponse<T> {
             return ApiErrorResponse(error.message ?: "unknown error")
         }
 
-        fun <T> create(response: Response<T>): ApiResponse<T> {
-            return if (response.isSuccessful) {
+        fun <T> create(response: Response<T>): GenericApiResponse<T> {
+
+            if(response.isSuccessful){
                 val body = response.body()
                 if (body == null || response.code() == 204) {
-                    ApiEmptyResponse()
-                } else {
-                    ApiSuccessResponse(body = body)
+                    return ApiEmptyResponse()
                 }
-            } else {
+                else if(response.code() == 401){
+                    return ApiErrorResponse("401 Unauthorized. Token may be invalid.")
+                }
+                else {
+                    return ApiSuccessResponse(body = body)
+                }
+            }
+            else{
                 val msg = response.errorBody()?.string()
                 val errorMsg = if (msg.isNullOrEmpty()) {
                     response.message()
                 } else {
                     msg
                 }
-                ApiErrorResponse(errorMsg ?: "unknown error")
+                return ApiErrorResponse(errorMsg ?: "unknown error")
             }
         }
     }
@@ -38,11 +44,11 @@ sealed class ApiResponse<T> {
 /**
  * separate class for HTTP 204 responses so that we can make ApiSuccessResponse's body non-null.
  */
-class ApiEmptyResponse<T> : ApiResponse<T>()
+class ApiEmptyResponse<T> : GenericApiResponse<T>()
 
-data class ApiSuccessResponse<T>(val body: T) : ApiResponse<T>() {}
+data class ApiSuccessResponse<T>(val body: T) : GenericApiResponse<T>() {}
 
-data class ApiErrorResponse<T>(val errorMessage: String) : ApiResponse<T>()
+data class ApiErrorResponse<T>(val errorMessage: String) : GenericApiResponse<T>()
 
 
 
