@@ -26,6 +26,7 @@ constructor(
 
     init {
         setViewState(message = null)
+
     }
 
     fun observeDataState(): LiveData<AccountDataState>{
@@ -47,7 +48,6 @@ constructor(
                             dataState.removeSource(source)
                         }
                         is AccountDataState.Data -> {
-                            Log.d(TAG, "data: ${it.accountProperties}")
                             setViewState(message = "Saved")
                             dataState.removeSource(source)
                         }
@@ -69,6 +69,25 @@ constructor(
                         dataState.removeSource(source)
                     }
                     is AccountDataState.Data -> {
+                        dataState.removeSource(source)
+                    }
+                }
+                setDataState(data_state = it)
+            }
+        }
+    }
+
+    fun updatePassword(currentPassword: String, newPassword: String, confirmNewPassword: String){
+        setDataState(AccountDataState.Loading(null))
+        sessionManager.observeSession().value?.authToken?.let { authToken ->
+            val source = accountRepository.updatePassword(authToken, currentPassword, newPassword, confirmNewPassword)
+            dataState.addSource(source){
+                when(it){
+                    is AccountDataState.Error -> {
+                        dataState.removeSource(source)
+                    }
+                    is AccountDataState.Data -> {
+                        setViewState(message = "Password has been updated")
                         dataState.removeSource(source)
                     }
                 }

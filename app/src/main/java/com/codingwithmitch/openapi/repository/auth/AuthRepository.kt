@@ -66,7 +66,7 @@ constructor(
 
             override suspend fun saveAccountPropertiesLocally(accountProperties: AccountProperties): Long {
                 // if there's already an account, do not replace.
-                return accountPropertiesDao.insertOrAbort(accountProperties)
+                return accountPropertiesDao.insertOrIgnore(accountProperties)
             }
 
         }.asLiveData()

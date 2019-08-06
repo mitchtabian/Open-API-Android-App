@@ -80,6 +80,37 @@ constructor(
     }
 
 
+    fun updatePassword(authToken: AuthToken, currentPassword: String, newPassword: String, confirmNewPassword: String): LiveData<AccountDataState> {
+        return object: AccountNetworkBoundResource<GenericResponse>(){
+
+            override fun loadFromDb(): LiveData<AccountProperties> {
+                // ignore. This will not get executed
+                return accountPropertiesDao.searchByPk(-1)
+            }
+
+            override fun createCall(): LiveData<GenericApiResponse<GenericResponse>> {
+                return openApiMainService.updatePassword(
+                    "Token ${authToken.token!!}",
+                    currentPassword,
+                    newPassword,
+                    confirmNewPassword
+                )
+            }
+
+            override fun updateLocalDb() {
+                // ignore
+            }
+
+            override fun saveToLocalDb(accountProperties: AccountProperties) {
+                // empty
+            }
+
+            override fun isGetRequest(): Boolean {
+                return false
+            }
+        }.asLiveData()
+    }
+
     private fun extractErrorMessage(e: String?): String{
         var msg = e
         if(msg == null){

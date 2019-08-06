@@ -42,6 +42,9 @@
     <string name="arg_username">arg_username</string>
     <string name="enter_a_username">Enter a username</string>
     <string name="enter_your_email">Enter your email</string>
+    <string name="current_password">Current password</string>
+    <string name="confirm_new_password">Confirm new password</string>
+    <string name="new_password">New password</string>
 </resources>
 
 

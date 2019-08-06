@@ -12,8 +12,6 @@ import android.webkit.WebViewClient
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.lifecycle.ViewModelProviders
-import androidx.navigation.NavController
-import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import com.afollestad.materialdialogs.MaterialDialog
 
@@ -22,6 +20,9 @@ import com.codingwithmitch.openapi.ui.auth.ForgotPasswordFragment.WebAppInterfac
 import com.codingwithmitch.openapi.ui.auth.state.AuthDataState.*
 import com.codingwithmitch.openapi.util.Constants
 import kotlinx.android.synthetic.main.fragment_forgot_password.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.launch
 
 
 class ForgotPasswordFragment : BaseAuthFragment() {
@@ -55,16 +56,13 @@ class ForgotPasswordFragment : BaseAuthFragment() {
         }
 
         override fun onLoading(isLoading: Boolean) {
-            activity?.also {
-                it.runOnUiThread {
-                    if(isLoading){
-                        viewModel.setDataState(data_state = Loading)
-                    } else{
-                        viewModel.setDataState(data_state = Data(null))
-                    }
+            CoroutineScope(Main).launch {
+                if(isLoading){
+                    viewModel.setDataState(data_state = Loading)
+                } else{
+                    viewModel.setDataState(data_state = Data(null))
                 }
             }
-
         }
     }
 
@@ -108,7 +106,7 @@ class ForgotPasswordFragment : BaseAuthFragment() {
     }
 
     fun onPasswordResetLinkSent(){
-        activity!!.runOnUiThread {
+        CoroutineScope(Main).launch{
             parentView.removeView(webView)
             webView!!.destroy()
             webView = null

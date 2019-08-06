@@ -102,22 +102,19 @@ abstract class AuthNetworkBoundResource<ResponseType>
             CoroutineScope(Dispatchers.IO)
                 .launch {
                     try{
-                        if(saveAccountPropertiesLocally(AccountProperties(response.pk, response.email, "")) > -1){
-                            if(saveTokenLocally(AuthToken(response.pk, response.token)) > -1){
-                                // token insert success
-                                saveUserToPrefs(response.email)
-                                setValue(
-                                    authState = AuthDataState.Data(AuthToken(response.pk, response.token))
-                                )
-                            }
-                            else{
-                                // insert fail
-                                onReturnError("Error saving authentication token.\nTry restarting the app.")
-                            }
+                        // don't care about result of this
+                        saveAccountPropertiesLocally(AccountProperties(response.pk, response.email, ""))
+
+                        if(saveTokenLocally(AuthToken(response.pk, response.token)) > -1){
+                            // token insert success
+                            saveUserToPrefs(response.email)
+                            setValue(
+                                authState = AuthDataState.Data(AuthToken(response.pk, response.token))
+                            )
                         }
                         else{
                             // insert fail
-                            onReturnError("Error saving account properties.\nTry restarting the app.")
+                            onReturnError("Error saving authentication token.\nTry restarting the app.")
                         }
 
                     }catch (e: Exception){
