@@ -12,7 +12,10 @@ import com.codingwithmitch.openapi.models.AuthToken
 interface AccountPropertiesDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(accountProperties: AccountProperties): Long
+    fun insertAndReplace(accountProperties: AccountProperties): Long
+
+    @Insert(onConflict = OnConflictStrategy.ABORT)
+    fun insertOrAbort(accountProperties: AccountProperties): Long
 
     @Query("UPDATE account_properties SET email = :email, username = :username WHERE pk = :pk")
     fun updateAccountProperties(email: String, username: String, pk: Int)

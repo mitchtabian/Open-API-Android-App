@@ -37,7 +37,7 @@ constructor(
            }
 
            override fun saveToLocalDb(accountProperties: AccountProperties) {
-               accountPropertiesDao.insert(accountProperties)
+               accountPropertiesDao.insertAndReplace(accountProperties)
            }
 
            override fun isGetRequest(): Boolean {

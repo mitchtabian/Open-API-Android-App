@@ -26,7 +26,6 @@ constructor(
 
     init {
         setViewState(message = null)
-        getAccountProperties()
     }
 
     fun observeDataState(): LiveData<AccountDataState>{
@@ -61,7 +60,7 @@ constructor(
     }
 
 
-    private fun getAccountProperties(){
+    fun getAccountProperties(){
         sessionManager.observeSession().value?.authToken?.let {authToken ->
             val source = accountRepository.getAccountProperties(authToken)
             dataState.addSource(source){
@@ -77,8 +76,6 @@ constructor(
             }
         }
     }
-
-
 
     fun setDataState(
         data_state: AccountDataState? = null

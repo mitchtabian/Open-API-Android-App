@@ -1,24 +1,27 @@
 package com.codingwithmitch.openapi.ui.main.account
 
+
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
+
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.models.AccountProperties
-import com.codingwithmitch.openapi.ui.auth.AuthViewModel
-
 import com.codingwithmitch.openapi.ui.main.BaseFragment
 import com.codingwithmitch.openapi.ui.main.account.state.AccountDataState
 import kotlinx.android.synthetic.main.fragment_account.*
+import kotlinx.android.synthetic.main.fragment_update_account.*
 
 
-class AccountFragment : BaseFragment() {
+class UpdateAccountFragment : BaseFragment() {
 
     lateinit var viewModel: AccountViewModel
 
@@ -32,27 +35,18 @@ class AccountFragment : BaseFragment() {
         setupActionBarWithNavController(R.id.accountFragment, activity as AppCompatActivity)
 
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_account, container, false)
+        return inflater.inflate(R.layout.fragment_update_account, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         viewModel = activity?.run {
             ViewModelProviders.of(this, providerFactory).get(AccountViewModel::class.java)
         }?: throw Exception("Invalid Activity")
 
-        change_password.setOnClickListener{
-            findNavController().navigate(R.id.action_accountFragment_to_changePasswordFragment)
-        }
-
-        logout_button.setOnClickListener {
-            viewModel.logout()
-        }
+        setHasOptionsMenu(true)
 
         subscribeObservers()
-        viewModel.getAccountProperties()
-        setHasOptionsMenu(true)
     }
 
     private fun subscribeObservers(){
@@ -67,11 +61,13 @@ class AccountFragment : BaseFragment() {
 
                 is AccountDataState.Loading ->{
                     // handled by MainActivity through "accountStateChangeListener"
-                    it.accountProperties?.let { properties -> setAccountDataFields(properties) }
                 }
 
                 is AccountDataState.Data ->{
-                    it.accountProperties?.let { properties -> setAccountDataFields(properties) }
+                    Log.d(TAG, "data: ${it.accountProperties}")
+                    it.accountProperties?.let { accountProperties ->
+                        setAccountDataFields(accountProperties)
+                    }
                 }
             }
         })
@@ -83,9 +79,29 @@ class AccountFragment : BaseFragment() {
         })
     }
 
+
     private fun setAccountDataFields(accountProperties: AccountProperties){
-        email?.setText(accountProperties.email)
-        username?.setText(accountProperties.username)
+        input_email.setText(accountProperties.email)
+        input_username.setText(accountProperties.username)
+    }
+
+    private fun saveChanges(){
+        viewModel.saveAccountProperties(input_email.text.toString(), input_username.text.toString())
+        accountStateChangeListener.hideSoftKeyboard()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.account_update_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.save_account -> {
+                saveChanges()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onAttach(context: Context) {
@@ -97,22 +113,8 @@ class AccountFragment : BaseFragment() {
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.account_view_menu, menu)
-    }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId){
-            R.id.edit_account -> {
-                findNavController().navigate(R.id.action_accountFragment_to_updateAccountFragment)
-                return true
-            }
-        }
-        return super.onOptionsItemSelected(item)
-    }
 }
-
-
 
 
 

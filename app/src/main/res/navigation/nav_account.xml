@@ -17,11 +17,27 @@
                 app:popExitAnim="@anim/slide_out_right"
                 app:enterAnim="@anim/slide_in_right"
                 app:exitAnim="@anim/slide_out_left"/>
+
+        <action android:id="@+id/action_accountFragment_to_updateAccountFragment"
+                app:destination="@id/updateAccountFragment"
+                app:popEnterAnim="@anim/slide_in_left"
+                app:popExitAnim="@anim/slide_out_right"
+                app:enterAnim="@anim/slide_in_right"
+                app:exitAnim="@anim/slide_out_left"/>
     </fragment>
 
     <fragment android:id="@+id/changePasswordFragment"
               android:name="com.codingwithmitch.openapi.ui.main.account.ChangePasswordFragment"
               android:label="@string/fragment_change_password"
               tools:layout="@layout/fragment_change_password"/>
+
+
+    <fragment android:id="@+id/updateAccountFragment"
+              android:name="com.codingwithmitch.openapi.ui.main.account.UpdateAccountFragment"
+              android:label="@string/fragment_update_account"
+              tools:layout="@layout/fragment_update_account">
+
+
+    </fragment>
 
 </navigation>

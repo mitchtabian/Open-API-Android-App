@@ -41,12 +41,20 @@ abstract class AccountNetworkBoundResource<ResponseType>
                     when(response.body){
                         is AccountProperties ->{
 
-                            // view cache to finish
-                            val dbSource = loadFromDb()
-                            result.addSource(dbSource){
-                                result.removeSource(dbSource)
-                                setValue(AccountDataState.Data(it))
+                            CoroutineScope(Main).launch{
+                                val job = launch(IO){
+                                    saveToLocalDb(response.body)
+                                }
+                                job.join() // wait for completion
+
+                                // view cache to finish
+                                val dbSource = loadFromDb()
+                                result.addSource(dbSource){
+                                    result.removeSource(dbSource)
+                                    setValue(AccountDataState.Data(it))
+                                }
                             }
+
                         }
 
                         is GenericResponse ->{

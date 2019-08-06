@@ -6,9 +6,12 @@
 
     <!-- Intent extras -->
     <string name="auth_token">auth_token</string>
-    <string name="password_reset_info">We\'ve emailed you instructions for setting your password. If an account exists with the email you entered.
-        You should receive them shortly.If you don\'t receive an email, please make sure you\'ve entered the address you registered with,
-        and check your spam folder.</string>
+    <string name="password_reset_info">We\'ve emailed you instructions for setting your password. If an account exists
+        with the email you entered.
+        You should receive them shortly.If you don\'t receive an email, please make sure you\'ve entered the address you
+        registered with,
+        and check your spam folder.
+    </string>
     <string name="password_reset_email_sent">Password reset email sent</string>
     <string name="return_to_launcher_fragment">Return</string>
     <string name="text_error">Error</string>
@@ -30,10 +33,15 @@
     <string name="fragment_create_blog">Create</string>
     <string name="fragment_update_blog">Update</string>
     <string name="fragment_view_blog">View</string>
-    <string name="fragment_account">Edit account</string>
+    <string name="fragment_account">Account</string>
     <string name="fragment_change_password">Change password</string>
     <string name="fragment_blog">Blog</string>
     <string name="save_changes">Save changes</string>
+    <string name="fragment_update_account">Update account</string>
+    <string name="arg_email">arg_email</string>
+    <string name="arg_username">arg_username</string>
+    <string name="enter_a_username">Enter a username</string>
+    <string name="enter_your_email">Enter your email</string>
 </resources>
 
 

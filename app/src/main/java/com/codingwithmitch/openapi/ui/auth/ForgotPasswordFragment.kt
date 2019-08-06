@@ -14,6 +14,7 @@ import android.widget.LinearLayout
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import com.afollestad.materialdialogs.MaterialDialog
 
 import com.codingwithmitch.openapi.R
@@ -26,7 +27,6 @@ import kotlinx.android.synthetic.main.fragment_forgot_password.*
 class ForgotPasswordFragment : BaseAuthFragment() {
 
 
-    lateinit var navController: NavController
     lateinit var parentView: FrameLayout
     lateinit var passwordResetContainer: LinearLayout
     lateinit var viewModel: AuthViewModel
@@ -78,7 +78,6 @@ class ForgotPasswordFragment : BaseAuthFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        navController = Navigation.findNavController(view)
         webView = view.findViewById(R.id.webview)
         parentView = view.findViewById(R.id.parent_view)
         passwordResetContainer = view.findViewById(R.id.password_reset_done_container)
@@ -90,7 +89,7 @@ class ForgotPasswordFragment : BaseAuthFragment() {
         loadPasswordResetWebView()
 
         return_to_launcher_fragment.setOnClickListener {
-            navController.popBackStack()
+            findNavController().popBackStack()
         }
     }
 

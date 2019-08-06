@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 
 import com.codingwithmitch.openapi.R
 import kotlinx.android.synthetic.main.fragment_launcher.*
@@ -16,7 +17,6 @@ import kotlinx.android.synthetic.main.fragment_launcher.*
 class LauncherFragment : BaseAuthFragment() {
 
 
-    lateinit var navController: NavController
     lateinit var viewModel: AuthViewModel
 
 
@@ -31,36 +31,35 @@ class LauncherFragment : BaseAuthFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        navController = Navigation.findNavController(view)
 
         viewModel = activity?.run {
             ViewModelProviders.of(this, providerFactory).get(AuthViewModel::class.java)
         }?: throw Exception("Invalid Activity")
 
 
-        register.setOnClickListener({
+        register.setOnClickListener {
             navRegistration()
-        })
+        }
 
-        login.setOnClickListener({
+        login.setOnClickListener {
             navLogin()
-        })
+        }
 
-        forgot_password.setOnClickListener({
+        forgot_password.setOnClickListener {
             navForgotPassword()
-        })
+        }
     }
 
     fun navLogin(){
-        navController.navigate(R.id.action_launcherFragment_to_loginFragment)
+        findNavController().navigate(R.id.action_launcherFragment_to_loginFragment)
     }
 
     fun navRegistration(){
-        navController.navigate(R.id.action_launcherFragment_to_registerFragment)
+        findNavController().navigate(R.id.action_launcherFragment_to_registerFragment)
     }
 
     fun navForgotPassword(){
-        navController.navigate(R.id.action_launcherFragment_to_forgotPasswordFragment)
+        findNavController().navigate(R.id.action_launcherFragment_to_forgotPasswordFragment)
     }
 
 

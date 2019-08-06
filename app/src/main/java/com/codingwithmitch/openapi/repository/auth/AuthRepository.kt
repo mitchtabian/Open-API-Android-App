@@ -42,7 +42,8 @@ constructor(
             }
 
             override suspend fun saveAccountPropertiesLocally(accountProperties: AccountProperties): Long {
-                return accountPropertiesDao.insert(accountProperties)
+                // insert account information
+                return accountPropertiesDao.insertAndReplace(accountProperties)
             }
 
         }.asLiveData()
@@ -64,7 +65,8 @@ constructor(
             }
 
             override suspend fun saveAccountPropertiesLocally(accountProperties: AccountProperties): Long {
-                return accountPropertiesDao.insert(accountProperties)
+                // if there's already an account, do not replace.
+                return accountPropertiesDao.insertOrAbort(accountProperties)
             }
 
         }.asLiveData()
