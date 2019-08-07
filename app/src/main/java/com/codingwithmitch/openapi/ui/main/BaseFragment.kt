@@ -17,8 +17,8 @@ abstract class BaseFragment: DaggerFragment(){
     lateinit var providerFactory: ViewModelProviderFactory
 
     /*
-        @fragmentId is id of fragment from graph to be EXCLUDED from action back bar nav
-     */
+      @fragmentId is id of fragment from graph to be EXCLUDED from action back bar nav
+    */
     fun setupActionBarWithNavController(fragmentId: Int, activity: AppCompatActivity){
         val appBarConfiguration = AppBarConfiguration(setOf(fragmentId))
         NavigationUI.setupActionBarWithNavController(
