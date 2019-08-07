@@ -14,16 +14,10 @@ import androidx.lifecycle.ViewModelProviders
 
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.util.TextWatcherCallback
+import kotlinx.android.synthetic.main.fragment_register.*
 
 
 class RegisterFragment : BaseAuthFragment() {
-
-
-    lateinit var viewModel: AuthViewModel
-    lateinit var inputEmail: EditText
-    lateinit var inputUsername: EditText
-    lateinit var inputPassword: EditText
-    lateinit var inputConfirmPassword: EditText
 
     lateinit var textWatcher: RegisterFragmentTextWatcher
 
@@ -57,14 +51,6 @@ class RegisterFragment : BaseAuthFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        inputEmail = view.findViewById(R.id.input_email)
-        inputUsername = view.findViewById(R.id.input_username)
-        inputPassword = view.findViewById(R.id.input_password)
-        inputConfirmPassword = view.findViewById(R.id.input_password_confirm)
-        viewModel = activity?.run {
-            ViewModelProviders.of(this, providerFactory).get(AuthViewModel::class.java)
-        }?: throw Exception("Invalid Activity")
-
         view.findViewById<Button>(R.id.register_button).setOnClickListener {
             register()
         }
@@ -80,10 +66,10 @@ class RegisterFragment : BaseAuthFragment() {
     fun restoreFieldValues(){
         viewModel.observeViewState().observe(viewLifecycleOwner, Observer {
             it.registrationFields?.run {
-                this.registration_email?.let{inputEmail.setText(it)}
-                this.registration_username?.let{inputUsername.setText(it)}
-                this.registration_password?.let{inputPassword.setText(it)}
-                this.registration_confirm_password?.let{inputConfirmPassword.setText(it)}
+                this.registration_email?.let{input_email.setText(it)}
+                this.registration_username?.let{input_username.setText(it)}
+                this.registration_password?.let{input_password.setText(it)}
+                this.registration_confirm_password?.let{input_password_confirm.setText(it)}
             }
             viewModel.observeViewState().removeObservers(viewLifecycleOwner)
         })
@@ -92,10 +78,10 @@ class RegisterFragment : BaseAuthFragment() {
 
     fun initTextWatcher(){
         textWatcher = RegisterFragmentTextWatcher(textWatchCallback)
-        textWatcher.registerField(inputEmail)
-        textWatcher.registerField(inputUsername)
-        textWatcher.registerField(inputPassword)
-        textWatcher.registerField(inputConfirmPassword)
+        textWatcher.registerField(input_email)
+        textWatcher.registerField(input_username)
+        textWatcher.registerField(input_password)
+        textWatcher.registerField(input_password_confirm)
     }
 
     class RegisterFragmentTextWatcher constructor(val callback: TextWatcherCallback){

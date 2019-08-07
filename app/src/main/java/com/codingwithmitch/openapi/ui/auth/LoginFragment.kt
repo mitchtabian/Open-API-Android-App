@@ -14,13 +14,10 @@ import androidx.lifecycle.ViewModelProviders
 
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.util.TextWatcherCallback
+import kotlinx.android.synthetic.main.fragment_login.*
 
 
 class LoginFragment : BaseAuthFragment() {
-
-    lateinit var viewModel: AuthViewModel
-    lateinit var inputEmail: EditText
-    lateinit var inputPassword: EditText
 
     lateinit var textWatcher: LoginFragmentTextWatcher
 
@@ -48,11 +45,6 @@ class LoginFragment : BaseAuthFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        inputEmail = view.findViewById(R.id.input_email)
-        inputPassword = view.findViewById(R.id.input_password)
-        viewModel = activity?.run {
-            ViewModelProviders.of(this, providerFactory).get(AuthViewModel::class.java)
-        }?: throw Exception("Invalid Activity")
 
         view.findViewById<Button>(R.id.login_button).setOnClickListener {
             login()
@@ -69,8 +61,8 @@ class LoginFragment : BaseAuthFragment() {
     fun restoreFieldValues(){
         viewModel.observeViewState().observe(viewLifecycleOwner, Observer {
             it.loginFields?.run {
-                this.login_email?.let{inputEmail.setText(it)}
-                this.login_password?.let{inputPassword.setText(it)}
+                this.login_email?.let{input_email.setText(it)}
+                this.login_password?.let{input_password.setText(it)}
             }
             viewModel.observeViewState().removeObservers(viewLifecycleOwner)
         })
@@ -79,8 +71,8 @@ class LoginFragment : BaseAuthFragment() {
 
     fun initTextWatcher(){
         textWatcher = LoginFragmentTextWatcher(textWatchCallback)
-        textWatcher.registerField(inputEmail)
-        textWatcher.registerField(inputPassword)
+        textWatcher.registerField(input_email)
+        textWatcher.registerField(input_password)
     }
 
     class LoginFragmentTextWatcher constructor(val callback: TextWatcherCallback){

@@ -17,9 +17,6 @@ import kotlinx.android.synthetic.main.fragment_launcher.*
 class LauncherFragment : BaseAuthFragment() {
 
 
-    lateinit var viewModel: AuthViewModel
-
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -31,11 +28,6 @@ class LauncherFragment : BaseAuthFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        viewModel = activity?.run {
-            ViewModelProviders.of(this, providerFactory).get(AuthViewModel::class.java)
-        }?: throw Exception("Invalid Activity")
-
 
         register.setOnClickListener {
             navRegistration()

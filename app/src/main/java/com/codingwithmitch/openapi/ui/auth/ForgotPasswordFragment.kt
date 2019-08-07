@@ -27,12 +27,7 @@ import kotlinx.coroutines.launch
 
 class ForgotPasswordFragment : BaseAuthFragment() {
 
-
-    lateinit var parentView: FrameLayout
-    lateinit var passwordResetContainer: LinearLayout
-    lateinit var viewModel: AuthViewModel
-
-    var webView: WebView? = null
+    lateinit var webView: WebView
 
     val webInteractionCallback = object: OnWebInteractionCallback {
 
@@ -77,12 +72,6 @@ class ForgotPasswordFragment : BaseAuthFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         webView = view.findViewById(R.id.webview)
-        parentView = view.findViewById(R.id.parent_view)
-        passwordResetContainer = view.findViewById(R.id.password_reset_done_container)
-
-        viewModel = activity?.run {
-            ViewModelProviders.of(this, providerFactory).get(AuthViewModel::class.java)
-        }?: throw Exception("Invalid Activity")
 
         loadPasswordResetWebView()
 
@@ -94,32 +83,31 @@ class ForgotPasswordFragment : BaseAuthFragment() {
     @SuppressLint("SetJavaScriptEnabled")
     fun loadPasswordResetWebView(){
         viewModel.setDataState(data_state = Loading)
-        webView!!.webViewClient = object: WebViewClient(){
+        webView.webViewClient = object: WebViewClient(){
             override fun onPageFinished(view: WebView?, url: String?) {
                 super.onPageFinished(view, url)
                 viewModel.setDataState(data_state = Data(null))
             }
         }
-        webView!!.loadUrl(Constants.PASSWORD_RESET_URL)
-        webView!!.settings.javaScriptEnabled = true
-        webView!!.addJavascriptInterface(WebAppInterface(webInteractionCallback), "AndroidTextListener")
+        webView.loadUrl(Constants.PASSWORD_RESET_URL)
+        webView.settings.javaScriptEnabled = true
+        webView.addJavascriptInterface(WebAppInterface(webInteractionCallback), "AndroidTextListener")
     }
 
     fun onPasswordResetLinkSent(){
         CoroutineScope(Main).launch{
-            parentView.removeView(webView)
-            webView!!.destroy()
-            webView = null
+            parent_view.removeView(webView)
+            webView.destroy()
 
             val animation = TranslateAnimation(
-                passwordResetContainer.width.toFloat(),
+                password_reset_done_container.width.toFloat(),
                 0f,
                 0f,
                 0f
             )
             animation.duration = 500
-            passwordResetContainer.startAnimation(animation)
-            passwordResetContainer.visibility = View.VISIBLE
+            password_reset_done_container.startAnimation(animation)
+            password_reset_done_container.visibility = View.VISIBLE
         }
     }
 

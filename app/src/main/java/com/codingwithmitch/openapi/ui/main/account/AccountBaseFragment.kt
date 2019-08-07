@@ -39,7 +39,7 @@ abstract class AccountBaseFragment: DaggerFragment(){
     }
 
     private fun subscribeObservers(){
-        viewModel.observeDataState().observe(this, Observer {
+        viewModel.observeDataState().observe(viewLifecycleOwner, Observer {
             // send state to activity for UI updates
             // ex: progress bar and material dialog
             // NOTE: error, loading, successResponse and accountProperties are passed to "accountStateChangeListener"
