@@ -46,6 +46,10 @@
     <string name="current_password">Current password</string>
     <string name="confirm_new_password">Confirm new password</string>
     <string name="new_password">New password</string>
+    <string name="change_password">Change password</string>
+    <string name="your_email">Your email</string>
+    <string name="your_username">Your username</string>
+    <string name="register">Register</string>
 </resources>
 
 

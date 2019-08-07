@@ -54,7 +54,6 @@ abstract class AccountNetworkBoundResource<ResponseType>
                                     setValue(AccountDataState.accountProperties(it))
                                 }
                             }
-
                         }
 
                         is GenericResponse ->{

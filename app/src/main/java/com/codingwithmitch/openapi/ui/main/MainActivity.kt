@@ -46,14 +46,11 @@ class MainActivity : DaggerAppCompatActivity(),
         setContentView(R.layout.activity_main)
         bottomNavigationView = findViewById(R.id.bottom_navigation_view)
         progressBar = findViewById(R.id.progress_bar)
-
-        Log.d(TAG, "bottom nav address: ${bottomNavController}")
+        setupActionBar()
 
         bottomNavController.setNavGraphProvider(this)
         bottomNavigationView.setUpNavigation(bottomNavController)
-
         if (savedInstanceState == null) {
-            setupActionBar()
             bottomNavController.onNavigationItemSelected()
         }
         subscribeObservers()

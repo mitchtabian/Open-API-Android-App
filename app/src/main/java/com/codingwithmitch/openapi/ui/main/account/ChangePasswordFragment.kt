@@ -5,6 +5,7 @@ import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
@@ -25,6 +26,9 @@ class ChangePasswordFragment : BaseFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        // setup back navigation for this graph
+        setupActionBarWithNavController(R.id.accountFragment, activity as AppCompatActivity)
+
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_change_password, container, false)
     }
