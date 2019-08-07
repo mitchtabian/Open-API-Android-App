@@ -1,12 +1,10 @@
 package com.codingwithmitch.openapi.ui.main.account
 
-import android.util.Log
 import androidx.lifecycle.*
 import com.codingwithmitch.openapi.models.AccountProperties
 import com.codingwithmitch.openapi.repository.main.AccountRepository
 import com.codingwithmitch.openapi.session.SessionManager
 import com.codingwithmitch.openapi.ui.main.account.state.AccountDataState
-import com.codingwithmitch.openapi.ui.main.account.state.AccountViewState
 import kotlinx.coroutines.*
 import javax.inject.Inject
 
@@ -22,19 +20,10 @@ constructor(
     private val TAG: String = "AppDebug"
 
     private val dataState: MediatorLiveData<AccountDataState> = MediatorLiveData()
-    private val viewState: MutableLiveData<AccountViewState> = MutableLiveData()
 
-    init {
-        setViewState(message = null)
-
-    }
 
     fun observeDataState(): LiveData<AccountDataState>{
         return dataState
-    }
-
-    fun observeViewState(): LiveData<AccountViewState>{
-        return viewState
     }
 
 
@@ -43,16 +32,19 @@ constructor(
             authToken.account_pk?.let {pk ->
                 val source = accountRepository.saveAccountProperties(authToken, AccountProperties(pk, email, username))
                 dataState.addSource(source){
-                    when(it){
-                        is AccountDataState.Error -> {
-                            dataState.removeSource(source)
-                        }
-                        is AccountDataState.Data -> {
-                            setViewState(message = "Saved")
-                            dataState.removeSource(source)
-                        }
+                    it.error?.let {
+                        dataState.removeSource(source)
                     }
-                    setDataState(data_state = it)
+                    it.loading?.let {
+                        // processing request
+                    }
+                    it.successResponse?.let {
+                        dataState.removeSource(source)
+                    }
+                    it.accountProperties?.let {
+                        dataState.removeSource(source)
+                    }
+                    setDataState(it)
                 }
             }
 
@@ -64,71 +56,82 @@ constructor(
         sessionManager.observeSession().value?.authToken?.let {authToken ->
             val source = accountRepository.getAccountProperties(authToken)
             dataState.addSource(source){
-                when(it){
-                    is AccountDataState.Error -> {
-                        dataState.removeSource(source)
-                    }
-                    is AccountDataState.Data -> {
-                        dataState.removeSource(source)
-                    }
+                it.error?.let {
+                    dataState.removeSource(source)
                 }
-                setDataState(data_state = it)
+                it.loading?.let {
+                    // processing request
+                }
+                it.successResponse?.let {
+                    dataState.removeSource(source)
+                }
+                it.accountProperties?.let {
+                    dataState.removeSource(source)
+                }
+                setDataState(it)
             }
         }
     }
 
     fun updatePassword(currentPassword: String, newPassword: String, confirmNewPassword: String){
-        setDataState(AccountDataState.Loading(null))
         sessionManager.observeSession().value?.authToken?.let { authToken ->
             val source = accountRepository.updatePassword(authToken, currentPassword, newPassword, confirmNewPassword)
             dataState.addSource(source){
-                when(it){
-                    is AccountDataState.Error -> {
-                        dataState.removeSource(source)
-                    }
-                    is AccountDataState.Data -> {
-                        setViewState(message = "Password has been updated")
-                        dataState.removeSource(source)
-                    }
+                it.error?.let {
+                    dataState.removeSource(source)
                 }
-                setDataState(data_state = it)
+                it.loading?.let {
+                    // processing request
+                }
+                it.successResponse?.let {
+                    dataState.removeSource(source)
+                }
+                it.accountProperties?.let {
+                    dataState.removeSource(source)
+                }
+                setDataState(it)
             }
         }
     }
+
+
 
     fun setDataState(
-        data_state: AccountDataState? = null
-    ){
-        if(data_state != dataState.value){
-            viewModelScope.launch(Dispatchers.Main) {
-                data_state?.let {
-                    dataState.value = it
-                }
-            }
-        }
-    }
-
-    fun setViewState(
-        // Message
-        message: String? = null
-
+        newDataState: AccountDataState? = null
     ){
         viewModelScope.launch(Dispatchers.Main) {
-            viewState.value?.run {
 
-                viewState.value = AccountViewState(
-                    message?.let { AccountViewState.UIMessage(it) }
-                )
-                Log.d(TAG, "setting msg: ${message}")
+            newDataState?.error?.let {
+                dataState.value = AccountDataState.error(it.errorMessage)
+                clearStateMessages()
+            }
+            newDataState?.loading?.let {
+                dataState.value = AccountDataState.loading(it.cachedData)
+            }
+            newDataState?.successResponse?.let {
+                dataState.value = AccountDataState.successResponse(it.message, it.useDialog)
+                clearStateMessages()
+            }
+            newDataState?.accountProperties?.let {
+                dataState.value = AccountDataState.accountProperties(it)
+            }
 
-                // update the LiveData
-                viewState.value = this
-            }?: initViewState(viewState)
+            if(newDataState == null){
+                dataState.value = AccountDataState()
+            }
+
         }
     }
 
-    fun initViewState(viewState: MutableLiveData<AccountViewState>){
-        viewState.value = AccountViewState()
+    /**
+     * Clear SuccessResponse and Error from State.
+     * That was if back button is pressed we don't get duplicates
+     */
+    fun clearStateMessages(){
+        val currentValue = dataState.value
+        currentValue?.successResponse = null
+        currentValue?.error = null
+        dataState.value = currentValue
     }
 
     fun logout(){

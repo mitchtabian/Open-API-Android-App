@@ -18,7 +18,6 @@ import com.codingwithmitch.openapi.session.SessionManager
 import com.codingwithmitch.openapi.ui.auth.AuthActivity
 import com.codingwithmitch.openapi.ui.main.account.AccountStateChangeListener
 import com.codingwithmitch.openapi.ui.main.account.state.AccountDataState
-import com.codingwithmitch.openapi.ui.main.account.state.AccountViewState
 import com.codingwithmitch.openapi.util.BottomNavController
 import com.codingwithmitch.openapi.util.setUpNavigation
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -109,10 +108,6 @@ class MainActivity : DaggerAppCompatActivity(),
         })
     }
 
-    fun logout(){
-        sessionManager.logout()
-    }
-
     private fun navAuthActivity(){
         val intent = Intent(this, AuthActivity::class.java)
         startActivity(intent)
@@ -139,31 +134,42 @@ class MainActivity : DaggerAppCompatActivity(),
             .show()
     }
 
+    fun displaySuccessDialog(message: String){
+        MaterialDialog(this)
+            .title(R.string.text_success)
+            .message(text = message){
+                lineSpacing(2F)
+            }
+            .positiveButton(R.string.text_ok)
+            .show()
+    }
+
 
     // Update UI when doing things in AccountFragment
     override fun onAccountDataStateChange(accountDataState: AccountDataState) {
-        when(accountDataState){
-            is AccountDataState.Error ->{
-                displayErrorDialog(accountDataState.errorMessage)
-                displayProgressBar(false)
+        accountDataState.error?.let {
+            displayErrorDialog(it.errorMessage)
+            displayProgressBar(false)
+        }
+        accountDataState.loading?.let {
+            displayProgressBar(true)
+        }
+        accountDataState.successResponse?.let {
+            Log.d(TAG, "MainActivity: successResponse: ${it.message}")
+            if(it.useDialog){
+                displaySuccessDialog(it.message)
             }
-
-            is AccountDataState.Loading ->{
-                displayProgressBar(true)
+            else{
+                displayToast(it.message)
             }
-
-            is AccountDataState.Data ->{
-                displayProgressBar(false)
-            }
+            displayProgressBar(false)
+        }
+        accountDataState.accountProperties?.let {
+            displayProgressBar(false)
         }
 
     }
 
-    override fun onAccountViewStateChange(accountViewState: AccountViewState) {
-        accountViewState.uiMessage?.let {
-            displayToast(message = it.message)
-        }
-    }
 
     private fun displayToast(message: String?){
         Toast.makeText(this, message, LENGTH_SHORT).show()

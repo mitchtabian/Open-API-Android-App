@@ -59,28 +59,18 @@ class AccountFragment : BaseFragment() {
         viewModel.observeDataState().observe(this, Observer {
             // send state to activity for UI updates
             // ex: progress bar and material dialog
+            // NOTE: error, loading, successResponse and accountProperties are passed to "accountStateChangeListener"
+            //       and action will be taken in MainActivity
             accountStateChangeListener.onAccountDataStateChange(it)
-            when(it){
-                is AccountDataState.Error ->{
-                    // handled by MainActivity through "accountStateChangeListener"
-                }
 
-                is AccountDataState.Loading ->{
-                    // handled by MainActivity through "accountStateChangeListener"
-                    it.accountProperties?.let { properties -> setAccountDataFields(properties) }
-                }
-
-                is AccountDataState.Data ->{
-                    it.accountProperties?.let { properties -> setAccountDataFields(properties) }
-                }
+            it.loading?.let {
+                it.cachedData?.let { properties -> setAccountDataFields(properties as AccountProperties) }
+            }
+            it.accountProperties?.let {
+                setAccountDataFields(it)
             }
         })
 
-        viewModel.observeViewState().observe(this, Observer {
-            if(it != null){
-                accountStateChangeListener.onAccountViewStateChange(it)
-            }
-        })
     }
 
     private fun setAccountDataFields(accountProperties: AccountProperties){

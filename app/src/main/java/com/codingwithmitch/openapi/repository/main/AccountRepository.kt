@@ -1,5 +1,6 @@
 package com.codingwithmitch.openapi.repository.main
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import com.codingwithmitch.openapi.api.GenericApiResponse
 import com.codingwithmitch.openapi.api.GenericResponse
@@ -32,12 +33,14 @@ constructor(
                return openApiMainService.getAccountProperties("Token ${authToken.token!!}")
            }
 
-           override fun updateLocalDb() {
-               // empty
-           }
-
-           override fun saveToLocalDb(accountProperties: AccountProperties) {
-               accountPropertiesDao.insertAndReplace(accountProperties)
+           override fun updateLocalDb(accountProp: AccountProperties?) {
+               accountProp?.let {
+                   accountPropertiesDao.updateAccountProperties(
+                       accountProp.pk,
+                       accountProp.email,
+                       accountProp.username
+                   )
+               }
            }
 
            override fun isGetRequest(): Boolean {
@@ -61,16 +64,13 @@ constructor(
                 )
             }
 
-            override fun updateLocalDb() {
+            override fun updateLocalDb(accountProp: AccountProperties?) {
+                // @accountProp will be null here
                 accountPropertiesDao.updateAccountProperties(
+                    accountProperties.pk,
                     accountProperties.email,
-                    accountProperties.username,
-                    accountProperties.pk
+                    accountProperties.username
                 )
-            }
-
-            override fun saveToLocalDb(accountProperties: AccountProperties) {
-                // empty
             }
 
             override fun isGetRequest(): Boolean {
@@ -97,29 +97,16 @@ constructor(
                 )
             }
 
-            override fun updateLocalDb() {
+            override fun updateLocalDb(accountProp: AccountProperties?) {
                 // ignore
             }
 
-            override fun saveToLocalDb(accountProperties: AccountProperties) {
-                // empty
-            }
 
             override fun isGetRequest(): Boolean {
                 return false
             }
         }.asLiveData()
     }
-
-    private fun extractErrorMessage(e: String?): String{
-        var msg = e
-        if(msg == null){
-            msg = "Unknown Error"
-        }
-        return msg
-    }
-
-
 }
 
 

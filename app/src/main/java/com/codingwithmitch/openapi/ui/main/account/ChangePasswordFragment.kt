@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 
 import com.codingwithmitch.openapi.R
+import com.codingwithmitch.openapi.models.AccountProperties
 import com.codingwithmitch.openapi.ui.main.BaseFragment
 import com.codingwithmitch.openapi.ui.main.account.state.AccountDataState
 import kotlinx.android.synthetic.main.fragment_change_password.*
@@ -46,31 +47,17 @@ class ChangePasswordFragment : BaseFragment() {
         viewModel.observeDataState().observe(this, Observer {
             // send state to activity for UI updates
             // ex: progress bar and material dialog
+            // NOTE: error, loading, successResponse and accountProperties are passed to "accountStateChangeListener"
+            //       and action will be taken in MainActivity
             accountStateChangeListener.onAccountDataStateChange(it)
-            when(it){
-                is AccountDataState.Error ->{
-                    // handled by MainActivity through "accountStateChangeListener"
-                }
 
-                is AccountDataState.Loading ->{
-                    // handled by MainActivity through "accountStateChangeListener"
-                }
-
-                is AccountDataState.Data ->{
-                    // if this is null the update was successful (not the best system...)
-                    if(it.accountProperties == null){
-                        accountStateChangeListener.hideSoftKeyboard()
-                        findNavController().popBackStack()
-                    }
-                }
+            it.successResponse?.let {
+                accountStateChangeListener.hideSoftKeyboard()
+                findNavController().popBackStack()
             }
+
         })
 
-        viewModel.observeViewState().observe(this, Observer {
-            if(it != null){
-                accountStateChangeListener.onAccountViewStateChange(it)
-            }
-        })
     }
 
     private fun attemptPasswordUpdate(){

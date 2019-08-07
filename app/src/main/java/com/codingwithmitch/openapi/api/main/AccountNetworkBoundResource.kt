@@ -20,14 +20,14 @@ abstract class AccountNetworkBoundResource<ResponseType>
     private val result = MediatorLiveData<AccountDataState>()
 
     init {
-        setValue(AccountDataState.Loading(null))
+        setValue(AccountDataState.loading(null))
 
         if(isGetRequest()){
             // view cache to start
             val dbSource = loadFromDb()
             result.addSource(dbSource){
                 result.removeSource(dbSource)
-                setValue(AccountDataState.Loading(it))
+                setValue(AccountDataState.loading(it))
             }
         }
 
@@ -43,7 +43,7 @@ abstract class AccountNetworkBoundResource<ResponseType>
 
                             CoroutineScope(Main).launch{
                                 val job = launch(IO){
-                                    saveToLocalDb(response.body)
+                                    updateLocalDb(response.body)
                                 }
                                 job.join() // wait for completion
 
@@ -51,18 +51,18 @@ abstract class AccountNetworkBoundResource<ResponseType>
                                 val dbSource = loadFromDb()
                                 result.addSource(dbSource){
                                     result.removeSource(dbSource)
-                                    setValue(AccountDataState.Data(it))
+                                    setValue(AccountDataState.accountProperties(it))
                                 }
                             }
 
                         }
 
                         is GenericResponse ->{
-                            // insert network result into cache
                             CoroutineScope(IO).launch{
-                                updateLocalDb()
+                                // can use params passed to method input so null is used here
+                                updateLocalDb(null)
                             }
-                            setValue(AccountDataState.Data(null))
+                            setValue(AccountDataState.successResponse(response.body.response, false))
                         }
                         else -> {
                             onReturnError("Unknown error. Try restarting the app.")
@@ -89,9 +89,7 @@ abstract class AccountNetworkBoundResource<ResponseType>
             if(msg == null){
                 msg = "Unknown error"
             }
-            setValue(
-                AccountDataState.Error(msg)
-            )
+            setValue(AccountDataState.error(msg))
         }
     }
 
@@ -109,9 +107,7 @@ abstract class AccountNetworkBoundResource<ResponseType>
 
     abstract fun loadFromDb(): LiveData<AccountProperties>
 
-    abstract fun saveToLocalDb(accountProperties: AccountProperties)
-
-    abstract fun updateLocalDb()
+    abstract fun updateLocalDb(accountProp: AccountProperties?)
 
     abstract fun isGetRequest(): Boolean
 

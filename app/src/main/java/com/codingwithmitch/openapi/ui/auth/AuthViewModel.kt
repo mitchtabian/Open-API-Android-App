@@ -67,15 +67,15 @@ constructor(
             Log.d(TAG, "retrieveAuthToken: searching by email...")
             authRepository.retrieveAccountPropertiesUsingEmail(email)?.let {
 
-                Log.d(TAG, "retrieveAuthToken: searching for token...")
-                authRepository.retrieveTokenFromLocalDb(it.pk)?.run {
+                Log.d(TAG, "retrieveAuthToken: searching for token... account properties: ${it}")
+                authRepository.retrieveTokenFromLocalDb(it.pk)?.let { authToken ->
 
                     Log.d(TAG, "got token.: ")
-                    this.token?.let {
+                    authToken.token?.let {
 
-                        Log.d(TAG, "Found Token: ${this}")
+                        Log.d(TAG, "Found Token: ${it}")
 
-                        setDataState(data_state = Data(AuthToken(this.account_pk, this.token)))
+                        setDataState(data_state = Data(AuthToken(authToken.account_pk, authToken.token)))
 
                     } ?: returnNoTokenFound()
 

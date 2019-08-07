@@ -7,19 +7,6 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         tools:context=".ui.main.account.AccountFragment">
 
-    <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintVertical_bias=".10"
-            android:textSize="25sp"
-            android:textColor="#000"
-            android:text="Account"
-    />
-
 
     <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
@@ -28,7 +15,7 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintVertical_bias=".20"
+            app:layout_constraintVertical_bias=".10"
             android:padding="16dp"
             app:helperText="Email"
     >
@@ -52,7 +39,7 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintVertical_bias=".33"
+            app:layout_constraintVertical_bias=".23"
             android:padding="16dp"
             app:helperText="Username"
     >
@@ -77,7 +64,7 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintVertical_bias=".50"
+            app:layout_constraintVertical_bias=".40"
             android:textSize="18sp"
             android:textColor="@color/link_blue"
             android:text="Change password"
