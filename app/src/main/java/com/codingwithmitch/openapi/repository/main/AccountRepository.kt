@@ -4,12 +4,14 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import com.codingwithmitch.openapi.api.GenericApiResponse
 import com.codingwithmitch.openapi.api.GenericResponse
-import com.codingwithmitch.openapi.api.main.AccountNetworkBoundResource
 import com.codingwithmitch.openapi.api.main.OpenApiMainService
 import com.codingwithmitch.openapi.models.AccountProperties
 import com.codingwithmitch.openapi.models.AuthToken
 import com.codingwithmitch.openapi.persistence.AccountPropertiesDao
 import com.codingwithmitch.openapi.ui.main.account.state.AccountDataState
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.cancel
 import javax.inject.Inject
 
 class AccountRepository
@@ -20,6 +22,8 @@ constructor(
 )
 {
     private val TAG: String = "AppDebug"
+
+    val repositoryCoroutineScope: CoroutineScope = CoroutineScope(IO)
 
 
     fun getAccountProperties(authToken: AuthToken): LiveData<AccountDataState> {
@@ -45,6 +49,10 @@ constructor(
 
            override fun isGetRequest(): Boolean {
                return true
+           }
+
+           override fun getCoroutineScope(): CoroutineScope {
+               return repositoryCoroutineScope
            }
        }.asLiveData()
     }
@@ -76,6 +84,10 @@ constructor(
             override fun isGetRequest(): Boolean {
                 return false
             }
+
+            override fun getCoroutineScope(): CoroutineScope {
+                return repositoryCoroutineScope
+            }
         }.asLiveData()
     }
 
@@ -105,7 +117,16 @@ constructor(
             override fun isGetRequest(): Boolean {
                 return false
             }
+
+            override fun getCoroutineScope(): CoroutineScope {
+                return repositoryCoroutineScope
+            }
         }.asLiveData()
+    }
+
+    fun cancelRequests(){
+        Log.d(TAG, "cancelling requests...: ")
+        repositoryCoroutineScope.cancel()
     }
 }
 

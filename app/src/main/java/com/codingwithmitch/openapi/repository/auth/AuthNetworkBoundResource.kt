@@ -1,4 +1,4 @@
-package com.codingwithmitch.openapi.api.auth
+package com.codingwithmitch.openapi.repository.auth
 
 import android.util.Log
 import androidx.lifecycle.LiveData

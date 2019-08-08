@@ -16,7 +16,7 @@ import com.codingwithmitch.openapi.viewmodels.ViewModelProviderFactory
 import dagger.android.support.DaggerFragment
 import javax.inject.Inject
 
-abstract class AccountBaseFragment: DaggerFragment(){
+abstract class BaseAccountFragment: DaggerFragment(){
 
     val TAG: String = "AppDebug"
 
@@ -34,7 +34,6 @@ abstract class AccountBaseFragment: DaggerFragment(){
         viewModel = activity?.run {
             ViewModelProviders.of(this, providerFactory).get(AccountViewModel::class.java)
         }?: throw Exception("Invalid Activity")
-
         subscribeObservers()
     }
 
@@ -48,7 +47,9 @@ abstract class AccountBaseFragment: DaggerFragment(){
 
             // send state to child fragments (AccountFragment, UpdateAccountFragment & ChangePasswordFragment)
             // Simple and streamlined way to view state in the different cases
-            observeDataFromChildFragment(it)
+            if(it.loading == null){
+                observeDataFromChildFragment(it)
+            }
         })
     }
 

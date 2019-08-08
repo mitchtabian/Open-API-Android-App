@@ -1,5 +1,6 @@
 package com.codingwithmitch.openapi.ui.main.account
 
+import android.util.Log
 import androidx.lifecycle.*
 import com.codingwithmitch.openapi.models.AccountProperties
 import com.codingwithmitch.openapi.repository.main.AccountRepository
@@ -35,13 +36,7 @@ constructor(
                     it.error?.let {
                         dataState.removeSource(source)
                     }
-                    it.loading?.let {
-                        // processing request
-                    }
-                    it.successResponse?.let {
-                        dataState.removeSource(source)
-                    }
-                    it.accountProperties?.let {
+                    it.success?.let {
                         dataState.removeSource(source)
                     }
                     setDataState(it)
@@ -59,13 +54,7 @@ constructor(
                 it.error?.let {
                     dataState.removeSource(source)
                 }
-                it.loading?.let {
-                    // processing request
-                }
-                it.successResponse?.let {
-                    dataState.removeSource(source)
-                }
-                it.accountProperties?.let {
+                it.success?.let {
                     dataState.removeSource(source)
                 }
                 setDataState(it)
@@ -80,13 +69,7 @@ constructor(
                 it.error?.let {
                     dataState.removeSource(source)
                 }
-                it.loading?.let {
-                    // processing request
-                }
-                it.successResponse?.let {
-                    dataState.removeSource(source)
-                }
-                it.accountProperties?.let {
+                it.success?.let {
                     dataState.removeSource(source)
                 }
                 setDataState(it)
@@ -101,25 +84,48 @@ constructor(
     ){
         viewModelScope.launch(Dispatchers.Main) {
 
-            newDataState?.error?.let {
-                dataState.value = AccountDataState.error(it.errorMessage)
-                clearStateMessages()
-            }
-            newDataState?.loading?.let {
-                dataState.value = AccountDataState.loading(it.cachedData)
-            }
-            newDataState?.successResponse?.let {
-                dataState.value = AccountDataState.successResponse(it.message, it.useDialog)
-                clearStateMessages()
-            }
-            newDataState?.accountProperties?.let {
-                dataState.value = AccountDataState.accountProperties(it)
-            }
-
             if(newDataState == null){
                 dataState.value = AccountDataState()
             }
+            if(dataState.value == null){
+                dataState.value = AccountDataState()
+            }
 
+            // LOADING
+            newDataState?.loading?.let {loading ->
+                dataState.value?.let {
+                    it.loading = loading
+                    dataState.value = it
+                }
+            }
+
+            // ACCOUNT_PROPERTIES
+            newDataState?.accountProperties?.let {accountProperties ->
+                dataState.value?.let {
+                    it.accountProperties = accountProperties
+                    dataState.value = it
+                }
+            }
+
+            // ERROR
+            newDataState?.error?.let {newStateError ->
+                dataState.value?.let {
+                    it.error = newStateError
+                    it.loading = null
+                    dataState.value = it
+                }
+                clearStateMessages()
+            }
+
+            // SUCCESS
+            newDataState?.success?.let {successResponse ->
+                dataState.value?.let {
+                    it.loading = null
+                    it.success = successResponse
+                    dataState.value = it
+                }
+                clearStateMessages()
+            }
         }
     }
 
@@ -128,10 +134,11 @@ constructor(
      * That was if back button is pressed we don't get duplicates
      */
     fun clearStateMessages(){
-        val currentValue = dataState.value
-        currentValue?.successResponse = null
-        currentValue?.error = null
-        dataState.value = currentValue
+        dataState.value?.let {
+            it.success = null
+            it.error = null
+            dataState.value = it
+        }
     }
 
     fun logout(){
@@ -141,6 +148,7 @@ constructor(
     override fun onCleared() {
         super.onCleared()
         viewModelScope.cancel()
+        accountRepository.cancelRequests()
     }
 }
 

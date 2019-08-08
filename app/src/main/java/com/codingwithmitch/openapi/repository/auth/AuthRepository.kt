@@ -9,7 +9,6 @@ import com.codingwithmitch.openapi.models.AccountProperties
 import com.codingwithmitch.openapi.models.AuthToken
 import com.codingwithmitch.openapi.persistence.AccountPropertiesDao
 import com.codingwithmitch.openapi.persistence.AuthTokenDao
-import com.codingwithmitch.openapi.api.auth.AuthNetworkBoundResource
 import com.codingwithmitch.openapi.ui.auth.state.AuthDataState
 import com.codingwithmitch.openapi.util.PreferenceKeys
 import javax.inject.Inject

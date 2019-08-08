@@ -10,7 +10,7 @@ import com.codingwithmitch.openapi.ui.main.account.state.AccountDataState
 import kotlinx.android.synthetic.main.fragment_account.*
 
 
-class AccountFragment : AccountBaseFragment() {
+class AccountFragment : BaseAccountFragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,9 +36,6 @@ class AccountFragment : AccountBaseFragment() {
     }
 
     override fun observeDataFromChildFragment(accountDataState: AccountDataState) {
-        accountDataState.loading?.let {
-            it.cachedData?.let { properties -> setAccountDataFields(properties as AccountProperties) }
-        }
         accountDataState.accountProperties?.let {
             setAccountDataFields(it)
         }

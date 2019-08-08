@@ -29,7 +29,6 @@ constructor(
 
     init{
         setViewState()
-//        checkPreviousAuthUser()
     }
 
 

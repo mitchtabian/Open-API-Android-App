@@ -1,4 +1,4 @@
-package com.codingwithmitch.openapi.api.main
+package com.codingwithmitch.openapi.repository.main
 
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -6,12 +6,22 @@ import androidx.lifecycle.MediatorLiveData
 import com.codingwithmitch.openapi.api.*
 import com.codingwithmitch.openapi.models.AccountProperties
 import com.codingwithmitch.openapi.ui.main.account.state.AccountDataState
+import com.codingwithmitch.openapi.util.ErrorHandling
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 
 
-abstract class AccountNetworkBoundResource<ResponseType>
+/**
+ *  Possibilities for ResponseObject. This is what is returned from account-related Network requests
+ *  @see OpenApiMainService
+ *  You can either get GenericResponse or AccountProperties
+ *  @see GenericResponse
+ *  @see AccountProperties
+ *
+ *  Each scenario must finish with ERROR or SUCCESS to hide the progress bar and complete the transaction
+ */
+abstract class AccountNetworkBoundResource<ResponseObject>
 {
 
     private val TAG: String = "AppDebug"
@@ -20,14 +30,14 @@ abstract class AccountNetworkBoundResource<ResponseType>
     private val result = MediatorLiveData<AccountDataState>()
 
     init {
-        setValue(AccountDataState.loading(null))
+        setValue(AccountDataState.loading())
 
         if(isGetRequest()){
             // view cache to start
             val dbSource = loadFromDb()
             result.addSource(dbSource){
                 result.removeSource(dbSource)
-                setValue(AccountDataState.loading(it))
+                setValue(AccountDataState.loading(cachedAccountProperties = it))
             }
         }
 
@@ -41,27 +51,41 @@ abstract class AccountNetworkBoundResource<ResponseType>
                     when(response.body){
                         is AccountProperties ->{
 
-                            CoroutineScope(Main).launch{
+                            getCoroutineScope().launch(Main) {
+
                                 val job = launch(IO){
                                     updateLocalDb(response.body)
                                 }
-                                job.join() // wait for completion
+                                job.join()
 
-                                // view cache to finish
+                                // finishing by viewing db cache
                                 val dbSource = loadFromDb()
                                 result.addSource(dbSource){
                                     result.removeSource(dbSource)
                                     setValue(AccountDataState.accountProperties(it))
+                                    setValue(AccountDataState.success(null, false))
                                 }
                             }
                         }
 
                         is GenericResponse ->{
-                            CoroutineScope(IO).launch{
-                                // can use params passed to method input so null is used here
-                                updateLocalDb(null)
+                            getCoroutineScope().launch(Main) {
+
+                                val job = launch(IO) {
+                                    // can use params passed to method input (in repository) so null is used here
+                                    updateLocalDb(null)
+                                }
+                                job.join()
+
+                                // finishing by viewing db cache
+                                val dbSource = loadFromDb()
+                                result.addSource(dbSource){
+                                    result.removeSource(dbSource)
+                                    setValue(AccountDataState.accountProperties(it))
+                                    setValue(AccountDataState.success(response.body.response, false))
+                                }
                             }
-                            setValue(AccountDataState.successResponse(response.body.response, false))
+
                         }
                         else -> {
                             onReturnError("Unknown error. Try restarting the app.")
@@ -83,26 +107,30 @@ abstract class AccountNetworkBoundResource<ResponseType>
 
 
     fun onReturnError(errorMessage: String?){
-        CoroutineScope(Main).launch {
+        getCoroutineScope().launch(Main) {
             var msg = errorMessage
+            var useDialog = true
             if(msg == null){
                 msg = "Unknown error"
             }
-            setValue(AccountDataState.error(msg))
+            else if(ErrorHandling.NetworkErrors.isNetworkError(msg)){
+                msg = "Check network connection."
+                useDialog = false
+            }
+            setValue(AccountDataState.error(msg, useDialog))
         }
     }
 
     fun setValue(accountDataState: AccountDataState){
-        CoroutineScope(Dispatchers.Main)
-            .launch {
-                result.value = accountDataState
-            }
+        getCoroutineScope().launch(Main) {
+            result.value = accountDataState
+        }
     }
 
 
     fun asLiveData() = result as LiveData<AccountDataState>
 
-    abstract fun createCall(): LiveData<GenericApiResponse<ResponseType>>
+    abstract fun createCall(): LiveData<GenericApiResponse<ResponseObject>>
 
     abstract fun loadFromDb(): LiveData<AccountProperties>
 
@@ -110,4 +138,5 @@ abstract class AccountNetworkBoundResource<ResponseType>
 
     abstract fun isGetRequest(): Boolean
 
+    abstract fun getCoroutineScope(): CoroutineScope
 }

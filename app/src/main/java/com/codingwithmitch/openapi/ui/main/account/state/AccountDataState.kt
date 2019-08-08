@@ -1,43 +1,45 @@
 package com.codingwithmitch.openapi.ui.main.account.state
 
 import com.codingwithmitch.openapi.models.AccountProperties
+import com.codingwithmitch.openapi.util.Loading
+import com.codingwithmitch.openapi.util.StateError
+import com.codingwithmitch.openapi.util.SuccessResponse
 
 
 data class AccountDataState(
-    var error: Error? = null,
+    var error: StateError? = null,
     var loading: Loading? = null,
-    var successResponse: SuccessResponse? = null,
+    var success: SuccessResponse? = null,
     var accountProperties: AccountProperties? = null
 ){
-    data class Error(val errorMessage: String)
-    data class Loading(val cachedData: Any?)
-    data class SuccessResponse(val message: String, val useDialog: Boolean)
 
     companion object{
 
-        fun error(errorMessage: String): AccountDataState{
+        fun error(errorMessage: String, useDialog: Boolean): AccountDataState{
             return AccountDataState(
-                error = Error(errorMessage),
+                error = StateError(errorMessage,  useDialog),
                 loading = null,
-                successResponse = null,
+                success = null,
                 accountProperties = null
             )
         }
 
-        fun loading(cachedData: Any?): AccountDataState{
+        fun loading(
+            cachedAccountProperties: AccountProperties? = null
+        ): AccountDataState{
             return AccountDataState(
                 error = null,
-                loading = Loading(cachedData),
-                successResponse = null,
-                accountProperties = null
+                loading = Loading(),
+                success = null,
+                accountProperties = cachedAccountProperties
             )
         }
 
-        fun successResponse(message: String, useDialog: Boolean): AccountDataState{
+        fun success(message: String?, useDialog: Boolean): AccountDataState{
             return AccountDataState(
                 error = null,
                 loading = null,
-                successResponse = SuccessResponse(message, useDialog),
+                success = SuccessResponse(message, useDialog),
                 accountProperties = null
             )
         }
@@ -46,7 +48,7 @@ data class AccountDataState(
             return AccountDataState(
                 error = null,
                 loading = null,
-                successResponse = null,
+                success = null,
                 accountProperties = accountProperties
             )
         }

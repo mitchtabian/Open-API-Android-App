@@ -10,7 +10,7 @@ import com.codingwithmitch.openapi.ui.main.account.state.AccountDataState
 import kotlinx.android.synthetic.main.fragment_change_password.*
 
 
-class ChangePasswordFragment : AccountBaseFragment() {
+class ChangePasswordFragment : BaseAccountFragment() {
 
 
     override fun onCreateView(
@@ -30,7 +30,7 @@ class ChangePasswordFragment : AccountBaseFragment() {
     }
 
     override fun observeDataFromChildFragment(accountDataState: AccountDataState) {
-        accountDataState.successResponse?.let {
+        accountDataState.success?.let {
             accountStateChangeListener.hideSoftKeyboard()
             findNavController().popBackStack()
         }

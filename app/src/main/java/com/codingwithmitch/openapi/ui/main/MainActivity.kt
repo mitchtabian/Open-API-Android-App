@@ -142,33 +142,39 @@ class MainActivity : DaggerAppCompatActivity(),
     }
 
 
-    // Update UI when doing things in AccountFragment
+    // Update UI when doing things in account pkg, blog pkg, or create pkg
     override fun onAccountDataStateChange(accountDataState: AccountDataState) {
-        accountDataState.error?.let {
-            displayErrorDialog(it.errorMessage)
-            displayProgressBar(false)
-        }
         accountDataState.loading?.let {
             displayProgressBar(true)
         }
-        accountDataState.successResponse?.let {
-            Log.d(TAG, "MainActivity: successResponse: ${it.message}")
+
+        accountDataState.error?.let {
             if(it.useDialog){
-                displaySuccessDialog(it.message)
+                displayErrorDialog(it.errorMessage)
             }
             else{
-                displayToast(it.message)
+                displayToast(it.errorMessage)
             }
-            displayProgressBar(false)
-        }
-        accountDataState.accountProperties?.let {
             displayProgressBar(false)
         }
 
+        accountDataState.success?.let {
+            if(it.useDialog){
+                it.message?.let{message ->
+                    displaySuccessDialog(message)
+                }
+            }
+            else{
+                it.message?.let{message ->
+                    displayToast(message)
+                }
+            }
+            displayProgressBar(false)
+        }
     }
 
 
-    private fun displayToast(message: String?){
+    private fun displayToast(message: String){
         Toast.makeText(this, message, LENGTH_SHORT).show()
     }
 

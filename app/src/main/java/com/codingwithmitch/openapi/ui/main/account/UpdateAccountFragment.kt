@@ -10,7 +10,7 @@ import com.codingwithmitch.openapi.ui.main.account.state.AccountDataState
 import kotlinx.android.synthetic.main.fragment_update_account.*
 
 
-class UpdateAccountFragment : AccountBaseFragment() {
+class UpdateAccountFragment : BaseAccountFragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
