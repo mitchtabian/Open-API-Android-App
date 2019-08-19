@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import com.codingwithmitch.openapi.api.*
 import com.codingwithmitch.openapi.ui.DataState
+import com.codingwithmitch.openapi.ui.Response
 import com.codingwithmitch.openapi.util.*
 import com.codingwithmitch.openapi.util.Constants.Companion.NETWORK_TIMEOUT
 import com.codingwithmitch.openapi.util.Constants.Companion.TESTING_CACHE_DELAY
@@ -24,7 +25,7 @@ abstract class NetworkBoundResource<ResponseObject, CacheObject, ViewStateType>{
         setValue(DataState.loading(isLoading = true, cachedData = null))
 
         if(cancelOperationIfNoInternetConnection()){
-            onCompleteJob(DataState.error(ErrorHandling.NetworkErrors.UNABLE_TODO_OPERATION_WO_INTERNET, true))
+            onCompleteJob(DataState.error(Response(ErrorHandling.NetworkErrors.UNABLE_TODO_OPERATION_WO_INTERNET, true, false)))
         }
         else{
             if(shouldLoadFromCache()){
@@ -75,37 +76,33 @@ abstract class NetworkBoundResource<ResponseObject, CacheObject, ViewStateType>{
             }
             is ApiErrorResponse ->{
                 Log.e(TAG, "NetworkBoundResource: ${response.errorMessage}")
-                onReturnError(response.errorMessage, true)
+                onReturnError(response.errorMessage, true, false)
             }
             is ApiEmptyResponse ->{
                 Log.e(TAG, "NetworkBoundResource: Request returned NOTHING (HTTP 204).")
-                onReturnError("HTTP 204. Returned NOTHING.", true)
+                onReturnError("HTTP 204. Returned NOTHING.", true, false)
             }
         }
     }
 
     fun onCompleteJob(dataState: DataState<ViewStateType>){
-        if(job.isActive){
-            GlobalScope.launch(Dispatchers.Main) {
-                job.complete()
-                setValue(dataState)
-            }
+        GlobalScope.launch(Dispatchers.Main) {
+            job.complete()
+            setValue(dataState)
         }
     }
 
-    fun onReturnError(errorMessage: String?, shouldUseDialog: Boolean){
-        if(job.isActive){
-            var msg = errorMessage
-            var useDialog = shouldUseDialog
-            if(msg == null){
-                msg = "Unknown error"
-            }
-            else if(ErrorHandling.NetworkErrors.isNetworkError(msg)){
-                msg = "Check network connection."
-                useDialog = false
-            }
-            onCompleteJob(DataState.error(msg, useDialog))
+    fun onReturnError(errorMessage: String?, shouldUseDialog: Boolean, shouldUseToast: Boolean){
+        var msg = errorMessage
+        var useDialog = shouldUseDialog
+        if(msg == null){
+            msg = "Unknown error"
         }
+        else if(ErrorHandling.NetworkErrors.isNetworkError(msg)){
+            msg = "Check network connection."
+            useDialog = false
+        }
+        onCompleteJob(DataState.error(Response(msg, useDialog, shouldUseToast)))
     }
 
     fun setValue(dataState: DataState<ViewStateType>){
@@ -119,7 +116,7 @@ abstract class NetworkBoundResource<ResponseObject, CacheObject, ViewStateType>{
             }
             it?.let {
                 onCompleteJob(DataState.data(it, null))
-            }?: onCompleteJob(DataState.error("Something went wrong. Try restarting the app.", true))
+            }?: onCompleteJob(DataState.error(Response("Something went wrong. Try restarting the app.", true, false)))
         }
     }
 
@@ -132,8 +129,8 @@ abstract class NetworkBoundResource<ResponseObject, CacheObject, ViewStateType>{
                 if(job.isCancelled){
                     Log.e(TAG, "NetworkBoundResource: Job has been cancelled.")
                     cause?.let{
-                        onReturnError(it.message, false)
-                    }?: onReturnError("Unknown error.", false)
+                        onReturnError(it.message, false, true)
+                    }?: onReturnError("Unknown error.", false, true)
                 }
                 else if(job.isCompleted){
                     Log.e(TAG, "NetworkBoundResource: Job has been completed.")

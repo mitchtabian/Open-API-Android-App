@@ -4,6 +4,7 @@ import androidx.lifecycle.*
 import com.codingwithmitch.openapi.models.AccountProperties
 import com.codingwithmitch.openapi.repository.main.AccountRepository
 import com.codingwithmitch.openapi.session.SessionManager
+import com.codingwithmitch.openapi.session.SessionStateEvent
 import com.codingwithmitch.openapi.ui.BaseViewModel
 import com.codingwithmitch.openapi.ui.DataState
 import com.codingwithmitch.openapi.ui.main.account.state.AccountStateEvent
@@ -24,12 +25,12 @@ constructor(
     override fun handleStateEvent(stateEvent: AccountStateEvent): LiveData<DataState<AccountViewState>> {
         when(stateEvent){
             is GetAccountPropertiesEvent -> {
-                return sessionManager.observeSession().value?.authToken?.let { authToken ->
+                return sessionManager.cachedToken.value?.let { authToken ->
                     accountRepository.getAccountProperties(authToken)
                 }?: AbsentLiveData.create()
             }
             is UpdateAccountPropertiesEvent -> {
-                return sessionManager.observeSession().value?.authToken?.let { authToken ->
+                return sessionManager.cachedToken.value?.let { authToken ->
                     authToken.account_pk?.let { pk ->
                         val newAccountProperties = AccountProperties(
                             pk,
@@ -44,7 +45,7 @@ constructor(
                 }?: AbsentLiveData.create()
             }
             is ChangePasswordEvent -> {
-                return sessionManager.observeSession().value?.authToken?.let { authToken ->
+                return sessionManager.cachedToken.value?.let { authToken ->
                     accountRepository.updatePassword(
                         authToken,
                         stateEvent.currentPassword,

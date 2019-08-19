@@ -25,7 +25,7 @@ interface AuthTokenDao {
     suspend fun selectAll(): List<AuthToken>?
 
     @Query("UPDATE auth_token SET token = null WHERE account_pk = :pk")
-    suspend fun nullifyToken(pk: Int): Int
+    fun nullifyToken(pk: Int): Int
 }
 
 

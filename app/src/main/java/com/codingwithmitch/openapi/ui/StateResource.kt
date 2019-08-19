@@ -3,7 +3,7 @@ package com.codingwithmitch.openapi.ui
 
 data class Loading(val isLoading: Boolean)
 data class Data<T>(val data: Event<T>?, val response: Event<Response>?)
-data class StateError(val errorMessage: String, val useDialog: Boolean)
+data class StateError(val response: Response)
 
 data class Response(val message: String?, val useDialog: Boolean, val useToast: Boolean)
 

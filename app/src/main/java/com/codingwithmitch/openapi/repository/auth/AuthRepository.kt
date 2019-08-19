@@ -17,6 +17,9 @@ import com.codingwithmitch.openapi.session.SessionManager
 import com.codingwithmitch.openapi.ui.DataState
 import com.codingwithmitch.openapi.ui.Response
 import com.codingwithmitch.openapi.ui.auth.state.AuthViewState
+import com.codingwithmitch.openapi.ui.auth.state.LoginFields
+import com.codingwithmitch.openapi.ui.auth.state.LoginFields.LoginError.*
+import com.codingwithmitch.openapi.ui.auth.state.RegistrationFields
 import com.codingwithmitch.openapi.ui.main.account.state.AccountViewState
 import com.codingwithmitch.openapi.util.AbsentLiveData
 import com.codingwithmitch.openapi.util.ErrorHandling
@@ -48,6 +51,11 @@ constructor(
 
     fun attemptLogin(email: String, password: String) : LiveData<DataState<AuthViewState>>{
 
+        val loginFieldErrors = LoginFields(email, password).isValidForLogin()
+        if(!loginFieldErrors.equals(LoginFields.LoginError.none())){
+            return returnErrorResponse(loginFieldErrors, true, false)
+        }
+
         return object: NetworkBoundResource<LoginResponse, Void, AuthViewState>() {
 
             // not used in this case
@@ -58,6 +66,11 @@ constructor(
             override suspend fun handleApiSuccessResponse(response: ApiSuccessResponse<LoginResponse>) {
 
                 Log.d(TAG, "handleApiSuccessResponse: ${response}")
+
+                // Incorrect login credentials counts as a 200 response from server, so need to handle that
+                if(response.body.response.equals(GENERIC_AUTH_ERROR)){
+                    return onReturnError(response.body.errorMessage, true, false)
+                }
 
                 // Don't care about result here. Just insert if it doesn't exist b/c of foreign key relationship
                 // with AuthToken
@@ -77,10 +90,9 @@ constructor(
                     )
                 )
                 if(result2 < 0){
-                    onCompleteJob(DataState.error(
-                        ERROR_SAVE_AUTH_TOKEN, true)
+                    return onCompleteJob(DataState.error(
+                        Response(ERROR_SAVE_AUTH_TOKEN, true, false))
                     )
-                    return
                 }
 
                 saveAuthenticatedUserToPrefs(email)
@@ -130,6 +142,11 @@ constructor(
 
     fun attemptRegistration(email: String, username: String, password: String, confirmPassword: String): LiveData<DataState<AuthViewState>> {
 
+        val registrationFieldErrors = RegistrationFields(email, username, password, confirmPassword).isValidForRegistration()
+        if(!registrationFieldErrors.equals(RegistrationFields.RegistrationError.none())){
+            return returnErrorResponse(registrationFieldErrors, true, false)
+        }
+
         return object: NetworkBoundResource<RegistrationResponse, Void, AuthViewState>(){
 
 
@@ -142,13 +159,18 @@ constructor(
 
                 Log.d(TAG, "handleApiSuccessResponse: ${response}")
 
+                // Credentials that are already in use will result in 200 code so need to handle that
+                if(response.body.response.equals(GENERIC_AUTH_ERROR)){
+                    return onReturnError(response.body.errorMessage, true, false)
+                }
+
                 // The following situations will still return a 200 code:
                 // 1) Email is already in use
                 // 2) username is already in use
                 // 3) Passwords don't match
                 if(response.body.response.equals(GENERIC_AUTH_ERROR)){
                     onCompleteJob(DataState.error(
-                        response.body.errorMessage, true)
+                        Response(response.body.errorMessage, true, false))
                     )
                     return
                 }
@@ -163,7 +185,7 @@ constructor(
                 // will return -1 if failure
                 if(result1 < 0){
                     onCompleteJob(DataState.error(
-                        ERROR_SAVE_ACCOUNT_PROPERTIES, true)
+                        Response(ERROR_SAVE_ACCOUNT_PROPERTIES, true, false))
                     )
                     return
                 }
@@ -177,8 +199,8 @@ constructor(
                 )
                 if(result2 < 0){
                     onCompleteJob(DataState.error(
-                        ERROR_SAVE_AUTH_TOKEN, true)
-                    )
+                        Response(ERROR_SAVE_AUTH_TOKEN, true, false)
+                    ))
                     return
                 }
 
@@ -342,6 +364,15 @@ constructor(
 
 
             }.asLiveData()
+        }
+    }
+
+    private fun returnErrorResponse(errorMessage: String, useDialog: Boolean, useToast: Boolean): LiveData<DataState<AuthViewState>>{
+        return object: LiveData<DataState<AuthViewState>>(){
+            override fun onActive() {
+                super.onActive()
+                value = DataState.error(Response(errorMessage, useDialog, useToast))
+            }
         }
     }
 

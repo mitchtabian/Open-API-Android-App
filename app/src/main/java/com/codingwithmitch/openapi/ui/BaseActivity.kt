@@ -36,7 +36,7 @@ abstract class BaseActivity : DaggerAppCompatActivity(),
 
     abstract fun displayProgressBar(bool: Boolean)
 
-    fun displayErrorDialog(errorMessage: String){
+    fun displayErrorDialog(errorMessage: String?){
         MaterialDialog(this)
             .title(R.string.text_error)
             .message(text = errorMessage){
@@ -46,7 +46,7 @@ abstract class BaseActivity : DaggerAppCompatActivity(),
             .show()
     }
 
-    fun displaySuccessDialog(message: String){
+    fun displaySuccessDialog(message: String?){
         MaterialDialog(this)
             .title(R.string.text_success)
             .message(text = message){
@@ -76,16 +76,16 @@ abstract class BaseActivity : DaggerAppCompatActivity(),
 
     private fun handleStateError(event: Event<StateError>){
         event.getContentIfNotHandled()?.let{
-            if(it.useDialog){
-                displayErrorDialog(it.errorMessage)
+            if(it.response.useDialog){
+                displayErrorDialog(it.response.message)
             }
             else{
-                displayToast(it.errorMessage)
+                displayToast(it.response.message)
             }
         }
     }
 
-    private fun displayToast(message: String){
+    private fun displayToast(message: String?){
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 

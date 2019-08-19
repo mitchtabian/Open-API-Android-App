@@ -24,7 +24,7 @@ constructor(
     override fun handleStateEvent(stateEvent: BlogStateEvent): LiveData<DataState<BlogViewState>> {
         when(stateEvent){
             is BlogSearchEvent -> {
-                return sessionManager.observeSession().value?.authToken?.let { authToken ->
+                return sessionManager.cachedToken.value?.let { authToken ->
                     blogRepository.searchBlogPosts(
                         authToken,
                         stateEvent.searchQuery,

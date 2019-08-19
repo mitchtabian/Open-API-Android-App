@@ -2,6 +2,7 @@ package com.codingwithmitch.openapi.ui.main
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.ProgressBar
@@ -36,6 +37,7 @@ class MainActivity : BaseActivity(),
         setContentView(R.layout.activity_main)
         bottomNavigationView = findViewById(R.id.bottom_navigation_view)
         setupActionBar()
+        Log.d(TAG, "MainActivity: onCreate: called.")
 
         bottomNavController.setNavGraphProvider(this)
         bottomNavController.setNavGraphChangeListener(this)
@@ -104,16 +106,11 @@ class MainActivity : BaseActivity(),
 //        .navigateUp()
 
     fun subscribeObservers(){
-        sessionManager.observeSession().observe(this, Observer {
-            it?.let {
-                if(it.authToken?.account_pk == -1 || it.authToken?.token == null){
-                    navAuthActivity()
-                    finish()
-                }
-
-                it.errorMessage?.let{
-                    displayErrorDialog(it)
-                }
+        sessionManager.cachedToken.observe(this, Observer{ authToken ->
+            Log.d(TAG, "MainActivity, subscribeObservers: ViewState: ${authToken}")
+            if(authToken == null || authToken.account_pk == -1 || authToken.token == null){
+                navAuthActivity()
+                finish()
             }
         })
     }

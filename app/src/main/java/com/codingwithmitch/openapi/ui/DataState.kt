@@ -10,14 +10,12 @@ data class DataState<T>(
     companion object {
 
         fun <T> error(
-            errorMessage: String,
-            useDialog: Boolean
+            response: Response
         ): DataState<T> {
             return DataState(
                 error = Event(
                     StateError(
-                        errorMessage,
-                        useDialog
+                        response
                     )
                 ),
                 loading = Loading(false),

@@ -1,30 +1,20 @@
 package com.codingwithmitch.openapi.ui.auth
 
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.FrameLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 
 import com.codingwithmitch.openapi.R
-import com.codingwithmitch.openapi.models.AccountProperties
-import com.codingwithmitch.openapi.persistence.AccountPropertiesDao
-import com.codingwithmitch.openapi.session.SessionResource
+import com.codingwithmitch.openapi.session.SessionStateEvent
 import com.codingwithmitch.openapi.ui.BaseActivity
 import com.codingwithmitch.openapi.ui.auth.state.AuthStateEvent
 import com.codingwithmitch.openapi.ui.main.MainActivity
-import com.codingwithmitch.openapi.util.PreferenceKeys
-import com.codingwithmitch.openapi.util.SuccessHandling
-import com.codingwithmitch.openapi.util.SuccessHandling.NetworkSuccessResponses.*
 import com.codingwithmitch.openapi.util.SuccessHandling.NetworkSuccessResponses.Companion.RESPONSE_CHECK_PREVIOUS_AUTH_USER_DONE
 import com.codingwithmitch.openapi.viewmodels.ViewModelProviderFactory
 import kotlinx.android.synthetic.main.activity_auth.*
-import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class AuthActivity : BaseActivity() {
@@ -39,6 +29,7 @@ class AuthActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_auth)
+        Log.d(TAG, "AuthActivity: onCreate: called.")
 
         viewModel = ViewModelProviders.of(this, providerFactory).get(AuthViewModel::class.java)
         subscribeObservers()
@@ -46,12 +37,6 @@ class AuthActivity : BaseActivity() {
     }
 
     fun subscribeObservers(){
-
-        viewModel.viewState.observe(this, Observer{
-            it.authToken?.let{
-                sessionManager.login(SessionResource(it, null))
-            }
-        })
 
         viewModel.dataState.observe(this, Observer{ dataState ->
             Log.d(TAG, "AuthActivity, subscribeObservers: ${dataState}")
@@ -69,7 +54,7 @@ class AuthActivity : BaseActivity() {
                 data.data?.let { event ->
                     event.getContentIfNotHandled()?.let {
                         it.authToken?.let {
-                            Log.d(TAG, "BaseAuthFragment, DataState: ${it}")
+                            Log.d(TAG, "AuthActivity, DataState: ${it}")
                             viewModel.setAuthToken(it)
                         }
                     }
@@ -77,13 +62,19 @@ class AuthActivity : BaseActivity() {
             }
         })
 
-        sessionManager.observeSession().observe(this, Observer {
-            it?.let {
-                if(it.authToken?.account_pk != -1 && it.authToken?.token != null){
+        viewModel.viewState.observe(this, Observer{
+            Log.d(TAG, "AuthActivity, subscribeObservers: AuthViewState: ${it}")
+            it.authToken?.let{
+                sessionManager.login(it)
+            }
+        })
+
+
+        sessionManager.cachedToken.observe(this, Observer{ dataState ->
+            Log.d(TAG, "AuthActivity, subscribeObservers: AuthDataState: ${dataState}")
+            dataState.let{ authToken ->
+                if(authToken != null && authToken.account_pk != -1 && authToken.token != null){
                     navMainActivity()
-                }
-                it.errorMessage?.let {
-                    displayErrorDialog(it)
                 }
             }
         })
