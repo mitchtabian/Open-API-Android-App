@@ -1,95 +1,100 @@
 package com.codingwithmitch.openapi.ui.auth
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.FrameLayout
-import android.widget.ProgressBar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import com.afollestad.materialdialogs.MaterialDialog
 
 import com.codingwithmitch.openapi.R
-import com.codingwithmitch.openapi.session.SessionManager
+import com.codingwithmitch.openapi.models.AccountProperties
+import com.codingwithmitch.openapi.persistence.AccountPropertiesDao
 import com.codingwithmitch.openapi.session.SessionResource
-import com.codingwithmitch.openapi.ui.auth.state.AuthDataState
+import com.codingwithmitch.openapi.ui.BaseActivity
+import com.codingwithmitch.openapi.ui.auth.state.AuthStateEvent
 import com.codingwithmitch.openapi.ui.main.MainActivity
+import com.codingwithmitch.openapi.util.PreferenceKeys
+import com.codingwithmitch.openapi.util.SuccessHandling
+import com.codingwithmitch.openapi.util.SuccessHandling.NetworkSuccessResponses.*
+import com.codingwithmitch.openapi.util.SuccessHandling.NetworkSuccessResponses.Companion.RESPONSE_CHECK_PREVIOUS_AUTH_USER_DONE
 import com.codingwithmitch.openapi.viewmodels.ViewModelProviderFactory
-import dagger.android.support.DaggerAppCompatActivity
+import kotlinx.android.synthetic.main.activity_auth.*
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class AuthActivity : DaggerAppCompatActivity() {
+class AuthActivity : BaseActivity() {
 
     private val TAG: String = "AppDebug"
-
-    lateinit var progressBar: ProgressBar
-    lateinit var fragmentContainer: FrameLayout
 
     lateinit var viewModel: AuthViewModel
 
     @Inject
     lateinit var providerFactory: ViewModelProviderFactory
 
-    @Inject
-    lateinit var sessionManager: SessionManager
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_auth)
-        progressBar = findViewById(R.id.progress_bar)
-        fragmentContainer = findViewById(R.id.fragment_container)
 
         viewModel = ViewModelProviders.of(this, providerFactory).get(AuthViewModel::class.java)
         subscribeObservers()
-        viewModel.checkPreviousAuthUser()
-
-    }
-
-
-    private fun onFinishCheckPreviousAuthUser(){
-        fragmentContainer.visibility = View.VISIBLE
+        checkPreviousAuthUser()
     }
 
     fun subscribeObservers(){
-        viewModel.observeAuthDataState().observe(this, Observer { authDataState ->
-            when(authDataState){
-                is AuthDataState.Loading -> {
-                    displayProgressBar(true)
-                }
-                is AuthDataState.Data -> {
-                    authDataState.authToken?.let{
-                        sessionManager.login(SessionResource(it, null))
-                    }
-                    if (authDataState.authToken?.token == null){
-                        onFinishCheckPreviousAuthUser()
-                        displayProgressBar(false)
-                    }
 
-                }
-                is AuthDataState.Error -> {
-                    displayProgressBar(false)
-                    displayErrorDialog(authDataState.errorMessage)
-                }
+        viewModel.viewState.observe(this, Observer{
+            it.authToken?.let{
+                sessionManager.login(SessionResource(it, null))
             }
         })
 
+        viewModel.dataState.observe(this, Observer{ dataState ->
+            Log.d(TAG, "AuthActivity, subscribeObservers: ${dataState}")
+            onDataStateChange(dataState)
+            dataState.data?.let{ data ->
+                data.response?.let{event ->
+                    event.peekContent().let{ response ->
+                        response.message?.let{ message ->
+                            if(message.equals(RESPONSE_CHECK_PREVIOUS_AUTH_USER_DONE)){
+                                onFinishCheckPreviousAuthUser()
+                            }
+                        }
+                    }
+                }
+                data.data?.let { event ->
+                    event.getContentIfNotHandled()?.let {
+                        it.authToken?.let {
+                            Log.d(TAG, "BaseAuthFragment, DataState: ${it}")
+                            viewModel.setAuthToken(it)
+                        }
+                    }
+                }
+            }
+        })
 
         sessionManager.observeSession().observe(this, Observer {
             it?.let {
                 if(it.authToken?.account_pk != -1 && it.authToken?.token != null){
                     navMainActivity()
                 }
-                when(it.loading){
-                    true -> displayProgressBar(true)
-                    false -> displayProgressBar(false)
-                    else -> displayProgressBar(false)
-                }
                 it.errorMessage?.let {
                     displayErrorDialog(it)
                 }
             }
         })
+    }
+
+    private fun onFinishCheckPreviousAuthUser(){
+        fragment_container.visibility = View.VISIBLE
+    }
+
+    private fun checkPreviousAuthUser(){
+        viewModel.setStateEvent(AuthStateEvent.CheckPreviousAuthEvent())
     }
 
     fun navMainActivity(){
@@ -99,24 +104,15 @@ class AuthActivity : DaggerAppCompatActivity() {
         finish()
     }
 
-    fun displayProgressBar(bool: Boolean){
+    override fun displayProgressBar(bool: Boolean){
         if(bool){
-            progressBar.visibility = View.VISIBLE
+            progress_bar.visibility = View.VISIBLE
         }
         else{
-            progressBar.visibility = View.GONE
+            progress_bar.visibility = View.GONE
         }
     }
 
-    fun displayErrorDialog(errorMessage: String){
-        MaterialDialog(this)
-            .title(R.string.text_error)
-            .message(text = errorMessage){
-                lineSpacing(2F)
-            }
-            .positiveButton(R.string.text_ok)
-            .show()
-    }
 
 }
 

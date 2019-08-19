@@ -1,16 +1,15 @@
 package com.codingwithmitch.openapi.ui.main.blog
 
-import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
+import com.codingwithmitch.openapi.models.BlogPost
 import com.codingwithmitch.openapi.repository.main.BlogRepository
 import com.codingwithmitch.openapi.session.SessionManager
-import com.codingwithmitch.openapi.ui.main.blog.state.BlogDataState
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.launch
+import com.codingwithmitch.openapi.ui.BaseViewModel
+import com.codingwithmitch.openapi.ui.DataState
+import com.codingwithmitch.openapi.ui.main.blog.state.BlogStateEvent
+import com.codingwithmitch.openapi.ui.main.blog.state.BlogStateEvent.*
+import com.codingwithmitch.openapi.ui.main.blog.state.BlogViewState
+import com.codingwithmitch.openapi.util.AbsentLiveData
 import javax.inject.Inject
 
 class BlogViewModel
@@ -19,102 +18,53 @@ constructor(
     val sessionManager: SessionManager,
     val blogRepository: BlogRepository
 )
-    : ViewModel()
+    : BaseViewModel<BlogStateEvent, BlogViewState>()
 {
 
-    private val TAG: String = "AppDebug"
-
-    private val dataState: MediatorLiveData<BlogDataState> = MediatorLiveData()
-
-    fun observeDataState(): LiveData<BlogDataState> {
-        return dataState
-    }
-
-    fun searchBlogPosts(query: String, ordering: String, page: Int) {
-        sessionManager.observeSession().value?.authToken?.let { authToken ->
-            val source = blogRepository.searchBlogPosts(authToken, query, ordering, page)
-            dataState.addSource(source) {
-                it.error?.let {
-                    dataState.removeSource(source)
-                }
-                it.success?.let {
-                    dataState.removeSource(source)
-                }
-                setDataState(it)
+    override fun handleStateEvent(stateEvent: BlogStateEvent): LiveData<DataState<BlogViewState>> {
+        when(stateEvent){
+            is BlogSearchEvent -> {
+                return sessionManager.observeSession().value?.authToken?.let { authToken ->
+                    blogRepository.searchBlogPosts(
+                        authToken,
+                        stateEvent.searchQuery,
+                        stateEvent.order, // can't be null. see @BlogViewState class
+                        stateEvent.page // can't be null. see @BlogViewState class
+                    )
+                }?: AbsentLiveData.create()
             }
+
+            // is NextPageEvent
+            //  -> When scrolling down
+
+            // is ChangeOrderEvent
+            //  -> New filter criteria is selected
+
+            // is BlogSelectedEvent
+            //  -> Select a blog post from the list. Navigate to ViewBlogFragment
+
+            //
         }
     }
 
-    fun setDataState(
-        newDataState: BlogDataState? = null
-    ){
-        viewModelScope.launch(Dispatchers.Main) {
-
-            if(newDataState == null){
-                dataState.value = BlogDataState()
-            }
-            if(dataState.value == null){
-                dataState.value = BlogDataState()
-            }
-
-            // LOADING
-            newDataState?.loading?.let {loading ->
-                dataState.value?.let {
-                    it.loading = loading
-                    dataState.value = it
-                }
-            }
-
-            // BLOG_LIST
-            newDataState?.blogPostList?.let {blogList ->
-                dataState.value?.let {
-                    it.blogPostList = blogList
-                    dataState.value = it
-                }
-            }
-
-            // ERROR
-            newDataState?.error?.let {newStateError ->
-                dataState.value?.let {
-                    it.error = newStateError
-                    it.loading = null
-                    dataState.value = it
-                }
-                clearStateMessages()
-            }
-
-            // SUCCESS
-            newDataState?.success?.let {successResponse ->
-                dataState.value?.let {
-                    it.loading = null
-                    it.success = successResponse
-                    dataState.value = it
-                }
-                clearStateMessages()
-            }
-
-
+    fun setBlogListData(blogList: List<BlogPost>){
+        if(_viewState.value?.blogList == blogList){
+            return
         }
+        val update = _viewState.value?.let{
+            it
+        }?: BlogViewState()
+        update.blogList = blogList
+        _viewState.value = update
     }
 
-
-    /**
-     * Clear SuccessResponse and Error from State.
-     * That was if back button is pressed we don't get duplicates
-     */
-    fun clearStateMessages(){
-        dataState.value?.let {
-            it.success = null
-            it.error = null
-            dataState.value = it
-        }
+    fun cancelRequests(){
+        blogRepository.cancelRequests()
     }
-
 
     override fun onCleared() {
         super.onCleared()
-        viewModelScope.cancel()
-        blogRepository.cancelRequests()
+        cancelRequests()
     }
 }
 

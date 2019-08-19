@@ -20,10 +20,11 @@ abstract class BaseAuthFragment : DaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         viewModel = activity?.run {
             ViewModelProviders.of(this, providerFactory).get(AuthViewModel::class.java)
-        }?: throw Exception("Invalid Activity")
-    }
-}
+        } ?: throw Exception("Invalid Activity")
 
+    }
+
+}
 
 
 

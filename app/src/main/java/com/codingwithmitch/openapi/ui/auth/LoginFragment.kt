@@ -13,27 +13,15 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 
 import com.codingwithmitch.openapi.R
+import com.codingwithmitch.openapi.ui.auth.state.AuthStateEvent
+import com.codingwithmitch.openapi.ui.auth.state.AuthStateEvent.*
+import com.codingwithmitch.openapi.ui.auth.state.LoginFields
 import com.codingwithmitch.openapi.util.TextWatcherCallback
 import kotlinx.android.synthetic.main.fragment_login.*
 
 
 class LoginFragment : BaseAuthFragment() {
 
-    lateinit var textWatcher: LoginFragmentTextWatcher
-
-    val textWatchCallback = object: TextWatcherCallback{
-
-        override fun afterTextChanged(fieldId: Int, text: String?) {
-            when(fieldId){
-                R.id.input_email -> {
-                    viewModel.setViewState(login_email = text)
-                }
-                R.id.input_password ->{
-                    viewModel.setViewState(login_password = text)
-                }
-            }
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -50,47 +38,49 @@ class LoginFragment : BaseAuthFragment() {
             login()
         }
 
-        restoreFieldValues()
-        initTextWatcher()
+        subscribeObservers()
     }
 
     fun login(){
-        viewModel.attemptLogin()
+        viewModel.setStateEvent(
+            LoginAttemptEvent(
+                input_email.text.toString(),
+                input_password.text.toString()
+            )
+        )
     }
 
-    fun restoreFieldValues(){
-        viewModel.observeViewState().observe(viewLifecycleOwner, Observer {
-            it.loginFields?.run {
-                this.login_email?.let{input_email.setText(it)}
-                this.login_password?.let{input_password.setText(it)}
+    fun subscribeObservers(){
+        viewModel.viewState.observe(viewLifecycleOwner, Observer{
+            it.loginFields?.let{
+                it.login_email?.let{input_email.setText(it)}
+                it.login_password?.let{input_password.setText(it)}
             }
-            viewModel.observeViewState().removeObservers(viewLifecycleOwner)
         })
-
     }
 
-    fun initTextWatcher(){
-        textWatcher = LoginFragmentTextWatcher(textWatchCallback)
-        textWatcher.registerField(input_email)
-        textWatcher.registerField(input_password)
+    override fun onDestroyView() {
+        super.onDestroyView()
+        viewModel.setLoginFields(
+            LoginFields(
+                input_email.text.toString(),
+                input_password.text.toString()
+            )
+        )
     }
-
-    class LoginFragmentTextWatcher constructor(val callback: TextWatcherCallback){
-
-        fun registerField(editText: EditText){
-            editText.addTextChangedListener(object: TextWatcher {
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                }
-
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                }
-
-                override fun afterTextChanged(s: Editable?) {
-                    val text = s.toString()
-                    callback.afterTextChanged(editText.id, text)
-                }
-            })
-        }
-    }
-
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

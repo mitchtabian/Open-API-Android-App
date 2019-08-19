@@ -1,10 +1,13 @@
 package com.codingwithmitch.openapi.ui.auth.state
 
+import com.codingwithmitch.openapi.models.AuthToken
+
 
 data class AuthViewState(
     var registrationFields: RegistrationFields? = RegistrationFields(),
-    var loginFields: LoginFields? = LoginFields()
-    )
+    var loginFields: LoginFields? = LoginFields(),
+    var authToken: AuthToken? = null
+)
 
 
 data class RegistrationFields(

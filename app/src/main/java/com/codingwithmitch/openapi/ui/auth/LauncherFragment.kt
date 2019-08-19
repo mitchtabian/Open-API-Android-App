@@ -11,7 +11,9 @@ import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 
 import com.codingwithmitch.openapi.R
+import kotlinx.android.synthetic.main.fragment_account.*
 import kotlinx.android.synthetic.main.fragment_launcher.*
+import kotlinx.android.synthetic.main.fragment_launcher.focusable_view
 
 
 class LauncherFragment : BaseAuthFragment() {
@@ -40,6 +42,8 @@ class LauncherFragment : BaseAuthFragment() {
         forgot_password.setOnClickListener {
             navForgotPassword()
         }
+
+        focusable_view.requestFocus() // reset focus
     }
 
     fun navLogin(){

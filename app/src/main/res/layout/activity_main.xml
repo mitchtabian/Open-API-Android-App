@@ -16,7 +16,9 @@
         <androidx.appcompat.widget.Toolbar
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:id="@+id/tool_bar">
+                android:id="@+id/tool_bar"
+                app:layout_scrollFlags="scroll|enterAlways"
+        >
 
         </androidx.appcompat.widget.Toolbar>
 
@@ -48,24 +50,24 @@
                 android:visibility="gone"
         />
 
-        <com.google.android.material.bottomnavigation.BottomNavigationView
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                android:id="@+id/bottom_navigation_view"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:layout_gravity="bottom"
-                android:background="#fff"
-                app:itemTextColor="@color/bottom_nav_selector"
-                app:itemIconTint="@color/bottom_nav_selector"
-                app:menu="@menu/main_bottom_navigation_menu"
 
-        />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:id="@+id/bottom_navigation_view"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_gravity="bottom"
+            android:background="#fff"
+            app:itemTextColor="@color/bottom_nav_selector"
+            app:itemIconTint="@color/bottom_nav_selector"
+            app:menu="@menu/main_bottom_navigation_menu"
 
+    />
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

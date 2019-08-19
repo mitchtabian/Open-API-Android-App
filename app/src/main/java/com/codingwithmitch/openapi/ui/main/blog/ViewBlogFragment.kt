@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 
 import com.codingwithmitch.openapi.R
+import com.codingwithmitch.openapi.ui.main.blog.state.BlogViewState
 import kotlinx.android.synthetic.main.fragment_view_blog.*
 
 

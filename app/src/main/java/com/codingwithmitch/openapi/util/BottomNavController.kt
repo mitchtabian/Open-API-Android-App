@@ -33,6 +33,7 @@ class BottomNavController(
     lateinit var fragmentManager: FragmentManager
     private var listener: OnNavigationItemChanged? = null
     private var navGraphProvider: NavGraphProvider? = null
+    private var graphChangeListener: OnNavigationGraphChanged? = null
 
     interface OnNavigationItemChanged {
         fun onItemChanged(itemId: Int)
@@ -43,6 +44,9 @@ class BottomNavController(
         fun getNavGraphId(itemId: Int): Int
     }
 
+    interface OnNavigationGraphChanged{
+        fun onGraphChange()
+    }
 
     init {
         var ctx = context
@@ -66,6 +70,10 @@ class BottomNavController(
 
     fun setNavGraphProvider(provider: NavGraphProvider) {
         navGraphProvider = provider
+    }
+
+    fun setNavGraphChangeListener(graphChangeListener: OnNavigationGraphChanged){
+        this.graphChangeListener = graphChangeListener
     }
 
     fun onNavigationItemReselected(item: MenuItem) {
@@ -96,6 +104,7 @@ class BottomNavController(
         navigationBackStack.moveLast(itemId)
 
         listener?.onItemChanged(itemId)
+        graphChangeListener?.onGraphChange()
 
         return true
     }

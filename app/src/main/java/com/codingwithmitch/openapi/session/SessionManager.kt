@@ -1,5 +1,9 @@
 package com.codingwithmitch.openapi.session
 
+import android.app.Application
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -11,11 +15,16 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class SessionManager @Inject constructor(val authTokenDao: AuthTokenDao) {
+class SessionManager @Inject
+constructor(
+    val authTokenDao: AuthTokenDao,
+    val application: Application
+) {
 
     private val TAG: String = "AppDebug";
 
     private val cachedToken = MutableLiveData<SessionResource>()
+
 
     fun observeSession(): LiveData<SessionResource>{
         return cachedToken
@@ -54,6 +63,16 @@ class SessionManager @Inject constructor(val authTokenDao: AuthTokenDao) {
                 )
             }
         }
+    }
+
+    fun isConnectedToTheInternet(): Boolean{
+        val cm = application.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        try{
+            return cm.activeNetworkInfo.isConnected
+        }catch (e: Exception){
+            Log.e(TAG, "isConnectedToTheInternet: ${e.message}")
+        }
+        return false
     }
 
     fun login(newValue: SessionResource){

@@ -1,39 +1,29 @@
 package com.codingwithmitch.openapi.ui.main
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
-import android.view.inputmethod.InputMethodManager
 import android.widget.ProgressBar
-import android.widget.Toast
-import android.widget.Toast.LENGTH_SHORT
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import com.codingwithmitch.openapi.R
-import com.afollestad.materialdialogs.MaterialDialog
-import com.codingwithmitch.openapi.session.SessionManager
+import com.codingwithmitch.openapi.ui.*
 import com.codingwithmitch.openapi.ui.auth.AuthActivity
-import com.codingwithmitch.openapi.ui.main.account.AccountStateChangeListener
-import com.codingwithmitch.openapi.ui.main.account.state.AccountDataState
-import com.codingwithmitch.openapi.util.BottomNavController
-import com.codingwithmitch.openapi.util.setUpNavigation
+import com.codingwithmitch.openapi.ui.main.account.*
+import com.codingwithmitch.openapi.ui.main.blog.BaseBlogFragment
+import com.codingwithmitch.openapi.ui.main.create_blog.BaseCreateFragment
+import com.codingwithmitch.openapi.util.*
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import dagger.android.support.DaggerAppCompatActivity
-import javax.inject.Inject
+import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : DaggerAppCompatActivity(),
+class MainActivity : BaseActivity(),
     BottomNavController.NavGraphProvider,
-    AccountStateChangeListener
+    BottomNavController.OnNavigationGraphChanged
 {
+
     private val TAG: String = "AppDebug"
 
-    @Inject
-    lateinit var sessionManager: SessionManager
-
-    private lateinit var progressBar: ProgressBar
     private lateinit var bottomNavigationView: BottomNavigationView
 
     private val bottomNavController by lazy(LazyThreadSafetyMode.NONE) {
@@ -45,10 +35,10 @@ class MainActivity : DaggerAppCompatActivity(),
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         bottomNavigationView = findViewById(R.id.bottom_navigation_view)
-        progressBar = findViewById(R.id.progress_bar)
         setupActionBar()
 
         bottomNavController.setNavGraphProvider(this)
+        bottomNavController.setNavGraphChangeListener(this)
         bottomNavigationView.setUpNavigation(bottomNavController)
         if (savedInstanceState == null) {
             bottomNavController.onNavigationItemSelected()
@@ -62,10 +52,40 @@ class MainActivity : DaggerAppCompatActivity(),
     }
 
     override fun getNavGraphId(itemId: Int) = when (itemId) {
-        R.id.nav_blog -> R.navigation.nav_blog
-        R.id.nav_create_blog -> R.navigation.nav_create_blog
-        R.id.nav_account -> R.navigation.nav_account
-        else -> R.navigation.nav_blog
+        R.id.nav_blog -> {
+            R.navigation.nav_blog
+        }
+        R.id.nav_create_blog -> {
+            R.navigation.nav_create_blog
+        }
+        R.id.nav_account -> {
+            R.navigation.nav_account
+        }
+        else -> {
+            R.navigation.nav_blog
+        }
+    }
+
+    // Cancel previous jobs when navigating to a new graph
+    override fun onGraphChange() {
+        cancelActiveJobs()
+    }
+
+    private fun cancelActiveJobs(){
+        val fragments = bottomNavController.fragmentManager.findFragmentById(bottomNavController.containerId)?.childFragmentManager?.fragments
+        if(fragments != null){
+            for(fragment in fragments){
+                if(fragment is BaseAccountFragment){
+                    fragment.cancelPreviousJobs()
+                }
+                if(fragment is BaseBlogFragment){
+                    fragment.cancelPreviousJobs()
+                }
+                if(fragment is BaseCreateFragment){
+                    fragment.cancelPreviousJobs()
+                }
+            }
+        }
     }
 
     override fun onBackPressed() = bottomNavController.onBackPressed()
@@ -91,17 +111,10 @@ class MainActivity : DaggerAppCompatActivity(),
                     finish()
                 }
 
-                when(it.loading){
-                    true -> displayProgressBar(true)
-                    false -> displayProgressBar(false)
-                    else -> displayProgressBar(false)
-                }
-
                 it.errorMessage?.let{
                     displayErrorDialog(it)
                 }
             }
-
         })
     }
 
@@ -111,88 +124,15 @@ class MainActivity : DaggerAppCompatActivity(),
         finish()
     }
 
-    fun displayProgressBar(bool: Boolean){
+    override fun displayProgressBar(bool: Boolean){
         if(bool){
-            progressBar.visibility = View.VISIBLE
+            progress_bar.visibility = View.VISIBLE
         }
         else{
-            progressBar.visibility = View.GONE
+            progress_bar.visibility = View.GONE
         }
     }
 
-
-    fun displayErrorDialog(errorMessage: String){
-        MaterialDialog(this)
-            .title(R.string.text_error)
-            .message(text = errorMessage){
-                lineSpacing(2F)
-            }
-            .positiveButton(R.string.text_ok)
-            .show()
-    }
-
-    fun displaySuccessDialog(message: String){
-        MaterialDialog(this)
-            .title(R.string.text_success)
-            .message(text = message){
-                lineSpacing(2F)
-            }
-            .positiveButton(R.string.text_ok)
-            .show()
-    }
-
-
-    // Update UI when doing things in account pkg, blog pkg, or create pkg
-    override fun onAccountDataStateChange(accountDataState: AccountDataState) {
-        accountDataState.loading?.let {
-            displayProgressBar(true)
-        }
-
-        accountDataState.error?.let {
-            if(it.useDialog){
-                displayErrorDialog(it.errorMessage)
-            }
-            else{
-                displayToast(it.errorMessage)
-            }
-            displayProgressBar(false)
-        }
-
-        accountDataState.success?.let {
-            if(it.useDialog){
-                it.message?.let{message ->
-                    displaySuccessDialog(message)
-                }
-            }
-            else{
-                it.message?.let{message ->
-                    displayToast(message)
-                }
-            }
-            displayProgressBar(false)
-        }
-    }
-
-
-    private fun displayToast(message: String){
-        Toast.makeText(this, message, LENGTH_SHORT).show()
-    }
-
-
-
-    override fun hideSoftKeyboard() {
-        if (currentFocus != null) {
-            val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            inputMethodManager.hideSoftInputFromWindow(currentFocus!!.windowToken, 0)
-        }
-    }
-
-
-//    fun showSoftKeyboard(view: View) {
-//        val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-//        view.requestFocus()
-//        inputMethodManager.showSoftInput(view, 0)
-//    }
 }
 
 

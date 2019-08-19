@@ -21,7 +21,7 @@ interface AccountPropertiesDao {
     suspend fun deleteAll(): Int
 
     @Query("SELECT * FROM account_properties WHERE email = :email")
-    suspend fun searchByEmail(email: String): AccountProperties
+    suspend fun searchByEmail(email: String): AccountProperties?
 
     @Query("SELECT * FROM account_properties WHERE pk = :pk")
     fun searchByPk(pk: Int): LiveData<AccountProperties>
