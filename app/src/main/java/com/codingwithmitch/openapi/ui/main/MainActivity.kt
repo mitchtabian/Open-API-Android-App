@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
-import android.widget.ProgressBar
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import com.codingwithmitch.openapi.R
@@ -88,6 +87,7 @@ class MainActivity : BaseActivity(),
                 }
             }
         }
+        displayProgressBar(false)
     }
 
     override fun onBackPressed() = bottomNavController.onBackPressed()

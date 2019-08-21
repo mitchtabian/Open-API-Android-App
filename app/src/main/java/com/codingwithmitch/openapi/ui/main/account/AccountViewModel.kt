@@ -7,9 +7,12 @@ import com.codingwithmitch.openapi.session.SessionManager
 import com.codingwithmitch.openapi.session.SessionStateEvent
 import com.codingwithmitch.openapi.ui.BaseViewModel
 import com.codingwithmitch.openapi.ui.DataState
+import com.codingwithmitch.openapi.ui.Loading
+import com.codingwithmitch.openapi.ui.auth.state.AuthViewState
 import com.codingwithmitch.openapi.ui.main.account.state.AccountStateEvent
 import com.codingwithmitch.openapi.ui.main.account.state.AccountStateEvent.*
 import com.codingwithmitch.openapi.ui.main.account.state.AccountViewState
+import com.codingwithmitch.openapi.ui.main.blog.state.BlogStateEvent
 import com.codingwithmitch.openapi.util.*
 import javax.inject.Inject
 
@@ -54,8 +57,13 @@ constructor(
                     )
                 }?: AbsentLiveData.create()
             }
-            else -> {
-                return AbsentLiveData.create()
+            is None ->{
+                return object: LiveData<DataState<AccountViewState>>(){
+                    override fun onActive() {
+                        super.onActive()
+                        value = DataState(null, Loading(false), null)
+                    }
+                }
             }
         }
     }
@@ -81,12 +89,18 @@ constructor(
 
     fun cancelRequests(){
         accountRepository.cancelRequests()
+        handlePendingData()
+    }
+
+    fun handlePendingData(){
+        setStateEvent(None())
     }
 
     override fun onCleared() {
         super.onCleared()
         cancelRequests()
     }
+
 
 
 }

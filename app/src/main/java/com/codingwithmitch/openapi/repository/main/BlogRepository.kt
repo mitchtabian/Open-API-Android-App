@@ -58,7 +58,10 @@ constructor(
                 withContext(Dispatchers.Main){
 
                     // finishing by viewing db cache
-                    addSourceToResult(loadFromCache(), false)
+                    result.addSource(loadFromCache()){ viewState ->
+                        viewState.isQueryInProgress = false
+                        onCompleteJob(DataState.data(viewState, null))
+                    }
                 }
             }
 
@@ -76,7 +79,7 @@ constructor(
                         object: LiveData<BlogViewState>(){
                             override fun onActive() {
                                 super.onActive()
-                                value = BlogViewState(blogList = it)
+                                value = BlogViewState(blogList = it, isQueryInProgress = true)
                             }
                         }
                     }

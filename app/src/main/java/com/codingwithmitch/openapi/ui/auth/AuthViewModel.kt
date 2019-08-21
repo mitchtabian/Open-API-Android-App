@@ -6,9 +6,9 @@ import com.codingwithmitch.openapi.models.AuthToken
 import com.codingwithmitch.openapi.repository.auth.AuthRepository
 import com.codingwithmitch.openapi.ui.BaseViewModel
 import com.codingwithmitch.openapi.ui.DataState
+import com.codingwithmitch.openapi.ui.Loading
 import com.codingwithmitch.openapi.ui.auth.state.*
 import com.codingwithmitch.openapi.ui.auth.state.AuthStateEvent.*
-import com.codingwithmitch.openapi.util.AbsentLiveData
 import javax.inject.Inject
 
 class AuthViewModel
@@ -41,6 +41,8 @@ constructor(
             is CheckPreviousAuthEvent -> {
                 return authRepository.checkPreviousAuthUser()
             }
+
+
         }
     }
 
@@ -89,10 +91,6 @@ constructor(
         _viewState.value = update
     }
 
-
-    override fun onCleared() {
-        super.onCleared()
-    }
 }
 
 

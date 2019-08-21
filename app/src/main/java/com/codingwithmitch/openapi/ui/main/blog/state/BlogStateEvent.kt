@@ -11,5 +11,9 @@ sealed class BlogStateEvent{
         val page: Int = 1
         ): BlogStateEvent()
 
+    class NextPageEvent: BlogStateEvent()
+
+    class None: BlogStateEvent()
+
 
 }

@@ -109,17 +109,6 @@ abstract class NetworkBoundResource<ResponseObject, CacheObject, ViewStateType>{
         result.value = dataState
     }
 
-    fun addSourceToResult(source: LiveData<ViewStateType>, removeSource: Boolean){
-        result.addSource(source){
-            if(removeSource) {
-                result.removeSource(source)
-            }
-            it?.let {
-                onCompleteJob(DataState.data(it, null))
-            }?: onCompleteJob(DataState.error(Response("Something went wrong. Try restarting the app.", true, false)))
-        }
-    }
-
     @UseExperimental(InternalCoroutinesApi::class)
     private fun initNewJob(): Job{
         Log.d(TAG, "initNewJob: called.")

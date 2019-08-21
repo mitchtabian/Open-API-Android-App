@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.afollestad.materialdialogs.MaterialDialog
 
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.session.SessionStateEvent
@@ -35,6 +36,7 @@ class AuthActivity : BaseActivity() {
         subscribeObservers()
         checkPreviousAuthUser()
     }
+
 
     fun subscribeObservers(){
 

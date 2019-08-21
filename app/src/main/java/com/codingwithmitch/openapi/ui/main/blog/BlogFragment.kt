@@ -10,19 +10,26 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import coil.ImageLoader
 
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.groupie.Items.BlogItem
 import com.codingwithmitch.openapi.models.BlogPost
 import com.codingwithmitch.openapi.groupie.decoration.BottomSpacingItemDecoration
 import com.codingwithmitch.openapi.ui.main.blog.state.BlogStateEvent
+import com.codingwithmitch.openapi.util.ErrorHandling
+import com.codingwithmitch.openapi.util.ErrorHandling.NetworkErrors.*
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import kotlinx.android.synthetic.main.fragment_blog.*
+import javax.inject.Inject
 
 
 class BlogFragment : BaseBlogFragment() {
 
+    @Inject
+    lateinit var imageLoader: ImageLoader
 
     private lateinit var searchView: SearchView
     private var groupAdapter: GroupAdapter<ViewHolder>? = null
@@ -51,14 +58,22 @@ class BlogFragment : BaseBlogFragment() {
                     it.data?.let{
                         it.getContentIfNotHandled()?.let{
                             Log.d(TAG, "BlogFragment, DataState: ${it}")
+                            Log.d(TAG, "BlogFragment, DataState: isQueryInProgress?: ${it.isQueryInProgress}")
+                            viewModel.setQueryInProgress(it.isQueryInProgress)
                             viewModel.setBlogListData(it.blogList)
                         }
+                    }
+                }
+                dataState.error?.let{
+                    it.peekContent().let {
+                        Log.d(TAG, "BlogFragment, ErrorState: ${it}")
+                        viewModel.setQueryExhausted(ErrorHandling.NetworkErrors.isPaginationDone(it.response.message))
                     }
                 }
             }
         })
 
-        viewModel.viewState.observe(viewLifecycleOwner, Observer{viewState ->
+        viewModel.viewState.observe(viewLifecycleOwner, Observer{ viewState ->
             if(viewState != null){
                 groupAdapter?.updateAsync(viewState.blogList.toGroupieList())
             }
@@ -67,7 +82,7 @@ class BlogFragment : BaseBlogFragment() {
 
     private fun List<BlogPost>.toGroupieList(): List<BlogItem>{
         return this.map {
-            BlogItem(it)
+            BlogItem(it, imageLoader)
         }
     }
 
@@ -79,6 +94,19 @@ class BlogFragment : BaseBlogFragment() {
             removeItemDecoration(carouselDecoration) // does nothing if not applied already
             addItemDecoration(carouselDecoration)
             adapter = groupAdapter
+
+            addOnScrollListener(object: RecyclerView.OnScrollListener(){
+
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    super.onScrollStateChanged(recyclerView, newState)
+                    val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+                    val lastPosition = layoutManager.findLastVisibleItemPosition()
+                    if (lastPosition == adapter?.itemCount?.minus(1)) {
+                        Log.d(TAG, "BlogFragment: attempting to load next page...")
+                        viewModel.loadNextPage()
+                    }
+                }
+            })
         }
     }
 
@@ -100,7 +128,7 @@ class BlogFragment : BaseBlogFragment() {
                 override fun onQueryTextSubmit(query: String?): Boolean {
                     query?.let{
                         Log.d(TAG, "onQueryTextSubmit: ${query}")
-                        viewModel.setStateEvent(BlogStateEvent.BlogSearchEvent(query))
+                        viewModel.loadFirstPage(query)
                         stateChangeListener.hideSoftKeyboard()
                         focusable_view.requestFocus()
                         return true

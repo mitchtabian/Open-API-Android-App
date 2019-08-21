@@ -44,7 +44,9 @@ constructor(
                 withContext(Dispatchers.Main){
 
                     // finishing by viewing db cache
-                    addSourceToResult(loadFromCache(), false)
+                    result.addSource(loadFromCache()){ viewState ->
+                        onCompleteJob(DataState.data(viewState, null))
+                    }
                 }
             }
 

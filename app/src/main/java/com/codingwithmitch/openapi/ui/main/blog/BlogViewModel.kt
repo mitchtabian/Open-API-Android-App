@@ -1,11 +1,13 @@
 package com.codingwithmitch.openapi.ui.main.blog
 
+import android.util.Log
 import androidx.lifecycle.*
 import com.codingwithmitch.openapi.models.BlogPost
 import com.codingwithmitch.openapi.repository.main.BlogRepository
 import com.codingwithmitch.openapi.session.SessionManager
 import com.codingwithmitch.openapi.ui.BaseViewModel
 import com.codingwithmitch.openapi.ui.DataState
+import com.codingwithmitch.openapi.ui.Loading
 import com.codingwithmitch.openapi.ui.main.blog.state.BlogStateEvent
 import com.codingwithmitch.openapi.ui.main.blog.state.BlogStateEvent.*
 import com.codingwithmitch.openapi.ui.main.blog.state.BlogViewState
@@ -34,8 +36,18 @@ constructor(
                 }?: AbsentLiveData.create()
             }
 
-            // is NextPageEvent
-            //  -> When scrolling down
+             is NextPageEvent -> {
+                 Log.d(TAG, "BlogViewModel: NextPageEvent detected...")
+                 return sessionManager.cachedToken.value?.let { authToken ->
+                     blogRepository.searchBlogPosts(
+                         authToken,
+                         viewState.value!!.searchQuery,
+                         viewState.value!!.order,
+                         viewState.value!!.page
+                     )
+                 }?: AbsentLiveData.create()
+             }
+
 
             // is ChangeOrderEvent
             //  -> New filter criteria is selected
@@ -43,8 +55,48 @@ constructor(
             // is BlogSelectedEvent
             //  -> Select a blog post from the list. Navigate to ViewBlogFragment
 
-            //
+            is None ->{
+                return object: LiveData<DataState<BlogViewState>>(){
+                    override fun onActive() {
+                        super.onActive()
+                        value = DataState(null, Loading(false), null)
+                    }
+                }
+            }
         }
+    }
+
+    fun loadFirstPage(query: String){
+        setQueryInProgress(true)
+        setQueryExhausted(false)
+        resetPage()
+        setQuery(query)
+        setStateEvent(BlogSearchEvent(query))
+    }
+
+    fun loadNextPage(){
+        if(!viewState.value!!.isQueryInProgress && !viewState.value!!.isQueryExhausted){
+            Log.d(TAG, "BlogViewModel: Attempting to load next page...")
+            setQueryInProgress(true)
+            incrementPageNumber()
+            setStateEvent(NextPageEvent())
+        }
+    }
+
+    fun resetPage(){
+        val update = _viewState.value?.let{
+            it
+        }?: BlogViewState()
+        update.page = 1
+        _viewState.value = update
+    }
+
+    fun setQuery(query: String){
+        val update = _viewState.value?.let{
+            it
+        }?: BlogViewState()
+        update.searchQuery = query
+        _viewState.value = update
     }
 
     fun setBlogListData(blogList: List<BlogPost>){
@@ -58,14 +110,46 @@ constructor(
         _viewState.value = update
     }
 
+    fun incrementPageNumber(){
+        val update = _viewState.value?.let{
+            it
+        }?: BlogViewState()
+        val page = update.copy().page
+        update.page = page + 1
+        _viewState.value = update
+    }
+
+    fun setQueryExhausted(isExhausted: Boolean){
+        val update = _viewState.value?.let{
+            it
+        }?: BlogViewState()
+        update.isQueryExhausted = isExhausted
+        _viewState.value = update
+    }
+
+    fun setQueryInProgress(isInProgress: Boolean){
+        val update = _viewState.value?.let{
+            it
+        }?: BlogViewState()
+        update.isQueryInProgress = isInProgress
+        _viewState.value = update
+    }
+
     fun cancelRequests(){
         blogRepository.cancelRequests()
+        handlePendingData()
+    }
+
+    fun handlePendingData(){
+        setStateEvent(None())
     }
 
     override fun onCleared() {
         super.onCleared()
         cancelRequests()
     }
+
+    
 }
 
 
