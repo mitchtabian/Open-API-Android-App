@@ -14,10 +14,18 @@ import androidx.lifecycle.ViewModelProviders
 
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.util.TextWatcherCallback
+import com.codingwithmitch.openapi.viewmodels.ViewModelProviderFactory
+import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_login.*
+import javax.inject.Inject
 
 
-class LoginFragment : BaseAuthFragment() {
+class LoginFragment : DaggerFragment() {
+
+    @Inject
+    lateinit var providerFactory: ViewModelProviderFactory
+
+    lateinit var viewModel: AuthViewModel
 
     lateinit var textWatcher: LoginFragmentTextWatcher
 
@@ -35,6 +43,13 @@ class LoginFragment : BaseAuthFragment() {
         }
     }
 
+
+//    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+//        super.onViewCreated(view, savedInstanceState)
+//        viewModel = activity?.run {
+//            ViewModelProviders.of(this, providerFactory).get(AuthViewModel::class.java)
+//        }?: throw Exception("Invalid Activity")
+//    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -45,7 +60,7 @@ class LoginFragment : BaseAuthFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+       viewModel= ViewModelProviders.of(this, providerFactory).get(AuthViewModel::class.java)
         view.findViewById<Button>(R.id.login_button).setOnClickListener {
             login()
         }
