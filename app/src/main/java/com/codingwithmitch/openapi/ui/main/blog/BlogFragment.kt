@@ -14,25 +14,28 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.ImageLoader
 
 import com.codingwithmitch.openapi.R
-import com.codingwithmitch.openapi.groupie.Items.BlogItem
-import com.codingwithmitch.openapi.models.BlogPost
-import com.codingwithmitch.openapi.groupie.decoration.BottomSpacingItemDecoration
-import com.codingwithmitch.openapi.ui.main.blog.state.BlogStateEvent
+import com.codingwithmitch.openapi.ui.DataState
+import com.codingwithmitch.openapi.ui.main.blog.BlogRecyclerAdapter.BlogViewHolder.*
+import com.codingwithmitch.openapi.ui.main.blog.state.BlogViewState
+import com.codingwithmitch.openapi.util.TopSpacingItemDecoration
 import com.codingwithmitch.openapi.util.ErrorHandling
-import com.codingwithmitch.openapi.util.ErrorHandling.NetworkErrors.*
-import com.xwray.groupie.GroupAdapter
-import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import kotlinx.android.synthetic.main.fragment_blog.*
 import javax.inject.Inject
+import android.view.inputmethod.EditorInfo
+import android.widget.Button
+import android.widget.TextView
+import android.widget.EditText
 
 
-class BlogFragment : BaseBlogFragment() {
+
+
+class BlogFragment : BaseBlogFragment(), BlogClickListener {
 
     @Inject
     lateinit var imageLoader: ImageLoader
 
     private lateinit var searchView: SearchView
-    private var groupAdapter: GroupAdapter<ViewHolder>? = null
+    private var recyclerAdapter: BlogRecyclerAdapter? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,12 +51,31 @@ class BlogFragment : BaseBlogFragment() {
         setHasOptionsMenu(true)
         initRecyclerView()
         subscribeObservers()
+        viewModel.loadInitialBlogs()
+    }
+
+    fun checkPaginationEnd(dataState: DataState<BlogViewState>?){
+        dataState?.let{
+            it.error?.let{event ->
+                event.peekContent().response.message?.let{
+                    if(ErrorHandling.NetworkErrors.isPaginationDone(it)){
+
+                        // handle the error message event so it doesn't display in UI
+                        event.getContentIfNotHandled()
+
+                        // set query exhausted to update RecyclerView with "No more results..." list item
+                        viewModel.setQueryExhausted(true)
+                    }
+                }
+            }
+        }
     }
 
     private fun subscribeObservers(){
         viewModel.dataState.observe(viewLifecycleOwner, Observer{ dataState ->
-            stateChangeListener.onDataStateChange(dataState)
             if(dataState != null){
+                checkPaginationEnd(dataState)
+                stateChangeListener.onDataStateChange(dataState)
                 dataState.data?.let {
                     it.data?.let{
                         it.getContentIfNotHandled()?.let{
@@ -74,26 +96,26 @@ class BlogFragment : BaseBlogFragment() {
         })
 
         viewModel.viewState.observe(viewLifecycleOwner, Observer{ viewState ->
+            Log.d(TAG, "BlogFragment, ViewState: ${viewState}")
             if(viewState != null){
-                groupAdapter?.updateAsync(viewState.blogList.toGroupieList())
+                recyclerAdapter?.submitList(viewState.blogList)
+                if(viewState.isQueryExhausted){
+                    recyclerAdapter?.setNoMoreResults()
+                }
             }
         })
     }
 
-    private fun List<BlogPost>.toGroupieList(): List<BlogItem>{
-        return this.map {
-            BlogItem(it, imageLoader)
-        }
-    }
 
     private fun initRecyclerView(){
         blog_post_recyclerview?.apply {
-            groupAdapter = GroupAdapter<ViewHolder>()
             layoutManager = LinearLayoutManager(this@BlogFragment.context)
-            val carouselDecoration = BottomSpacingItemDecoration(30)
-            removeItemDecoration(carouselDecoration) // does nothing if not applied already
-            addItemDecoration(carouselDecoration)
-            adapter = groupAdapter
+            val topSpacingDecorator = TopSpacingItemDecoration(30)
+            removeItemDecoration(topSpacingDecorator) // does nothing if not applied already
+            addItemDecoration(topSpacingDecorator)
+
+            recyclerAdapter = BlogRecyclerAdapter(imageLoader, this@BlogFragment)
+            adapter = recyclerAdapter
 
             addOnScrollListener(object: RecyclerView.OnScrollListener(){
 
@@ -110,6 +132,11 @@ class BlogFragment : BaseBlogFragment() {
         }
     }
 
+    override fun onBlogSelected(itemPosition: Int) {
+        Log.d(TAG, "BlogFragment, onBlogSelected: ${itemPosition}")
+    }
+
+
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
 
@@ -125,15 +152,12 @@ class BlogFragment : BaseBlogFragment() {
 
             searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
 
-                override fun onQueryTextSubmit(query: String?): Boolean {
-                    query?.let{
-                        Log.d(TAG, "onQueryTextSubmit: ${query}")
-                        viewModel.loadFirstPage(query)
-                        stateChangeListener.hideSoftKeyboard()
-                        focusable_view.requestFocus()
-                        return true
-                    }
-                    return false
+                override fun onQueryTextSubmit(query: String): Boolean {
+                    Log.e(TAG, "onQueryTextSubmit: ${query}")
+                    viewModel.loadFirstPage(query)
+                    stateChangeListener.hideSoftKeyboard()
+                    focusable_view.requestFocus()
+                    return true
                 }
 
                 override fun onQueryTextChange(newText: String?): Boolean {
@@ -141,14 +165,49 @@ class BlogFragment : BaseBlogFragment() {
                 }
 
             })
+
+            val searchPlate = searchView.findViewById(R.id.search_src_text) as EditText
+            searchPlate.setOnEditorActionListener { v, actionId, event ->
+
+                if (actionId == EditorInfo.IME_ACTION_UNSPECIFIED) {
+                    val searchQuery = v.text.toString()
+                    Log.e(TAG, "SearchPlate: executing search...: ${searchQuery}")
+                    if(searchQuery.isBlank()){
+                        viewModel.loadFirstPage("")
+                    }
+                    else{
+                        searchView.setQuery(searchQuery, true)
+                    }
+                }
+                true
+            }
+
+            val searchButton = searchView.findViewById(R.id.search_go_btn) as View
+            searchButton.setOnClickListener {
+                val searchQuery = searchPlate.text.toString()
+                Log.e(TAG, "SearchButton: executing search...: ${searchQuery}")
+                if(searchQuery.isBlank()){
+                    viewModel.loadFirstPage("")
+                }
+                else{
+                    searchView.setQuery(searchQuery, true)
+                }
+
+            }
         }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        groupAdapter = null
+        // clear references (can leak memory)
+        recyclerAdapter = null
     }
 }
+
+
+
+
+
 
 
 

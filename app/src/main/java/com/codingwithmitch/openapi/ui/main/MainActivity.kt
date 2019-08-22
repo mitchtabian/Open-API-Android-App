@@ -14,6 +14,7 @@ import com.codingwithmitch.openapi.ui.main.account.*
 import com.codingwithmitch.openapi.ui.main.blog.BaseBlogFragment
 import com.codingwithmitch.openapi.ui.main.create_blog.BaseCreateFragment
 import com.codingwithmitch.openapi.util.*
+import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -70,6 +71,9 @@ class MainActivity : BaseActivity(),
     // Cancel previous jobs when navigating to a new graph
     override fun onGraphChange() {
         cancelActiveJobs()
+
+        // show the toolbar when changing graphs. Otherwise it might be hidden
+        findViewById<AppBarLayout>(R.id.app_bar).setExpanded(true)
     }
 
     private fun cancelActiveJobs(){

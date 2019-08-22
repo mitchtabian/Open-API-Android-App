@@ -17,12 +17,16 @@ import javax.inject.Inject
 class BlogViewModel
 @Inject
 constructor(
-    val sessionManager: SessionManager,
-    val blogRepository: BlogRepository
+    private val sessionManager: SessionManager,
+    private val blogRepository: BlogRepository
 )
     : BaseViewModel<BlogStateEvent, BlogViewState>()
 {
 
+    init {
+        // set empty list to start
+        setBlogListData(ArrayList<BlogPost>())
+    }
     override fun handleStateEvent(stateEvent: BlogStateEvent): LiveData<DataState<BlogViewState>> {
         when(stateEvent){
             is BlogSearchEvent -> {
@@ -62,6 +66,18 @@ constructor(
                         value = DataState(null, Loading(false), null)
                     }
                 }
+            }
+        }
+    }
+
+    fun loadInitialBlogs(){
+        Log.d(TAG, "BlogViewModel: loadInitialBlogs called.")
+        // if the user hasn't made a query yet, show some blogs
+        viewState.value?.let {
+            Log.d(TAG, "BlogViewModel: viewState is NOT null")
+            if(it.blogList.size == 0){
+                Log.d(TAG, "BlogViewModel: blog list size is 0")
+                loadFirstPage("")
             }
         }
     }

@@ -3,11 +3,13 @@ package com.codingwithmitch.openapi.ui.main.account
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.models.AccountProperties
 import com.codingwithmitch.openapi.ui.main.account.state.AccountStateEvent.*
+import kotlinx.android.synthetic.main.activity_main.*
 
 import kotlinx.android.synthetic.main.fragment_account.*
 import kotlinx.android.synthetic.main.fragment_account.focusable_view
