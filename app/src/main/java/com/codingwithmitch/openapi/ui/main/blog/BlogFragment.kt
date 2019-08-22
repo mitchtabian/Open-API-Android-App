@@ -3,7 +3,9 @@ package com.codingwithmitch.openapi.ui.main.blog
 
 import android.app.SearchManager
 import android.content.Context.SEARCH_SERVICE
+import android.content.SharedPreferences
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.util.Log
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
@@ -22,17 +24,33 @@ import com.codingwithmitch.openapi.util.ErrorHandling
 import kotlinx.android.synthetic.main.fragment_blog.*
 import javax.inject.Inject
 import android.view.inputmethod.EditorInfo
-import android.widget.Button
-import android.widget.TextView
-import android.widget.EditText
+import android.widget.*
+import androidx.core.view.get
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.customview.customView
+import com.afollestad.materialdialogs.customview.getCustomView
+import com.codingwithmitch.openapi.repository.main.BlogQueryUtils.Companion.BLOG_FILTER_DATE_UPDATED
+import com.codingwithmitch.openapi.repository.main.BlogQueryUtils.Companion.BLOG_FILTER_USERNAME
+import com.codingwithmitch.openapi.repository.main.BlogQueryUtils.Companion.BLOG_ORDER_ASC
+import com.codingwithmitch.openapi.repository.main.BlogQueryUtils.Companion.ORDER_BY_ASC_DATE_UPDATED
+import com.codingwithmitch.openapi.ui.main.blog.state.BlogStateEvent
+import com.codingwithmitch.openapi.ui.main.blog.state.BlogStateEvent.*
+import com.codingwithmitch.openapi.util.PreferenceKeys.Companion.BLOG_FILTER
+import com.codingwithmitch.openapi.util.PreferenceKeys.Companion.BLOG_ORDER
 
 
-
-
-class BlogFragment : BaseBlogFragment(), BlogClickListener {
-
+class BlogFragment : BaseBlogFragment(),
+    BlogClickListener,
+    SharedPreferences.OnSharedPreferenceChangeListener
+{
     @Inject
     lateinit var imageLoader: ImageLoader
+
+    @Inject
+    lateinit var sharedPreferences: SharedPreferences
+
+    @Inject
+    lateinit var editor: SharedPreferences.Editor
 
     private lateinit var searchView: SearchView
     private var recyclerAdapter: BlogRecyclerAdapter? = null
@@ -193,6 +211,124 @@ class BlogFragment : BaseBlogFragment(), BlogClickListener {
 
             }
         }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
+        when(item.itemId){
+            R.id.action_filter_settings -> {
+                showFilterDialog()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    fun showFilterDialog(){
+
+        activity?.let {
+            val dialog = MaterialDialog(it)
+                .noAutoDismiss()
+                .customView(R.layout.layout_blog_filter)
+
+            val view = dialog.getCustomView()
+
+            val filter = sharedPreferences.getString(BLOG_FILTER, BLOG_FILTER_DATE_UPDATED)
+            val order = sharedPreferences.getString(BLOG_ORDER, BLOG_ORDER_ASC)
+
+            if(filter.equals(BLOG_FILTER_DATE_UPDATED)){
+                view.findViewById<RadioGroup>(R.id.filter_group).check(R.id.filter_date)
+            }
+            else{
+                view.findViewById<RadioGroup>(R.id.filter_group).check(R.id.filter_author)
+            }
+
+            if(order.equals(BLOG_ORDER_ASC)){
+                view.findViewById<RadioGroup>(R.id.order_group).check(R.id.filter_asc)
+            }
+            else{
+                view.findViewById<RadioGroup>(R.id.order_group).check(R.id.filter_desc)
+            }
+
+            view.findViewById<TextView>(R.id.positive_button).setOnClickListener{
+                Log.d(TAG, "FilterDialog: apply filter.")
+
+                val selectedFilter = dialog.getCustomView().findViewById<RadioButton>(
+                    dialog.getCustomView().findViewById<RadioGroup>(R.id.filter_group).checkedRadioButtonId
+                )
+                val selectedOrder= dialog.getCustomView().findViewById<RadioButton>(
+                    dialog.getCustomView().findViewById<RadioGroup>(R.id.order_group).checkedRadioButtonId
+                )
+
+                var filter = BLOG_FILTER_DATE_UPDATED
+                if(selectedFilter.text.toString().equals(getString(R.string.filter_author))){
+                    filter = BLOG_FILTER_USERNAME
+                }
+
+                var order = ""
+                if(selectedOrder.text.toString().equals(getString(R.string.filter_desc))){
+                    order = "-"
+                }
+                applyFilterOptions(
+                    filter,
+                    order
+                )
+                dialog.dismiss()
+            }
+
+            view.findViewById<TextView>(R.id.negative_button).setOnClickListener {
+                Log.d(TAG, "FilterDialog: cancelling filter.")
+                dialog.dismiss()
+            }
+
+            dialog.show()
+        }
+    }
+
+    fun applyFilterOptions(filter: String, order: String){
+        Log.d(TAG, "applyFilterOptions: $filter, $order")
+        editor.putString(BLOG_FILTER, filter)
+        editor.apply()
+
+
+        editor.putString(BLOG_ORDER, order)
+        editor.apply()
+    }
+
+    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
+
+        sharedPreferences?.let{
+            when(key){
+
+                BLOG_FILTER ->{
+                    viewModel.setBlogFilter(sharedPreferences.getString(key, BLOG_FILTER_DATE_UPDATED))
+                    onBlogFilterEvent()
+                }
+
+                BLOG_ORDER ->{
+                    sharedPreferences.getString(key, "")?.let{
+                        viewModel.setBlogOrder(it)
+                    }?: viewModel.setBlogOrder(BLOG_ORDER_ASC) // "" = ASC
+                    onBlogFilterEvent()
+                }
+                else -> return
+            }
+        }
+    }
+
+    fun onBlogFilterEvent(){
+        viewModel.setStateEvent(BlogSearchEvent())
+        blog_post_recyclerview.smoothScrollToPosition(0)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
     }
 
     fun onQuerySubmitted(){

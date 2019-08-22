@@ -36,7 +36,7 @@ constructor(
 
     private var job: Job? = null
 
-    fun searchBlogPosts(authToken: AuthToken, query: String, ordering: String, page: Int): LiveData<DataState<BlogViewState>> {
+    fun searchBlogPosts(authToken: AuthToken, query: String, filterAndOrder: String, page: Int): LiveData<DataState<BlogViewState>> {
 
         return object: NetworkBoundResource<BlogListSearchResponse, List<BlogPost>, BlogViewState>(){
 
@@ -98,7 +98,7 @@ constructor(
                 return BlogQueryUtils.returnOrderedBlogQuery(
                     blogPostDao = blogPostDao,
                     query = query,
-                    ordering = ordering,
+                    filterAndOrder = filterAndOrder,
                     page = page)
                     .switchMap {
                         object: LiveData<BlogViewState>(){
@@ -143,7 +143,7 @@ constructor(
                 return openApiMainService.searchListBlogPosts(
                     "Token ${authToken.token!!}",
                     query = query,
-                    ordering = ordering,
+                    ordering = filterAndOrder,
                     page = page
                 )
             }
@@ -161,7 +161,7 @@ constructor(
     }
 
     fun cancelRequests(){
-        Log.d(TAG, "AccountRepository: cancelling requests... ")
+        Log.d(TAG, "BlogRepository: cancelling requests... ")
         job?.cancel()
     }
 

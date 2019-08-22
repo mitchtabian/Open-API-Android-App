@@ -11,10 +11,16 @@ class BlogQueryUtils{
 
         private val TAG: String = "AppDebug"
 
-        val ORDER_BY_ASC_DATE_UPDATED = "date_updated"
-        val ORDER_BY_DESC_DATE_UPDATED = "-date_updated"
-        val ORDER_BY_ASC_USERNAME = "username"
-        val ORDER_BY_DESC_USERNAME = "-username"
+        // values
+        const val BLOG_ORDER_ASC: String = ""
+        const val BLOG_ORDER_DESC: String = "-"
+        const val BLOG_FILTER_USERNAME = "username"
+        const val BLOG_FILTER_DATE_UPDATED = "date_updated"
+
+        val ORDER_BY_ASC_DATE_UPDATED = BLOG_ORDER_ASC + BLOG_FILTER_DATE_UPDATED
+        val ORDER_BY_DESC_DATE_UPDATED = BLOG_ORDER_DESC + BLOG_FILTER_DATE_UPDATED
+        val ORDER_BY_ASC_USERNAME = BLOG_ORDER_ASC + BLOG_FILTER_USERNAME
+        val ORDER_BY_DESC_USERNAME = BLOG_ORDER_DESC + BLOG_FILTER_USERNAME
 
         /**
          * Options:
@@ -28,29 +34,29 @@ class BlogQueryUtils{
          * a Room query. (ex: can't pass 'date_updated' and use it as a field reference in the query)
          * @see BlogPostDao
          */
-        fun returnOrderedBlogQuery(blogPostDao: BlogPostDao, query: String, ordering: String, page: Int): LiveData<List<BlogPost>> {
+        fun returnOrderedBlogQuery(blogPostDao: BlogPostDao, query: String, filterAndOrder: String, page: Int): LiveData<List<BlogPost>> {
 
             when{
 
-                ordering.contains(ORDER_BY_DESC_DATE_UPDATED) ->{
+                filterAndOrder.contains(ORDER_BY_DESC_DATE_UPDATED) ->{
                     return blogPostDao.searchBlogPostsOrderByDateDESC(
                         query = query,
                         page = page)
                 }
 
-                ordering.contains(ORDER_BY_ASC_DATE_UPDATED) ->{
+                filterAndOrder.contains(ORDER_BY_ASC_DATE_UPDATED) ->{
                     return blogPostDao.searchBlogPostsOrderByDateASC(
                         query = query,
                         page = page)
                 }
 
-                ordering.contains(ORDER_BY_DESC_USERNAME) ->{
+                filterAndOrder.contains(ORDER_BY_DESC_USERNAME) ->{
                     return blogPostDao.searchBlogPostsOrderByAuthorDESC(
                         query = query,
                         page = page)
                 }
 
-                ordering.contains(ORDER_BY_ASC_USERNAME) ->{
+                filterAndOrder.contains(ORDER_BY_ASC_USERNAME) ->{
                     return blogPostDao.searchBlogPostsOrderByAuthorASC(
                         query = query,
                         page = page)

@@ -2,11 +2,10 @@ package com.codingwithmitch.openapi.ui
 
 import android.content.Context
 import android.util.Log
+import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import com.afollestad.materialdialogs.MaterialDialog
-import com.afollestad.materialdialogs.WhichButton
-import com.afollestad.materialdialogs.actions.setActionButtonEnabled
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.session.SessionManager
 import dagger.android.support.DaggerAppCompatActivity
@@ -37,6 +36,7 @@ abstract class BaseActivity : DaggerAppCompatActivity(),
     }
 
     abstract fun displayProgressBar(bool: Boolean)
+
 
     fun displayErrorDialog(errorMessage: String?){
         MaterialDialog(this)

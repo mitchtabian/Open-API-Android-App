@@ -1,8 +1,10 @@
 package com.codingwithmitch.openapi.ui.main.blog
 
+import android.content.SharedPreferences
 import android.util.Log
 import androidx.lifecycle.*
 import com.codingwithmitch.openapi.models.BlogPost
+import com.codingwithmitch.openapi.repository.main.BlogQueryUtils
 import com.codingwithmitch.openapi.repository.main.BlogRepository
 import com.codingwithmitch.openapi.session.SessionManager
 import com.codingwithmitch.openapi.ui.BaseViewModel
@@ -12,13 +14,16 @@ import com.codingwithmitch.openapi.ui.main.blog.state.BlogStateEvent
 import com.codingwithmitch.openapi.ui.main.blog.state.BlogStateEvent.*
 import com.codingwithmitch.openapi.ui.main.blog.state.BlogViewState
 import com.codingwithmitch.openapi.util.AbsentLiveData
+import com.codingwithmitch.openapi.util.PreferenceKeys.Companion.BLOG_FILTER
+import com.codingwithmitch.openapi.util.PreferenceKeys.Companion.BLOG_ORDER
 import javax.inject.Inject
 
 class BlogViewModel
 @Inject
 constructor(
     private val sessionManager: SessionManager,
-    private val blogRepository: BlogRepository
+    private val blogRepository: BlogRepository,
+    private val sharedPreferences: SharedPreferences
 )
     : BaseViewModel<BlogStateEvent, BlogViewState>()
 {
@@ -33,28 +38,24 @@ constructor(
                 return sessionManager.cachedToken.value?.let { authToken ->
                     blogRepository.searchBlogPosts(
                         authToken,
-                        stateEvent.searchQuery,
-                        stateEvent.order, // can't be null. see @BlogViewState class
-                        stateEvent.page // can't be null. see @BlogViewState class
+                        viewState.value!!.searchQuery,
+                        viewState.value!!.order + viewState.value!!.filter,
+                        viewState.value!!.page
                     )
                 }?: AbsentLiveData.create()
             }
 
-             is NextPageEvent -> {
-                 Log.d(TAG, "BlogViewModel: NextPageEvent detected...")
-                 return sessionManager.cachedToken.value?.let { authToken ->
-                     blogRepository.searchBlogPosts(
-                         authToken,
-                         viewState.value!!.searchQuery,
-                         viewState.value!!.order,
-                         viewState.value!!.page
-                     )
-                 }?: AbsentLiveData.create()
-             }
-
-
-            // is ChangeOrderEvent
-            //  -> New filter criteria is selected
+            is NextPageEvent -> {
+             Log.d(TAG, "BlogViewModel: NextPageEvent detected...")
+             return sessionManager.cachedToken.value?.let { authToken ->
+                 blogRepository.searchBlogPosts(
+                     authToken,
+                     viewState.value!!.searchQuery,
+                     viewState.value!!.order + viewState.value!!.filter,
+                     viewState.value!!.page
+                 )
+             }?: AbsentLiveData.create()
+            }
 
             // is BlogSelectedEvent
             //  -> Select a blog post from the list. Navigate to ViewBlogFragment
@@ -72,10 +73,9 @@ constructor(
 
     fun loadInitialBlogs(){
         // if the user hasn't made a query yet, show some blogs
-        viewState.value?.let {
-            if(it.blogList.size == 0){
-                loadFirstPage("")
-            }
+        val value = getCurrentViewStateOrNew()
+        if(value.blogList.size == 0){
+            loadFirstPage("")
         }
     }
 
@@ -83,8 +83,14 @@ constructor(
         setQueryInProgress(true)
         setQueryExhausted(false)
         resetPage()
+        setBlogFilter(
+            sharedPreferences.getString(BLOG_FILTER, BlogQueryUtils.BLOG_FILTER_DATE_UPDATED)
+        )
+        setBlogOrder(
+            sharedPreferences.getString(BLOG_ORDER, BlogQueryUtils.BLOG_FILTER_DATE_UPDATED)
+        )
         setQuery(query)
-        setStateEvent(BlogSearchEvent(query))
+        setStateEvent(BlogSearchEvent())
         Log.e(TAG, "BlogViewModel: loadFirstPage: ${viewState.value?.page}")
     }
 
@@ -134,6 +140,23 @@ constructor(
     fun setQueryInProgress(isInProgress: Boolean){
         val update = getCurrentViewStateOrNew()
         update.isQueryInProgress = isInProgress
+        _viewState.value = update
+    }
+
+    // Filter can be "date_updated" or "username"
+    fun setBlogFilter(filter: String?){
+        filter?.let{
+            val update = getCurrentViewStateOrNew()
+            update.filter = filter
+            _viewState.value = update
+        }
+    }
+
+    // Order can be "-" or ""
+    // Note: "-" = DESC, "" = ASC
+    fun setBlogOrder(order: String){
+        val update = getCurrentViewStateOrNew()
+        update.order = order
         _viewState.value = update
     }
 
