@@ -13,6 +13,7 @@ import com.codingwithmitch.openapi.ui.main.account.state.AccountStateEvent
 import com.codingwithmitch.openapi.ui.main.account.state.AccountStateEvent.*
 import com.codingwithmitch.openapi.ui.main.account.state.AccountViewState
 import com.codingwithmitch.openapi.ui.main.blog.state.BlogStateEvent
+import com.codingwithmitch.openapi.ui.main.blog.state.BlogViewState
 import com.codingwithmitch.openapi.util.*
 import javax.inject.Inject
 
@@ -69,18 +70,19 @@ constructor(
     }
 
     fun setAccountPropertiesData(accountProperties: AccountProperties){
-        _viewState.value?.let {
-            it.accountProperties?.let{
-                if(it == accountProperties){
-                    return
-                }
-            }
+        val update = getCurrentViewStateOrNew()
+        if(update.accountProperties == accountProperties){
+            return
         }
-        val update = _viewState.value?.let {
-            it
-        }?: AccountViewState()
         update.accountProperties = accountProperties
         _viewState.value = update
+    }
+
+    fun getCurrentViewStateOrNew(): AccountViewState {
+        val value = viewState.value?.let{
+            it
+        }?: AccountViewState()
+        return value
     }
 
     fun logout(){

@@ -1,6 +1,7 @@
 package com.codingwithmitch.openapi.util
 
 import android.util.Log
+import org.json.JSONException
 import org.json.JSONObject
 
 class ErrorHandling{
@@ -19,6 +20,8 @@ class ErrorHandling{
 
             val GENERIC_AUTH_ERROR = "Error"
             val PAGINATION_DONE_ERROR = "Invalid page."
+            val ERROR_CHECK_NETWORK_CONNECTION = "Check network connection."
+            val ERROR_UNKNOWN = "Unknown error"
 
 
             fun isNetworkError(msg: String): Boolean{
@@ -29,15 +32,22 @@ class ErrorHandling{
             }
 
             fun parseDetailJsonResponse(rawJson: String?): String{
-                if(!rawJson.isNullOrBlank()){
-                    return JSONObject(rawJson).get("detail") as String
+                Log.d(TAG, "parseDetailJsonResponse: ${rawJson}")
+                try{
+                    if(!rawJson.isNullOrBlank()){
+                        if(rawJson.equals(ERROR_CHECK_NETWORK_CONNECTION)){
+                            return PAGINATION_DONE_ERROR
+                        }
+                        return JSONObject(rawJson).get("detail") as String
+                    }
+                }catch (e: JSONException){
+                    Log.e(TAG, "parseDetailJsonResponse: ${e.message}")
                 }
                 return ""
             }
 
             fun isPaginationDone(errorResponse: String?): Boolean{
                 // if error response = '{"detail":"Invalid page."}' then pagination is finished
-                Log.d(TAG, "isPaginationDone: ${parseDetailJsonResponse(errorResponse)}")
                 return PAGINATION_DONE_ERROR.equals(parseDetailJsonResponse(errorResponse))
             }
         }

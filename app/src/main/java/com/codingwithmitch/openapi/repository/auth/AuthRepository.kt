@@ -28,10 +28,7 @@ import com.codingwithmitch.openapi.util.ErrorHandling.NetworkErrors.Companion.ER
 import com.codingwithmitch.openapi.util.ErrorHandling.NetworkErrors.Companion.GENERIC_AUTH_ERROR
 import com.codingwithmitch.openapi.util.PreferenceKeys
 import com.codingwithmitch.openapi.util.SuccessHandling.NetworkSuccessResponses.Companion.RESPONSE_CHECK_PREVIOUS_AUTH_USER_DONE
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import javax.inject.Inject
 
 class AuthRepository
@@ -58,10 +55,15 @@ constructor(
 
         return object: NetworkBoundResource<LoginResponse, Void, AuthViewState>() {
 
-            // not used in this case
-            override suspend fun createCacheRequestAndReturn() {
+            // not applicable
+            override fun isNetworkAvailable(): Boolean {
+                return sessionManager.isConnectedToTheInternet()
             }
 
+            // not applicable
+            override suspend fun createCacheRequestAndReturn() {
+
+            }
 
             override suspend fun handleApiSuccessResponse(response: ApiSuccessResponse<LoginResponse>) {
 
@@ -150,10 +152,16 @@ constructor(
         return object: NetworkBoundResource<RegistrationResponse, Void, AuthViewState>(){
 
 
-            // not used in this case
+            // not applicable
+            override fun isNetworkAvailable(): Boolean {
+                return sessionManager.isConnectedToTheInternet()
+            }
+
+            // not applicable
             override suspend fun createCacheRequestAndReturn() {
 
             }
+
 
             override suspend fun handleApiSuccessResponse(response: ApiSuccessResponse<RegistrationResponse>) {
 
@@ -258,6 +266,10 @@ constructor(
         }
         else{
             return object: NetworkBoundResource<Void, AccountProperties, AuthViewState>(){
+
+                override fun isNetworkAvailable(): Boolean {
+                    return sessionManager.isConnectedToTheInternet()
+                }
 
                 override suspend fun createCacheRequestAndReturn() {
                     accountPropertiesDao.searchByEmail(previousAuthUserEmail).let { accountProperties ->

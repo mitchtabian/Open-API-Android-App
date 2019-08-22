@@ -54,9 +54,11 @@ class BlogFragment : BaseBlogFragment(), BlogClickListener {
         viewModel.loadInitialBlogs()
     }
 
+    // check for end of pagination (with network request)
+    // must do this b/c server will return an ApiErrorResponse if page is not valid
     fun checkPaginationEnd(dataState: DataState<BlogViewState>?){
         dataState?.let{
-            it.error?.let{event ->
+            it.error?.let{ event ->
                 event.peekContent().response.message?.let{
                     if(ErrorHandling.NetworkErrors.isPaginationDone(it)){
 
@@ -82,14 +84,9 @@ class BlogFragment : BaseBlogFragment(), BlogClickListener {
                             Log.d(TAG, "BlogFragment, DataState: ${it}")
                             Log.d(TAG, "BlogFragment, DataState: isQueryInProgress?: ${it.isQueryInProgress}")
                             viewModel.setQueryInProgress(it.isQueryInProgress)
+                            viewModel.setQueryExhausted(it.isQueryExhausted)
                             viewModel.setBlogListData(it.blogList)
                         }
-                    }
-                }
-                dataState.error?.let{
-                    it.peekContent().let {
-                        Log.d(TAG, "BlogFragment, ErrorState: ${it}")
-                        viewModel.setQueryExhausted(ErrorHandling.NetworkErrors.isPaginationDone(it.response.message))
                     }
                 }
             }
@@ -155,8 +152,7 @@ class BlogFragment : BaseBlogFragment(), BlogClickListener {
                 override fun onQueryTextSubmit(query: String): Boolean {
                     Log.e(TAG, "onQueryTextSubmit: ${query}")
                     viewModel.loadFirstPage(query)
-                    stateChangeListener.hideSoftKeyboard()
-                    focusable_view.requestFocus()
+                    onQuerySubmitted()
                     return true
                 }
 
@@ -174,6 +170,7 @@ class BlogFragment : BaseBlogFragment(), BlogClickListener {
                     Log.e(TAG, "SearchPlate: executing search...: ${searchQuery}")
                     if(searchQuery.isBlank()){
                         viewModel.loadFirstPage("")
+                        onQuerySubmitted()
                     }
                     else{
                         searchView.setQuery(searchQuery, true)
@@ -188,6 +185,7 @@ class BlogFragment : BaseBlogFragment(), BlogClickListener {
                 Log.e(TAG, "SearchButton: executing search...: ${searchQuery}")
                 if(searchQuery.isBlank()){
                     viewModel.loadFirstPage("")
+                    onQuerySubmitted()
                 }
                 else{
                     searchView.setQuery(searchQuery, true)
@@ -195,6 +193,11 @@ class BlogFragment : BaseBlogFragment(), BlogClickListener {
 
             }
         }
+    }
+
+    fun onQuerySubmitted(){
+        stateChangeListener.hideSoftKeyboard()
+        focusable_view.requestFocus()
     }
 
     override fun onDestroyView() {

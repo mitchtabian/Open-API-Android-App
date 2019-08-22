@@ -3,6 +3,8 @@ package com.codingwithmitch.openapi.repository.main
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.switchMap
+import com.codingwithmitch.openapi.api.ApiEmptyResponse
+import com.codingwithmitch.openapi.api.ApiErrorResponse
 import com.codingwithmitch.openapi.api.ApiSuccessResponse
 import com.codingwithmitch.openapi.api.GenericApiResponse
 import com.codingwithmitch.openapi.api.main.OpenApiMainService
@@ -11,9 +13,12 @@ import com.codingwithmitch.openapi.models.AuthToken
 import com.codingwithmitch.openapi.models.BlogPost
 import com.codingwithmitch.openapi.persistence.BlogPostDao
 import com.codingwithmitch.openapi.repository.NetworkBoundResource
+import com.codingwithmitch.openapi.session.SessionManager
 import com.codingwithmitch.openapi.ui.DataState
+import com.codingwithmitch.openapi.ui.Response
 import com.codingwithmitch.openapi.ui.main.account.state.AccountViewState
 import com.codingwithmitch.openapi.ui.main.blog.state.BlogViewState
+import com.codingwithmitch.openapi.util.Constants.Companion.PAGINATION_PAGE_SIZE
 import com.codingwithmitch.openapi.util.DateUtils
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
@@ -23,7 +28,8 @@ class BlogRepository
 @Inject
 constructor(
     val openApiMainService: OpenApiMainService,
-    val blogPostDao: BlogPostDao
+    val blogPostDao: BlogPostDao,
+    val sessionManager: SessionManager
 )
 {
     private val TAG: String = "AppDebug"
@@ -34,8 +40,24 @@ constructor(
 
         return object: NetworkBoundResource<BlogListSearchResponse, List<BlogPost>, BlogViewState>(){
 
-            // not used in this case
+            override fun isNetworkAvailable(): Boolean {
+                Log.d(TAG, "isNetworkAvailable: ${sessionManager.isConnectedToTheInternet()}")
+                return sessionManager.isConnectedToTheInternet()
+            }
+
+            // if network is down, view cache only and return
             override suspend fun createCacheRequestAndReturn() {
+                withContext(Dispatchers.Main){
+
+                    // finishing by viewing db cache
+                    result.addSource(loadFromCache()){ viewState ->
+                        viewState.isQueryInProgress = false
+                        if(page * PAGINATION_PAGE_SIZE > viewState.blogList.size){
+                            viewState.isQueryExhausted = true
+                        }
+                        onCompleteJob(DataState.data(viewState, null))
+                    }
+                }
             }
 
             override suspend fun handleApiSuccessResponse(response: ApiSuccessResponse<BlogListSearchResponse>) {
@@ -60,6 +82,9 @@ constructor(
                     // finishing by viewing db cache
                     result.addSource(loadFromCache()){ viewState ->
                         viewState.isQueryInProgress = false
+                        if(page * PAGINATION_PAGE_SIZE > viewState.blogList.size){
+                            viewState.isQueryExhausted = true
+                        }
                         onCompleteJob(DataState.data(viewState, null))
                     }
                 }
