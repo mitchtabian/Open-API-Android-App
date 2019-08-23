@@ -2,6 +2,7 @@ package com.codingwithmitch.openapi.di.main
 
 import android.app.Application
 import coil.ImageLoader
+import coil.ImageLoaderBuilder
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.api.main.OpenApiMainService
 import com.codingwithmitch.openapi.persistence.AccountPropertiesDao
@@ -48,18 +49,32 @@ class MainModule {
     fun provideBlogRepository(
         openApiMainService: OpenApiMainService,
         blogPostDao: BlogPostDao,
+        accountPropertiesDao: AccountPropertiesDao,
         sessionManager: SessionManager
         ): BlogRepository{
-        return BlogRepository(openApiMainService, blogPostDao, sessionManager)
+        return BlogRepository(openApiMainService, blogPostDao, accountPropertiesDao, sessionManager)
     }
 
-    @MainScope
-    @Provides
-    fun provideCoilImageLoader(application: Application): ImageLoader{
-        return ImageLoader.invoke(application){
-            placeholder(R.drawable.white_background)
-            error(R.drawable.white_background)
-        }
-    }
+
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

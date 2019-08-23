@@ -4,12 +4,17 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
+import coil.ImageLoader
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.ui.main.BaseMainFragment
+import javax.inject.Inject
 
 abstract class BaseBlogFragment : BaseMainFragment(){
 
     lateinit var viewModel: BlogViewModel
+
+//    @Inject
+//    lateinit var imageLoader: ImageLoader
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

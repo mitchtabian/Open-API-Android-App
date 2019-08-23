@@ -134,6 +134,10 @@ class MainActivity : BaseActivity(),
         }
     }
 
+    override fun setActionBarTitle(title: String) {
+        supportActionBar?.setDisplayShowTitleEnabled(true)
+        supportActionBar?.setTitle(title)
+    }
 }
 
 

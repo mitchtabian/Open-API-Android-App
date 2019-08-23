@@ -16,7 +16,7 @@ import kotlinx.android.synthetic.main.layout_blog_list_item.view.*
 
 
 class BlogRecyclerAdapter(
-    val imageLoader: ImageLoader,
+//    val imageLoader: ImageLoader,
     var blogClickListener: BlogClickListener
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -24,11 +24,9 @@ class BlogRecyclerAdapter(
 
     private val NO_MORE_RESULTS = -1
     private val BLOG_ITEM = 0
-    val NO_MORE_RESULTS_BLOG_MARKER = BlogPost(NO_MORE_RESULTS, "" ,"", "", "", 0, "")
-
+    private val NO_MORE_RESULTS_BLOG_MARKER = BlogPost(NO_MORE_RESULTS, "" ,"", "", "", 0, "")
 
     private var items: List<BlogPost> = ArrayList()
-
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
 
@@ -44,14 +42,14 @@ class BlogRecyclerAdapter(
             BLOG_ITEM ->{
                 return BlogViewHolder(
                     LayoutInflater.from(parent.context).inflate(R.layout.layout_blog_list_item, parent, false),
-                    blogClickListener = blogClickListener,
-                    imageLoader = imageLoader
+                    blogClickListener = blogClickListener
+//                    imageLoader = imageLoader
                 )
             }
             else -> return BlogViewHolder(
                 LayoutInflater.from(parent.context).inflate(R.layout.layout_blog_list_item, parent, false),
-                blogClickListener = blogClickListener,
-                imageLoader = imageLoader
+                blogClickListener = blogClickListener
+//                imageLoader = imageLoader
             )
         }
     }
@@ -87,6 +85,9 @@ class BlogRecyclerAdapter(
         submitList(newList)
     }
 
+    fun findBlogPost(position: Int): BlogPost{
+        return items[position]
+    }
 
     fun submitList(blogList: List<BlogPost>){
         val oldList = items
@@ -98,7 +99,7 @@ class BlogRecyclerAdapter(
     class BlogViewHolder
     constructor(
         itemView: View,
-        val imageLoader: ImageLoader,
+//        val imageLoader: ImageLoader,
         val blogClickListener: BlogClickListener
     ): RecyclerView.ViewHolder(itemView), View.OnClickListener{
 
@@ -108,7 +109,8 @@ class BlogRecyclerAdapter(
         val blog_date_updated = itemView.blog_update_date
 
         fun bind(blogPost: BlogPost){
-            blog_image.load(blogPost.image, imageLoader)
+//            blog_image.load(blogPost.image, imageLoader)
+            blog_image.load(blogPost.image)
             blog_title.setText(blogPost.title)
             blog_author.setText(blogPost.username)
             blog_date_updated.setText(DateUtils.convertLongToStringDate(blogPost.date_updated))

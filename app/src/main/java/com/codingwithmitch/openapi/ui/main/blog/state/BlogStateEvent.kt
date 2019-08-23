@@ -8,6 +8,8 @@ sealed class BlogStateEvent{
 
     class NextPageEvent: BlogStateEvent()
 
+    class CheckAuthorOfBlogPost: BlogStateEvent()
+
     class None: BlogStateEvent()
 
 

@@ -3,6 +3,7 @@ package com.codingwithmitch.openapi.ui.main.blog
 import android.content.SharedPreferences
 import android.util.Log
 import androidx.lifecycle.*
+import com.codingwithmitch.openapi.models.AccountProperties
 import com.codingwithmitch.openapi.models.BlogPost
 import com.codingwithmitch.openapi.repository.main.BlogQueryUtils
 import com.codingwithmitch.openapi.repository.main.BlogRepository
@@ -55,6 +56,12 @@ constructor(
                      viewState.value!!.page
                  )
              }?: AbsentLiveData.create()
+            }
+
+            is CheckAuthorOfBlogPost ->{
+                return sessionManager.cachedToken.value?.let { authToken ->
+                    blogRepository.getAccountProperties(authToken)
+                }?: AbsentLiveData.create()
             }
 
             // is BlogSelectedEvent
@@ -160,12 +167,39 @@ constructor(
         _viewState.value = update
     }
 
+    fun setBlogPost(blogPost: BlogPost){
+        val update = getCurrentViewStateOrNew()
+        update.blogPost = blogPost
+        _viewState.value = update
+    }
+
+    fun setAccountProperties(accountProperties: AccountProperties){
+        val update = getCurrentViewStateOrNew()
+        update.accountProperties = accountProperties
+        _viewState.value = update
+    }
+
+    fun isAuthorOfBlogPost(): Boolean{
+//        val blogPostAuthorUsername = viewState.value?.let {
+//            it.blogPost?.username
+//        }
+//        val accountProperties = viewState.value?.let{
+//            it.accountProperties?.let {
+//                it
+//            }
+//        }
+//        return blogPostAuthorUsername.equals(accountProperties?.username)
+
+        return true
+    }
+
     fun getCurrentViewStateOrNew(): BlogViewState{
         val value = viewState.value?.let{
             it
         }?: BlogViewState()
         return value
     }
+
 
     fun cancelRequests(){
         blogRepository.cancelRequests()

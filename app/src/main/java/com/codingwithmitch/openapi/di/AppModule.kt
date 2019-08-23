@@ -4,6 +4,10 @@ import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.room.Room
+import coil.ImageLoader
+import coil.ImageLoaderBuilder
+import com.codingwithmitch.openapi.R
+import com.codingwithmitch.openapi.di.main.MainScope
 import com.codingwithmitch.openapi.persistence.AccountPropertiesDao
 import com.codingwithmitch.openapi.persistence.AppDatabase
 import com.codingwithmitch.openapi.persistence.AppDatabase.Companion.DATABASE_NAME
@@ -69,7 +73,6 @@ class AppModule{
     fun provideAccountPropertiesDao(db: AppDatabase): AccountPropertiesDao{
         return db.getAccountPropertiesDao()
     }
-
 
 }
 

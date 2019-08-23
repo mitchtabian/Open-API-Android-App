@@ -3,13 +3,11 @@ package com.codingwithmitch.openapi.ui.main.account
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.models.AccountProperties
 import com.codingwithmitch.openapi.ui.main.account.state.AccountStateEvent.*
-import kotlinx.android.synthetic.main.activity_main.*
 
 import kotlinx.android.synthetic.main.fragment_account.*
 import kotlinx.android.synthetic.main.fragment_account.focusable_view
@@ -71,7 +69,7 @@ class AccountFragment : BaseAccountFragment() {
     }
 
     private fun setupActionBar(){
-        activity?.actionBar?.title = getString(R.string.fragment_account)
+        stateChangeListener.setActionBarTitle(getString(R.string.fragment_account))
     }
 
     override fun onResume() {
@@ -86,12 +84,12 @@ class AccountFragment : BaseAccountFragment() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.account_view_menu, menu)
+        inflater.inflate(R.menu.edit_view_menu, menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
-            R.id.edit_account -> {
+            R.id.edit -> {
                 findNavController().navigate(R.id.action_accountFragment_to_updateAccountFragment)
                 return true
             }

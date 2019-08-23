@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.ImageLoader
 
 import com.codingwithmitch.openapi.R
-import com.codingwithmitch.openapi.ui.DataState
 import com.codingwithmitch.openapi.ui.main.blog.BlogRecyclerAdapter.BlogViewHolder.*
 import com.codingwithmitch.openapi.ui.main.blog.state.BlogViewState
 import com.codingwithmitch.openapi.util.TopSpacingItemDecoration
@@ -26,6 +25,7 @@ import javax.inject.Inject
 import android.view.inputmethod.EditorInfo
 import android.widget.*
 import androidx.core.view.get
+import androidx.navigation.fragment.findNavController
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
 import com.afollestad.materialdialogs.customview.getCustomView
@@ -33,8 +33,10 @@ import com.codingwithmitch.openapi.repository.main.BlogQueryUtils.Companion.BLOG
 import com.codingwithmitch.openapi.repository.main.BlogQueryUtils.Companion.BLOG_FILTER_USERNAME
 import com.codingwithmitch.openapi.repository.main.BlogQueryUtils.Companion.BLOG_ORDER_ASC
 import com.codingwithmitch.openapi.repository.main.BlogQueryUtils.Companion.ORDER_BY_ASC_DATE_UPDATED
+import com.codingwithmitch.openapi.ui.*
 import com.codingwithmitch.openapi.ui.main.blog.state.BlogStateEvent
 import com.codingwithmitch.openapi.ui.main.blog.state.BlogStateEvent.*
+import com.codingwithmitch.openapi.util.ErrorHandling.NetworkErrors.Companion.ERROR_UNKNOWN
 import com.codingwithmitch.openapi.util.PreferenceKeys.Companion.BLOG_FILTER
 import com.codingwithmitch.openapi.util.PreferenceKeys.Companion.BLOG_ORDER
 
@@ -43,8 +45,6 @@ class BlogFragment : BaseBlogFragment(),
     BlogClickListener,
     SharedPreferences.OnSharedPreferenceChangeListener
 {
-    @Inject
-    lateinit var imageLoader: ImageLoader
 
     @Inject
     lateinit var sharedPreferences: SharedPreferences
@@ -129,7 +129,8 @@ class BlogFragment : BaseBlogFragment(),
             removeItemDecoration(topSpacingDecorator) // does nothing if not applied already
             addItemDecoration(topSpacingDecorator)
 
-            recyclerAdapter = BlogRecyclerAdapter(imageLoader, this@BlogFragment)
+//            recyclerAdapter = BlogRecyclerAdapter(imageLoader, this@BlogFragment)
+            recyclerAdapter = BlogRecyclerAdapter(this@BlogFragment)
             adapter = recyclerAdapter
 
             addOnScrollListener(object: RecyclerView.OnScrollListener(){
@@ -148,7 +149,16 @@ class BlogFragment : BaseBlogFragment(),
     }
 
     override fun onBlogSelected(itemPosition: Int) {
-        Log.d(TAG, "BlogFragment, onBlogSelected: ${itemPosition}")
+        recyclerAdapter?.findBlogPost(itemPosition)?.let{
+            viewModel.setBlogPost(it)
+            findNavController().navigate(R.id.action_blogFragment_to_viewBlogFragment)
+        }?: stateChangeListener.onDataStateChange( // Can't use DataState.error b/c can't infer 'T' data type
+            DataState(
+                Event(StateError(Response(ERROR_UNKNOWN, useDialog = false, useToast = true))),
+                Loading(false),
+                Data(Event.dataEvent(null), null)
+            )
+        )
     }
 
 

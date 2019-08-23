@@ -106,7 +106,9 @@ class AuthActivity : BaseActivity() {
         }
     }
 
-
+    override fun setActionBarTitle(title: String) {
+        //ignore
+    }
 }
 
 
