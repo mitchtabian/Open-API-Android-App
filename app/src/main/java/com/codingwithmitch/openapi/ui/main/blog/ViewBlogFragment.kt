@@ -2,21 +2,15 @@ package com.codingwithmitch.openapi.ui.main.blog
 
 
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import coil.ImageLoader
-import coil.api.load
 
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.models.BlogPost
 import com.codingwithmitch.openapi.ui.main.blog.state.BlogStateEvent.*
 import com.codingwithmitch.openapi.util.DateUtils
 import kotlinx.android.synthetic.main.fragment_view_blog.*
-import kotlinx.coroutines.Dispatchers.Main
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 
 class ViewBlogFragment : BaseBlogFragment() {
 
@@ -33,6 +27,7 @@ class ViewBlogFragment : BaseBlogFragment() {
         setHasOptionsMenu(true)
         subscribeObservers()
         viewModel.setStateEvent(CheckAuthorOfBlogPost())
+        stateChangeListener.expandAppBar()
     }
 
     fun subscribeObservers(){
@@ -61,14 +56,13 @@ class ViewBlogFragment : BaseBlogFragment() {
     }
 
     fun setBlogProperties(blogPost: BlogPost){
-        GlobalScope.launch(Main){
-//            blog_image.load(blogPost.image, imageLoader)
-            blog_image.load(blogPost.image)
-            blog_title.setText(blogPost.title)
-            blog_author.setText(blogPost.username)
-            blog_update_date.setText(DateUtils.convertLongToStringDate(blogPost.date_updated))
-            blog_body.setText(blogPost.body)
-        }
+        requestManager
+            .load(blogPost.image)
+            .into(blog_image)
+        blog_title.setText(blogPost.title)
+        blog_author.setText(blogPost.username)
+        blog_update_date.setText(DateUtils.convertLongToStringDate(blogPost.date_updated))
+        blog_body.setText(blogPost.body)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

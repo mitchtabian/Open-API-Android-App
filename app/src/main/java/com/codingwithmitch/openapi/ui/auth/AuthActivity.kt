@@ -109,6 +109,10 @@ class AuthActivity : BaseActivity() {
     override fun setActionBarTitle(title: String) {
         //ignore
     }
+
+    override fun expandAppBar() {
+        // ignore
+    }
 }
 
 

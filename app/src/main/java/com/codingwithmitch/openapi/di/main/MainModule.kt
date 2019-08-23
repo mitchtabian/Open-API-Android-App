@@ -1,9 +1,5 @@
 package com.codingwithmitch.openapi.di.main
 
-import android.app.Application
-import coil.ImageLoader
-import coil.ImageLoaderBuilder
-import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.api.main.OpenApiMainService
 import com.codingwithmitch.openapi.persistence.AccountPropertiesDao
 import com.codingwithmitch.openapi.persistence.AppDatabase

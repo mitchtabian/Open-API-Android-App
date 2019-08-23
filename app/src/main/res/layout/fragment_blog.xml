@@ -15,11 +15,21 @@
           android:id="@+id/focusable_view">
     </View>
 
-    <androidx.recyclerview.widget.RecyclerView
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/blog_post_recyclerview"
-    />
+            android:layout_height="wrap_content"
+            android:id="@+id/swipe_refresh"
+    >
+
+        <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/blog_post_recyclerview"
+        />
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 

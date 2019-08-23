@@ -64,9 +64,6 @@ constructor(
                 }?: AbsentLiveData.create()
             }
 
-            // is BlogSelectedEvent
-            //  -> Select a blog post from the list. Navigate to ViewBlogFragment
-
             is None ->{
                 return object: LiveData<DataState<BlogViewState>>(){
                     override fun onActive() {
@@ -180,17 +177,15 @@ constructor(
     }
 
     fun isAuthorOfBlogPost(): Boolean{
-//        val blogPostAuthorUsername = viewState.value?.let {
-//            it.blogPost?.username
-//        }
-//        val accountProperties = viewState.value?.let{
-//            it.accountProperties?.let {
-//                it
-//            }
-//        }
-//        return blogPostAuthorUsername.equals(accountProperties?.username)
-
-        return true
+        val blogPostAuthorUsername = viewState.value?.let {
+            it.blogPost?.username
+        }
+        val accountProperties = viewState.value?.let{
+            it.accountProperties?.let {
+                it
+            }
+        }
+        return blogPostAuthorUsername.equals(accountProperties?.username)
     }
 
     fun getCurrentViewStateOrNew(): BlogViewState{

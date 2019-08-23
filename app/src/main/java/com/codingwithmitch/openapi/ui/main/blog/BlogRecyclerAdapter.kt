@@ -6,19 +6,27 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import coil.ImageLoader
-import coil.api.load
+import com.bumptech.glide.ListPreloader
+import com.bumptech.glide.RequestBuilder
+import com.bumptech.glide.RequestManager
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.models.BlogPost
 import com.codingwithmitch.openapi.ui.main.blog.BlogRecyclerAdapter.BlogViewHolder.*
 import com.codingwithmitch.openapi.util.DateUtils
 import kotlinx.android.synthetic.main.layout_blog_list_item.view.*
+import com.bumptech.glide.util.ViewPreloadSizeProvider
+import android.text.TextUtils
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class BlogRecyclerAdapter(
-//    val imageLoader: ImageLoader,
+    val requestManager: RequestManager,
+    val preloadSizeProvider: ViewPreloadSizeProvider<String>,
     var blogClickListener: BlogClickListener
-) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>(),
+        ListPreloader.PreloadModelProvider<String>
+{
 
     private val TAG: String = "AppDebug"
 
@@ -42,14 +50,16 @@ class BlogRecyclerAdapter(
             BLOG_ITEM ->{
                 return BlogViewHolder(
                     LayoutInflater.from(parent.context).inflate(R.layout.layout_blog_list_item, parent, false),
-                    blogClickListener = blogClickListener
-//                    imageLoader = imageLoader
+                    blogClickListener = blogClickListener,
+                    preloadSizeProvider = preloadSizeProvider,
+                    requestManager = requestManager
                 )
             }
             else -> return BlogViewHolder(
                 LayoutInflater.from(parent.context).inflate(R.layout.layout_blog_list_item, parent, false),
-                blogClickListener = blogClickListener
-//                imageLoader = imageLoader
+                blogClickListener = blogClickListener,
+                preloadSizeProvider = preloadSizeProvider,
+                requestManager = requestManager
             )
         }
     }
@@ -96,10 +106,22 @@ class BlogRecyclerAdapter(
         diffResult.dispatchUpdatesTo(this)
     }
 
+    override fun getPreloadItems(position: Int): List<String> {
+        val url = items.get(position).image
+        return if (TextUtils.isEmpty(url)) {
+            Collections.emptyList()
+        } else Collections.singletonList(url)
+    }
+
+    override fun getPreloadRequestBuilder(item: String): RequestBuilder<*>? {
+        return requestManager.load(item)
+    }
+
     class BlogViewHolder
     constructor(
         itemView: View,
-//        val imageLoader: ImageLoader,
+        val requestManager: RequestManager,
+        val preloadSizeProvider: ViewPreloadSizeProvider<String>,
         val blogClickListener: BlogClickListener
     ): RecyclerView.ViewHolder(itemView), View.OnClickListener{
 
@@ -109,13 +131,16 @@ class BlogRecyclerAdapter(
         val blog_date_updated = itemView.blog_update_date
 
         fun bind(blogPost: BlogPost){
-//            blog_image.load(blogPost.image, imageLoader)
-            blog_image.load(blogPost.image)
+            requestManager
+                .load(blogPost.image)
+                .into(blog_image)
             blog_title.setText(blogPost.title)
             blog_author.setText(blogPost.username)
             blog_date_updated.setText(DateUtils.convertLongToStringDate(blogPost.date_updated))
 
             itemView.setOnClickListener(this)
+
+            preloadSizeProvider.setView(itemView.findViewById(R.id.blog_image))
         }
 
         override fun onClick(v: View?) {
@@ -127,7 +152,6 @@ class BlogRecyclerAdapter(
             fun onBlogSelected(itemPosition: Int)
         }
     }
-
 
     class BlogItemDiffCallback(
         var oldBlogList: List<BlogPost>,
@@ -159,8 +183,6 @@ class BlogRecyclerAdapter(
             return (oldBlogList.get(oldItemPosition)
                     == newBlogList.get(newItemPosition))
         }
-
-
     }
 }
 

@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
-import coil.ImageLoader
+import com.bumptech.glide.RequestManager
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.ui.main.BaseMainFragment
 import javax.inject.Inject
@@ -13,8 +13,8 @@ abstract class BaseBlogFragment : BaseMainFragment(){
 
     lateinit var viewModel: BlogViewModel
 
-//    @Inject
-//    lateinit var imageLoader: ImageLoader
+    @Inject
+    lateinit var requestManager: RequestManager
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

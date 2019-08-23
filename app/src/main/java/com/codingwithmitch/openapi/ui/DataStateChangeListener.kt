@@ -8,4 +8,6 @@ interface DataStateChangeListener {
     fun hideSoftKeyboard()
 
     fun setActionBarTitle(title: String)
+
+    fun expandAppBar()
 }

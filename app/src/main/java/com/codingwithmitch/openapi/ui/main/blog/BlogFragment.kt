@@ -5,7 +5,6 @@ import android.app.SearchManager
 import android.content.Context.SEARCH_SERVICE
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.util.Log
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
@@ -13,7 +12,6 @@ import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import coil.ImageLoader
 
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.ui.main.blog.BlogRecyclerAdapter.BlogViewHolder.*
@@ -24,28 +22,28 @@ import kotlinx.android.synthetic.main.fragment_blog.*
 import javax.inject.Inject
 import android.view.inputmethod.EditorInfo
 import android.widget.*
-import androidx.core.view.get
 import androidx.navigation.fragment.findNavController
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
 import com.afollestad.materialdialogs.customview.getCustomView
 import com.codingwithmitch.openapi.repository.main.BlogQueryUtils.Companion.BLOG_FILTER_DATE_UPDATED
 import com.codingwithmitch.openapi.repository.main.BlogQueryUtils.Companion.BLOG_FILTER_USERNAME
 import com.codingwithmitch.openapi.repository.main.BlogQueryUtils.Companion.BLOG_ORDER_ASC
-import com.codingwithmitch.openapi.repository.main.BlogQueryUtils.Companion.ORDER_BY_ASC_DATE_UPDATED
 import com.codingwithmitch.openapi.ui.*
-import com.codingwithmitch.openapi.ui.main.blog.state.BlogStateEvent
 import com.codingwithmitch.openapi.ui.main.blog.state.BlogStateEvent.*
-import com.codingwithmitch.openapi.util.ErrorHandling.NetworkErrors.Companion.ERROR_UNKNOWN
 import com.codingwithmitch.openapi.util.PreferenceKeys.Companion.BLOG_FILTER
 import com.codingwithmitch.openapi.util.PreferenceKeys.Companion.BLOG_ORDER
+import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader
+import com.bumptech.glide.util.ViewPreloadSizeProvider
+import com.codingwithmitch.openapi.util.Constants.Companion.PAGINATION_PAGE_SIZE
 
 
 class BlogFragment : BaseBlogFragment(),
     BlogClickListener,
-    SharedPreferences.OnSharedPreferenceChangeListener
+    SharedPreferences.OnSharedPreferenceChangeListener,
+    SwipeRefreshLayout.OnRefreshListener
 {
-
     @Inject
     lateinit var sharedPreferences: SharedPreferences
 
@@ -53,7 +51,7 @@ class BlogFragment : BaseBlogFragment(),
     lateinit var editor: SharedPreferences.Editor
 
     private lateinit var searchView: SearchView
-    private var recyclerAdapter: BlogRecyclerAdapter? = null
+    private lateinit var recyclerAdapter: BlogRecyclerAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -66,6 +64,7 @@ class BlogFragment : BaseBlogFragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (activity as AppCompatActivity).supportActionBar?.setDisplayShowTitleEnabled(false)
+        swipe_refresh.setOnRefreshListener(this)
         setHasOptionsMenu(true)
         initRecyclerView()
         subscribeObservers()
@@ -104,6 +103,7 @@ class BlogFragment : BaseBlogFragment(),
                             viewModel.setQueryInProgress(it.isQueryInProgress)
                             viewModel.setQueryExhausted(it.isQueryExhausted)
                             viewModel.setBlogListData(it.blogList)
+                            blog_post_recyclerview.smoothScrollToPosition(0)
                         }
                     }
                 }
@@ -113,9 +113,9 @@ class BlogFragment : BaseBlogFragment(),
         viewModel.viewState.observe(viewLifecycleOwner, Observer{ viewState ->
             Log.d(TAG, "BlogFragment, ViewState: ${viewState}")
             if(viewState != null){
-                recyclerAdapter?.submitList(viewState.blogList)
+                recyclerAdapter.submitList(viewState.blogList)
                 if(viewState.isQueryExhausted){
-                    recyclerAdapter?.setNoMoreResults()
+                    recyclerAdapter.setNoMoreResults()
                 }
             }
         })
@@ -123,42 +123,42 @@ class BlogFragment : BaseBlogFragment(),
 
 
     private fun initRecyclerView(){
-        blog_post_recyclerview?.apply {
-            layoutManager = LinearLayoutManager(this@BlogFragment.context)
-            val topSpacingDecorator = TopSpacingItemDecoration(30)
-            removeItemDecoration(topSpacingDecorator) // does nothing if not applied already
-            addItemDecoration(topSpacingDecorator)
+        blog_post_recyclerview.layoutManager = LinearLayoutManager(this@BlogFragment.context)
+        val topSpacingDecorator = TopSpacingItemDecoration(30)
+        blog_post_recyclerview.removeItemDecoration(topSpacingDecorator) // does nothing if not applied already
+        blog_post_recyclerview.addItemDecoration(topSpacingDecorator)
 
-//            recyclerAdapter = BlogRecyclerAdapter(imageLoader, this@BlogFragment)
-            recyclerAdapter = BlogRecyclerAdapter(this@BlogFragment)
-            adapter = recyclerAdapter
+        val viewPreloader = ViewPreloadSizeProvider<String>()
+        recyclerAdapter = BlogRecyclerAdapter(requestManager, viewPreloader, this@BlogFragment)
+        val preloader = RecyclerViewPreloader<String>(
+            requestManager,
+            recyclerAdapter,
+            viewPreloader,
+            PAGINATION_PAGE_SIZE
+        )
 
-            addOnScrollListener(object: RecyclerView.OnScrollListener(){
+        blog_post_recyclerview.addOnScrollListener(preloader)
+        blog_post_recyclerview.addOnScrollListener(object: RecyclerView.OnScrollListener(){
 
-                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                    super.onScrollStateChanged(recyclerView, newState)
-                    val layoutManager = recyclerView.layoutManager as LinearLayoutManager
-                    val lastPosition = layoutManager.findLastVisibleItemPosition()
-                    if (lastPosition == adapter?.itemCount?.minus(1)) {
-                        Log.d(TAG, "BlogFragment: attempting to load next page...")
-                        viewModel.loadNextPage()
-                    }
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+                val lastPosition = layoutManager.findLastVisibleItemPosition()
+                if (lastPosition == recyclerAdapter.itemCount.minus(1)) {
+                    Log.d(TAG, "BlogFragment: attempting to load next page...")
+                    viewModel.loadNextPage()
                 }
-            })
-        }
+            }
+        })
+
+        blog_post_recyclerview.adapter = recyclerAdapter
     }
 
     override fun onBlogSelected(itemPosition: Int) {
-        recyclerAdapter?.findBlogPost(itemPosition)?.let{
+        recyclerAdapter.findBlogPost(itemPosition).let{
             viewModel.setBlogPost(it)
             findNavController().navigate(R.id.action_blogFragment_to_viewBlogFragment)
-        }?: stateChangeListener.onDataStateChange( // Can't use DataState.error b/c can't infer 'T' data type
-            DataState(
-                Event(StateError(Response(ERROR_UNKNOWN, useDialog = false, useToast = true))),
-                Loading(false),
-                Data(Event.dataEvent(null), null)
-            )
-        )
+        }
     }
 
 
@@ -193,7 +193,9 @@ class BlogFragment : BaseBlogFragment(),
             val searchPlate = searchView.findViewById(R.id.search_src_text) as EditText
             searchPlate.setOnEditorActionListener { v, actionId, event ->
 
-                if (actionId == EditorInfo.IME_ACTION_UNSPECIFIED) {
+                Log.d(TAG, "SearchPlate: clicked")
+
+                if (actionId == EditorInfo.IME_ACTION_UNSPECIFIED || actionId == EditorInfo.IME_ACTION_SEARCH ) {
                     val searchQuery = v.text.toString()
                     Log.e(TAG, "SearchPlate: executing search...: ${searchQuery}")
                     if(searchQuery.isBlank()){
@@ -328,7 +330,11 @@ class BlogFragment : BaseBlogFragment(),
 
     fun onBlogFilterEvent(){
         viewModel.setStateEvent(BlogSearchEvent())
-        blog_post_recyclerview.smoothScrollToPosition(0)
+    }
+
+    fun onQuerySubmitted(){
+        stateChangeListener.hideSoftKeyboard()
+        focusable_view.requestFocus()
     }
 
     override fun onResume() {
@@ -341,15 +347,15 @@ class BlogFragment : BaseBlogFragment(),
         sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
     }
 
-    fun onQuerySubmitted(){
-        stateChangeListener.hideSoftKeyboard()
-        focusable_view.requestFocus()
+    override fun onRefresh() {
+        onBlogFilterEvent()
+        swipe_refresh.isRefreshing = false
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         // clear references (can leak memory)
-        recyclerAdapter = null
+        blog_post_recyclerview.adapter = null
     }
 }
 
