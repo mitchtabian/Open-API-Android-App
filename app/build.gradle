@@ -36,6 +36,9 @@ android {
         }
     }
 
+    androidExtensions {
+        experimental = true
+    }
 
 }
 
@@ -116,6 +119,11 @@ dependencies {
     // Recyclerview
     def recyclerview_version = "1.0.0"
     implementation "androidx.recyclerview:recyclerview:$recyclerview_version"
+
+    // Groupie
+    def groupie_version = "2.4.0"
+    implementation "com.xwray:groupie:$groupie_version"
+    implementation "com.xwray:groupie-kotlin-android-extensions:$groupie_version"
 
     //glide
     def glide_version = "4.9.0"

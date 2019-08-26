@@ -26,8 +26,12 @@ class MainModule {
 
     @MainScope
     @Provides
-    fun provideMainRepository(openApiMainService: OpenApiMainService, accountPropertiesDao: AccountPropertiesDao): AccountRepository {
-        return AccountRepository(openApiMainService, accountPropertiesDao)
+    fun provideMainRepository(
+        openApiMainService: OpenApiMainService,
+        accountPropertiesDao: AccountPropertiesDao,
+        sessionManager: SessionManager
+        ): AccountRepository {
+        return AccountRepository(openApiMainService, accountPropertiesDao, sessionManager)
     }
 
     @MainScope

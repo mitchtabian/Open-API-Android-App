@@ -5,13 +5,24 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        tools:context=".ui.auth.LauncherFragment">
+        tools:context=".ui.auth.LauncherFragment"
+        android:fillViewport="true"
+>
 
     <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
 
     >
+
+        <View android:layout_width="0.5dp"
+              android:layout_height="0.5dp"
+              android:focusableInTouchMode="true"
+              app:layout_constraintTop_toTopOf="parent"
+              app:layout_constraintRight_toRightOf="parent"
+              app:layout_constraintLeft_toLeftOf="parent"
+              android:id="@+id/focusable_view">
+        </View>
 
         <ImageView
                 android:layout_width="0dp"
@@ -22,8 +33,11 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintBottom_toTopOf="@+id/login"
-                android:layout_marginTop="50dp"
+                app:layout_constraintVertical_chainStyle="packed"
+                app:layout_constraintVertical_bias=".4"
         />
+
+
 
         <TextView
                 android:layout_width="wrap_content"

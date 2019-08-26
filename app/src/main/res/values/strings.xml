@@ -50,6 +50,9 @@
     <string name="your_email">Your email</string>
     <string name="your_username">Your username</string>
     <string name="register">Register</string>
+    <string name="search">Search</string>
+    <string name="filter">Filter</string>
+    <string name="update_password">Update password</string>
 </resources>
 
 

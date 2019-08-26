@@ -37,6 +37,6 @@ class BlogSearchResponse(
 
 ) {
     override fun toString(): String {
-        return "BlogSearchResponse(pk=$pk, title='$title', slug='$slug', body='$body', image='$image', date_updated='$date_updated', username='$username')"
+        return "BlogSearchResponse(pk=$pk, title='$title', slug='$slug',  image='$image', date_updated='$date_updated', username='$username')"
     }
 }

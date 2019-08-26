@@ -8,10 +8,9 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 
 import com.codingwithmitch.openapi.R
-import com.codingwithmitch.openapi.ui.main.BaseFragment
 
 
-class CreateBlogFragment : BaseFragment() {
+class CreateBlogFragment : BaseCreateFragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

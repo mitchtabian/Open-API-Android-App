@@ -19,13 +19,13 @@ interface AuthTokenDao {
     suspend fun searchByToken(token: String): AuthToken
 
     @Query("SELECT * FROM auth_token WHERE account_pk = :pk")
-    suspend fun searchByPk(pk: Int): AuthToken
+    suspend fun searchByPk(pk: Int): AuthToken?
 
     @Query("SELECT * FROM auth_token")
-    suspend fun selectAll(): List<AuthToken>
+    suspend fun selectAll(): List<AuthToken>?
 
     @Query("UPDATE auth_token SET token = null WHERE account_pk = :pk")
-    suspend fun nullifyToken(pk: Int): Int
+    fun nullifyToken(pk: Int): Int
 }
 
 

@@ -2,6 +2,7 @@ package com.codingwithmitch.openapi.ui.auth
 
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -9,15 +10,11 @@ import android.view.animation.TranslateAnimation
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import android.widget.FrameLayout
-import android.widget.LinearLayout
-import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
-import com.afollestad.materialdialogs.MaterialDialog
 
 import com.codingwithmitch.openapi.R
+import com.codingwithmitch.openapi.ui.*
 import com.codingwithmitch.openapi.ui.auth.ForgotPasswordFragment.WebAppInterface.*
-import com.codingwithmitch.openapi.ui.auth.state.AuthDataState.*
 import com.codingwithmitch.openapi.util.Constants
 import kotlinx.android.synthetic.main.fragment_forgot_password.*
 import kotlinx.coroutines.CoroutineScope
@@ -29,20 +26,18 @@ class ForgotPasswordFragment : BaseAuthFragment() {
 
     lateinit var webView: WebView
 
+    lateinit var stateChangeListener: DataStateChangeListener
+
     val webInteractionCallback = object: OnWebInteractionCallback {
 
         override fun onError(errorMessage: String) {
             Log.e(TAG, "onError: $errorMessage")
 
-            activity?.also{
-                MaterialDialog(it)
-                    .title(R.string.text_error)
-                    .message(text = errorMessage){
-                        lineSpacing(2F)
-                    }
-                    .positiveButton(R.string.text_ok)
-                    .show()
-            }
+            // can't infer the DataState type so need to declare variable
+            val dataState: DataState<Any> = DataState.error(Response(errorMessage, false, false))
+            stateChangeListener.onDataStateChange(
+                dataState = dataState
+            )
         }
 
         override fun onSuccess(email: String) {
@@ -52,11 +47,9 @@ class ForgotPasswordFragment : BaseAuthFragment() {
 
         override fun onLoading(isLoading: Boolean) {
             CoroutineScope(Main).launch {
-                if(isLoading){
-                    viewModel.setDataState(data_state = Loading)
-                } else{
-                    viewModel.setDataState(data_state = Data(null))
-                }
+                stateChangeListener.onDataStateChange(
+                    DataState.loading(isLoading = isLoading, cachedData = null)
+                )
             }
         }
     }
@@ -82,11 +75,15 @@ class ForgotPasswordFragment : BaseAuthFragment() {
 
     @SuppressLint("SetJavaScriptEnabled")
     fun loadPasswordResetWebView(){
-        viewModel.setDataState(data_state = Loading)
+        stateChangeListener.onDataStateChange(
+            DataState.loading(isLoading = true, cachedData = null)
+        )
         webView.webViewClient = object: WebViewClient(){
             override fun onPageFinished(view: WebView?, url: String?) {
                 super.onPageFinished(view, url)
-                viewModel.setDataState(data_state = Data(null))
+                stateChangeListener.onDataStateChange(
+                    DataState.loading(isLoading = false, cachedData = null)
+                )
             }
         }
         webView.loadUrl(Constants.PASSWORD_RESET_URL)
@@ -139,7 +136,15 @@ class ForgotPasswordFragment : BaseAuthFragment() {
 
             fun onLoading(isLoading: Boolean)
         }
+    }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        try{
+            stateChangeListener = context as DataStateChangeListener
+        }catch(e: ClassCastException){
+            Log.e(TAG, "$context must implement DataStateChangeListener" )
+        }
     }
 }
 

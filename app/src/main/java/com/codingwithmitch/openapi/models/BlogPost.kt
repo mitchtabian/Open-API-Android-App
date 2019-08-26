@@ -52,6 +52,11 @@ data class BlogPost(
         return true
     }
 
+    override fun toString(): String {
+        return "BlogPost(pk=$pk, title='$title', slug='$slug', image='$image', date_updated=$date_updated, username='$username')"
+    }
+
+
 }
 
 

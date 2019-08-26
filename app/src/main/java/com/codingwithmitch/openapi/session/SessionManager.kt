@@ -1,9 +1,19 @@
 package com.codingwithmitch.openapi.session
 
+import android.app.Application
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
+import android.se.omapi.Session
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
+import com.codingwithmitch.openapi.models.AuthToken
 import com.codingwithmitch.openapi.persistence.AuthTokenDao
+import com.codingwithmitch.openapi.ui.DataState
+import com.codingwithmitch.openapi.ui.Response
+import com.codingwithmitch.openapi.ui.auth.state.AuthViewState
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
@@ -11,31 +21,31 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class SessionManager @Inject constructor(val authTokenDao: AuthTokenDao) {
+class SessionManager @Inject
+constructor(
+    val authTokenDao: AuthTokenDao,
+    val application: Application
+) {
 
-    private val TAG: String = "AppDebug";
+    private val TAG: String = "AppDebug"
 
-    private val cachedToken = MutableLiveData<SessionResource>()
+    private val _cachedToken = MutableLiveData<AuthToken>()
 
-    fun observeSession(): LiveData<SessionResource>{
-        return cachedToken
+    val cachedToken: LiveData<AuthToken>
+        get() = _cachedToken
+
+    fun login(newValue: AuthToken){
+        setValue(newValue)
     }
 
     fun logout(){
         Log.d(TAG, "logout: ")
 
-        // show loading
-        setValue(SessionResource(
-            authToken = cachedToken.value?.authToken,
-            errorMessage = null,
-            loading = true)
-        )
 
         CoroutineScope(IO).launch{
             var errorMessage: String? = null
             try{
-                cachedToken.value!!.authToken!!.account_pk?.let {
-                    authTokenDao.nullifyToken(it)
+                _cachedToken.value!!.account_pk?.let { authTokenDao.nullifyToken(it)
                 } ?: throw CancellationException("Token Error. Logging out user.")
             }catch (e: CancellationException) {
                 Log.e(TAG, "logout: ${e.message}")
@@ -46,27 +56,34 @@ class SessionManager @Inject constructor(val authTokenDao: AuthTokenDao) {
                 errorMessage = errorMessage + "\n" + e.message
             }
             finally {
+                errorMessage?.let{
+                    Log.e(TAG, "logout: ${errorMessage}" )
+                }
                 Log.d(TAG, "logout: finally")
-                setValue(SessionResource(
-                    authToken = null,
-                    errorMessage = errorMessage,
-                    loading = false)
-                )
+                setValue(null)
             }
         }
     }
 
-    fun login(newValue: SessionResource){
-        setValue(newValue)
-    }
-
-    fun setValue(newValue: SessionResource) {
+    fun setValue(newValue: AuthToken?) {
         GlobalScope.launch(Main) {
-            if (cachedToken.value != newValue) {
-                cachedToken.value = newValue
+            if (_cachedToken.value != newValue) {
+                _cachedToken.value = newValue
             }
         }
     }
+
+    fun isConnectedToTheInternet(): Boolean{
+        val cm = application.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        try{
+            return cm.activeNetworkInfo.isConnected
+        }catch (e: Exception){
+            Log.e(TAG, "isConnectedToTheInternet: ${e.message}")
+        }
+        return false
+    }
+
+
 }
 
 
