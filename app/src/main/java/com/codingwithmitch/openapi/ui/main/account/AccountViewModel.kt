@@ -7,9 +7,13 @@ import com.codingwithmitch.openapi.session.SessionManager
 import com.codingwithmitch.openapi.session.SessionStateEvent
 import com.codingwithmitch.openapi.ui.BaseViewModel
 import com.codingwithmitch.openapi.ui.DataState
+import com.codingwithmitch.openapi.ui.Loading
+import com.codingwithmitch.openapi.ui.auth.state.AuthViewState
 import com.codingwithmitch.openapi.ui.main.account.state.AccountStateEvent
 import com.codingwithmitch.openapi.ui.main.account.state.AccountStateEvent.*
 import com.codingwithmitch.openapi.ui.main.account.state.AccountViewState
+import com.codingwithmitch.openapi.ui.main.blog.state.BlogStateEvent
+import com.codingwithmitch.openapi.ui.main.blog.state.BlogViewState
 import com.codingwithmitch.openapi.util.*
 import javax.inject.Inject
 
@@ -54,25 +58,31 @@ constructor(
                     )
                 }?: AbsentLiveData.create()
             }
-            else -> {
-                return AbsentLiveData.create()
+            is None ->{
+                return object: LiveData<DataState<AccountViewState>>(){
+                    override fun onActive() {
+                        super.onActive()
+                        value = DataState(null, Loading(false), null)
+                    }
+                }
             }
         }
     }
 
     fun setAccountPropertiesData(accountProperties: AccountProperties){
-        _viewState.value?.let {
-            it.accountProperties?.let{
-                if(it == accountProperties){
-                    return
-                }
-            }
+        val update = getCurrentViewStateOrNew()
+        if(update.accountProperties == accountProperties){
+            return
         }
-        val update = _viewState.value?.let {
-            it
-        }?: AccountViewState()
         update.accountProperties = accountProperties
         _viewState.value = update
+    }
+
+    fun getCurrentViewStateOrNew(): AccountViewState {
+        val value = viewState.value?.let{
+            it
+        }?: AccountViewState()
+        return value
     }
 
     fun logout(){
@@ -81,12 +91,18 @@ constructor(
 
     fun cancelRequests(){
         accountRepository.cancelRequests()
+        handlePendingData()
+    }
+
+    fun handlePendingData(){
+        setStateEvent(None())
     }
 
     override fun onCleared() {
         super.onCleared()
         cancelRequests()
     }
+
 
 
 }

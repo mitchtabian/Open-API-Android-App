@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import com.codingwithmitch.openapi.ui.main.blog.state.BlogViewState
 
 
 abstract class BaseViewModel<StateEvent, ViewState> : ViewModel()
@@ -12,9 +13,8 @@ abstract class BaseViewModel<StateEvent, ViewState> : ViewModel()
 
     val TAG: String = "AppDebug"
 
-    val _stateEvent: MutableLiveData<StateEvent> = MutableLiveData()
-
-    val _viewState: MutableLiveData<ViewState> = MutableLiveData()
+    protected val _stateEvent: MutableLiveData<StateEvent> = MutableLiveData()
+    protected val _viewState: MutableLiveData<ViewState> = MutableLiveData()
 
     val viewState: LiveData<ViewState>
         get() = _viewState

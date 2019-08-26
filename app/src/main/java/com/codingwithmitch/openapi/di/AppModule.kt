@@ -18,6 +18,11 @@ import dagger.Provides
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.RequestManager
+import com.codingwithmitch.openapi.R
+
 
 @Module
 class AppModule{
@@ -70,6 +75,20 @@ class AppModule{
         return db.getAccountPropertiesDao()
     }
 
+    @Singleton
+    @Provides
+    fun provideRequestOptions(): RequestOptions {
+        return RequestOptions
+            .placeholderOf(R.drawable.default_image)
+            .error(R.drawable.default_image)
+    }
+
+    @Singleton
+    @Provides
+    fun provideGlideInstance(application: Application, requestOptions: RequestOptions): RequestManager {
+        return Glide.with(application)
+            .setDefaultRequestOptions(requestOptions)
+    }
 
 }
 

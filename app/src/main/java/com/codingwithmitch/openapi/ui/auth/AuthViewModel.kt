@@ -6,9 +6,10 @@ import com.codingwithmitch.openapi.models.AuthToken
 import com.codingwithmitch.openapi.repository.auth.AuthRepository
 import com.codingwithmitch.openapi.ui.BaseViewModel
 import com.codingwithmitch.openapi.ui.DataState
+import com.codingwithmitch.openapi.ui.Loading
 import com.codingwithmitch.openapi.ui.auth.state.*
 import com.codingwithmitch.openapi.ui.auth.state.AuthStateEvent.*
-import com.codingwithmitch.openapi.util.AbsentLiveData
+import com.codingwithmitch.openapi.ui.main.blog.state.BlogViewState
 import javax.inject.Inject
 
 class AuthViewModel
@@ -41,58 +42,45 @@ constructor(
             is CheckPreviousAuthEvent -> {
                 return authRepository.checkPreviousAuthUser()
             }
+
+
         }
     }
 
     fun setRegistrationFields(registrationFields: RegistrationFields){
-        _viewState.value?.let {
-            it.registrationFields?.let{
-                if(it == registrationFields){
-                    return
-                }
-            }
+        val update = getCurrentViewStateOrNew()
+        if(update.registrationFields == registrationFields){
+            return
         }
-        val update = _viewState.value?.let {
-            it
-        }?: AuthViewState()
         update.registrationFields = registrationFields
         _viewState.value = update
     }
 
     fun setLoginFields(loginFields: LoginFields){
-        _viewState.value?.let {
-            it.loginFields?.let{
-                if(it == loginFields){
-                    return
-                }
-            }
+        val update = getCurrentViewStateOrNew()
+        if(update.loginFields == loginFields){
+            return
         }
-        val update = _viewState.value?.let {
-            it
-        }?: AuthViewState()
         update.loginFields = loginFields
         _viewState.value = update
     }
 
     fun setAuthToken(authToken: AuthToken){
-        _viewState.value?.let {
-            it.authToken?.let{
-                if(it == authToken){
-                    return
-                }
-            }
+        val update = getCurrentViewStateOrNew()
+        if(update.authToken == authToken){
+            return
         }
-        val update = _viewState.value?.let {
-            it
-        }?: AuthViewState()
         update.authToken = authToken
         _viewState.value = update
     }
 
-
-    override fun onCleared() {
-        super.onCleared()
+    fun getCurrentViewStateOrNew(): AuthViewState {
+        val value = viewState.value?.let{
+            it
+        }?: AuthViewState()
+        return value
     }
+
 }
 
 

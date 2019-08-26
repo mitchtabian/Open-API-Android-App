@@ -34,8 +34,19 @@ constructor(
     fun getAccountProperties(authToken: AuthToken): LiveData<DataState<AccountViewState>> {
         return object: NetworkBoundResource<AccountProperties, AccountProperties, AccountViewState>(){
 
-            // not used in this case
+            override fun isNetworkAvailable(): Boolean {
+                return sessionManager.isConnectedToTheInternet()
+            }
+
+            // if network is down, view the cache and return
             override suspend fun createCacheRequestAndReturn() {
+                withContext(Dispatchers.Main){
+
+                    // finishing by viewing db cache
+                    result.addSource(loadFromCache()){ viewState ->
+                        onCompleteJob(DataState.data(viewState, null))
+                    }
+                }
             }
 
             override suspend fun handleApiSuccessResponse(response: ApiSuccessResponse<AccountProperties>) {
@@ -44,7 +55,9 @@ constructor(
                 withContext(Dispatchers.Main){
 
                     // finishing by viewing db cache
-                    addSourceToResult(loadFromCache(), false)
+                    result.addSource(loadFromCache()){ viewState ->
+                        onCompleteJob(DataState.data(viewState, null))
+                    }
                 }
             }
 
@@ -98,8 +111,14 @@ constructor(
     fun saveAccountProperties(authToken: AuthToken, accountProperties: AccountProperties): LiveData<DataState<AccountViewState>> {
         return object: NetworkBoundResource<GenericResponse, AccountProperties, AccountViewState>(){
 
-            // not used in this case
+            // not applicable
+            override fun isNetworkAvailable(): Boolean {
+                return sessionManager.isConnectedToTheInternet()
+            }
+
+            // not applicable
             override suspend fun createCacheRequestAndReturn() {
+
             }
 
             override suspend fun handleApiSuccessResponse(response: ApiSuccessResponse<GenericResponse>) {
@@ -159,8 +178,14 @@ constructor(
     fun updatePassword(authToken: AuthToken, currentPassword: String, newPassword: String, confirmNewPassword: String): LiveData<DataState<AccountViewState>> {
         return object: NetworkBoundResource<GenericResponse, Any, AccountViewState>(){
 
-            // not used in this case
+            // not applicable
+            override fun isNetworkAvailable(): Boolean {
+                return sessionManager.isConnectedToTheInternet()
+            }
+
+            // not applicable
             override suspend fun createCacheRequestAndReturn() {
+
             }
 
             override suspend fun handleApiSuccessResponse(response: ApiSuccessResponse<GenericResponse>) {

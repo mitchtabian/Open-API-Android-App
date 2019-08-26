@@ -42,8 +42,35 @@ class MainModule {
 
     @MainScope
     @Provides
-    fun provideBlogRepository(openApiMainService: OpenApiMainService, blogPostDao: BlogPostDao): BlogRepository{
-        return BlogRepository(openApiMainService, blogPostDao)
+    fun provideBlogRepository(
+        openApiMainService: OpenApiMainService,
+        blogPostDao: BlogPostDao,
+        accountPropertiesDao: AccountPropertiesDao,
+        sessionManager: SessionManager
+        ): BlogRepository{
+        return BlogRepository(openApiMainService, blogPostDao, accountPropertiesDao, sessionManager)
     }
 
+
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

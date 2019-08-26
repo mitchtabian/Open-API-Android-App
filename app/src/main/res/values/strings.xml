@@ -53,7 +53,33 @@
     <string name="search">Search</string>
     <string name="filter">Filter</string>
     <string name="update_password">Update password</string>
+    <string name="filter_asc">ASC</string>
+    <string name="filter_desc">DESC</string>
+    <string name="filter_author">Author</string>
+    <string name="filter_date">Date</string>
+    <string name="asc_desc">Ascending or descending order</string>
+    <string name="author_or_date">Filter by author or date</string>
+    <string name="filter_options">Filter options</string>
+
 </resources>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

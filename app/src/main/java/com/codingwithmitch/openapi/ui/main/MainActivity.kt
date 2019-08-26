@@ -5,9 +5,9 @@ import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
-import android.widget.ProgressBar
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
+import com.bumptech.glide.RequestManager
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.ui.*
 import com.codingwithmitch.openapi.ui.auth.AuthActivity
@@ -15,8 +15,10 @@ import com.codingwithmitch.openapi.ui.main.account.*
 import com.codingwithmitch.openapi.ui.main.blog.BaseBlogFragment
 import com.codingwithmitch.openapi.ui.main.create_blog.BaseCreateFragment
 import com.codingwithmitch.openapi.util.*
+import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_main.*
+import javax.inject.Inject
 
 class MainActivity : BaseActivity(),
     BottomNavController.NavGraphProvider,
@@ -71,6 +73,7 @@ class MainActivity : BaseActivity(),
     // Cancel previous jobs when navigating to a new graph
     override fun onGraphChange() {
         cancelActiveJobs()
+        expandAppBar()
     }
 
     private fun cancelActiveJobs(){
@@ -88,6 +91,7 @@ class MainActivity : BaseActivity(),
                 }
             }
         }
+        displayProgressBar(false)
     }
 
     override fun onBackPressed() = bottomNavController.onBackPressed()
@@ -130,6 +134,14 @@ class MainActivity : BaseActivity(),
         }
     }
 
+    override fun setActionBarTitle(title: String) {
+        supportActionBar?.setDisplayShowTitleEnabled(true)
+        supportActionBar?.setTitle(title)
+    }
+
+    override fun expandAppBar() {
+        findViewById<AppBarLayout>(R.id.app_bar).setExpanded(true)
+    }
 }
 
 

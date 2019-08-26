@@ -5,9 +5,15 @@ class PreferenceKeys {
     companion object{
 
         // Shared Preference Files:
-        public val APP_PREFERENCES: String = "com.codingwithmitch.openapi.APP_PREFERENCES"
+        const val APP_PREFERENCES: String = "com.codingwithmitch.openapi.APP_PREFERENCES"
 
         // Shared Preference Keys
-        public val PREVIOUS_AUTH_USER: String = "com.codingwithmitch.openapi.PREVIOUS_AUTH_USER"
+        const val PREVIOUS_AUTH_USER: String = "com.codingwithmitch.openapi.PREVIOUS_AUTH_USER"
+        const val BLOG_FILTER: String = "com.codingwithmitch.openapi.BLOG_FILTER"
+        const val BLOG_ORDER: String = "com.codingwithmitch.openapi.BLOG_ORDER"
+
+
+
+
     }
 }

@@ -1,34 +1,108 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<androidx.core.widget.NestedScrollView
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        tools:context=".ui.main.blog.ViewBlogFragment">
+        tools:context=".ui.main.blog.ViewBlogFragment"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+        android:background="#fff"
+>
 
-    <TextView
-            android:layout_width="wrap_content"
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:textSize="25sp"
-            android:text="ViewBlogFragment"
-    />
+            android:layout_marginBottom="20dp"
 
-    <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintVertical_bias=".65"
-            android:textSize="25sp"
-            android:text="Update some blog"
-            android:id="@+id/update_blog"
-    />
+    >
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/blog_image"
+                android:id="@+id/blog_title"
+                android:gravity="center_vertical"
+                android:layout_marginStart="10dp"
+                android:text="The Title of a Blog"
+                android:textColor="#000"
+                android:textSize="19sp"
+                android:textStyle="bold"
+        />
+
+        <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/blog_title"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/container1"
+                android:id="@+id/blog_image"
+                android:scaleType="fitXY"
+                android:adjustViewBounds="true"
+                app:layout_constraintVertical_chainStyle="packed"
+        />
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/blog_image"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:orientation="vertical"
+                android:padding="10dp"
+                android:id="@+id/container1"
+        >
+
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/blog_author"
+                    android:text="Mitch Tabian"
+                    android:textColor="@color/grey5"
+                    android:textSize="15sp"
+            />
+
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/blog_update_date"
+                    android:text="Updated on July 23, 2019"
+                    android:textColor="@color/grey5"
+                    android:textSize="13sp"
+                    android:layout_marginTop="10dp"
+            />
+
+            <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:background="@color/grey4"
+                    android:layout_marginTop="10dp"
+            >
+
+            </View>
+
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/blog_body"
+                    android:text="This is some blog content"
+                    android:textColor="#000"
+                    android:textSize="17sp"
+                    android:layout_marginTop="10dp"
+            />
+
+
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
+</androidx.core.widget.NestedScrollView>

@@ -3,17 +3,24 @@ package com.codingwithmitch.openapi.repository.main
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.switchMap
+import com.codingwithmitch.openapi.api.ApiEmptyResponse
+import com.codingwithmitch.openapi.api.ApiErrorResponse
 import com.codingwithmitch.openapi.api.ApiSuccessResponse
 import com.codingwithmitch.openapi.api.GenericApiResponse
 import com.codingwithmitch.openapi.api.main.OpenApiMainService
 import com.codingwithmitch.openapi.api.main.network_responses.BlogListSearchResponse
+import com.codingwithmitch.openapi.models.AccountProperties
 import com.codingwithmitch.openapi.models.AuthToken
 import com.codingwithmitch.openapi.models.BlogPost
+import com.codingwithmitch.openapi.persistence.AccountPropertiesDao
 import com.codingwithmitch.openapi.persistence.BlogPostDao
 import com.codingwithmitch.openapi.repository.NetworkBoundResource
+import com.codingwithmitch.openapi.session.SessionManager
 import com.codingwithmitch.openapi.ui.DataState
+import com.codingwithmitch.openapi.ui.Response
 import com.codingwithmitch.openapi.ui.main.account.state.AccountViewState
 import com.codingwithmitch.openapi.ui.main.blog.state.BlogViewState
+import com.codingwithmitch.openapi.util.Constants.Companion.PAGINATION_PAGE_SIZE
 import com.codingwithmitch.openapi.util.DateUtils
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
@@ -23,19 +30,37 @@ class BlogRepository
 @Inject
 constructor(
     val openApiMainService: OpenApiMainService,
-    val blogPostDao: BlogPostDao
+    val blogPostDao: BlogPostDao,
+    val accountPropertiesDao: AccountPropertiesDao,
+    val sessionManager: SessionManager
 )
 {
     private val TAG: String = "AppDebug"
 
     private var job: Job? = null
 
-    fun searchBlogPosts(authToken: AuthToken, query: String, ordering: String, page: Int): LiveData<DataState<BlogViewState>> {
+    fun searchBlogPosts(authToken: AuthToken, query: String, filterAndOrder: String, page: Int): LiveData<DataState<BlogViewState>> {
 
         return object: NetworkBoundResource<BlogListSearchResponse, List<BlogPost>, BlogViewState>(){
 
-            // not used in this case
+            override fun isNetworkAvailable(): Boolean {
+                Log.d(TAG, "isNetworkAvailable: ${sessionManager.isConnectedToTheInternet()}")
+                return sessionManager.isConnectedToTheInternet()
+            }
+
+            // if network is down, view cache only and return
             override suspend fun createCacheRequestAndReturn() {
+                withContext(Dispatchers.Main){
+
+                    // finishing by viewing db cache
+                    result.addSource(loadFromCache()){ viewState ->
+                        viewState.isQueryInProgress = false
+                        if(page * PAGINATION_PAGE_SIZE > viewState.blogList.size){
+                            viewState.isQueryExhausted = true
+                        }
+                        onCompleteJob(DataState.data(viewState, null))
+                    }
+                }
             }
 
             override suspend fun handleApiSuccessResponse(response: ApiSuccessResponse<BlogListSearchResponse>) {
@@ -58,7 +83,13 @@ constructor(
                 withContext(Dispatchers.Main){
 
                     // finishing by viewing db cache
-                    addSourceToResult(loadFromCache(), false)
+                    result.addSource(loadFromCache()){ viewState ->
+                        viewState.isQueryInProgress = false
+                        if(page * PAGINATION_PAGE_SIZE > viewState.blogList.size){
+                            viewState.isQueryExhausted = true
+                        }
+                        onCompleteJob(DataState.data(viewState, null))
+                    }
                 }
             }
 
@@ -70,13 +101,13 @@ constructor(
                 return BlogQueryUtils.returnOrderedBlogQuery(
                     blogPostDao = blogPostDao,
                     query = query,
-                    ordering = ordering,
+                    filterAndOrder = filterAndOrder,
                     page = page)
                     .switchMap {
                         object: LiveData<BlogViewState>(){
                             override fun onActive() {
                                 super.onActive()
-                                value = BlogViewState(blogList = it)
+                                value = BlogViewState(blogList = it, isQueryInProgress = true)
                             }
                         }
                     }
@@ -115,7 +146,7 @@ constructor(
                 return openApiMainService.searchListBlogPosts(
                     "Token ${authToken.token!!}",
                     query = query,
-                    ordering = ordering,
+                    ordering = filterAndOrder,
                     page = page
                 )
             }
@@ -132,8 +163,86 @@ constructor(
         }.asLiveData()
     }
 
+    fun getAccountProperties(authToken: AuthToken): LiveData<DataState<BlogViewState>> {
+        return object: NetworkBoundResource<AccountProperties, AccountProperties, BlogViewState>(){
+
+            override fun isNetworkAvailable(): Boolean {
+                return sessionManager.isConnectedToTheInternet()
+            }
+
+            // if network is down, view the cache and return
+            override suspend fun createCacheRequestAndReturn() {
+                withContext(Dispatchers.Main){
+
+                    // finishing by viewing db cache
+                    result.addSource(loadFromCache()){ viewState ->
+                        onCompleteJob(DataState.data(viewState, null))
+                    }
+                }
+            }
+
+            override suspend fun handleApiSuccessResponse(response: ApiSuccessResponse<AccountProperties>) {
+                updateLocalDb(response.body)
+
+                withContext(Dispatchers.Main){
+
+                    // finishing by viewing db cache
+                    result.addSource(loadFromCache()){ viewState ->
+                        onCompleteJob(DataState.data(viewState, null))
+                    }
+                }
+            }
+
+            override fun cancelOperationIfNoInternetConnection(): Boolean {
+                return false
+            }
+
+            override fun loadFromCache(): LiveData<BlogViewState> {
+
+                return accountPropertiesDao.searchByPk(authToken.account_pk!!)
+                    .switchMap {
+                        object: LiveData<BlogViewState>(){
+                            override fun onActive() {
+                                super.onActive()
+                                value = BlogViewState(accountProperties = it)
+                            }
+                        }
+                    }
+            }
+
+            override fun createCall(): LiveData<GenericApiResponse<AccountProperties>> {
+                return openApiMainService.getAccountProperties("Token ${authToken.token!!}")
+            }
+
+            override suspend fun updateLocalDb(accountProp: AccountProperties?) {
+                accountProp?.let {
+                    accountPropertiesDao.updateAccountProperties(
+                        accountProp.pk,
+                        accountProp.email,
+                        accountProp.username
+                    )
+                }
+            }
+
+            override fun shouldLoadFromCache(): Boolean {
+                return true
+            }
+
+            override fun setCurrentJob(job: Job) {
+                this@BlogRepository.job?.cancel() // cancel existing jobs
+                this@BlogRepository.job = job
+            }
+
+            override fun isNetworkRequest(): Boolean {
+                return true
+            }
+
+        }.asLiveData()
+    }
+
+
     fun cancelRequests(){
-        Log.d(TAG, "AccountRepository: cancelling requests... ")
+        Log.d(TAG, "BlogRepository: cancelling requests... ")
         job?.cancel()
     }
 

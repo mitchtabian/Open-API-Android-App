@@ -2,6 +2,7 @@ package com.codingwithmitch.openapi.ui
 
 import android.content.Context
 import android.util.Log
+import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import com.afollestad.materialdialogs.MaterialDialog
@@ -18,42 +19,41 @@ abstract class BaseActivity : DaggerAppCompatActivity(),
     @Inject
     lateinit var sessionManager: SessionManager
 
-    override fun onDataStateChange(dataState: DataState<*>) {
+    override fun onDataStateChange(dataState: DataState<*>?) {
+        dataState?.let{
+            displayProgressBar(dataState.loading.isLoading)
 
-        displayProgressBar(dataState.loading.isLoading)
+            dataState.error?.let {
+                handleStateError(it)
+            }
 
-        dataState.error?.let {
-            handleStateError(it)
-        }
-
-        dataState.data?.let {
-            it.response?.let {
-                handleStateResponse(it)
+            dataState.data?.let {
+                it.response?.let {
+                    handleStateResponse(it)
+                }
             }
         }
-
     }
 
     abstract fun displayProgressBar(bool: Boolean)
 
+
     fun displayErrorDialog(errorMessage: String?){
         MaterialDialog(this)
-            .title(R.string.text_error)
-            .message(text = errorMessage){
-                lineSpacing(2F)
+            .show{
+                title(R.string.text_error)
+                message(text = errorMessage)
+                positiveButton(R.string.text_ok)
             }
-            .positiveButton(R.string.text_ok)
-            .show()
     }
 
     fun displaySuccessDialog(message: String?){
         MaterialDialog(this)
-            .title(R.string.text_success)
-            .message(text = message){
-                lineSpacing(2F)
+            .show{
+                title(R.string.text_success)
+                message(text = message)
+                positiveButton(R.string.text_ok)
             }
-            .positiveButton(R.string.text_ok)
-            .show()
     }
 
     private fun handleStateResponse(event: Event<Response>){

@@ -69,7 +69,7 @@ class AccountFragment : BaseAccountFragment() {
     }
 
     private fun setupActionBar(){
-        activity?.actionBar?.title = getString(R.string.fragment_account)
+        stateChangeListener.setActionBarTitle(getString(R.string.fragment_account))
     }
 
     override fun onResume() {
@@ -84,12 +84,12 @@ class AccountFragment : BaseAccountFragment() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.account_view_menu, menu)
+        inflater.inflate(R.menu.edit_view_menu, menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
-            R.id.edit_account -> {
+            R.id.edit -> {
                 findNavController().navigate(R.id.action_accountFragment_to_updateAccountFragment)
                 return true
             }

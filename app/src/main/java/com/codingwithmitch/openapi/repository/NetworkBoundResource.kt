@@ -10,6 +10,8 @@ import com.codingwithmitch.openapi.util.*
 import com.codingwithmitch.openapi.util.Constants.Companion.NETWORK_TIMEOUT
 import com.codingwithmitch.openapi.util.Constants.Companion.TESTING_CACHE_DELAY
 import com.codingwithmitch.openapi.util.Constants.Companion.TESTING_NETWORK_DELAY
+import com.codingwithmitch.openapi.util.ErrorHandling.NetworkErrors.Companion.ERROR_CHECK_NETWORK_CONNECTION
+import com.codingwithmitch.openapi.util.ErrorHandling.NetworkErrors.Companion.ERROR_UNKNOWN
 import kotlinx.coroutines.*
 
 abstract class NetworkBoundResource<ResponseObject, CacheObject, ViewStateType>{
@@ -37,22 +39,31 @@ abstract class NetworkBoundResource<ResponseObject, CacheObject, ViewStateType>{
                 }
             }
 
-            if(isNetworkRequest()){
-                // make network call
-                val apiResponse = createCall()
-                result.addSource(apiResponse){ response ->
-                    result.removeSource(apiResponse)
+            if(isNetworkAvailable()){
+                if(isNetworkRequest()){
+                    // make network call
+                    val apiResponse = createCall()
+                    result.addSource(apiResponse){ response ->
+                        result.removeSource(apiResponse)
 
-                    coroutineScope.launch {
-                        doNetworkCall(response)
-                    }
-
-                    GlobalScope.launch(Dispatchers.IO) {
-                        delay(NETWORK_TIMEOUT)
-                        if(!job.isCompleted){
-                            Log.e(TAG, "NetworkBoundResource: JOB NETWORK TIMEOUT.")
-                            job.cancel(CancellationException(ErrorHandling.NetworkErrors.UNABLE_TO_RESOLVE_HOST))
+                        coroutineScope.launch {
+                            doNetworkCall(response)
                         }
+
+                        GlobalScope.launch(Dispatchers.IO) {
+                            delay(NETWORK_TIMEOUT)
+                            if(!job.isCompleted){
+                                Log.e(TAG, "NetworkBoundResource: JOB NETWORK TIMEOUT.")
+                                job.cancel(CancellationException(ErrorHandling.NetworkErrors.UNABLE_TO_RESOLVE_HOST))
+                            }
+                        }
+                    }
+                }
+                else{
+                    coroutineScope.launch {
+                        delay(TESTING_CACHE_DELAY)
+                        // View data from cache only and return
+                        createCacheRequestAndReturn()
                     }
                 }
             }
@@ -96,10 +107,10 @@ abstract class NetworkBoundResource<ResponseObject, CacheObject, ViewStateType>{
         var msg = errorMessage
         var useDialog = shouldUseDialog
         if(msg == null){
-            msg = "Unknown error"
+            msg = ERROR_UNKNOWN
         }
         else if(ErrorHandling.NetworkErrors.isNetworkError(msg)){
-            msg = "Check network connection."
+            msg = ERROR_CHECK_NETWORK_CONNECTION
             useDialog = false
         }
         onCompleteJob(DataState.error(Response(msg, useDialog, shouldUseToast)))
@@ -107,17 +118,6 @@ abstract class NetworkBoundResource<ResponseObject, CacheObject, ViewStateType>{
 
     fun setValue(dataState: DataState<ViewStateType>){
         result.value = dataState
-    }
-
-    fun addSourceToResult(source: LiveData<ViewStateType>, removeSource: Boolean){
-        result.addSource(source){
-            if(removeSource) {
-                result.removeSource(source)
-            }
-            it?.let {
-                onCompleteJob(DataState.data(it, null))
-            }?: onCompleteJob(DataState.error(Response("Something went wrong. Try restarting the app.", true, false)))
-        }
     }
 
     @UseExperimental(InternalCoroutinesApi::class)
@@ -143,6 +143,8 @@ abstract class NetworkBoundResource<ResponseObject, CacheObject, ViewStateType>{
     }
 
     fun asLiveData() = result as LiveData<DataState<ViewStateType>>
+
+    abstract fun isNetworkAvailable(): Boolean
 
     abstract suspend fun createCacheRequestAndReturn()
 
