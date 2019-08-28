@@ -16,6 +16,7 @@ import com.codingwithmitch.openapi.util.DateUtils
 import kotlinx.android.synthetic.main.layout_blog_list_item.view.*
 import com.bumptech.glide.util.ViewPreloadSizeProvider
 import android.text.TextUtils
+import com.codingwithmitch.openapi.util.GenericViewHolder
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -43,7 +44,11 @@ class BlogRecyclerAdapter(
             NO_MORE_RESULTS ->{
                 Log.e(TAG, "onCreateViewHolder: No more results...")
                 return GenericViewHolder(
-                    LayoutInflater.from(parent.context).inflate(R.layout.layout_no_more_results, parent, false)
+                    LayoutInflater.from(parent.context).inflate(
+                        R.layout.layout_no_more_results,
+                        parent,
+                        false
+                    )
                 )
             }
 

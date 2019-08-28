@@ -1,10 +1,16 @@
 package com.codingwithmitch.openapi.ui
 
+import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
+import android.os.Bundle
+import android.os.PersistableBundle
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.afollestad.materialdialogs.MaterialDialog
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.session.SessionManager
@@ -16,8 +22,13 @@ abstract class BaseActivity : DaggerAppCompatActivity(),
 {
     private val TAG: String = "AppDebug"
 
+
     @Inject
     lateinit var sessionManager: SessionManager
+
+    override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
+        super.onCreate(savedInstanceState, persistentState)
+    }
 
     override fun onDataStateChange(dataState: DataState<*>?) {
         dataState?.let{
@@ -89,14 +100,14 @@ abstract class BaseActivity : DaggerAppCompatActivity(),
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
-
-
     override fun hideSoftKeyboard() {
         if (currentFocus != null) {
             val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             inputMethodManager.hideSoftInputFromWindow(currentFocus!!.windowToken, 0)
         }
     }
+
+
 }
 
 

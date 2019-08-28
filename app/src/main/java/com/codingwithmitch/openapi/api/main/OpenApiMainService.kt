@@ -5,10 +5,12 @@ import com.codingwithmitch.openapi.api.GenericApiResponse
 import com.codingwithmitch.openapi.api.GenericResponse
 import com.codingwithmitch.openapi.api.main.network_responses.BlogListSearchResponse
 import com.codingwithmitch.openapi.models.AccountProperties
-import com.codingwithmitch.openapi.models.BlogPost
-import retrofit2.Call
-import retrofit2.Response
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.http.*
+import retrofit2.http.Multipart
+
+
 
 interface OpenApiMainService {
 
@@ -42,6 +44,17 @@ interface OpenApiMainService {
         @Query("ordering") ordering: String,
         @Query("page") page: Int
     ): LiveData<GenericApiResponse<BlogListSearchResponse>>
+
+
+    @Multipart
+    @PUT("blog/{slug}/update")
+    fun updateBlog(
+        @Header("Authorization") authorization: String,
+        @Path("slug") slug: String,
+        @Part("title") title: RequestBody,
+        @Part("body") body: RequestBody,
+        @Part image: MultipartBody.Part?
+    ): LiveData<GenericApiResponse<GenericResponse>>
 }
 
 

@@ -1,6 +1,7 @@
 package com.codingwithmitch.openapi.ui.main.blog
 
 import android.content.SharedPreferences
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.*
 import com.codingwithmitch.openapi.models.AccountProperties
@@ -17,6 +18,8 @@ import com.codingwithmitch.openapi.ui.main.blog.state.BlogViewState
 import com.codingwithmitch.openapi.util.AbsentLiveData
 import com.codingwithmitch.openapi.util.PreferenceKeys.Companion.BLOG_FILTER
 import com.codingwithmitch.openapi.util.PreferenceKeys.Companion.BLOG_ORDER
+import okhttp3.MediaType
+import okhttp3.RequestBody
 import javax.inject.Inject
 
 class BlogViewModel
@@ -61,6 +64,23 @@ constructor(
             is CheckAuthorOfBlogPost ->{
                 return sessionManager.cachedToken.value?.let { authToken ->
                     blogRepository.getAccountProperties(authToken)
+                }?: AbsentLiveData.create()
+            }
+
+            is UpdateBlogPostEvent -> {
+
+                return sessionManager.cachedToken.value?.let { authToken ->
+
+                    val title = RequestBody.create(MediaType.parse("text/plain"), stateEvent.title)
+                    val body = RequestBody.create(MediaType.parse("text/plain"), stateEvent.body)
+
+                    blogRepository.updateBlogPost(
+                        authToken,
+                        viewState.value!!.blogPost!!.slug,
+                        title,
+                        body,
+                        stateEvent.image
+                    )
                 }?: AbsentLiveData.create()
             }
 
@@ -173,6 +193,12 @@ constructor(
     fun setAccountProperties(accountProperties: AccountProperties){
         val update = getCurrentViewStateOrNew()
         update.accountProperties = accountProperties
+        _viewState.value = update
+    }
+
+    fun setNewBlogImageUri(imageUri: Uri?){
+        val update = getCurrentViewStateOrNew()
+        update.newImageUri = imageUri
         _viewState.value = update
     }
 

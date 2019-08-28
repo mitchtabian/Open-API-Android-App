@@ -10,4 +10,6 @@ interface DataStateChangeListener {
     fun setActionBarTitle(title: String)
 
     fun expandAppBar()
+
+    fun isStoragePermissionGranted(): Boolean
 }

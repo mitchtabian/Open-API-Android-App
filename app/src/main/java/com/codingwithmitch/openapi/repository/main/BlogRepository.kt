@@ -3,10 +3,7 @@ package com.codingwithmitch.openapi.repository.main
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.switchMap
-import com.codingwithmitch.openapi.api.ApiEmptyResponse
-import com.codingwithmitch.openapi.api.ApiErrorResponse
-import com.codingwithmitch.openapi.api.ApiSuccessResponse
-import com.codingwithmitch.openapi.api.GenericApiResponse
+import com.codingwithmitch.openapi.api.*
 import com.codingwithmitch.openapi.api.main.OpenApiMainService
 import com.codingwithmitch.openapi.api.main.network_responses.BlogListSearchResponse
 import com.codingwithmitch.openapi.models.AccountProperties
@@ -18,12 +15,14 @@ import com.codingwithmitch.openapi.repository.NetworkBoundResource
 import com.codingwithmitch.openapi.session.SessionManager
 import com.codingwithmitch.openapi.ui.DataState
 import com.codingwithmitch.openapi.ui.Response
-import com.codingwithmitch.openapi.ui.main.account.state.AccountViewState
 import com.codingwithmitch.openapi.ui.main.blog.state.BlogViewState
+import com.codingwithmitch.openapi.util.AbsentLiveData
 import com.codingwithmitch.openapi.util.Constants.Companion.PAGINATION_PAGE_SIZE
 import com.codingwithmitch.openapi.util.DateUtils
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import javax.inject.Inject
 
 class BlogRepository
@@ -240,6 +239,75 @@ constructor(
         }.asLiveData()
     }
 
+
+    fun updateBlogPost(
+        authToken: AuthToken,
+        slug: String,
+        title: RequestBody,
+        body: RequestBody,
+        image: MultipartBody.Part?
+    ): LiveData<DataState<BlogViewState>> {
+        return object: NetworkBoundResource<GenericResponse, Any, BlogViewState>(){
+
+            override fun isNetworkAvailable(): Boolean {
+                return sessionManager.isConnectedToTheInternet()
+            }
+
+            // not applicable
+            override suspend fun createCacheRequestAndReturn() {
+
+            }
+
+            override suspend fun handleApiSuccessResponse(response: ApiSuccessResponse<GenericResponse>) {
+                withContext(Dispatchers.Main){
+                    // finish with success response
+                    onCompleteJob(
+                        DataState.data(null,
+                            Response(response.body.response, false, true)
+                        ))
+                }
+            }
+
+            override fun cancelOperationIfNoInternetConnection(): Boolean {
+                return false
+            }
+
+            // not applicable
+            override fun loadFromCache(): LiveData<BlogViewState> {
+                return AbsentLiveData.create()
+            }
+
+            override fun createCall(): LiveData<GenericApiResponse<GenericResponse>> {
+                return openApiMainService.updateBlog(
+                    "Token ${authToken.token!!}",
+                    slug,
+                    title,
+                    body,
+                    image
+                )
+            }
+
+            // not applicable
+            override suspend fun updateLocalDb(cacheObject: Any?) {
+
+            }
+
+            // not applicable
+            override fun shouldLoadFromCache(): Boolean {
+                return false
+            }
+
+            override fun setCurrentJob(job: Job) {
+                this@BlogRepository.job?.cancel() // cancel existing jobs
+                this@BlogRepository.job = job
+            }
+
+            override fun isNetworkRequest(): Boolean {
+                return true
+            }
+
+        }.asLiveData()
+    }
 
     fun cancelRequests(){
         Log.d(TAG, "BlogRepository: cancelling requests... ")
