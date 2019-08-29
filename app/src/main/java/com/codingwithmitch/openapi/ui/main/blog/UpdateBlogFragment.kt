@@ -81,18 +81,18 @@ class UpdateBlogFragment : BaseBlogFragment() {
                         activity?.let{
                             launchCropIntent(uri)
                         }
-
                     }?: showImageSelectionError()
                 }
 
                 CROP_IMAGE_INTENT_CODE -> {
                     data?.data?.let { uri ->
-                        viewModel.setNewBlogImageUri(uri)
+                        viewModel.setUpdatedBlogFields(
+                            title = null,
+                            body = null,
+                            uri = uri
+                        )
                     } ?: showImageSelectionError()
                 }
-
-
-
             }
         }
     }
@@ -121,32 +121,27 @@ class UpdateBlogFragment : BaseBlogFragment() {
         })
 
         viewModel.viewState.observe(viewLifecycleOwner, Observer { viewState ->
-            viewState.blogPost?.let{ blogPost ->
-                setBlogProperties(blogPost)
-            }
-            viewState.newImageUri?.let{ imageUri ->
-                setTempImage(imageUri)
+            viewState.updatedBlogFields.let{ updatedBlogFields ->
+                setBlogProperties(
+                    updatedBlogFields.updatedBlogTitle,
+                    updatedBlogFields.updatedBlogBody,
+                    updatedBlogFields.updatedImageUri
+                )
             }
         })
     }
 
-    fun setTempImage(imageUri: Uri){
+    fun setBlogProperties(title: String?, body: String?, image: Uri?){
         requestManager
-            .load(imageUri)
+            .load(image)
             .into(blog_image)
-    }
-
-    fun setBlogProperties(blogPost: BlogPost){
-        requestManager
-            .load(blogPost.image)
-            .into(blog_image)
-        blog_title.text = blogPost.title
-        blog_body.text = blogPost.body
+        blog_title.text = title
+        blog_body.text = body
     }
 
     private fun saveChanges(){
         var multipartBody: MultipartBody.Part? = null
-        viewModel.viewState.value?.newImageUri?.let{ imageUri ->
+        viewModel.viewState.value?.updatedBlogFields?.updatedImageUri?.let{ imageUri ->
             imageUri.path?.let{filePath ->
                 view?.context?.let{ context ->
                     FileUtil.getUriRealPathAboveKitkat(context, imageUri)?.let{
@@ -194,11 +189,15 @@ class UpdateBlogFragment : BaseBlogFragment() {
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        // reset the image so it's not displayed on a different blog
-        viewModel.setNewBlogImageUri(null)
+    override fun onPause() {
+        super.onPause()
+        viewModel.setUpdatedBlogFields(
+            uri = null,
+            title = blog_title.text.toString(),
+            body = blog_body.text.toString()
+        )
     }
+
 }
 
 

@@ -141,9 +141,6 @@ constructor(
 
     fun setBlogListData(blogList: List<BlogPost>){
         val update = getCurrentViewStateOrNew()
-        if(update.blogList == blogList){
-            return
-        }
         update.blogList = blogList
         _viewState.value = update
     }
@@ -196,12 +193,6 @@ constructor(
         _viewState.value = update
     }
 
-    fun setNewBlogImageUri(imageUri: Uri?){
-        val update = getCurrentViewStateOrNew()
-        update.newImageUri = imageUri
-        _viewState.value = update
-    }
-
     fun updateListItem(newBlogPost: BlogPost){
         val update = getCurrentViewStateOrNew()
         val list = update.blogList.toMutableList()
@@ -211,6 +202,16 @@ constructor(
             }
         }
         update.blogList = list
+        _viewState.value = update
+    }
+
+    fun setUpdatedBlogFields(title: String?, body: String?, uri: Uri?){
+        val update = getCurrentViewStateOrNew()
+        val updatedBlogFields = update.updatedBlogFields
+        title?.let{ updatedBlogFields.updatedBlogTitle = it }
+        body?.let{ updatedBlogFields.updatedBlogBody = it }
+        uri?.let{ updatedBlogFields.updatedImageUri = it }
+        update.updatedBlogFields = updatedBlogFields
         _viewState.value = update
     }
 

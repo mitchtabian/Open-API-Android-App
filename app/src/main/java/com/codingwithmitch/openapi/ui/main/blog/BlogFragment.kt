@@ -318,9 +318,7 @@ class BlogFragment : BaseBlogFragment(),
                 }
 
                 BLOG_ORDER ->{
-                    sharedPreferences.getString(key, "")?.let{
-                        viewModel.setBlogOrder(it)
-                    }?: viewModel.setBlogOrder(BLOG_ORDER_ASC) // "" = ASC
+                    viewModel.setBlogOrder(sharedPreferences.getString(key, BLOG_ORDER_ASC))
                     onBlogFilterEvent()
                 }
                 else -> return
