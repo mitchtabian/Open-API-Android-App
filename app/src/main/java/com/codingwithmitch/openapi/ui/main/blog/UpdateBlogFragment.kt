@@ -110,6 +110,14 @@ class UpdateBlogFragment : BaseBlogFragment() {
     fun subscribeObservers(){
         viewModel.dataState.observe(viewLifecycleOwner, Observer { dataState ->
             stateChangeListener.onDataStateChange(dataState)
+            dataState.data?.let{ data ->
+                data.data?.getContentIfNotHandled()?.let{ viewState ->
+                    viewState.blogPost?.let{ blogPost ->
+                        viewModel.setBlogPost(blogPost)
+                        viewModel.updateListItem(blogPost)
+                    }
+                }
+            }
         })
 
         viewModel.viewState.observe(viewLifecycleOwner, Observer { viewState ->

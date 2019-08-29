@@ -3,6 +3,7 @@ package com.codingwithmitch.openapi.api.main
 import androidx.lifecycle.LiveData
 import com.codingwithmitch.openapi.api.GenericApiResponse
 import com.codingwithmitch.openapi.api.GenericResponse
+import com.codingwithmitch.openapi.api.main.network_responses.BlogCreateUpdateResponse
 import com.codingwithmitch.openapi.api.main.network_responses.BlogListSearchResponse
 import com.codingwithmitch.openapi.models.AccountProperties
 import okhttp3.MultipartBody
@@ -54,7 +55,7 @@ interface OpenApiMainService {
         @Part("title") title: RequestBody,
         @Part("body") body: RequestBody,
         @Part image: MultipartBody.Part?
-    ): LiveData<GenericApiResponse<GenericResponse>>
+    ): LiveData<GenericApiResponse<BlogCreateUpdateResponse>>
 }
 
 

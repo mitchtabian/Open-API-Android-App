@@ -202,6 +202,18 @@ constructor(
         _viewState.value = update
     }
 
+    fun updateListItem(newBlogPost: BlogPost){
+        val update = getCurrentViewStateOrNew()
+        val list = update.blogList.toMutableList()
+        for(i in 0..list.size - 1){
+            if(list[i] == newBlogPost){
+               list[i] = newBlogPost
+            }
+        }
+        update.blogList = list
+        _viewState.value = update
+    }
+
     fun isAuthorOfBlogPost(): Boolean{
         val blogPostAuthorUsername = viewState.value?.let {
             it.blogPost?.username

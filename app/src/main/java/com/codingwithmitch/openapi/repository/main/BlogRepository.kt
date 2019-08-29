@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.switchMap
 import com.codingwithmitch.openapi.api.*
 import com.codingwithmitch.openapi.api.main.OpenApiMainService
+import com.codingwithmitch.openapi.api.main.network_responses.BlogCreateUpdateResponse
 import com.codingwithmitch.openapi.api.main.network_responses.BlogListSearchResponse
 import com.codingwithmitch.openapi.models.AccountProperties
 import com.codingwithmitch.openapi.models.AuthToken
@@ -247,7 +248,7 @@ constructor(
         body: RequestBody,
         image: MultipartBody.Part?
     ): LiveData<DataState<BlogViewState>> {
-        return object: NetworkBoundResource<GenericResponse, Any, BlogViewState>(){
+        return object: NetworkBoundResource<BlogCreateUpdateResponse, BlogPost, BlogViewState>(){
 
             override fun isNetworkAvailable(): Boolean {
                 return sessionManager.isConnectedToTheInternet()
@@ -258,11 +259,22 @@ constructor(
 
             }
 
-            override suspend fun handleApiSuccessResponse(response: ApiSuccessResponse<GenericResponse>) {
+            override suspend fun handleApiSuccessResponse(response: ApiSuccessResponse<BlogCreateUpdateResponse>) {
+                val updatedBlogPost = BlogPost(
+                    response.body.pk,
+                    response.body.title,
+                    response.body.slug,
+                    response.body.body,
+                    response.body.image,
+                    DateUtils.convertServerStringDateToLong(response.body.date_updated),
+                    response.body.username
+                )
+                updateLocalDb(updatedBlogPost)
                 withContext(Dispatchers.Main){
                     // finish with success response
                     onCompleteJob(
-                        DataState.data(null,
+                        DataState.data(
+                            BlogViewState(blogPost = updatedBlogPost),
                             Response(response.body.response, false, true)
                         ))
                 }
@@ -277,7 +289,7 @@ constructor(
                 return AbsentLiveData.create()
             }
 
-            override fun createCall(): LiveData<GenericApiResponse<GenericResponse>> {
+            override fun createCall(): LiveData<GenericApiResponse<BlogCreateUpdateResponse>> {
                 return openApiMainService.updateBlog(
                     "Token ${authToken.token!!}",
                     slug,
@@ -288,7 +300,15 @@ constructor(
             }
 
             // not applicable
-            override suspend fun updateLocalDb(cacheObject: Any?) {
+            override suspend fun updateLocalDb(cacheObject: BlogPost?) {
+                cacheObject?.let{blogPost ->
+                    blogPostDao.updateBlogPost(
+                        blogPost.pk,
+                        blogPost.title,
+                        blogPost.body,
+                        blogPost.image
+                    )
+                }
 
             }
 
