@@ -16,6 +16,7 @@ import com.codingwithmitch.openapi.repository.NetworkBoundResource
 import com.codingwithmitch.openapi.session.SessionManager
 import com.codingwithmitch.openapi.ui.DataState
 import com.codingwithmitch.openapi.ui.Response
+import com.codingwithmitch.openapi.ui.ResponseType
 import com.codingwithmitch.openapi.ui.auth.state.AuthViewState
 import com.codingwithmitch.openapi.ui.auth.state.LoginFields
 import com.codingwithmitch.openapi.ui.auth.state.LoginFields.LoginError.*
@@ -50,7 +51,7 @@ constructor(
 
         val loginFieldErrors = LoginFields(email, password).isValidForLogin()
         if(!loginFieldErrors.equals(LoginFields.LoginError.none())){
-            return returnErrorResponse(loginFieldErrors, true, false)
+            return returnErrorResponse(loginFieldErrors, ResponseType.Dialog())
         }
 
         return object: NetworkBoundResource<LoginResponse, Void, AuthViewState>() {
@@ -93,7 +94,7 @@ constructor(
                 )
                 if(result2 < 0){
                     return onCompleteJob(DataState.error(
-                        Response(ERROR_SAVE_AUTH_TOKEN, true, false))
+                        Response(ERROR_SAVE_AUTH_TOKEN, ResponseType.Dialog()))
                     )
                 }
 
@@ -146,7 +147,7 @@ constructor(
 
         val registrationFieldErrors = RegistrationFields(email, username, password, confirmPassword).isValidForRegistration()
         if(!registrationFieldErrors.equals(RegistrationFields.RegistrationError.none())){
-            return returnErrorResponse(registrationFieldErrors, true, false)
+            return returnErrorResponse(registrationFieldErrors, ResponseType.Dialog())
         }
 
         return object: NetworkBoundResource<RegistrationResponse, Void, AuthViewState>(){
@@ -178,7 +179,7 @@ constructor(
                 // 3) Passwords don't match
                 if(response.body.response.equals(GENERIC_AUTH_ERROR)){
                     onCompleteJob(DataState.error(
-                        Response(response.body.errorMessage, true, false))
+                        Response(response.body.errorMessage, ResponseType.Dialog()))
                     )
                     return
                 }
@@ -193,7 +194,7 @@ constructor(
                 // will return -1 if failure
                 if(result1 < 0){
                     onCompleteJob(DataState.error(
-                        Response(ERROR_SAVE_ACCOUNT_PROPERTIES, true, false))
+                        Response(ERROR_SAVE_ACCOUNT_PROPERTIES, ResponseType.Dialog()))
                     )
                     return
                 }
@@ -207,7 +208,7 @@ constructor(
                 )
                 if(result2 < 0){
                     onCompleteJob(DataState.error(
-                        Response(ERROR_SAVE_AUTH_TOKEN, true, false)
+                        Response(ERROR_SAVE_AUTH_TOKEN, ResponseType.Dialog())
                     ))
                     return
                 }
@@ -281,9 +282,10 @@ constructor(
                             onCompleteJob(
                                 DataState.data(
                                     null,
-                                    Response(RESPONSE_CHECK_PREVIOUS_AUTH_USER_DONE,
-                                        false,
-                                        false)
+                                    Response(
+                                        RESPONSE_CHECK_PREVIOUS_AUTH_USER_DONE,
+                                        ResponseType.None()
+                                    )
                                 )
                             )
                         }
@@ -304,9 +306,10 @@ constructor(
                                             onCompleteJob(
                                                 DataState.data(
                                                     null,
-                                                    Response(RESPONSE_CHECK_PREVIOUS_AUTH_USER_DONE,
-                                                        false,
-                                                        false)
+                                                    Response(
+                                                        RESPONSE_CHECK_PREVIOUS_AUTH_USER_DONE,
+                                                        ResponseType.None()
+                                                    )
                                                 )
                                             )
                                         }
@@ -316,9 +319,10 @@ constructor(
                                         onCompleteJob(
                                             DataState.data(
                                                 null,
-                                                Response(RESPONSE_CHECK_PREVIOUS_AUTH_USER_DONE,
-                                                    false,
-                                                    false)
+                                                Response(
+                                                    RESPONSE_CHECK_PREVIOUS_AUTH_USER_DONE,
+                                                    ResponseType.None()
+                                                )
                                             )
                                         )
                                     }
@@ -329,9 +333,10 @@ constructor(
                                 onCompleteJob(
                                     DataState.data(
                                         null,
-                                        Response(RESPONSE_CHECK_PREVIOUS_AUTH_USER_DONE,
-                                            false,
-                                            false)
+                                        Response(
+                                            RESPONSE_CHECK_PREVIOUS_AUTH_USER_DONE,
+                                            ResponseType.None()
+                                        )
                                     )
                                 )
                             }
@@ -379,11 +384,11 @@ constructor(
         }
     }
 
-    private fun returnErrorResponse(errorMessage: String, useDialog: Boolean, useToast: Boolean): LiveData<DataState<AuthViewState>>{
+    private fun returnErrorResponse(errorMessage: String, responseType: ResponseType): LiveData<DataState<AuthViewState>>{
         return object: LiveData<DataState<AuthViewState>>(){
             override fun onActive() {
                 super.onActive()
-                value = DataState.error(Response(errorMessage, useDialog, useToast))
+                value = DataState.error(Response(errorMessage, responseType))
             }
         }
     }
@@ -392,7 +397,7 @@ constructor(
         return object: LiveData<DataState<AuthViewState>>(){
             override fun onActive() {
                 super.onActive()
-                value = DataState.data(null, Response(RESPONSE_CHECK_PREVIOUS_AUTH_USER_DONE, false, false))
+                value = DataState.data(null, Response(RESPONSE_CHECK_PREVIOUS_AUTH_USER_DONE, ResponseType.None()))
             }
         }
     }

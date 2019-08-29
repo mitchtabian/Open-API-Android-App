@@ -99,10 +99,10 @@ class BlogFragment : BaseBlogFragment(),
                     it.data?.let{
                         it.getContentIfNotHandled()?.let{
                             Log.d(TAG, "BlogFragment, DataState: ${it}")
-                            Log.d(TAG, "BlogFragment, DataState: isQueryInProgress?: ${it.isQueryInProgress}")
-                            viewModel.setQueryInProgress(it.isQueryInProgress)
-                            viewModel.setQueryExhausted(it.isQueryExhausted)
-                            viewModel.setBlogListData(it.blogList)
+                            Log.d(TAG, "BlogFragment, DataState: isQueryInProgress?: ${it.blogFields.isQueryInProgress}")
+                            viewModel.setQueryInProgress(it.blogFields.isQueryInProgress)
+                            viewModel.setQueryExhausted(it.blogFields.isQueryExhausted)
+                            viewModel.setBlogListData(it.blogFields.blogList)
                             blog_post_recyclerview.smoothScrollToPosition(0)
                         }
                     }
@@ -113,8 +113,8 @@ class BlogFragment : BaseBlogFragment(),
         viewModel.viewState.observe(viewLifecycleOwner, Observer{ viewState ->
             Log.d(TAG, "BlogFragment, ViewState: ${viewState}")
             if(viewState != null){
-                recyclerAdapter.submitList(viewState.blogList)
-                if(viewState.isQueryExhausted){
+                recyclerAdapter.submitList(viewState.blogFields.blogList)
+                if(viewState.blogFields.isQueryExhausted){
                     recyclerAdapter.setNoMoreResults()
                 }
             }

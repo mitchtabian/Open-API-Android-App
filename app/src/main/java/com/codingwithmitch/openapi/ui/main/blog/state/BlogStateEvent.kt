@@ -11,6 +11,8 @@ sealed class BlogStateEvent{
 
     class CheckAuthorOfBlogPost: BlogStateEvent()
 
+    class DeleteBlogPostEvent: BlogStateEvent()
+
     data class UpdateBlogPostEvent(
         val title: String,
         val body: String,

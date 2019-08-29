@@ -6,6 +6,7 @@ import com.codingwithmitch.openapi.persistence.AppDatabase
 import com.codingwithmitch.openapi.persistence.BlogPostDao
 import com.codingwithmitch.openapi.repository.main.AccountRepository
 import com.codingwithmitch.openapi.repository.main.BlogRepository
+import com.codingwithmitch.openapi.repository.main.CreateBlogRepository
 import com.codingwithmitch.openapi.session.SessionManager
 import dagger.Module
 import dagger.Provides
@@ -49,6 +50,16 @@ class MainModule {
         return BlogRepository(openApiMainService, blogPostDao, accountPropertiesDao, sessionManager)
     }
 
+
+    @MainScope
+    @Provides
+    fun provideCreateBlogRepository(
+        openApiMainService: OpenApiMainService,
+        blogPostDao: BlogPostDao,
+        sessionManager: SessionManager
+    ): CreateBlogRepository{
+        return CreateBlogRepository(openApiMainService, blogPostDao, sessionManager)
+    }
 
 
 }

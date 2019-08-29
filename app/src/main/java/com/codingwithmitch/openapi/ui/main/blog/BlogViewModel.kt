@@ -42,9 +42,9 @@ constructor(
                 return sessionManager.cachedToken.value?.let { authToken ->
                     blogRepository.searchBlogPosts(
                         authToken,
-                        viewState.value!!.searchQuery,
-                        viewState.value!!.order + viewState.value!!.filter,
-                        viewState.value!!.page
+                        viewState.value!!.blogFields.searchQuery,
+                        viewState.value!!.blogFields.order + viewState.value!!.blogFields.filter,
+                        viewState.value!!.blogFields.page
                     )
                 }?: AbsentLiveData.create()
             }
@@ -54,9 +54,9 @@ constructor(
              return sessionManager.cachedToken.value?.let { authToken ->
                  blogRepository.searchBlogPosts(
                      authToken,
-                     viewState.value!!.searchQuery,
-                     viewState.value!!.order + viewState.value!!.filter,
-                     viewState.value!!.page
+                     viewState.value!!.blogFields.searchQuery,
+                     viewState.value!!.blogFields.order + viewState.value!!.blogFields.filter,
+                     viewState.value!!.blogFields.page
                  )
              }?: AbsentLiveData.create()
             }
@@ -84,6 +84,19 @@ constructor(
                 }?: AbsentLiveData.create()
             }
 
+            is DeleteBlogPostEvent -> {
+                return sessionManager.cachedToken.value?.let { authToken ->
+                    viewState.value?.let{blogViewState ->
+                        blogViewState.blogPost?.let { blogPost ->
+                            blogRepository.deleteBlogPost(
+                                authToken,
+                                blogPost
+                            )
+                        }?: AbsentLiveData.create()
+                    }?: AbsentLiveData.create()
+                }?: AbsentLiveData.create()
+            }
+
             is None ->{
                 return object: LiveData<DataState<BlogViewState>>(){
                     override fun onActive() {
@@ -98,7 +111,7 @@ constructor(
     fun loadInitialBlogs(){
         // if the user hasn't made a query yet, show some blogs
         val value = getCurrentViewStateOrNew()
-        if(value.blogList.size == 0){
+        if(value.blogFields.blogList.size == 0){
             loadFirstPage("")
         }
     }
@@ -115,11 +128,11 @@ constructor(
         )
         setQuery(query)
         setStateEvent(BlogSearchEvent())
-        Log.e(TAG, "BlogViewModel: loadFirstPage: ${viewState.value?.page}")
+        Log.e(TAG, "BlogViewModel: loadFirstPage: ${viewState.value!!.blogFields.page}")
     }
 
     fun loadNextPage(){
-        if(!viewState.value!!.isQueryInProgress && !viewState.value!!.isQueryExhausted){
+        if(!viewState.value!!.blogFields.isQueryInProgress && !viewState.value!!.blogFields.isQueryExhausted){
             Log.d(TAG, "BlogViewModel: Attempting to load next page...")
             setQueryInProgress(true)
             incrementPageNumber()
@@ -129,38 +142,38 @@ constructor(
 
     fun resetPage(){
         val update = getCurrentViewStateOrNew()
-        update.page = 1
+        update.blogFields.page = 1
         _viewState.value = update
     }
 
     fun setQuery(query: String){
         val update = getCurrentViewStateOrNew()
-        update.searchQuery = query
+        update.blogFields.searchQuery = query
         _viewState.value = update
     }
 
     fun setBlogListData(blogList: List<BlogPost>){
         val update = getCurrentViewStateOrNew()
-        update.blogList = blogList
+        update.blogFields.blogList = blogList
         _viewState.value = update
     }
 
     fun incrementPageNumber(){
         val update = getCurrentViewStateOrNew()
-        val page = update.copy().page
-        update.page = page + 1
+        val page = update.copy().blogFields.page
+        update.blogFields.page = page + 1
         _viewState.value = update
     }
 
     fun setQueryExhausted(isExhausted: Boolean){
         val update = getCurrentViewStateOrNew()
-        update.isQueryExhausted = isExhausted
+        update.blogFields.isQueryExhausted = isExhausted
         _viewState.value = update
     }
 
     fun setQueryInProgress(isInProgress: Boolean){
         val update = getCurrentViewStateOrNew()
-        update.isQueryInProgress = isInProgress
+        update.blogFields.isQueryInProgress = isInProgress
         _viewState.value = update
     }
 
@@ -168,7 +181,7 @@ constructor(
     fun setBlogFilter(filter: String?){
         filter?.let{
             val update = getCurrentViewStateOrNew()
-            update.filter = filter
+            update.blogFields.filter = filter
             _viewState.value = update
         }
     }
@@ -177,7 +190,7 @@ constructor(
     // Note: "-" = DESC, "" = ASC
     fun setBlogOrder(order: String){
         val update = getCurrentViewStateOrNew()
-        update.order = order
+        update.blogFields.order = order
         _viewState.value = update
     }
 
@@ -195,13 +208,27 @@ constructor(
 
     fun updateListItem(newBlogPost: BlogPost){
         val update = getCurrentViewStateOrNew()
-        val list = update.blogList.toMutableList()
-        for(i in 0..list.size - 1){
+        val list = update.blogFields.blogList.toMutableList()
+        for(i in 0..(list.size - 1)){
             if(list[i] == newBlogPost){
                list[i] = newBlogPost
+                break
             }
         }
-        update.blogList = list
+        update.blogFields.blogList = list
+        _viewState.value = update
+    }
+
+    fun removeDeletedBlogPost(){
+        val update = getCurrentViewStateOrNew()
+        val list = update.blogFields.blogList.toMutableList()
+        for(i in 0..(list.size - 1)){
+            if(list[i] == viewState.value!!.blogPost){
+                list.remove(viewState.value!!.blogPost)
+                break
+            }
+        }
+        update.blogFields.blogList = list
         _viewState.value = update
     }
 

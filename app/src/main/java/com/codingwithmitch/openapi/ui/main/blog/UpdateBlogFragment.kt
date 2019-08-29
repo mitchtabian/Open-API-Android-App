@@ -100,7 +100,7 @@ class UpdateBlogFragment : BaseBlogFragment() {
     fun showImageSelectionError(){
         stateChangeListener.onDataStateChange(
             DataState(
-                Event(StateError(Response("Something went wrong with the image.", useDialog = true, useToast = false))),
+                Event(StateError(Response("Something went wrong with the image.", ResponseType.Dialog()))),
                 Loading(isLoading = false),
                 Data(Event.dataEvent(null), null)
             )

@@ -16,10 +16,14 @@ import com.codingwithmitch.openapi.repository.NetworkBoundResource
 import com.codingwithmitch.openapi.session.SessionManager
 import com.codingwithmitch.openapi.ui.DataState
 import com.codingwithmitch.openapi.ui.Response
+import com.codingwithmitch.openapi.ui.ResponseType
 import com.codingwithmitch.openapi.ui.main.blog.state.BlogViewState
+import com.codingwithmitch.openapi.ui.main.blog.state.BlogViewState.*
 import com.codingwithmitch.openapi.util.AbsentLiveData
 import com.codingwithmitch.openapi.util.Constants.Companion.PAGINATION_PAGE_SIZE
 import com.codingwithmitch.openapi.util.DateUtils
+import com.codingwithmitch.openapi.util.ErrorHandling.NetworkErrors.Companion.ERROR_UNKNOWN
+import com.codingwithmitch.openapi.util.SuccessHandling.NetworkSuccessResponses.Companion.SUCCESS_BLOG_DELETED
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
 import okhttp3.MultipartBody
@@ -54,9 +58,9 @@ constructor(
 
                     // finishing by viewing db cache
                     result.addSource(loadFromCache()){ viewState ->
-                        viewState.isQueryInProgress = false
-                        if(page * PAGINATION_PAGE_SIZE > viewState.blogList.size){
-                            viewState.isQueryExhausted = true
+                        viewState.blogFields.isQueryInProgress = false
+                        if(page * PAGINATION_PAGE_SIZE > viewState.blogFields.blogList.size){
+                            viewState.blogFields.isQueryExhausted = true
                         }
                         onCompleteJob(DataState.data(viewState, null))
                     }
@@ -84,9 +88,9 @@ constructor(
 
                     // finishing by viewing db cache
                     result.addSource(loadFromCache()){ viewState ->
-                        viewState.isQueryInProgress = false
-                        if(page * PAGINATION_PAGE_SIZE > viewState.blogList.size){
-                            viewState.isQueryExhausted = true
+                        viewState.blogFields.isQueryInProgress = false
+                        if(page * PAGINATION_PAGE_SIZE > viewState.blogFields.blogList.size){
+                            viewState.blogFields.isQueryExhausted = true
                         }
                         onCompleteJob(DataState.data(viewState, null))
                     }
@@ -107,7 +111,11 @@ constructor(
                         object: LiveData<BlogViewState>(){
                             override fun onActive() {
                                 super.onActive()
-                                value = BlogViewState(blogList = it, isQueryInProgress = true)
+                                value = BlogViewState(
+                                    BlogFields(
+                                        blogList = it, isQueryInProgress = true
+                                    )
+                                )
                             }
                         }
                     }
@@ -240,6 +248,82 @@ constructor(
         }.asLiveData()
     }
 
+    fun deleteBlogPost(
+        authToken: AuthToken,
+        blogPost: BlogPost
+    ): LiveData<DataState<BlogViewState>>{
+        return object: NetworkBoundResource<GenericResponse, BlogPost, BlogViewState>(){
+
+            override fun isNetworkAvailable(): Boolean {
+                return sessionManager.isConnectedToTheInternet()
+            }
+
+            // not applicable
+            override suspend fun createCacheRequestAndReturn() {
+
+            }
+
+            override suspend fun handleApiSuccessResponse(response: ApiSuccessResponse<GenericResponse>) {
+
+                if(response.body.response == SUCCESS_BLOG_DELETED){
+                    updateLocalDb(blogPost)
+                }
+                else{
+                    onCompleteJob(
+                        DataState.error(
+                            Response(
+                                ERROR_UNKNOWN,
+                                ResponseType.Dialog()
+                            )
+                        )
+                    )
+                }
+            }
+
+            override fun cancelOperationIfNoInternetConnection(): Boolean {
+                return !sessionManager.isConnectedToTheInternet()
+            }
+
+            // not applicable
+            override fun loadFromCache(): LiveData<BlogViewState> {
+                return AbsentLiveData.create()
+            }
+
+            override fun createCall(): LiveData<GenericApiResponse<GenericResponse>> {
+                return openApiMainService.deleteBlogPost(
+                    "Token ${authToken.token!!}",
+                    blogPost.slug
+                )
+            }
+
+            override suspend fun updateLocalDb(cacheObject: BlogPost?) {
+                cacheObject?.let{blogPost ->
+                    blogPostDao.deleteBlogPost(blogPost)
+                    onCompleteJob(
+                        DataState.data(
+                            null,
+                            Response(SUCCESS_BLOG_DELETED, ResponseType.Toast())
+                        )
+                    )
+                }
+            }
+
+            // not applicable
+            override fun shouldLoadFromCache(): Boolean {
+                return false
+            }
+
+            override fun setCurrentJob(job: Job) {
+                this@BlogRepository.job?.cancel() // cancel existing jobs
+                this@BlogRepository.job = job
+            }
+
+            override fun isNetworkRequest(): Boolean {
+                return true
+            }
+
+        }.asLiveData()
+    }
 
     fun updateBlogPost(
         authToken: AuthToken,
@@ -275,13 +359,13 @@ constructor(
                     onCompleteJob(
                         DataState.data(
                             BlogViewState(blogPost = updatedBlogPost),
-                            Response(response.body.response, false, true)
+                            Response(response.body.response, ResponseType.Toast())
                         ))
                 }
             }
 
             override fun cancelOperationIfNoInternetConnection(): Boolean {
-                return false
+                return !sessionManager.isConnectedToTheInternet()
             }
 
             // not applicable
@@ -299,7 +383,6 @@ constructor(
                 )
             }
 
-            // not applicable
             override suspend fun updateLocalDb(cacheObject: BlogPost?) {
                 cacheObject?.let{blogPost ->
                     blogPostDao.updateBlogPost(
@@ -309,7 +392,6 @@ constructor(
                         blogPost.image
                     )
                 }
-
             }
 
             // not applicable

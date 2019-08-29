@@ -6,8 +6,10 @@ class SuccessHandling {
 
         companion object{
 
-            val RESPONSE_PASSWORD_UPDATE_SUCCESS = "successfully changed password"
-            val RESPONSE_CHECK_PREVIOUS_AUTH_USER_DONE = "Done checking for previously authenticated user."
+            const val RESPONSE_PASSWORD_UPDATE_SUCCESS = "successfully changed password"
+            const val RESPONSE_CHECK_PREVIOUS_AUTH_USER_DONE = "Done checking for previously authenticated user."
+            const val SUCCESS_BLOG_CREATED = "created"
+            const val SUCCESS_BLOG_DELETED = "deleted"
 
         }
     }

@@ -6,6 +6,7 @@ import androidx.lifecycle.MediatorLiveData
 import com.codingwithmitch.openapi.api.*
 import com.codingwithmitch.openapi.ui.DataState
 import com.codingwithmitch.openapi.ui.Response
+import com.codingwithmitch.openapi.ui.ResponseType
 import com.codingwithmitch.openapi.util.*
 import com.codingwithmitch.openapi.util.Constants.Companion.NETWORK_TIMEOUT
 import com.codingwithmitch.openapi.util.Constants.Companion.TESTING_CACHE_DELAY
@@ -27,7 +28,7 @@ abstract class NetworkBoundResource<ResponseObject, CacheObject, ViewStateType>{
         setValue(DataState.loading(isLoading = true, cachedData = null))
 
         if(cancelOperationIfNoInternetConnection()){
-            onCompleteJob(DataState.error(Response(ErrorHandling.NetworkErrors.UNABLE_TODO_OPERATION_WO_INTERNET, true, false)))
+            onCompleteJob(DataState.error(Response(ErrorHandling.NetworkErrors.UNABLE_TODO_OPERATION_WO_INTERNET, ResponseType.Dialog())))
         }
         else{
             if(shouldLoadFromCache()){
@@ -106,6 +107,7 @@ abstract class NetworkBoundResource<ResponseObject, CacheObject, ViewStateType>{
     fun onReturnError(errorMessage: String?, shouldUseDialog: Boolean, shouldUseToast: Boolean){
         var msg = errorMessage
         var useDialog = shouldUseDialog
+        var responseType: ResponseType = ResponseType.None()
         if(msg == null){
             msg = ERROR_UNKNOWN
         }
@@ -113,7 +115,14 @@ abstract class NetworkBoundResource<ResponseObject, CacheObject, ViewStateType>{
             msg = ERROR_CHECK_NETWORK_CONNECTION
             useDialog = false
         }
-        onCompleteJob(DataState.error(Response(msg, useDialog, shouldUseToast)))
+        if(shouldUseToast){
+            responseType = ResponseType.Toast()
+        }
+        if(useDialog){
+            responseType = ResponseType.Dialog()
+        }
+
+        onCompleteJob(DataState.error(Response(msg, responseType)))
     }
 
     fun setValue(dataState: DataState<ViewStateType>){
