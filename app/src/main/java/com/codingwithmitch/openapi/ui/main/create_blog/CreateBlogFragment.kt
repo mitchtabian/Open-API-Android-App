@@ -10,7 +10,6 @@ import android.util.Log
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import com.afollestad.materialdialogs.MaterialDialog
 
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.ui.*
@@ -239,6 +238,7 @@ class CreateBlogFragment : BaseCreateFragment() {
         }
         return super.onOptionsItemSelected(item)
     }
+
 }
 
 

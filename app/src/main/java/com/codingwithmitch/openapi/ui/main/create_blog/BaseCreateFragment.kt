@@ -25,6 +25,11 @@ abstract class BaseCreateFragment: BaseMainFragment(){
         viewModel = activity?.run {
             ViewModelProviders.of(this, providerFactory).get(CreateBlogViewModel::class.java)
         }?: throw Exception("Invalid Activity")
+
+        // Cancels jobs when switching between fragments in the same graph
+        // ex: from AccountFragment to UpdateAccountFragment
+        // NOTE: Must call before "subscribeObservers" b/c that will create new jobs for the next fragment
+        cancelPreviousJobs()
     }
 
     fun cancelPreviousJobs(){

@@ -144,22 +144,24 @@ class UpdateBlogFragment : BaseBlogFragment() {
         viewModel.viewState.value?.updatedBlogFields?.updatedImageUri?.let{ imageUri ->
             imageUri.path?.let{filePath ->
                 view?.context?.let{ context ->
-                    FileUtil.getUriRealPathAboveKitkat(context, imageUri)?.let{
-                        val imageFile = File(it)
+                    FileUtil.getUriRealPathAboveKitkat(context, imageUri)?.let{ filepath ->
+                        val imageFile = File(filepath)
                         Log.d(TAG, "UpdateBlogFragment, imageFile: file: ${imageFile}")
-                        val requestBody =
-                            RequestBody.create(
-                                MediaType.parse(context.contentResolver.getType(imageUri)),
-                                imageFile
+                        if(imageFile.exists()){
+                            val requestBody =
+                                RequestBody.create(
+                                    MediaType.parse(context.contentResolver.getType(imageUri)),
+                                    imageFile
+                                )
+                            // name = field name in serializer
+                            // filename = name of the image file
+                            // requestBody = file with file type information
+                            multipartBody = MultipartBody.Part.createFormData(
+                                "image",
+                                imageFile.name,
+                                requestBody
                             )
-                        // name = field name in serializer
-                        // filename = name of the image file
-                        // requestBody = file with file type information
-                        multipartBody = MultipartBody.Part.createFormData(
-                            "image",
-                            imageFile.name,
-                            requestBody
-                        )
+                        }
                     }
                 }
             }

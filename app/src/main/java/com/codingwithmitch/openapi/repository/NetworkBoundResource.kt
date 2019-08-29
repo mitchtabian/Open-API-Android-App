@@ -14,6 +14,8 @@ import com.codingwithmitch.openapi.util.Constants.Companion.TESTING_NETWORK_DELA
 import com.codingwithmitch.openapi.util.ErrorHandling.NetworkErrors.Companion.ERROR_CHECK_NETWORK_CONNECTION
 import com.codingwithmitch.openapi.util.ErrorHandling.NetworkErrors.Companion.ERROR_UNKNOWN
 import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
 
 abstract class NetworkBoundResource<ResponseObject, CacheObject, ViewStateType>{
 
@@ -42,20 +44,28 @@ abstract class NetworkBoundResource<ResponseObject, CacheObject, ViewStateType>{
 
             if(isNetworkAvailable()){
                 if(isNetworkRequest()){
-                    // make network call
-                    val apiResponse = createCall()
-                    result.addSource(apiResponse){ response ->
-                        result.removeSource(apiResponse)
 
-                        coroutineScope.launch {
-                            doNetworkCall(response)
-                        }
+                    coroutineScope.launch {
+                        // simulate network delay for testing
+                        delay(TESTING_NETWORK_DELAY)
 
-                        GlobalScope.launch(Dispatchers.IO) {
-                            delay(NETWORK_TIMEOUT)
-                            if(!job.isCompleted){
-                                Log.e(TAG, "NetworkBoundResource: JOB NETWORK TIMEOUT.")
-                                job.cancel(CancellationException(ErrorHandling.NetworkErrors.UNABLE_TO_RESOLVE_HOST))
+                        withContext(Main){
+                            // make network call
+                            val apiResponse = createCall()
+                            result.addSource(apiResponse){ response ->
+                                result.removeSource(apiResponse)
+
+                                coroutineScope.launch{
+                                    handleNetworkCall(response)
+                                }
+
+                                GlobalScope.launch(IO) {
+                                    delay(NETWORK_TIMEOUT)
+                                    if(!job.isCompleted){
+                                        Log.e(TAG, "NetworkBoundResource: JOB NETWORK TIMEOUT.")
+                                        job.cancel(CancellationException(ErrorHandling.NetworkErrors.UNABLE_TO_RESOLVE_HOST))
+                                    }
+                                }
                             }
                         }
                     }
@@ -78,10 +88,10 @@ abstract class NetworkBoundResource<ResponseObject, CacheObject, ViewStateType>{
         }
     }
 
-    suspend fun doNetworkCall(response: GenericApiResponse<ResponseObject>){
+    suspend fun handleNetworkCall(response: GenericApiResponse<ResponseObject>){
 
-        // simulate network delay for testing
-        delay(TESTING_NETWORK_DELAY)
+//        // simulate network delay for testing
+//        delay(TESTING_NETWORK_DELAY)
         when(response){
             is ApiSuccessResponse ->{
                 handleApiSuccessResponse(response)
@@ -147,7 +157,7 @@ abstract class NetworkBoundResource<ResponseObject, CacheObject, ViewStateType>{
                 }
             }
         })
-        coroutineScope = CoroutineScope(Dispatchers.IO + job)
+        coroutineScope = CoroutineScope(IO + job)
         return job
     }
 

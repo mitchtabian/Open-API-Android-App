@@ -119,7 +119,7 @@ constructor(
 
 
     fun cancelRequests(){
-        Log.d(TAG, "BlogRepository: cancelling requests... ")
+        Log.d(TAG, "CreateBlogRepository: cancelling requests... ")
         job?.cancel()
     }
 
