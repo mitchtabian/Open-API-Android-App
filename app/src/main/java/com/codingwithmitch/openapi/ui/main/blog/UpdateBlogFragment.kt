@@ -13,6 +13,7 @@ import kotlinx.android.synthetic.main.fragment_view_blog.blog_title
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
+import androidx.core.net.toUri
 import com.codingwithmitch.openapi.ui.*
 import com.codingwithmitch.openapi.ui.main.blog.state.BlogStateEvent
 import com.codingwithmitch.openapi.util.Constants.Companion.CROP_IMAGE_INTENT_CODE
@@ -113,6 +114,11 @@ class UpdateBlogFragment : BaseBlogFragment() {
             dataState.data?.let{ data ->
                 data.data?.getContentIfNotHandled()?.let{ viewState ->
                     viewState.blogPost?.let{ blogPost ->
+                        viewModel.setUpdatedBlogFields(
+                            uri = null,
+                            title = blogPost.title,
+                            body = blogPost.body
+                        )
                         viewModel.setBlogPost(blogPost)
                         viewModel.updateListItem(blogPost)
                     }
@@ -166,7 +172,6 @@ class UpdateBlogFragment : BaseBlogFragment() {
                 }
             }
         }
-
         viewModel.setStateEvent(
             BlogStateEvent.UpdateBlogPostEvent(
                 blog_title.text.toString(),

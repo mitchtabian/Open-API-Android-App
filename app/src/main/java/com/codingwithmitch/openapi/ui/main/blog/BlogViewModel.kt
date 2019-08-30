@@ -210,8 +210,8 @@ constructor(
         val update = getCurrentViewStateOrNew()
         val list = update.blogFields.blogList.toMutableList()
         for(i in 0..(list.size - 1)){
-            if(list[i] == newBlogPost){
-               list[i] = newBlogPost
+            if(list[i].pk == newBlogPost.pk){
+                list[i] = newBlogPost
                 break
             }
         }

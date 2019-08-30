@@ -344,6 +344,7 @@ constructor(
             }
 
             override suspend fun handleApiSuccessResponse(response: ApiSuccessResponse<BlogCreateUpdateResponse>) {
+
                 val updatedBlogPost = BlogPost(
                     response.body.pk,
                     response.body.title,

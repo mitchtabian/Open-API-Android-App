@@ -103,7 +103,6 @@ class BlogFragment : BaseBlogFragment(),
                             viewModel.setQueryInProgress(it.blogFields.isQueryInProgress)
                             viewModel.setQueryExhausted(it.blogFields.isQueryExhausted)
                             viewModel.setBlogListData(it.blogFields.blogList)
-                            blog_post_recyclerview.smoothScrollToPosition(0)
                         }
                     }
                 }
