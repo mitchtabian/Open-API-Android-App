@@ -90,8 +90,6 @@ abstract class NetworkBoundResource<ResponseObject, CacheObject, ViewStateType>{
 
     suspend fun handleNetworkCall(response: GenericApiResponse<ResponseObject>){
 
-//        // simulate network delay for testing
-//        delay(TESTING_NETWORK_DELAY)
         when(response){
             is ApiSuccessResponse ->{
                 handleApiSuccessResponse(response)
@@ -108,7 +106,7 @@ abstract class NetworkBoundResource<ResponseObject, CacheObject, ViewStateType>{
     }
 
     fun onCompleteJob(dataState: DataState<ViewStateType>){
-        GlobalScope.launch(Dispatchers.Main) {
+        GlobalScope.launch(Main) {
             job.complete()
             setValue(dataState)
         }

@@ -19,6 +19,7 @@ import com.codingwithmitch.openapi.ui.main.blog.state.BlogViewState
 import com.codingwithmitch.openapi.ui.main.create_blog.state.CreateBlogViewState
 import com.codingwithmitch.openapi.util.AbsentLiveData
 import com.codingwithmitch.openapi.util.DateUtils
+import com.codingwithmitch.openapi.util.SuccessHandling.NetworkSuccessResponses.Companion.RESPONSE_MUST_BECOME_CODINGWITHMITCH_MEMBER
 import kotlinx.coroutines.*
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -56,16 +57,22 @@ constructor(
             }
 
             override suspend fun handleApiSuccessResponse(response: ApiSuccessResponse<BlogCreateUpdateResponse>) {
-                val updatedBlogPost = BlogPost(
-                    response.body.pk,
-                    response.body.title,
-                    response.body.slug,
-                    response.body.body,
-                    response.body.image,
-                    DateUtils.convertServerStringDateToLong(response.body.date_updated),
-                    response.body.username
-                )
-                updateLocalDb(updatedBlogPost)
+
+                // If they don't have a paid membership account it will still return a 200
+                // Need to account for that
+                if(!response.body.response.equals(RESPONSE_MUST_BECOME_CODINGWITHMITCH_MEMBER)){
+                    val updatedBlogPost = BlogPost(
+                        response.body.pk,
+                        response.body.title,
+                        response.body.slug,
+                        response.body.body,
+                        response.body.image,
+                        DateUtils.convertServerStringDateToLong(response.body.date_updated),
+                        response.body.username
+                    )
+                    updateLocalDb(updatedBlogPost)
+                }
+
                 withContext(Dispatchers.Main){
                     // finish with success response
                     onCompleteJob(
