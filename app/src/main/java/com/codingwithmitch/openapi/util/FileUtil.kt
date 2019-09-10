@@ -12,22 +12,6 @@ import android.os.Environment
 
 object FileUtil {
 
-
-    /* Get uri related content real local file path. */
-    fun getUriRealPath(context: Context, uri: Uri): String? {
-        var ret: String? = ""
-
-        if (isAboveKitKat()) {
-            // Android OS above sdk version 19.
-            ret = getUriRealPathAboveKitkat(context, uri)
-        } else {
-            // Android OS below sdk version 19
-            ret = getImageRealPath(context.getContentResolver(), uri, null)
-        }
-
-        return ret
-    }
-
     fun getUriRealPathAboveKitkat(context: Context?, uri: Uri?): String? {
         var ret: String? = ""
 
