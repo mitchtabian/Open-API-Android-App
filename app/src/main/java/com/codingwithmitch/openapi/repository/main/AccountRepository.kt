@@ -3,8 +3,8 @@ package com.codingwithmitch.openapi.repository.main
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.switchMap
-import com.codingwithmitch.openapi.api.ApiSuccessResponse
-import com.codingwithmitch.openapi.api.GenericApiResponse
+import com.codingwithmitch.openapi.util.ApiSuccessResponse
+import com.codingwithmitch.openapi.util.GenericApiResponse
 import com.codingwithmitch.openapi.api.GenericResponse
 import com.codingwithmitch.openapi.api.main.OpenApiMainService
 import com.codingwithmitch.openapi.models.AccountProperties

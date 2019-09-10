@@ -3,9 +3,8 @@ package com.codingwithmitch.openapi.repository.auth
 import android.content.SharedPreferences
 import android.util.Log
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.switchMap
-import com.codingwithmitch.openapi.api.ApiSuccessResponse
-import com.codingwithmitch.openapi.api.GenericApiResponse
+import com.codingwithmitch.openapi.util.ApiSuccessResponse
+import com.codingwithmitch.openapi.util.GenericApiResponse
 import com.codingwithmitch.openapi.api.auth.OpenApiAuthService
 import com.codingwithmitch.openapi.api.auth.network_responses.*
 import com.codingwithmitch.openapi.models.AccountProperties
@@ -19,11 +18,8 @@ import com.codingwithmitch.openapi.ui.Response
 import com.codingwithmitch.openapi.ui.ResponseType
 import com.codingwithmitch.openapi.ui.auth.state.AuthViewState
 import com.codingwithmitch.openapi.ui.auth.state.LoginFields
-import com.codingwithmitch.openapi.ui.auth.state.LoginFields.LoginError.*
 import com.codingwithmitch.openapi.ui.auth.state.RegistrationFields
-import com.codingwithmitch.openapi.ui.main.account.state.AccountViewState
 import com.codingwithmitch.openapi.util.AbsentLiveData
-import com.codingwithmitch.openapi.util.ErrorHandling
 import com.codingwithmitch.openapi.util.ErrorHandling.NetworkErrors.Companion.ERROR_SAVE_ACCOUNT_PROPERTIES
 import com.codingwithmitch.openapi.util.ErrorHandling.NetworkErrors.Companion.ERROR_SAVE_AUTH_TOKEN
 import com.codingwithmitch.openapi.util.ErrorHandling.NetworkErrors.Companion.GENERIC_AUTH_ERROR

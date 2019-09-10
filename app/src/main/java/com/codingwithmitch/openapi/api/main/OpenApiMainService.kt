@@ -1,7 +1,7 @@
 package com.codingwithmitch.openapi.api.main
 
 import androidx.lifecycle.LiveData
-import com.codingwithmitch.openapi.api.GenericApiResponse
+import com.codingwithmitch.openapi.util.GenericApiResponse
 import com.codingwithmitch.openapi.api.GenericResponse
 import com.codingwithmitch.openapi.api.main.network_responses.BlogCreateUpdateResponse
 import com.codingwithmitch.openapi.api.main.network_responses.BlogListSearchResponse
