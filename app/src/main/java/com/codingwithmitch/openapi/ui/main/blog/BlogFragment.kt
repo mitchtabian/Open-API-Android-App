@@ -327,6 +327,7 @@ class BlogFragment : BaseBlogFragment(),
 
     fun onBlogFilterEvent(){
         viewModel.setStateEvent(BlogSearchEvent())
+        blog_post_recyclerview.smoothScrollToPosition(0)
     }
 
     fun onQuerySubmitted(){
