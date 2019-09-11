@@ -34,9 +34,6 @@ import com.codingwithmitch.openapi.ui.*
 import com.codingwithmitch.openapi.ui.main.blog.state.BlogStateEvent.*
 import com.codingwithmitch.openapi.util.PreferenceKeys.Companion.BLOG_FILTER
 import com.codingwithmitch.openapi.util.PreferenceKeys.Companion.BLOG_ORDER
-import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader
-import com.bumptech.glide.util.ViewPreloadSizeProvider
-import com.codingwithmitch.openapi.util.Constants.Companion.PAGINATION_PAGE_SIZE
 
 
 class BlogFragment : BaseBlogFragment(),
@@ -127,16 +124,7 @@ class BlogFragment : BaseBlogFragment(),
         blog_post_recyclerview.removeItemDecoration(topSpacingDecorator) // does nothing if not applied already
         blog_post_recyclerview.addItemDecoration(topSpacingDecorator)
 
-        val viewPreloader = ViewPreloadSizeProvider<String>()
-        recyclerAdapter = BlogRecyclerAdapter(requestManager, viewPreloader, this@BlogFragment)
-        val preloader = RecyclerViewPreloader<String>(
-            requestManager,
-            recyclerAdapter,
-            viewPreloader,
-            PAGINATION_PAGE_SIZE
-        )
-
-        blog_post_recyclerview.addOnScrollListener(preloader)
+        recyclerAdapter = BlogRecyclerAdapter(requestManager,  this@BlogFragment)
         blog_post_recyclerview.addOnScrollListener(object: RecyclerView.OnScrollListener(){
 
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -204,6 +192,7 @@ class BlogFragment : BaseBlogFragment(),
                     else{
                         searchView.setQuery(searchQuery, true)
                     }
+                    blog_post_recyclerview.smoothScrollToPosition(0)
                 }
                 true
             }

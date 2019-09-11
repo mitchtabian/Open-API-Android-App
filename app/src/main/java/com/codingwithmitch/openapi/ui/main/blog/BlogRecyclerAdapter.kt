@@ -17,16 +17,19 @@ import kotlinx.android.synthetic.main.layout_blog_list_item.view.*
 import com.bumptech.glide.util.ViewPreloadSizeProvider
 import android.text.TextUtils
 import com.codingwithmitch.openapi.util.GenericViewHolder
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.*
 import kotlin.collections.ArrayList
 
 
 class BlogRecyclerAdapter(
     val requestManager: RequestManager,
-    val preloadSizeProvider: ViewPreloadSizeProvider<String>,
     var blogClickListener: BlogClickListener
-) : RecyclerView.Adapter<RecyclerView.ViewHolder>(),
-        ListPreloader.PreloadModelProvider<String>
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>()
 {
 
     private val TAG: String = "AppDebug"
@@ -56,14 +59,12 @@ class BlogRecyclerAdapter(
                 return BlogViewHolder(
                     LayoutInflater.from(parent.context).inflate(R.layout.layout_blog_list_item, parent, false),
                     blogClickListener = blogClickListener,
-                    preloadSizeProvider = preloadSizeProvider,
                     requestManager = requestManager
                 )
             }
             else -> return BlogViewHolder(
                 LayoutInflater.from(parent.context).inflate(R.layout.layout_blog_list_item, parent, false),
                 blogClickListener = blogClickListener,
-                preloadSizeProvider = preloadSizeProvider,
                 requestManager = requestManager
             )
         }
@@ -94,6 +95,7 @@ class BlogRecyclerAdapter(
     }
 
     fun setNoMoreResults(){
+        Log.d(TAG, "setNoMoreResults: called.")
         val newList = ArrayList<BlogPost>()
         newList.addAll(items)
         newList.add(NO_MORE_RESULTS_BLOG_MARKER)
@@ -108,25 +110,14 @@ class BlogRecyclerAdapter(
         val oldList = items
         val diffResult: DiffUtil.DiffResult = DiffUtil.calculateDiff(BlogItemDiffCallback(oldList, blogList))
         items = blogList
-        diffResult.dispatchUpdatesTo(this)
-    }
+        diffResult.dispatchUpdatesTo(this@BlogRecyclerAdapter)
 
-    override fun getPreloadItems(position: Int): List<String> {
-        val url = items.get(position).image
-        return if (TextUtils.isEmpty(url)) {
-            Collections.emptyList()
-        } else Collections.singletonList(url)
-    }
-
-    override fun getPreloadRequestBuilder(item: String): RequestBuilder<*>? {
-        return requestManager.load(item)
     }
 
     class BlogViewHolder
     constructor(
         itemView: View,
         val requestManager: RequestManager,
-        val preloadSizeProvider: ViewPreloadSizeProvider<String>,
         val blogClickListener: BlogClickListener
     ): RecyclerView.ViewHolder(itemView), View.OnClickListener{
 
@@ -144,8 +135,6 @@ class BlogRecyclerAdapter(
             blog_date_updated.setText(DateUtils.convertLongToStringDate(blogPost.date_updated))
 
             itemView.setOnClickListener(this)
-
-            preloadSizeProvider.setView(itemView.findViewById(R.id.blog_image))
         }
 
         override fun onClick(v: View?) {
