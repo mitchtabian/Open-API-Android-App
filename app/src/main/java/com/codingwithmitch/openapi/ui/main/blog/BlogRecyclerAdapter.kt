@@ -94,22 +94,18 @@ class BlogRecyclerAdapter(
         return items.size
     }
 
-    fun setNoMoreResults(){
-        Log.d(TAG, "setNoMoreResults: called.")
-        val newList = ArrayList<BlogPost>()
-        newList.addAll(items)
-        newList.add(NO_MORE_RESULTS_BLOG_MARKER)
-        submitList(newList)
-    }
 
     fun findBlogPost(position: Int): BlogPost{
         return items[position]
     }
 
-    fun submitList(blogList: List<BlogPost>){
+    fun submitList(blogList: List<BlogPost>, isQueryExhausted: Boolean){
         val oldList = items
-        val diffResult: DiffUtil.DiffResult = DiffUtil.calculateDiff(BlogItemDiffCallback(oldList, blogList))
-        items = blogList
+        val newList = blogList.toMutableList()
+        if(isQueryExhausted)
+            newList.add(NO_MORE_RESULTS_BLOG_MARKER)
+        val diffResult: DiffUtil.DiffResult = DiffUtil.calculateDiff(BlogItemDiffCallback(oldList, newList))
+        items = newList
         diffResult.dispatchUpdatesTo(this@BlogRecyclerAdapter)
 
     }
@@ -174,8 +170,9 @@ class BlogRecyclerAdapter(
             oldItemPosition: Int,
             newItemPosition: Int
         ): Boolean {
-            return (oldBlogList.get(oldItemPosition)
-                    == newBlogList.get(newItemPosition))
+//            return (oldBlogList.get(oldItemPosition)
+//                    == newBlogList.get(newItemPosition))
+            return (oldBlogList.get(oldItemPosition).equals(newBlogList.get(newItemPosition)))
         }
     }
 }
