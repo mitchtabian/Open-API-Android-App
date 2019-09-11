@@ -168,6 +168,7 @@ class BlogFragment : BaseBlogFragment(),
                     Log.e(TAG, "onQueryTextSubmit: ${query}")
                     viewModel.loadFirstPage(query)
                     onQuerySubmitted()
+                    blog_post_recyclerview.smoothScrollToPosition(0)
                     return true
                 }
 
@@ -208,7 +209,7 @@ class BlogFragment : BaseBlogFragment(),
                 else{
                     searchView.setQuery(searchQuery, true)
                 }
-
+                blog_post_recyclerview.smoothScrollToPosition(0)
             }
         }
     }

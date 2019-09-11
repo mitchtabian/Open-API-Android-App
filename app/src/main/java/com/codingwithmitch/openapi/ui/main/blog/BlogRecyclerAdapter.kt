@@ -170,8 +170,6 @@ class BlogRecyclerAdapter(
             oldItemPosition: Int,
             newItemPosition: Int
         ): Boolean {
-//            return (oldBlogList.get(oldItemPosition)
-//                    == newBlogList.get(newItemPosition))
             return (oldBlogList.get(oldItemPosition).equals(newBlogList.get(newItemPosition)))
         }
     }
