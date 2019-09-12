@@ -1,8 +1,5 @@
 package com.codingwithmitch.openapi.ui.main.blog
 
-
-import android.annotation.SuppressLint
-import android.app.Application
 import android.app.SearchManager
 import android.content.Context.SEARCH_SERVICE
 import android.content.SharedPreferences
@@ -35,7 +32,6 @@ import com.codingwithmitch.openapi.ui.*
 import com.codingwithmitch.openapi.ui.main.blog.state.BlogStateEvent.*
 import com.codingwithmitch.openapi.util.PreferenceKeys.Companion.BLOG_FILTER
 import com.codingwithmitch.openapi.util.PreferenceKeys.Companion.BLOG_ORDER
-import com.codingwithmitch.openapi.models.BlogPost
 
 class BlogFragment : BaseBlogFragment(),
     BlogListAdapter.BlogViewHolder.BlogClickListener,
@@ -102,7 +98,6 @@ class BlogFragment : BaseBlogFragment(),
                             viewModel.setQueryInProgress(it.blogFields.isQueryInProgress)
                             viewModel.setQueryExhausted(it.blogFields.isQueryExhausted)
                             viewModel.setBlogListData(it.blogFields.blogList)
-                            preloadGlideImages(it.blogFields.blogList)
                         }
                     }
                 }
@@ -119,20 +114,6 @@ class BlogFragment : BaseBlogFragment(),
             }
         })
     }
-
-    // Prepare the images that will be displayed in the RecyclerView.
-    // This also ensures if the network connection is lost, they will be in the cache
-    private fun preloadGlideImages(list: List<BlogPost>){
-        for(blogPost in list){
-            requestManager
-                .download(blogPost.image)
-                .load(blogPost.image)
-                .preload()
-        }
-    }
-
-    @Inject
-    lateinit var application: Application
 
     private fun initRecyclerView(){
         blog_post_recyclerview.layoutManager = LinearLayoutManager(this@BlogFragment.context)

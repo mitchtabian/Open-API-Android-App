@@ -4,6 +4,7 @@ import android.content.SharedPreferences
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.*
+import com.bumptech.glide.RequestManager
 import com.codingwithmitch.openapi.models.AccountProperties
 import com.codingwithmitch.openapi.models.BlogPost
 import com.codingwithmitch.openapi.repository.main.BlogQueryUtils
@@ -27,7 +28,8 @@ class BlogViewModel
 constructor(
     private val sessionManager: SessionManager,
     private val blogRepository: BlogRepository,
-    private val sharedPreferences: SharedPreferences
+    private val sharedPreferences: SharedPreferences,
+    private val requestManager: RequestManager
 )
     : BaseViewModel<BlogStateEvent, BlogViewState>()
 {
@@ -156,6 +158,18 @@ constructor(
         val update = getCurrentViewStateOrNew()
         update.blogFields.blogList = blogList
         _viewState.value = update
+        preloadGlideImages(blogList)
+    }
+
+    // Prepare the images that will be displayed in the RecyclerView.
+    // This also ensures if the network connection is lost, they will be in the cache
+    private fun preloadGlideImages(list: List<BlogPost>){
+        for(blogPost in list){
+            requestManager
+                .download(blogPost.image)
+                .load(blogPost.image)
+                .preload()
+        }
     }
 
     fun incrementPageNumber(){
