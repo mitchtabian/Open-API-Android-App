@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
 import com.codingwithmitch.openapi.R
-import com.codingwithmitch.openapi.ui.main.blog.BlogRecyclerAdapter.BlogViewHolder.*
 import com.codingwithmitch.openapi.ui.main.blog.state.BlogViewState
 import com.codingwithmitch.openapi.util.TopSpacingItemDecoration
 import com.codingwithmitch.openapi.util.ErrorHandling
@@ -37,7 +36,7 @@ import com.codingwithmitch.openapi.util.PreferenceKeys.Companion.BLOG_ORDER
 
 
 class BlogFragment : BaseBlogFragment(),
-    BlogClickListener,
+    BlogListAdapter.BlogViewHolder.BlogClickListener,
     SharedPreferences.OnSharedPreferenceChangeListener,
     SwipeRefreshLayout.OnRefreshListener
 {
@@ -48,7 +47,7 @@ class BlogFragment : BaseBlogFragment(),
     lateinit var editor: SharedPreferences.Editor
 
     private lateinit var searchView: SearchView
-    private lateinit var recyclerAdapter: BlogRecyclerAdapter
+    private lateinit var recyclerAdapter: BlogListAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -124,7 +123,7 @@ class BlogFragment : BaseBlogFragment(),
         blog_post_recyclerview.removeItemDecoration(topSpacingDecorator) // does nothing if not applied already
         blog_post_recyclerview.addItemDecoration(topSpacingDecorator)
 
-        recyclerAdapter = BlogRecyclerAdapter(requestManager,  this@BlogFragment)
+        recyclerAdapter = BlogListAdapter(requestManager,  this@BlogFragment)
         blog_post_recyclerview.addOnScrollListener(object: RecyclerView.OnScrollListener(){
 
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {

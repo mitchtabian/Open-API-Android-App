@@ -6,29 +6,20 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.ListPreloader
-import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.RequestManager
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.models.BlogPost
-import com.codingwithmitch.openapi.ui.main.blog.BlogRecyclerAdapter.BlogViewHolder.*
 import com.codingwithmitch.openapi.util.DateUtils
 import kotlinx.android.synthetic.main.layout_blog_list_item.view.*
-import com.bumptech.glide.util.ViewPreloadSizeProvider
-import android.text.TextUtils
 import com.codingwithmitch.openapi.util.GenericViewHolder
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.Dispatchers.Main
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.util.*
-import kotlin.collections.ArrayList
+import androidx.recyclerview.widget.AsyncListDiffer
 
 
-class BlogRecyclerAdapter(
+
+
+class BlogListAdapter(
     val requestManager: RequestManager,
-    var blogClickListener: BlogClickListener
+    var blogClickListener: BlogViewHolder.BlogClickListener
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>()
 {
 
@@ -38,7 +29,19 @@ class BlogRecyclerAdapter(
     private val BLOG_ITEM = 0
     private val NO_MORE_RESULTS_BLOG_MARKER = BlogPost(NO_MORE_RESULTS, "" ,"", "", "", 0, "")
 
-    private var items: List<BlogPost> = ArrayList()
+    val DIFF_CALLBACK = object: DiffUtil.ItemCallback<BlogPost>(){
+
+        override fun areItemsTheSame(oldItem: BlogPost, newItem: BlogPost): Boolean {
+            return oldItem.pk == newItem.pk
+        }
+
+        override fun areContentsTheSame(oldItem: BlogPost, newItem: BlogPost): Boolean {
+            return oldItem == newItem
+        }
+
+    }
+    private val differ = AsyncListDiffer(this, DIFF_CALLBACK)
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
 
@@ -74,7 +77,7 @@ class BlogRecyclerAdapter(
         when(holder) {
 
             is BlogViewHolder -> {
-                holder.bind(items.get(position))
+                holder.bind(differ.currentList.get(position))
             }
 
             is GenericViewHolder -> {
@@ -84,31 +87,28 @@ class BlogRecyclerAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-        if(items.get(position).pk > -1){
+        if(differ.currentList.get(position).pk > -1){
             return BLOG_ITEM
         }
-        return items.get(position).pk
+        return differ.currentList.get(position).pk
     }
 
     override fun getItemCount(): Int {
-        return items.size
+        return differ.currentList.size
     }
 
-
-    fun findBlogPost(position: Int): BlogPost{
-        return items[position]
-    }
 
     fun submitList(blogList: List<BlogPost>, isQueryExhausted: Boolean){
-        val oldList = items
         val newList = blogList.toMutableList()
-        if(isQueryExhausted)
+        if (isQueryExhausted)
             newList.add(NO_MORE_RESULTS_BLOG_MARKER)
-        val diffResult: DiffUtil.DiffResult = DiffUtil.calculateDiff(BlogItemDiffCallback(oldList, newList))
-        items = newList
-        diffResult.dispatchUpdatesTo(this@BlogRecyclerAdapter)
-
+        differ.submitList(newList)
     }
+
+    fun findBlogPost(position: Int): BlogPost{
+        return differ.currentList[position]
+    }
+
 
     class BlogViewHolder
     constructor(
@@ -143,36 +143,6 @@ class BlogRecyclerAdapter(
         }
     }
 
-    class BlogItemDiffCallback(
-        var oldBlogList: List<BlogPost>,
-        var newBlogList: List<BlogPost>
-
-    ): DiffUtil.Callback() {
-
-
-        override fun areItemsTheSame(
-            oldItemPosition: Int,
-            newItemPosition: Int
-        ): Boolean {
-            return (oldBlogList.get(oldItemPosition).pk
-                    == newBlogList.get(newItemPosition).pk)
-        }
-
-        override fun getOldListSize(): Int {
-            return oldBlogList.size
-        }
-
-        override fun getNewListSize(): Int {
-            return newBlogList.size
-        }
-
-        override fun areContentsTheSame(
-            oldItemPosition: Int,
-            newItemPosition: Int
-        ): Boolean {
-            return (oldBlogList.get(oldItemPosition).equals(newBlogList.get(newItemPosition)))
-        }
-    }
 }
 
 
