@@ -166,7 +166,6 @@ constructor(
     private fun preloadGlideImages(list: List<BlogPost>){
         for(blogPost in list){
             requestManager
-                .download(blogPost.image)
                 .load(blogPost.image)
                 .preload()
         }
