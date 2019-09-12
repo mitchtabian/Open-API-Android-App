@@ -125,7 +125,7 @@ dependencies {
     implementation "androidx.recyclerview:recyclerview:$recyclerview_version"
     
 //    //glide
-    def glide_version = "4.8.0"
+    def glide_version = "4.9.0"
     implementation "com.github.bumptech.glide:glide:$glide_version"
     annotationProcessor "com.github.bumptech.glide:compiler:$glide_version"
 
@@ -134,4 +134,5 @@ dependencies {
         // Excludes the support library because it's already included by Glide.
         transitive = false
     }
+
 }

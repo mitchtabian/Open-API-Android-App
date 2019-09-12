@@ -1,5 +1,6 @@
 package com.codingwithmitch.openapi.ui.main.blog
 
+import android.text.TextUtils
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -13,13 +14,13 @@ import com.codingwithmitch.openapi.util.DateUtils
 import kotlinx.android.synthetic.main.layout_blog_list_item.view.*
 import com.codingwithmitch.openapi.util.GenericViewHolder
 import androidx.recyclerview.widget.AsyncListDiffer
-
-
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade
 
 
 class BlogListAdapter(
     val requestManager: RequestManager,
     var blogClickListener: BlogViewHolder.BlogClickListener
+
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>()
 {
 
@@ -65,11 +66,13 @@ class BlogListAdapter(
                     requestManager = requestManager
                 )
             }
-            else -> return BlogViewHolder(
-                LayoutInflater.from(parent.context).inflate(R.layout.layout_blog_list_item, parent, false),
-                blogClickListener = blogClickListener,
-                requestManager = requestManager
-            )
+            else -> {
+                return BlogViewHolder(
+                    LayoutInflater.from(parent.context).inflate(R.layout.layout_blog_list_item, parent, false),
+                    blogClickListener = blogClickListener,
+                    requestManager = requestManager
+                )
+            }
         }
     }
 
@@ -117,20 +120,19 @@ class BlogListAdapter(
         val blogClickListener: BlogClickListener
     ): RecyclerView.ViewHolder(itemView), View.OnClickListener{
 
-        val blog_image = itemView.blog_image
-        val blog_title = itemView.blog_title
-        val blog_author = itemView.blog_author
-        val blog_date_updated = itemView.blog_update_date
 
-        fun bind(blogPost: BlogPost){
+        init {
+            itemView.setOnClickListener(this)
+        }
+
+        fun bind(blogPost: BlogPost) = with(itemView){
             requestManager
                 .load(blogPost.image)
-                .into(blog_image)
-            blog_title.setText(blogPost.title)
-            blog_author.setText(blogPost.username)
-            blog_date_updated.setText(DateUtils.convertLongToStringDate(blogPost.date_updated))
-
-            itemView.setOnClickListener(this)
+                .transition(withCrossFade())
+                .into(itemView.blog_image)
+            itemView.blog_title.text = blogPost.title
+            itemView.blog_author.text = blogPost.username
+            itemView.blog_update_date.text = DateUtils.convertLongToStringDate(blogPost.date_updated)
         }
 
         override fun onClick(v: View?) {
