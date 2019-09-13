@@ -27,9 +27,7 @@ class RegisterFragment : BaseAuthFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        view.findViewById<Button>(R.id.register_button).setOnClickListener {
-            register()
-        }
+        register_button.setOnClickListener { register() }
         subscribeObservers()
     }
 

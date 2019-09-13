@@ -44,10 +44,7 @@ class LoginFragment : DaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
        viewModel= ViewModelProviders.of(this, providerFactory).get(AuthViewModel::class.java)
-        view.findViewById<Button>(R.id.login_button).setOnClickListener {
-            login()
-        }
-
+        login_button.setOnClickListener { login() }
         subscribeObservers()
     }
 
