@@ -5,7 +5,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        tools:context=".ui.main.MainActivity">
+        tools:context=".ui.main.MainActivity"
+        android:background="#fff">
 
     <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"

@@ -37,7 +37,6 @@ class AuthActivity : BaseActivity() {
         checkPreviousAuthUser()
     }
 
-
     fun subscribeObservers(){
 
         viewModel.dataState.observe(this, Observer{ dataState ->
@@ -113,6 +112,12 @@ class AuthActivity : BaseActivity() {
     override fun expandAppBar() {
         // ignore
     }
+
+    override fun isStoragePermissionGranted(): Boolean {
+        // ignore
+        return true
+    }
+
 }
 
 

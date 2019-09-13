@@ -1,4 +1,4 @@
-package com.codingwithmitch.openapi.ui.main.blog
+package com.codingwithmitch.openapi.util
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView

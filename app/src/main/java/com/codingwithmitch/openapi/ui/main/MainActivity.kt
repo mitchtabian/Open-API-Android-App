@@ -1,11 +1,15 @@
 package com.codingwithmitch.openapi.ui.main
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.widget.Toolbar
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import com.bumptech.glide.RequestManager
 import com.codingwithmitch.openapi.R
@@ -15,6 +19,7 @@ import com.codingwithmitch.openapi.ui.main.account.*
 import com.codingwithmitch.openapi.ui.main.blog.BaseBlogFragment
 import com.codingwithmitch.openapi.ui.main.create_blog.BaseCreateFragment
 import com.codingwithmitch.openapi.util.*
+import com.codingwithmitch.openapi.util.Constants.Companion.PERMISSIONS_REQUEST_READ_STORAGE
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_main.*
@@ -50,6 +55,32 @@ class MainActivity : BaseActivity(),
             bottomNavController.onNavigationItemSelected()
         }
         subscribeObservers()
+    }
+
+
+    override fun isStoragePermissionGranted(): Boolean{
+        if (
+            ContextCompat.checkSelfPermission(this,
+                Manifest.permission.READ_EXTERNAL_STORAGE)
+            != PackageManager.PERMISSION_GRANTED &&
+            ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            != PackageManager.PERMISSION_GRANTED  ) {
+
+
+            ActivityCompat.requestPermissions(this,
+                arrayOf(
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+                ),
+                PERMISSIONS_REQUEST_READ_STORAGE
+            )
+
+            return false
+        } else {
+            // Permission has already been granted
+            return true
+        }
     }
 
     private fun setupActionBar(){

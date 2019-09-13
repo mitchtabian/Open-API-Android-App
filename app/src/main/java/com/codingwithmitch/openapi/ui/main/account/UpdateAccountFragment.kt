@@ -62,12 +62,12 @@ class UpdateAccountFragment : BaseAccountFragment() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.account_update_menu, menu)
+        inflater.inflate(R.menu.update_menu, menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
-            R.id.save_account -> {
+            R.id.save -> {
                 saveChanges()
                 return true
             }

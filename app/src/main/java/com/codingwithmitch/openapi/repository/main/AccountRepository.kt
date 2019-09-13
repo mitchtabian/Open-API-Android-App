@@ -3,8 +3,8 @@ package com.codingwithmitch.openapi.repository.main
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.switchMap
-import com.codingwithmitch.openapi.api.ApiSuccessResponse
-import com.codingwithmitch.openapi.api.GenericApiResponse
+import com.codingwithmitch.openapi.util.ApiSuccessResponse
+import com.codingwithmitch.openapi.util.GenericApiResponse
 import com.codingwithmitch.openapi.api.GenericResponse
 import com.codingwithmitch.openapi.api.main.OpenApiMainService
 import com.codingwithmitch.openapi.models.AccountProperties
@@ -14,6 +14,7 @@ import com.codingwithmitch.openapi.repository.NetworkBoundResource
 import com.codingwithmitch.openapi.session.SessionManager
 import com.codingwithmitch.openapi.ui.DataState
 import com.codingwithmitch.openapi.ui.Response
+import com.codingwithmitch.openapi.ui.ResponseType
 import com.codingwithmitch.openapi.ui.main.account.state.AccountViewState
 import com.codingwithmitch.openapi.util.*
 import kotlinx.coroutines.*
@@ -128,7 +129,7 @@ constructor(
                     // finish with success response
                     onCompleteJob(
                         DataState.data(null,
-                            Response(response.body.response, false, true)
+                            Response(response.body.response, ResponseType.Toast())
                         ))
                 }
             }
@@ -193,7 +194,7 @@ constructor(
                     // finish with success response
                     onCompleteJob(
                         DataState.data(null,
-                            Response(response.body.response, false, true)
+                            Response(response.body.response, ResponseType.Toast())
                         ))
                 }
             }

@@ -1,6 +1,5 @@
 package com.codingwithmitch.openapi.ui.main.blog
 
-
 import android.app.SearchManager
 import android.content.Context.SEARCH_SERVICE
 import android.content.SharedPreferences
@@ -14,7 +13,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
 import com.codingwithmitch.openapi.R
-import com.codingwithmitch.openapi.ui.main.blog.BlogRecyclerAdapter.BlogViewHolder.*
 import com.codingwithmitch.openapi.ui.main.blog.state.BlogViewState
 import com.codingwithmitch.openapi.util.TopSpacingItemDecoration
 import com.codingwithmitch.openapi.util.ErrorHandling
@@ -34,13 +32,9 @@ import com.codingwithmitch.openapi.ui.*
 import com.codingwithmitch.openapi.ui.main.blog.state.BlogStateEvent.*
 import com.codingwithmitch.openapi.util.PreferenceKeys.Companion.BLOG_FILTER
 import com.codingwithmitch.openapi.util.PreferenceKeys.Companion.BLOG_ORDER
-import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader
-import com.bumptech.glide.util.ViewPreloadSizeProvider
-import com.codingwithmitch.openapi.util.Constants.Companion.PAGINATION_PAGE_SIZE
-
 
 class BlogFragment : BaseBlogFragment(),
-    BlogClickListener,
+    BlogListAdapter.BlogViewHolder.BlogClickListener,
     SharedPreferences.OnSharedPreferenceChangeListener,
     SwipeRefreshLayout.OnRefreshListener
 {
@@ -51,7 +45,7 @@ class BlogFragment : BaseBlogFragment(),
     lateinit var editor: SharedPreferences.Editor
 
     private lateinit var searchView: SearchView
-    private lateinit var recyclerAdapter: BlogRecyclerAdapter
+    private lateinit var recyclerAdapter: BlogListAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -99,11 +93,11 @@ class BlogFragment : BaseBlogFragment(),
                     it.data?.let{
                         it.getContentIfNotHandled()?.let{
                             Log.d(TAG, "BlogFragment, DataState: ${it}")
-                            Log.d(TAG, "BlogFragment, DataState: isQueryInProgress?: ${it.isQueryInProgress}")
-                            viewModel.setQueryInProgress(it.isQueryInProgress)
-                            viewModel.setQueryExhausted(it.isQueryExhausted)
-                            viewModel.setBlogListData(it.blogList)
-                            blog_post_recyclerview.smoothScrollToPosition(0)
+                            Log.d(TAG, "BlogFragment, DataState: isQueryInProgress?: ${it.blogFields.isQueryInProgress}")
+                            Log.d(TAG, "BlogFragment, DataState: isQueryExhausted?: ${it.blogFields.isQueryExhausted}")
+                            viewModel.setQueryInProgress(it.blogFields.isQueryInProgress)
+                            viewModel.setQueryExhausted(it.blogFields.isQueryExhausted)
+                            viewModel.setBlogListData(it.blogFields.blogList)
                         }
                     }
                 }
@@ -113,14 +107,13 @@ class BlogFragment : BaseBlogFragment(),
         viewModel.viewState.observe(viewLifecycleOwner, Observer{ viewState ->
             Log.d(TAG, "BlogFragment, ViewState: ${viewState}")
             if(viewState != null){
-                recyclerAdapter.submitList(viewState.blogList)
-                if(viewState.isQueryExhausted){
-                    recyclerAdapter.setNoMoreResults()
-                }
+                recyclerAdapter.submitList(
+                    viewState.blogFields.blogList,
+                    viewState.blogFields.isQueryExhausted
+                )
             }
         })
     }
-
 
     private fun initRecyclerView(){
         blog_post_recyclerview.layoutManager = LinearLayoutManager(this@BlogFragment.context)
@@ -128,16 +121,7 @@ class BlogFragment : BaseBlogFragment(),
         blog_post_recyclerview.removeItemDecoration(topSpacingDecorator) // does nothing if not applied already
         blog_post_recyclerview.addItemDecoration(topSpacingDecorator)
 
-        val viewPreloader = ViewPreloadSizeProvider<String>()
-        recyclerAdapter = BlogRecyclerAdapter(requestManager, viewPreloader, this@BlogFragment)
-        val preloader = RecyclerViewPreloader<String>(
-            requestManager,
-            recyclerAdapter,
-            viewPreloader,
-            PAGINATION_PAGE_SIZE
-        )
-
-        blog_post_recyclerview.addOnScrollListener(preloader)
+        recyclerAdapter = BlogListAdapter(requestManager,  this@BlogFragment)
         blog_post_recyclerview.addOnScrollListener(object: RecyclerView.OnScrollListener(){
 
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -181,6 +165,7 @@ class BlogFragment : BaseBlogFragment(),
                     Log.e(TAG, "onQueryTextSubmit: ${query}")
                     viewModel.loadFirstPage(query)
                     onQuerySubmitted()
+                    blog_post_recyclerview.smoothScrollToPosition(0)
                     return true
                 }
 
@@ -205,6 +190,7 @@ class BlogFragment : BaseBlogFragment(),
                     else{
                         searchView.setQuery(searchQuery, true)
                     }
+                    blog_post_recyclerview.smoothScrollToPosition(0)
                 }
                 true
             }
@@ -220,7 +206,7 @@ class BlogFragment : BaseBlogFragment(),
                 else{
                     searchView.setQuery(searchQuery, true)
                 }
-
+                blog_post_recyclerview.smoothScrollToPosition(0)
             }
         }
     }
@@ -318,9 +304,7 @@ class BlogFragment : BaseBlogFragment(),
                 }
 
                 BLOG_ORDER ->{
-                    sharedPreferences.getString(key, "")?.let{
-                        viewModel.setBlogOrder(it)
-                    }?: viewModel.setBlogOrder(BLOG_ORDER_ASC) // "" = ASC
+                    viewModel.setBlogOrder(sharedPreferences.getString(key, BLOG_ORDER_ASC))
                     onBlogFilterEvent()
                 }
                 else -> return
@@ -330,6 +314,7 @@ class BlogFragment : BaseBlogFragment(),
 
     fun onBlogFilterEvent(){
         viewModel.setStateEvent(BlogSearchEvent())
+        blog_post_recyclerview.smoothScrollToPosition(0)
     }
 
     fun onQuerySubmitted(){

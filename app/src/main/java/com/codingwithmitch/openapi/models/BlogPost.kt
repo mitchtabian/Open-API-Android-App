@@ -47,6 +47,8 @@ data class BlogPost(
 
         if (pk != other.pk) return false
         if (slug != other.slug) return false
+        if (title != other.title) return false
+        if (image != other.image) return false
 
         return true
     }

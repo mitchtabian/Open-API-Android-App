@@ -1,7 +1,7 @@
 package com.codingwithmitch.openapi.api.auth
 
 import androidx.lifecycle.LiveData
-import com.codingwithmitch.openapi.api.GenericApiResponse
+import com.codingwithmitch.openapi.util.GenericApiResponse
 import com.codingwithmitch.openapi.api.auth.network_responses.LoginResponse
 import com.codingwithmitch.openapi.api.auth.network_responses.RegistrationResponse
 import retrofit2.http.*

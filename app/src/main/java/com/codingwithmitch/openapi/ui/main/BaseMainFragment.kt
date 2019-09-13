@@ -7,6 +7,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import com.codingwithmitch.openapi.ui.DataStateChangeListener
+import com.codingwithmitch.openapi.ui.UICommunicationListener
 import com.codingwithmitch.openapi.viewmodels.ViewModelProviderFactory
 import dagger.android.support.DaggerFragment
 import javax.inject.Inject
@@ -19,6 +20,8 @@ abstract class BaseMainFragment : DaggerFragment() {
     lateinit var providerFactory: ViewModelProviderFactory
 
     lateinit var stateChangeListener: DataStateChangeListener
+
+    lateinit var uiCommunicationListener: UICommunicationListener
 
     /*
       @fragmentId is id of fragment from graph to be EXCLUDED from action back bar nav
@@ -39,6 +42,29 @@ abstract class BaseMainFragment : DaggerFragment() {
         }catch(e: ClassCastException){
             Log.e(TAG, "$context must implement DataStateChangeListener" )
         }
+
+        try{
+            uiCommunicationListener = context as UICommunicationListener
+        }catch(e: ClassCastException){
+            Log.e(TAG, "$context must implement UICommunicationListener" )
+        }
     }
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -43,7 +43,6 @@
                 android:id="@+id/blog_image"
                 android:scaleType="fitXY"
                 android:adjustViewBounds="true"
-                app:layout_constraintVertical_chainStyle="packed"
         />
 
         <LinearLayout
@@ -93,10 +92,31 @@
                     android:text="This is some blog content"
                     android:textColor="#000"
                     android:textSize="17sp"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="20dp"
             />
 
+            <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:background="@color/grey4"
+                    android:layout_marginTop="20dp"
+                    >
 
+            </View>
+
+
+            <Button
+                    android:id="@+id/delete_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/red_button_drawable"
+                    android:text="@string/delete"
+                    android:textAllCaps="false"
+                    android:textColor="#fff"
+                    android:textSize="16sp"
+                    android:layout_marginTop="50dp"
+                    android:layout_marginBottom="30dp"
+                    android:visibility="invisible"/>
 
         </LinearLayout>
 
