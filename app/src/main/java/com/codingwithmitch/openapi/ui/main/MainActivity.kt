@@ -41,8 +41,10 @@ class MainActivity : BaseActivity(),
         setupActionBar()
         Log.d(TAG, "MainActivity: onCreate: called.")
 
-        bottomNavController.setNavGraphProvider(this)
-        bottomNavController.setNavGraphChangeListener(this)
+        bottomNavController.apply {
+            setNavGraphProvider(this@MainActivity)
+            setNavGraphChangeListener(this@MainActivity)
+        }
         bottomNavigationView.setUpNavigation(bottomNavController)
         if (savedInstanceState == null) {
             bottomNavController.onNavigationItemSelected()
@@ -51,8 +53,7 @@ class MainActivity : BaseActivity(),
     }
 
     private fun setupActionBar(){
-        val toolbar = findViewById<Toolbar>(R.id.tool_bar)
-        setSupportActionBar(toolbar)
+        setSupportActionBar(tool_bar)
     }
 
     override fun getNavGraphId(itemId: Int) = when (itemId) {

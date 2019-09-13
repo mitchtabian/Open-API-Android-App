@@ -7,16 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 
 import com.codingwithmitch.openapi.R
-<<<<<<< HEAD
-import com.codingwithmitch.openapi.util.TextWatcherCallback
 import com.codingwithmitch.openapi.viewmodels.ViewModelProviderFactory
 import dagger.android.support.DaggerFragment
-=======
 import com.codingwithmitch.openapi.ui.auth.state.AuthStateEvent.*
 import com.codingwithmitch.openapi.ui.auth.state.LoginFields
->>>>>>> 3739d8f586560a971aa0dffabb980e65010e9621
 import kotlinx.android.synthetic.main.fragment_login.*
 import javax.inject.Inject
 
