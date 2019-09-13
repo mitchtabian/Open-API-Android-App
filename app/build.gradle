@@ -128,11 +128,4 @@ dependencies {
     def glide_version = "4.9.0"
     implementation "com.github.bumptech.glide:glide:$glide_version"
     annotationProcessor "com.github.bumptech.glide:compiler:$glide_version"
-
-    // Glide RecyclerView Preloader
-    implementation ("com.github.bumptech.glide:recyclerview-integration:$glide_version") {
-        // Excludes the support library because it's already included by Glide.
-        transitive = false
-    }
-
 }
