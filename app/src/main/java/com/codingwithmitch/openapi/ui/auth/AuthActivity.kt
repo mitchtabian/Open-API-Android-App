@@ -5,11 +5,9 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
-import com.afollestad.materialdialogs.MaterialDialog
+import androidx.lifecycle.ViewModelProvider
 
 import com.codingwithmitch.openapi.R
-import com.codingwithmitch.openapi.session.SessionStateEvent
 import com.codingwithmitch.openapi.ui.BaseActivity
 import com.codingwithmitch.openapi.ui.auth.state.AuthStateEvent
 import com.codingwithmitch.openapi.ui.main.MainActivity
@@ -32,7 +30,7 @@ class AuthActivity : BaseActivity() {
         setContentView(R.layout.activity_auth)
         Log.d(TAG, "AuthActivity: onCreate: called.")
 
-        viewModel = ViewModelProviders.of(this, providerFactory).get(AuthViewModel::class.java)
+        viewModel = ViewModelProvider(this, providerFactory).get(AuthViewModel::class.java)
         subscribeObservers()
         checkPreviousAuthUser()
     }

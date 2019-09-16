@@ -42,8 +42,7 @@ abstract class BaseBlogFragment : DaggerFragment(){
             ViewModelProvider(this, providerFactory).get(BlogViewModel::class.java)
         }?: throw Exception("Invalid Activity")
 
-        Log.d(TAG, "ViewModel: ${viewModel.hashCode()}")
-
+        Log.d(TAG, "BlogViewModel: ${viewModel}")
 
         // Cancels jobs when switching between fragments in the same graph
         // ex: from AccountFragment to UpdateAccountFragment
