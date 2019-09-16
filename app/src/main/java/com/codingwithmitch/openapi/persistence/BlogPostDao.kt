@@ -17,6 +17,9 @@ interface BlogPostDao {
     @Delete
     suspend fun deleteBlogPost(blogPost: BlogPost)
 
+    @Query("SELECT * FROM blog_post WHERE pk = :pk")
+    fun getBlogPost(pk: Int): LiveData<BlogPost>
+
     @Query("SELECT * FROM blog_post WHERE title LIKE '%' || :query || '%' OR body LIKE '%' || :query || '%' OR username LIKE '%' || :query || '%' ORDER BY date_updated DESC LIMIT (:page * :pageSize)")
     fun searchBlogPostsOrderByDateDESC(query: String, page: Int, pageSize: Int = PAGINATION_PAGE_SIZE): LiveData<List<BlogPost>>
 

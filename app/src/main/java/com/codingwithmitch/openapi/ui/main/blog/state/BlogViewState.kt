@@ -13,7 +13,7 @@ data class BlogViewState (
 
     // ViewBlogFragment vars
     var blogPost: BlogPost? = null,
-    var accountProperties: AccountProperties? = null,
+    var isAuthorOfBlogPost: Boolean = false,
 
     // UpdateBlogFragment vars
     var updatedBlogFields: UpdatedBlogFields = UpdatedBlogFields()

@@ -22,7 +22,7 @@ constructor(
         when(stateEvent){
 
             is LoginAttemptEvent -> {
-
+                Log.d(TAG, "handleStateEvent: attempting login... ")
                 return authRepository.attemptLogin(
                     stateEvent.email,
                     stateEvent.password

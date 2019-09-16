@@ -7,10 +7,8 @@ import com.codingwithmitch.openapi.api.*
 import com.codingwithmitch.openapi.api.main.OpenApiMainService
 import com.codingwithmitch.openapi.api.main.network_responses.BlogCreateUpdateResponse
 import com.codingwithmitch.openapi.api.main.network_responses.BlogListSearchResponse
-import com.codingwithmitch.openapi.models.AccountProperties
 import com.codingwithmitch.openapi.models.AuthToken
 import com.codingwithmitch.openapi.models.BlogPost
-import com.codingwithmitch.openapi.persistence.AccountPropertiesDao
 import com.codingwithmitch.openapi.persistence.BlogPostDao
 import com.codingwithmitch.openapi.repository.NetworkBoundResource
 import com.codingwithmitch.openapi.session.SessionManager
@@ -25,9 +23,12 @@ import com.codingwithmitch.openapi.util.Constants.Companion.PAGINATION_PAGE_SIZE
 import com.codingwithmitch.openapi.util.DateUtils
 import com.codingwithmitch.openapi.util.ErrorHandling.NetworkErrors.Companion.ERROR_UNKNOWN
 import com.codingwithmitch.openapi.util.GenericApiResponse
+import com.codingwithmitch.openapi.util.SuccessHandling.NetworkSuccessResponses.Companion.RESPONSE_HAS_PERMISSION_TO_EDIT
+import com.codingwithmitch.openapi.util.SuccessHandling.NetworkSuccessResponses.Companion.RESPONSE_NO_PERMISSION_TO_EDIT
 import com.codingwithmitch.openapi.util.SuccessHandling.NetworkSuccessResponses.Companion.SUCCESS_BLOG_DELETED
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
+import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import javax.inject.Inject
@@ -37,7 +38,6 @@ class BlogRepository
 constructor(
     val openApiMainService: OpenApiMainService,
     val blogPostDao: BlogPostDao,
-    val accountPropertiesDao: AccountPropertiesDao,
     val sessionManager: SessionManager
 )
 {
@@ -173,69 +173,78 @@ constructor(
         }.asLiveData()
     }
 
-    fun getAccountProperties(authToken: AuthToken): LiveData<DataState<BlogViewState>> {
-        return object: NetworkBoundResource<AccountProperties, AccountProperties, BlogViewState>(){
+
+    fun isAuthorOfBlogPost(
+        authToken: AuthToken,
+        slug: String
+    ): LiveData<DataState<BlogViewState>> {
+        return object: NetworkBoundResource<GenericResponse, Any, BlogViewState>(){
 
             override fun isNetworkAvailable(): Boolean {
                 return sessionManager.isConnectedToTheInternet()
             }
 
-            // if network is down, view the cache and return
+            // not applicable
             override suspend fun createCacheRequestAndReturn() {
-                withContext(Dispatchers.Main){
 
-                    // finishing by viewing db cache
-                    result.addSource(loadFromCache()){ viewState ->
-                        onCompleteJob(DataState.data(viewState, null))
-                    }
-                }
             }
 
-            override suspend fun handleApiSuccessResponse(response: ApiSuccessResponse<AccountProperties>) {
-                updateLocalDb(response.body)
-
+            override suspend fun handleApiSuccessResponse(response: ApiSuccessResponse<GenericResponse>) {
                 withContext(Dispatchers.Main){
 
-                    // finishing by viewing db cache
-                    result.addSource(loadFromCache()){ viewState ->
-                        onCompleteJob(DataState.data(viewState, null))
+                    Log.d(TAG, "handleApiSuccessResponse: ${response.body.response}")
+                    if(response.body.response.equals(RESPONSE_NO_PERMISSION_TO_EDIT)){
+                        onCompleteJob(
+                            DataState.data(
+                                data = BlogViewState(
+                                    isAuthorOfBlogPost = false
+                                ),
+                                response = null
+                            )
+                        )
+                    }
+                    else if(response.body.response.equals(RESPONSE_HAS_PERMISSION_TO_EDIT)){
+                        onCompleteJob(
+                            DataState.data(
+                                data = BlogViewState(
+                                    isAuthorOfBlogPost = true
+                                ),
+                                response = null
+                            )
+                        )
+                    }
+                    else{
+                        onReturnError(ERROR_UNKNOWN, shouldUseDialog = false, shouldUseToast = false)
                     }
                 }
             }
 
             override fun cancelOperationIfNoInternetConnection(): Boolean {
-                return false
+                return !sessionManager.isConnectedToTheInternet()
             }
 
+            // not applicable
             override fun loadFromCache(): LiveData<BlogViewState> {
-
-                return accountPropertiesDao.searchByPk(authToken.account_pk!!)
-                    .switchMap {
-                        object: LiveData<BlogViewState>(){
-                            override fun onActive() {
-                                super.onActive()
-                                value = BlogViewState(accountProperties = it)
-                            }
-                        }
-                    }
+                return AbsentLiveData.create()
             }
 
-            override fun createCall(): LiveData<GenericApiResponse<AccountProperties>> {
-                return openApiMainService.getAccountProperties("Token ${authToken.token!!}")
+            // Make an update and change nothing.
+            // If they are not the author it will return: "You don't have permission to edit that."
+            override fun createCall(): LiveData<GenericApiResponse<GenericResponse>> {
+                return openApiMainService.isAuthorOfBlogPost(
+                    "Token ${authToken.token!!}",
+                    slug
+                )
             }
 
-            override suspend fun updateLocalDb(accountProp: AccountProperties?) {
-                accountProp?.let {
-                    accountPropertiesDao.updateAccountProperties(
-                        accountProp.pk,
-                        accountProp.email,
-                        accountProp.username
-                    )
-                }
+            // not applicable
+            override suspend fun updateLocalDb(cacheObject: Any?) {
+
             }
 
+            // not applicable
             override fun shouldLoadFromCache(): Boolean {
-                return true
+                return false
             }
 
             override fun setCurrentJob(job: Job) {
@@ -249,6 +258,7 @@ constructor(
 
         }.asLiveData()
     }
+
 
     fun deleteBlogPost(
         authToken: AuthToken,

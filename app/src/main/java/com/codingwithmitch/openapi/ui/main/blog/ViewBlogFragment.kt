@@ -33,12 +33,18 @@ class ViewBlogFragment : BaseBlogFragment() {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
         subscribeObservers()
-        viewModel.setStateEvent(CheckAuthorOfBlogPost())
+        checkIsAuthorOfBlogPost()
         stateChangeListener.expandAppBar()
 
         delete_button.setOnClickListener {
             confirmDeleteRequest()
         }
+    }
+
+    fun checkIsAuthorOfBlogPost(){
+        Log.d(TAG, "checkIsAuthorOfBlogPost: called...")
+        viewModel.setIsAuthorOfBlogPost(false) // reset
+        viewModel.setStateEvent(CheckAuthorOfBlogPost())
     }
 
     fun confirmDeleteRequest(){
@@ -71,10 +77,10 @@ class ViewBlogFragment : BaseBlogFragment() {
         viewModel.dataState.observe(viewLifecycleOwner, Observer{ dataState ->
             stateChangeListener.onDataStateChange(dataState)
             dataState.data?.let{ data ->
-                data.data?.getContentIfNotHandled()?.let{ viewState ->
-                    viewState.accountProperties?.let{ accountProperties ->
-                        viewModel.setAccountProperties(accountProperties)
-                    }
+                Log.d(TAG, "DATA: viewState: ${data.data?.peekContent()?.isAuthorOfBlogPost}")
+                data.data?.getContentIfNotHandled()?.let { viewState ->
+                    Log.d(TAG, "DATA: viewState: ${viewState.isAuthorOfBlogPost}")
+                    viewModel.setIsAuthorOfBlogPost(viewState.isAuthorOfBlogPost)
                 }
                 data.response?.peekContent()?.let{ response ->
                     if(response.message.equals(SUCCESS_BLOG_DELETED)){
@@ -89,12 +95,10 @@ class ViewBlogFragment : BaseBlogFragment() {
             viewState.blogPost?.let{ blogPost ->
                 setBlogProperties(blogPost)
             }
-
-            viewState.accountProperties?.let{ accountProperties ->
-                if(viewModel.isAuthorOfBlogPost()){
-                    adaptViewToAuthorMode()
-                }
+            if(viewState.isAuthorOfBlogPost){
+                adaptViewToAuthorMode()
             }
+
         })
     }
 

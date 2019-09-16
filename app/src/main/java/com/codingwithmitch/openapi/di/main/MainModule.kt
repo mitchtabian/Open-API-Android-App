@@ -44,10 +44,9 @@ class MainModule {
     fun provideBlogRepository(
         openApiMainService: OpenApiMainService,
         blogPostDao: BlogPostDao,
-        accountPropertiesDao: AccountPropertiesDao,
         sessionManager: SessionManager
         ): BlogRepository{
-        return BlogRepository(openApiMainService, blogPostDao, accountPropertiesDao, sessionManager)
+        return BlogRepository(openApiMainService, blogPostDao, sessionManager)
     }
 
 

@@ -1,6 +1,7 @@
 package com.codingwithmitch.openapi.util
 
 import android.util.Log
+import com.codingwithmitch.openapi.api.GenericResponse
 import retrofit2.Response
 
 /**

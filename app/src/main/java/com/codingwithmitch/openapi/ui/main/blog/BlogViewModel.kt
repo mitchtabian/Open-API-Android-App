@@ -64,8 +64,12 @@ constructor(
             }
 
             is CheckAuthorOfBlogPost ->{
+                Log.d(TAG, "CheckAuthorOfBlogPost: called.")
                 return sessionManager.cachedToken.value?.let { authToken ->
-                    blogRepository.getAccountProperties(authToken)
+                    blogRepository.isAuthorOfBlogPost(
+                        authToken,
+                        viewState.value!!.blogPost!!.slug
+                        )
                 }?: AbsentLiveData.create()
             }
 
@@ -213,12 +217,6 @@ constructor(
         _viewState.value = update
     }
 
-    fun setAccountProperties(accountProperties: AccountProperties){
-        val update = getCurrentViewStateOrNew()
-        update.accountProperties = accountProperties
-        _viewState.value = update
-    }
-
     fun updateListItem(newBlogPost: BlogPost){
         val update = getCurrentViewStateOrNew()
         val list = update.blogFields.blogList.toMutableList()
@@ -255,16 +253,15 @@ constructor(
         _viewState.value = update
     }
 
+    fun setIsAuthorOfBlogPost(isAuthorOfBlogPost: Boolean){
+        val update = getCurrentViewStateOrNew()
+        update.isAuthorOfBlogPost = isAuthorOfBlogPost
+        _viewState.value = update
+    }
+
     fun isAuthorOfBlogPost(): Boolean{
-        val blogPostAuthorUsername = viewState.value?.let {
-            it.blogPost?.username
-        }
-        val accountProperties = viewState.value?.let{
-            it.accountProperties?.let {
-                it
-            }
-        }
-        return blogPostAuthorUsername.equals(accountProperties?.username)
+        Log.d(TAG, "isAuthorOfBlogPost: ${viewState.value!!.isAuthorOfBlogPost}")
+        return viewState.value!!.isAuthorOfBlogPost
     }
 
     fun getCurrentViewStateOrNew(): BlogViewState{
