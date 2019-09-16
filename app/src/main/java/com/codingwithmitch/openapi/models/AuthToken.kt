@@ -1,8 +1,5 @@
 package com.codingwithmitch.openapi.models
 
-import android.accounts.Account
-import android.os.Parcel
-import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
@@ -40,41 +37,7 @@ data class AuthToken(
     @SerializedName("token")
     @Expose
     var token: String? = null
-): Parcelable
-{
-    constructor(parcel: Parcel) : this(
-        parcel.readInt(),
-        parcel.readString()
-    ) {
-    }
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        account_pk?.let { parcel.writeInt(it) }
-        parcel.writeString(token)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    override fun toString(): String {
-        return "AuthToken(account_pk=$account_pk, token='$token')"
-    }
-
-    companion object CREATOR : Parcelable.Creator<AuthToken> {
-        override fun createFromParcel(parcel: Parcel): AuthToken {
-            return AuthToken(parcel)
-        }
-
-        override fun newArray(size: Int): Array<AuthToken?> {
-            return arrayOfNulls(size)
-        }
-    }
-
-
-
-}
-
+)
 
 
 
