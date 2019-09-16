@@ -7,6 +7,7 @@ import android.widget.Toast
 import com.afollestad.materialdialogs.MaterialDialog
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.session.SessionManager
+import com.codingwithmitch.openapi.util.displayToast
 import dagger.android.support.DaggerAppCompatActivity
 import javax.inject.Inject
 
@@ -153,9 +154,10 @@ abstract class BaseActivity : DaggerAppCompatActivity(),
         }
     }
 
-    private fun displayToast(message: String?){
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-    }
+ //Using kotlin extention for toast aka dsl
+//    private fun displayTost(message: String?){
+//        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+//    }
 
     override fun hideSoftKeyboard() {
         if (currentFocus != null) {

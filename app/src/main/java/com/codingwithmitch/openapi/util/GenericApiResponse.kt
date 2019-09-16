@@ -29,14 +29,12 @@ sealed class GenericApiResponse<T> {
 
             if(response.isSuccessful){
                 val body = response.body()
-                if (body == null || response.code() == 204) {
-                    return ApiEmptyResponse()
-                }
-                else if(response.code() == 401){
-                    return ApiErrorResponse("401 Unauthorized. Token may be invalid.")
-                }
-                else {
-                    return ApiSuccessResponse(body = body)
+                return if (body == null || response.code() == 204) {
+                    ApiEmptyResponse()
+                } else if(response.code() == 401){
+                    ApiErrorResponse("401 Unauthorized. Token may be invalid.")
+                } else {
+                    ApiSuccessResponse(body = body)
                 }
             }
             else{

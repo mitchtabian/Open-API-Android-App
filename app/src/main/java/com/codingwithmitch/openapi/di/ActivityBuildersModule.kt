@@ -18,13 +18,13 @@ abstract class ActivityBuildersModule {
 
     @AuthScope
     @ContributesAndroidInjector(
-        modules = arrayOf(AuthModule::class, AuthFragmentBuildersModule::class, AuthViewModelModule::class)
+        modules = [AuthModule::class, AuthFragmentBuildersModule::class, AuthViewModelModule::class]
     )
     abstract fun contributeAuthActivity(): AuthActivity
 
     @MainScope
     @ContributesAndroidInjector(
-        modules = arrayOf(MainModule::class, MainFragmentBuildersModule::class, MainViewModelModule::class)
+        modules = [MainModule::class, MainFragmentBuildersModule::class, MainViewModelModule::class]
     )
     abstract fun contributeMainActivity(): MainActivity
 
