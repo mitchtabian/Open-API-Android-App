@@ -42,7 +42,6 @@ class ViewBlogFragment : BaseBlogFragment() {
     }
 
     fun checkIsAuthorOfBlogPost(){
-        Log.d(TAG, "checkIsAuthorOfBlogPost: called...")
         viewModel.setIsAuthorOfBlogPost(false) // reset
         viewModel.setStateEvent(CheckAuthorOfBlogPost())
     }
@@ -77,9 +76,7 @@ class ViewBlogFragment : BaseBlogFragment() {
         viewModel.dataState.observe(viewLifecycleOwner, Observer{ dataState ->
             stateChangeListener.onDataStateChange(dataState)
             dataState.data?.let{ data ->
-                Log.d(TAG, "DATA: viewState: ${data.data?.peekContent()?.isAuthorOfBlogPost}")
                 data.data?.getContentIfNotHandled()?.let { viewState ->
-                    Log.d(TAG, "DATA: viewState: ${viewState.isAuthorOfBlogPost}")
                     viewModel.setIsAuthorOfBlogPost(viewState.isAuthorOfBlogPost)
                 }
                 data.response?.peekContent()?.let{ response ->
