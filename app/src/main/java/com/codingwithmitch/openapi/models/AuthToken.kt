@@ -1,6 +1,5 @@
 package com.codingwithmitch.openapi.models
 
-import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
@@ -8,7 +7,6 @@ import androidx.room.ForeignKey.CASCADE
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import kotlinx.android.parcel.Parcelize
 
 /**
  * Data class for saving authentication token locally for open-api.xyz
@@ -28,7 +26,6 @@ import kotlinx.android.parcel.Parcelize
         )
     ]
 )
-@Parcelize
 data class AuthToken(
 
     @PrimaryKey
@@ -40,4 +37,17 @@ data class AuthToken(
     @SerializedName("token")
     @Expose
     var token: String? = null
-) : Parcelable
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
