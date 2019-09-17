@@ -2,7 +2,7 @@ package com.codingwithmitch.openapi.ui.auth
 
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +12,7 @@ import com.codingwithmitch.openapi.R
 import kotlinx.android.synthetic.main.fragment_launcher.*
 
 
-class LauncherFragment : Fragment() {
+class LauncherFragment : BaseAuthFragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,6 +38,8 @@ class LauncherFragment : Fragment() {
         }
 
         focusable_view.requestFocus() // reset focus
+
+        Log.d(TAG, "LauncherFragment: ${viewModel}")
     }
 
     fun navLogin(){

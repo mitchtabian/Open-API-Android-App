@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "946bd36346daf382b1d95a1d97125bfc",
+    "identityHash": "41687438ba0245123edb91bb8b41f4be",
     "entities": [
       {
         "tableName": "auth_token",
@@ -73,68 +73,12 @@
         },
         "indices": [],
         "foreignKeys": []
-      },
-      {
-        "tableName": "blog_post",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`pk` INTEGER NOT NULL, `title` TEXT NOT NULL, `slug` TEXT NOT NULL, `body` TEXT NOT NULL, `image` TEXT NOT NULL, `date_updated` INTEGER NOT NULL, `username` TEXT NOT NULL, PRIMARY KEY(`pk`))",
-        "fields": [
-          {
-            "fieldPath": "pk",
-            "columnName": "pk",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "title",
-            "columnName": "title",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "slug",
-            "columnName": "slug",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "body",
-            "columnName": "body",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "image",
-            "columnName": "image",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "date_updated",
-            "columnName": "date_updated",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "username",
-            "columnName": "username",
-            "affinity": "TEXT",
-            "notNull": true
-          }
-        ],
-        "primaryKey": {
-          "columnNames": [
-            "pk"
-          ],
-          "autoGenerate": false
-        },
-        "indices": [],
-        "foreignKeys": []
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '946bd36346daf382b1d95a1d97125bfc')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '41687438ba0245123edb91bb8b41f4be')"
     ]
   }
 }
