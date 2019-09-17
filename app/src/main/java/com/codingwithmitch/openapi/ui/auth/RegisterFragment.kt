@@ -32,21 +32,7 @@ class RegisterFragment : BaseAuthFragment() {
         super.onViewCreated(view, savedInstanceState)
         Log.d(TAG, "RegisterFragment: ${viewModel}")
 
-        register_button.setOnClickListener {
-            register()
-        }
         subscribeObservers()
-    }
-
-    fun register(){
-        viewModel.setStateEvent(
-            AuthStateEvent.RegisterAttemptEvent(
-                input_email.text.toString(),
-                input_username.text.toString(),
-                input_password.text.toString(),
-                input_password_confirm.text.toString()
-            )
-        )
     }
 
     fun subscribeObservers(){
