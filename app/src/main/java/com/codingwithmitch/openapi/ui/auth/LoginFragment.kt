@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 
 import com.codingwithmitch.openapi.R
+import com.codingwithmitch.openapi.models.AuthToken
 import com.codingwithmitch.openapi.ui.auth.state.AuthStateEvent
 import com.codingwithmitch.openapi.ui.auth.state.AuthStateEvent.*
 import com.codingwithmitch.openapi.ui.auth.state.LoginFields
@@ -34,6 +35,15 @@ class LoginFragment : BaseAuthFragment() {
         Log.d(TAG, "LoginFragment: ${viewModel}")
 
         subscribeObservers()
+
+        login_button.setOnClickListener {
+            viewModel.setAuthToken(
+                AuthToken(
+                    1,
+                    "gdfngidfng4nt43n43jn34jn"
+                )
+            )
+        }
     }
 
 
