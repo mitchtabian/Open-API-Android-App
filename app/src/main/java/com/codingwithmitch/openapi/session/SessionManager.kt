@@ -3,17 +3,11 @@ package com.codingwithmitch.openapi.session
 import android.app.Application
 import android.content.Context
 import android.net.ConnectivityManager
-import android.net.NetworkInfo
-import android.se.omapi.Session
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
 import com.codingwithmitch.openapi.models.AuthToken
 import com.codingwithmitch.openapi.persistence.AuthTokenDao
-import com.codingwithmitch.openapi.ui.DataState
-import com.codingwithmitch.openapi.ui.Response
-import com.codingwithmitch.openapi.ui.auth.state.AuthViewState
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
