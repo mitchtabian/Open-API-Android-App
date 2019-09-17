@@ -71,7 +71,7 @@ class BlogFragment : BaseBlogFragment(),
         dataState?.let{
             it.error?.let{ event ->
                 event.peekContent().response.message?.let{
-                    if(ErrorHandling.NetworkErrors.isPaginationDone(it)){
+                    if(ErrorHandling.isPaginationDone(it)){
 
                         // handle the error message event so it doesn't display in UI
                         event.getContentIfNotHandled()

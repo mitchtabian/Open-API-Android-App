@@ -20,9 +20,9 @@ import com.codingwithmitch.openapi.ui.auth.state.AuthViewState
 import com.codingwithmitch.openapi.ui.auth.state.LoginFields
 import com.codingwithmitch.openapi.ui.auth.state.RegistrationFields
 import com.codingwithmitch.openapi.util.AbsentLiveData
-import com.codingwithmitch.openapi.util.ErrorHandling.NetworkErrors.Companion.ERROR_SAVE_ACCOUNT_PROPERTIES
-import com.codingwithmitch.openapi.util.ErrorHandling.NetworkErrors.Companion.ERROR_SAVE_AUTH_TOKEN
-import com.codingwithmitch.openapi.util.ErrorHandling.NetworkErrors.Companion.GENERIC_AUTH_ERROR
+import com.codingwithmitch.openapi.util.ErrorHandling.Companion.ERROR_SAVE_ACCOUNT_PROPERTIES
+import com.codingwithmitch.openapi.util.ErrorHandling.Companion.ERROR_SAVE_AUTH_TOKEN
+import com.codingwithmitch.openapi.util.ErrorHandling.Companion.GENERIC_AUTH_ERROR
 import com.codingwithmitch.openapi.util.PreferenceKeys
 import com.codingwithmitch.openapi.util.SuccessHandling.NetworkSuccessResponses.Companion.RESPONSE_CHECK_PREVIOUS_AUTH_USER_DONE
 import kotlinx.coroutines.*

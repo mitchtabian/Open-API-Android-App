@@ -10,8 +10,8 @@ import com.codingwithmitch.openapi.util.*
 import com.codingwithmitch.openapi.util.Constants.Companion.NETWORK_TIMEOUT
 import com.codingwithmitch.openapi.util.Constants.Companion.TESTING_CACHE_DELAY
 import com.codingwithmitch.openapi.util.Constants.Companion.TESTING_NETWORK_DELAY
-import com.codingwithmitch.openapi.util.ErrorHandling.NetworkErrors.Companion.ERROR_CHECK_NETWORK_CONNECTION
-import com.codingwithmitch.openapi.util.ErrorHandling.NetworkErrors.Companion.ERROR_UNKNOWN
+import com.codingwithmitch.openapi.util.ErrorHandling.Companion.ERROR_CHECK_NETWORK_CONNECTION
+import com.codingwithmitch.openapi.util.ErrorHandling.Companion.ERROR_UNKNOWN
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
@@ -29,7 +29,7 @@ abstract class NetworkBoundResource<ResponseObject, CacheObject, ViewStateType>{
         setValue(DataState.loading(isLoading = true, cachedData = null))
 
         if(cancelOperationIfNoInternetConnection()){
-            onCompleteJob(DataState.error(Response(ErrorHandling.NetworkErrors.UNABLE_TODO_OPERATION_WO_INTERNET, ResponseType.Dialog())))
+            onCompleteJob(DataState.error(Response(ErrorHandling.UNABLE_TODO_OPERATION_WO_INTERNET, ResponseType.Dialog())))
         }
         else{
             if(shouldLoadFromCache()){
@@ -62,7 +62,7 @@ abstract class NetworkBoundResource<ResponseObject, CacheObject, ViewStateType>{
                                     delay(NETWORK_TIMEOUT)
                                     if(!job.isCompleted){
                                         Log.e(TAG, "NetworkBoundResource: JOB NETWORK TIMEOUT.")
-                                        job.cancel(CancellationException(ErrorHandling.NetworkErrors.UNABLE_TO_RESOLVE_HOST))
+                                        job.cancel(CancellationException(ErrorHandling.UNABLE_TO_RESOLVE_HOST))
                                     }
                                 }
                             }
@@ -118,7 +118,7 @@ abstract class NetworkBoundResource<ResponseObject, CacheObject, ViewStateType>{
         if(msg == null){
             msg = ERROR_UNKNOWN
         }
-        else if(ErrorHandling.NetworkErrors.isNetworkError(msg)){
+        else if(ErrorHandling.isNetworkError(msg)){
             msg = ERROR_CHECK_NETWORK_CONNECTION
             useDialog = false
         }

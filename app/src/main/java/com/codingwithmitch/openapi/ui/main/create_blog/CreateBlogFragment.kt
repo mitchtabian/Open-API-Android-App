@@ -16,8 +16,8 @@ import com.codingwithmitch.openapi.ui.*
 import com.codingwithmitch.openapi.ui.main.create_blog.state.CreateBlogStateEvent
 import com.codingwithmitch.openapi.util.Constants.Companion.CROP_IMAGE_INTENT_CODE
 import com.codingwithmitch.openapi.util.Constants.Companion.GALLERY_REQUEST_CODE
-import com.codingwithmitch.openapi.util.ErrorHandling.NetworkErrors.Companion.ERROR_MUST_SELECT_IMAGE
-import com.codingwithmitch.openapi.util.ErrorHandling.NetworkErrors.Companion.ERROR_SOMETHING_WRONG_WITH_IMAGE
+import com.codingwithmitch.openapi.util.ErrorHandling.Companion.ERROR_MUST_SELECT_IMAGE
+import com.codingwithmitch.openapi.util.ErrorHandling.Companion.ERROR_SOMETHING_WRONG_WITH_IMAGE
 import com.codingwithmitch.openapi.util.FileUtil
 import com.codingwithmitch.openapi.util.SuccessHandling.NetworkSuccessResponses.Companion.SUCCESS_BLOG_CREATED
 import kotlinx.android.synthetic.main.fragment_create_blog.blog_body
