@@ -37,15 +37,9 @@ class LoginFragment : BaseAuthFragment() {
         subscribeObservers()
 
         login_button.setOnClickListener {
-            viewModel.setAuthToken(
-                AuthToken(
-                    1,
-                    "gdfngidfng4nt43n43jn34jn"
-                )
-            )
+            login()
         }
     }
-
 
     fun subscribeObservers(){
         viewModel.viewState.observe(viewLifecycleOwner, Observer{
@@ -54,6 +48,15 @@ class LoginFragment : BaseAuthFragment() {
                 it.login_password?.let{input_password.setText(it)}
             }
         })
+    }
+
+    fun login(){
+        viewModel.setStateEvent(
+            LoginAttemptEvent(
+                input_email.text.toString(),
+                input_password.text.toString()
+            )
+        )
     }
 
     override fun onDestroyView() {
