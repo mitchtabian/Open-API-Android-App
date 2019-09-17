@@ -24,6 +24,7 @@ constructor(
         return openApiAuthService.login(email, password)
     }
 
+
     fun testRegistrationRequest(
         email: String,
         username: String,

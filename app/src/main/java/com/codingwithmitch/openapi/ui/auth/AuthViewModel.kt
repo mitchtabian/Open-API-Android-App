@@ -1,37 +1,74 @@
 package com.codingwithmitch.openapi.ui.auth
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
-import com.codingwithmitch.openapi.api.auth.network_responses.LoginResponse
-import com.codingwithmitch.openapi.api.auth.network_responses.RegistrationResponse
+import androidx.lifecycle.*
+import com.codingwithmitch.openapi.models.AuthToken
 import com.codingwithmitch.openapi.repository.auth.AuthRepository
-import com.codingwithmitch.openapi.util.GenericApiResponse
+import com.codingwithmitch.openapi.ui.BaseViewModel
+import com.codingwithmitch.openapi.ui.DataState
+import com.codingwithmitch.openapi.ui.auth.state.*
+import com.codingwithmitch.openapi.ui.auth.state.AuthStateEvent.*
+import com.codingwithmitch.openapi.util.AbsentLiveData
 import javax.inject.Inject
 
 class AuthViewModel
 @Inject
 constructor(
     val authRepository: AuthRepository
-): ViewModel(){
+): BaseViewModel<AuthStateEvent, AuthViewState>()
+{
+    override fun handleStateEvent(stateEvent: AuthStateEvent): LiveData<DataState<AuthViewState>> {
+        when(stateEvent){
+
+            is LoginAttemptEvent -> {
+                return AbsentLiveData.create()
+            }
+
+            is RegisterAttemptEvent -> {
+                return AbsentLiveData.create()
+            }
+
+            is CheckPreviousAuthEvent -> {
+                return AbsentLiveData.create()
+            }
 
 
-    fun testLogin(): LiveData<GenericApiResponse<LoginResponse>>{
-        return authRepository.testLoginRequest(
-            "mitchelltabian@gmail.com",
-            "codingwithmitch1"
-        )
+        }
     }
 
-    fun testRegister(): LiveData<GenericApiResponse<RegistrationResponse>>{
-        return authRepository.testRegistrationRequest(
-            "mitchelltabian1234@gmail.com",
-            "mitchelltabian1234",
-            "codingwithmitch1",
-            "codingwithmitch1"
-        )
+    override fun initNewViewState(): AuthViewState {
+        return AuthViewState()
     }
 
+    fun setRegistrationFields(registrationFields: RegistrationFields){
+        val update = getCurrentViewStateOrNew()
+        if(update.registrationFields == registrationFields){
+            return
+        }
+        update.registrationFields = registrationFields
+        _viewState.value = update
+    }
+
+    fun setLoginFields(loginFields: LoginFields){
+        val update = getCurrentViewStateOrNew()
+        if(update.loginFields == loginFields){
+            return
+        }
+        update.loginFields = loginFields
+        _viewState.value = update
+    }
+
+    fun setAuthToken(authToken: AuthToken){
+        val update = getCurrentViewStateOrNew()
+        if(update.authToken == authToken){
+            return
+        }
+        update.authToken = authToken
+        _viewState.value = update
+    }
 }
+
+
+
 
 
 
