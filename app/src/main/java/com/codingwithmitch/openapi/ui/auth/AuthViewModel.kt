@@ -47,6 +47,10 @@ constructor(
         }
     }
 
+    override fun initNewViewState(): AuthViewState {
+        return AuthViewState()
+    }
+
     fun setRegistrationFields(registrationFields: RegistrationFields){
         val update = getCurrentViewStateOrNew()
         if(update.registrationFields == registrationFields){
@@ -73,14 +77,6 @@ constructor(
         update.authToken = authToken
         _viewState.value = update
     }
-
-    fun getCurrentViewStateOrNew(): AuthViewState {
-        val value = viewState.value?.let{
-            it
-        }?: AuthViewState()
-        return value
-    }
-
 }
 
 

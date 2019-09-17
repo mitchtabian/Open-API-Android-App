@@ -69,6 +69,10 @@ constructor(
         }
     }
 
+    override fun initNewViewState(): AccountViewState {
+        return AccountViewState()
+    }
+
     fun setAccountPropertiesData(accountProperties: AccountProperties){
         val update = getCurrentViewStateOrNew()
         if(update.accountProperties == accountProperties){
@@ -76,13 +80,6 @@ constructor(
         }
         update.accountProperties = accountProperties
         _viewState.value = update
-    }
-
-    fun getCurrentViewStateOrNew(): AccountViewState {
-        val value = viewState.value?.let{
-            it
-        }?: AccountViewState()
-        return value
     }
 
     fun logout(){

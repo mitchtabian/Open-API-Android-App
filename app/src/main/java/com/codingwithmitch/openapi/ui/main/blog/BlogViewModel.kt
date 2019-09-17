@@ -114,6 +114,10 @@ constructor(
         }
     }
 
+    override fun initNewViewState(): BlogViewState {
+        return BlogViewState()
+    }
+
     fun loadInitialBlogs(){
         // if the user hasn't made a query yet, show some blogs
         val value = getCurrentViewStateOrNew()
@@ -263,14 +267,6 @@ constructor(
         Log.d(TAG, "isAuthorOfBlogPost: ${viewState.value!!.isAuthorOfBlogPost}")
         return viewState.value!!.isAuthorOfBlogPost
     }
-
-    fun getCurrentViewStateOrNew(): BlogViewState{
-        val value = viewState.value?.let{
-            it
-        }?: BlogViewState()
-        return value
-    }
-
 
     fun cancelRequests(){
         blogRepository.cancelRequests()

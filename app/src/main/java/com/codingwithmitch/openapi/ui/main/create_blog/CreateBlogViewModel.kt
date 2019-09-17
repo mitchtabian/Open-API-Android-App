@@ -55,6 +55,10 @@ constructor(
         }
     }
 
+    override fun initNewViewState(): CreateBlogViewState {
+        return CreateBlogViewState()
+    }
+
     fun setNewBlogFields(title: String?, body: String?, uri: Uri?){
         val update = getCurrentViewStateOrNew()
         val newBlogFields = update.blogFields
@@ -69,13 +73,6 @@ constructor(
         val update = getCurrentViewStateOrNew()
         update.blogFields = NewBlogFields()
         _viewState.value = update
-    }
-
-    fun getCurrentViewStateOrNew(): CreateBlogViewState {
-        val value = viewState.value?.let{
-            it
-        }?: CreateBlogViewState()
-        return value
     }
 
     fun cancelRequests(){
