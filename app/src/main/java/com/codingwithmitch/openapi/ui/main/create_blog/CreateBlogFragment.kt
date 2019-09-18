@@ -20,6 +20,8 @@ import com.codingwithmitch.openapi.util.ErrorHandling.Companion.ERROR_MUST_SELEC
 import com.codingwithmitch.openapi.util.ErrorHandling.Companion.ERROR_SOMETHING_WRONG_WITH_IMAGE
 import com.codingwithmitch.openapi.util.FileUtil
 import com.codingwithmitch.openapi.util.SuccessHandling.NetworkSuccessResponses.Companion.SUCCESS_BLOG_CREATED
+import com.theartofdev.edmodo.cropper.CropImage
+import com.theartofdev.edmodo.cropper.CropImageView
 import kotlinx.android.synthetic.main.fragment_create_blog.blog_body
 import kotlinx.android.synthetic.main.fragment_create_blog.blog_image
 import kotlinx.android.synthetic.main.fragment_create_blog.blog_title
@@ -65,23 +67,31 @@ class CreateBlogFragment : BaseCreateFragment() {
     }
 
     private fun launchCropIntent(uri: Uri){
-        val cropIntent = Intent("com.android.camera.action.CROP")
+//        val cropIntent = Intent("com.android.camera.action.CROP")
+//
+//        cropIntent.setDataAndType(uri, "image/*")
+//
+//        cropIntent.putExtra("crop", "true")
+//        cropIntent.putExtra("aspectX", 16)
+//        cropIntent.putExtra("aspectY", 9)
+//        cropIntent.putExtra("return-data", true)
+//        cropIntent.putExtra("scale", true)
+//
+//        cropIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+//        startActivityForResult(cropIntent, CROP_IMAGE_INTENT_CODE)
 
-        cropIntent.setDataAndType(uri, "image/*")
+        context?.let{
+            CropImage.activity(uri)
+                .setGuidelines(CropImageView.Guidelines.ON)
+                .start(it, this)
+        }
 
-        cropIntent.putExtra("crop", "true")
-        cropIntent.putExtra("aspectX", 16)
-        cropIntent.putExtra("aspectY", 9)
-        cropIntent.putExtra("return-data", true)
-        cropIntent.putExtra("scale", true)
-
-        cropIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        startActivityForResult(cropIntent, CROP_IMAGE_INTENT_CODE)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
+            Log.d(TAG, "CROP: RESULT OK")
             when (requestCode) {
 
                 GALLERY_REQUEST_CODE -> {
@@ -92,15 +102,32 @@ class CreateBlogFragment : BaseCreateFragment() {
                     }?: showErrorDialog(ERROR_SOMETHING_WRONG_WITH_IMAGE)
                 }
 
-                CROP_IMAGE_INTENT_CODE -> {
-                    data?.data?.let { uri ->
-                        viewModel.setNewBlogFields(
+                CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE -> {
+                    Log.d(TAG, "CROP: CROP_IMAGE_ACTIVITY_REQUEST_CODE")
+                    val result = CropImage.getActivityResult(data)
+                    val resultUri = result.uri
+                    Log.d(TAG, "CROP: CROP_IMAGE_ACTIVITY_REQUEST_CODE: uri: ${resultUri}")
+                    viewModel.setNewBlogFields(
                             title = null,
                             body = null,
-                            uri = uri
+                            uri = resultUri
                         )
-                    } ?: showErrorDialog(ERROR_SOMETHING_WRONG_WITH_IMAGE)
                 }
+
+                CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE -> {
+                    Log.d(TAG, "CROP: ERROR")
+                    showErrorDialog(ERROR_SOMETHING_WRONG_WITH_IMAGE)
+                }
+
+//                CROP_IMAGE_INTENT_CODE -> {
+//                    data?.data?.let { uri ->
+//                        viewModel.setNewBlogFields(
+//                            title = null,
+//                            body = null,
+//                            uri = uri
+//                        )
+//                    } ?: showErrorDialog(ERROR_SOMETHING_WRONG_WITH_IMAGE)
+//                }
             }
         }
     }
@@ -155,10 +182,11 @@ class CreateBlogFragment : BaseCreateFragment() {
                 view?.context?.let{ context ->
                     FileUtil.getUriRealPathAboveKitkat(context, imageUri)?.let{
                         val imageFile = File(it)
-                        Log.d(TAG, "UpdateBlogFragment, imageFile: file: ${imageFile}")
+                        Log.d(TAG, "CreateBlogFragment, imageFile: file: ${imageFile}")
                         val requestBody =
                             RequestBody.create(
-                                MediaType.parse(context.contentResolver.getType(imageUri)),
+//                                MediaType.parse(context.contentResolver.getType(imageUri)),
+                                MediaType.parse("image/*"),
                                 imageFile
                             )
                         // name = field name in serializer
