@@ -66,20 +66,7 @@ class CreateBlogFragment : BaseCreateFragment() {
         startActivityForResult(intent, GALLERY_REQUEST_CODE)
     }
 
-    private fun launchCropIntent(uri: Uri){
-//        val cropIntent = Intent("com.android.camera.action.CROP")
-//
-//        cropIntent.setDataAndType(uri, "image/*")
-//
-//        cropIntent.putExtra("crop", "true")
-//        cropIntent.putExtra("aspectX", 16)
-//        cropIntent.putExtra("aspectY", 9)
-//        cropIntent.putExtra("return-data", true)
-//        cropIntent.putExtra("scale", true)
-//
-//        cropIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-//        startActivityForResult(cropIntent, CROP_IMAGE_INTENT_CODE)
-
+    private fun launchImageCrop(uri: Uri){
         context?.let{
             CropImage.activity(uri)
                 .setGuidelines(CropImageView.Guidelines.ON)
@@ -97,7 +84,7 @@ class CreateBlogFragment : BaseCreateFragment() {
                 GALLERY_REQUEST_CODE -> {
                     data?.data?.let { uri ->
                         activity?.let{
-                            launchCropIntent(uri)
+                            launchImageCrop(uri)
                         }
                     }?: showErrorDialog(ERROR_SOMETHING_WRONG_WITH_IMAGE)
                 }
@@ -119,15 +106,6 @@ class CreateBlogFragment : BaseCreateFragment() {
                     showErrorDialog(ERROR_SOMETHING_WRONG_WITH_IMAGE)
                 }
 
-//                CROP_IMAGE_INTENT_CODE -> {
-//                    data?.data?.let { uri ->
-//                        viewModel.setNewBlogFields(
-//                            title = null,
-//                            body = null,
-//                            uri = uri
-//                        )
-//                    } ?: showErrorDialog(ERROR_SOMETHING_WRONG_WITH_IMAGE)
-//                }
             }
         }
     }
@@ -185,7 +163,6 @@ class CreateBlogFragment : BaseCreateFragment() {
                         Log.d(TAG, "CreateBlogFragment, imageFile: file: ${imageFile}")
                         val requestBody =
                             RequestBody.create(
-//                                MediaType.parse(context.contentResolver.getType(imageUri)),
                                 MediaType.parse("image/*"),
                                 imageFile
                             )

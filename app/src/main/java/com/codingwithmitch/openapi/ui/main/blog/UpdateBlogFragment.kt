@@ -18,7 +18,10 @@ import com.codingwithmitch.openapi.ui.*
 import com.codingwithmitch.openapi.ui.main.blog.state.BlogStateEvent
 import com.codingwithmitch.openapi.util.Constants.Companion.CROP_IMAGE_INTENT_CODE
 import com.codingwithmitch.openapi.util.Constants.Companion.GALLERY_REQUEST_CODE
+import com.codingwithmitch.openapi.util.ErrorHandling
 import com.codingwithmitch.openapi.util.FileUtil
+import com.theartofdev.edmodo.cropper.CropImage
+import com.theartofdev.edmodo.cropper.CropImageView
 import kotlinx.android.synthetic.main.fragment_update_blog.*
 import okhttp3.MediaType
 import okhttp3.MultipartBody
@@ -57,19 +60,13 @@ class UpdateBlogFragment : BaseBlogFragment() {
         startActivityForResult(intent, GALLERY_REQUEST_CODE)
     }
 
-    private fun launchCropIntent(uri: Uri){
-        val cropIntent = Intent("com.android.camera.action.CROP")
+    private fun launchImageCrop(uri: Uri){
+        context?.let{
+            CropImage.activity(uri)
+                .setGuidelines(CropImageView.Guidelines.ON)
+                .start(it, this)
+        }
 
-        cropIntent.setDataAndType(uri, "image/*")
-
-        cropIntent.putExtra("crop", "true")
-        cropIntent.putExtra("aspectX", 16)
-        cropIntent.putExtra("aspectY", 9)
-        cropIntent.putExtra("return-data", true)
-        cropIntent.putExtra("scale", true)
-
-        cropIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        startActivityForResult(cropIntent, CROP_IMAGE_INTENT_CODE)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -80,19 +77,26 @@ class UpdateBlogFragment : BaseBlogFragment() {
                 GALLERY_REQUEST_CODE -> {
                     data?.data?.let { uri ->
                         activity?.let{
-                            launchCropIntent(uri)
+                            launchImageCrop(uri)
                         }
                     }?: showImageSelectionError()
                 }
 
-                CROP_IMAGE_INTENT_CODE -> {
-                    data?.data?.let { uri ->
-                        viewModel.setUpdatedBlogFields(
-                            title = null,
-                            body = null,
-                            uri = uri
-                        )
-                    } ?: showImageSelectionError()
+                CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE -> {
+                    Log.d(TAG, "CROP: CROP_IMAGE_ACTIVITY_REQUEST_CODE")
+                    val result = CropImage.getActivityResult(data)
+                    val resultUri = result.uri
+                    Log.d(TAG, "CROP: CROP_IMAGE_ACTIVITY_REQUEST_CODE: uri: ${resultUri}")
+                    viewModel.setUpdatedBlogFields(
+                        title = null,
+                        body = null,
+                        uri = resultUri
+                    )
+                }
+
+                CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE -> {
+                    Log.d(TAG, "CROP: ERROR")
+                    showImageSelectionError()
                 }
             }
         }
@@ -156,7 +160,7 @@ class UpdateBlogFragment : BaseBlogFragment() {
                         if(imageFile.exists()){
                             val requestBody =
                                 RequestBody.create(
-                                    MediaType.parse(context.contentResolver.getType(imageUri)),
+                                    MediaType.parse("image/*"),
                                     imageFile
                                 )
                             // name = field name in serializer
