@@ -101,10 +101,10 @@ class BlogListAdapter(
     }
 
 
-    fun submitList(blogList: List<BlogPost>, isQueryExhausted: Boolean){
-        val newList = blogList.toMutableList()
+    fun submitList(blogList: List<BlogPost>?, isQueryExhausted: Boolean){
+        val newList = blogList?.toMutableList()
         if (isQueryExhausted)
-            newList.add(NO_MORE_RESULTS_BLOG_MARKER)
+            newList?.add(NO_MORE_RESULTS_BLOG_MARKER)
         differ.submitList(newList)
     }
 

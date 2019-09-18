@@ -107,6 +107,7 @@ class BlogFragment : BaseBlogFragment(),
         viewModel.viewState.observe(viewLifecycleOwner, Observer{ viewState ->
             Log.d(TAG, "BlogFragment, ViewState: ${viewState}")
             if(viewState != null){
+                blog_post_recyclerview.smoothScrollToPosition(0)
                 recyclerAdapter.submitList(
                     viewState.blogFields.blogList,
                     viewState.blogFields.isQueryExhausted
@@ -165,7 +166,6 @@ class BlogFragment : BaseBlogFragment(),
                     Log.e(TAG, "onQueryTextSubmit: ${query}")
                     viewModel.loadFirstPage(query)
                     onQuerySubmitted()
-                    blog_post_recyclerview.smoothScrollToPosition(0)
                     return true
                 }
 
@@ -190,7 +190,6 @@ class BlogFragment : BaseBlogFragment(),
                     else{
                         searchView.setQuery(searchQuery, true)
                     }
-                    blog_post_recyclerview.smoothScrollToPosition(0)
                 }
                 true
             }
@@ -206,7 +205,6 @@ class BlogFragment : BaseBlogFragment(),
                 else{
                     searchView.setQuery(searchQuery, true)
                 }
-                blog_post_recyclerview.smoothScrollToPosition(0)
             }
         }
     }
@@ -314,7 +312,6 @@ class BlogFragment : BaseBlogFragment(),
 
     fun onBlogFilterEvent(){
         viewModel.setStateEvent(BlogSearchEvent())
-        blog_post_recyclerview.smoothScrollToPosition(0)
     }
 
     fun onQuerySubmitted(){
