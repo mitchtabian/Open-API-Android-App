@@ -122,11 +122,12 @@ constructor(
         // if the user hasn't made a query yet, show some blogs
         val value = getCurrentViewStateOrNew()
         if(value.blogFields.blogList.size == 0){
-            loadFirstPage("")
+            setQuery("")
+            loadFirstPage()
         }
     }
 
-    fun loadFirstPage(query: String) {
+    fun loadFirstPage() {
         setQueryInProgress(true)
         setQueryExhausted(false)
         resetPage()
@@ -134,11 +135,10 @@ constructor(
             sharedPreferences.getString(BLOG_FILTER, BlogQueryUtils.BLOG_FILTER_DATE_UPDATED)
         )
         setBlogOrder(
-            sharedPreferences.getString(BLOG_ORDER, BlogQueryUtils.BLOG_FILTER_DATE_UPDATED)
+            sharedPreferences.getString(BLOG_ORDER, BlogQueryUtils.BLOG_ORDER_DESC)
         )
-        setQuery(query)
         setStateEvent(BlogSearchEvent())
-        Log.e(TAG, "BlogViewModel: loadFirstPage: ${viewState.value!!.blogFields.page}")
+        Log.e(TAG, "BlogViewModel: loadFirstPage: ${viewState.value!!.blogFields.searchQuery}")
     }
 
     fun loadNextPage(){

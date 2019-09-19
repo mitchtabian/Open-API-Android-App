@@ -25,6 +25,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
 import com.afollestad.materialdialogs.customview.getCustomView
+import com.codingwithmitch.openapi.models.BlogPost
 import com.codingwithmitch.openapi.repository.main.BlogQueryUtils.Companion.BLOG_FILTER_DATE_UPDATED
 import com.codingwithmitch.openapi.repository.main.BlogQueryUtils.Companion.BLOG_FILTER_USERNAME
 import com.codingwithmitch.openapi.repository.main.BlogQueryUtils.Companion.BLOG_ORDER_ASC
@@ -36,8 +37,17 @@ import com.codingwithmitch.openapi.util.PreferenceKeys.Companion.BLOG_ORDER
 class BlogFragment : BaseBlogFragment(),
     BlogListAdapter.BlogViewHolder.BlogClickListener,
     SharedPreferences.OnSharedPreferenceChangeListener,
-    SwipeRefreshLayout.OnRefreshListener
+    SwipeRefreshLayout.OnRefreshListener,
+    BlogListAdapter.BlogListDataListener
 {
+    override fun onDataMoved() {
+        blog_post_recyclerview.smoothScrollToPosition(0)
+    }
+
+    override fun onDataRemoved() {
+        blog_post_recyclerview.smoothScrollToPosition(0)
+    }
+
     @Inject
     lateinit var sharedPreferences: SharedPreferences
 
@@ -107,7 +117,6 @@ class BlogFragment : BaseBlogFragment(),
         viewModel.viewState.observe(viewLifecycleOwner, Observer{ viewState ->
             Log.d(TAG, "BlogFragment, ViewState: ${viewState}")
             if(viewState != null){
-                blog_post_recyclerview.smoothScrollToPosition(0)
                 recyclerAdapter.submitList(
                     viewState.blogFields.blogList,
                     viewState.blogFields.isQueryExhausted
@@ -122,7 +131,7 @@ class BlogFragment : BaseBlogFragment(),
         blog_post_recyclerview.removeItemDecoration(topSpacingDecorator) // does nothing if not applied already
         blog_post_recyclerview.addItemDecoration(topSpacingDecorator)
 
-        recyclerAdapter = BlogListAdapter(requestManager,  this@BlogFragment)
+        recyclerAdapter = BlogListAdapter(requestManager,  this@BlogFragment, this)
         blog_post_recyclerview.addOnScrollListener(object: RecyclerView.OnScrollListener(){
 
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -160,11 +169,13 @@ class BlogFragment : BaseBlogFragment(),
             searchView.setIconifiedByDefault(true)
             searchView.isSubmitButtonEnabled = true
 
+            // QUERY SUBMITTED
             searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
 
                 override fun onQueryTextSubmit(query: String): Boolean {
                     Log.e(TAG, "onQueryTextSubmit: ${query}")
-                    viewModel.loadFirstPage(query)
+                    viewModel.setQuery(query)
+                    viewModel.loadFirstPage()
                     onQuerySubmitted()
                     return true
                 }
@@ -175,6 +186,7 @@ class BlogFragment : BaseBlogFragment(),
 
             })
 
+            // ENTER ON COMPUTER KEYBOARD OR ARROW ON VIRTUAL KEYBOARD
             val searchPlate = searchView.findViewById(R.id.search_src_text) as EditText
             searchPlate.setOnEditorActionListener { v, actionId, event ->
 
@@ -183,28 +195,19 @@ class BlogFragment : BaseBlogFragment(),
                 if (actionId == EditorInfo.IME_ACTION_UNSPECIFIED || actionId == EditorInfo.IME_ACTION_SEARCH ) {
                     val searchQuery = v.text.toString()
                     Log.e(TAG, "SearchPlate: executing search...: ${searchQuery}")
-                    if(searchQuery.isBlank()){
-                        viewModel.loadFirstPage("")
-                        onQuerySubmitted()
-                    }
-                    else{
-                        searchView.setQuery(searchQuery, true)
-                    }
+                    viewModel.setQuery(searchQuery)
+                    onBlogSearchOrFilter()
                 }
                 true
             }
 
+            // SEARCH BUTTON CLICKED
             val searchButton = searchView.findViewById(R.id.search_go_btn) as View
             searchButton.setOnClickListener {
                 val searchQuery = searchPlate.text.toString()
                 Log.e(TAG, "SearchButton: executing search...: ${searchQuery}")
-                if(searchQuery.isBlank()){
-                    viewModel.loadFirstPage("")
-                    onQuerySubmitted()
-                }
-                else{
-                    searchView.setQuery(searchQuery, true)
-                }
+                viewModel.setQuery(searchQuery)
+                onBlogSearchOrFilter()
             }
         }
     }
@@ -286,7 +289,6 @@ class BlogFragment : BaseBlogFragment(),
         editor.putString(BLOG_FILTER, filter)
         editor.apply()
 
-
         editor.putString(BLOG_ORDER, order)
         editor.apply()
     }
@@ -297,21 +299,27 @@ class BlogFragment : BaseBlogFragment(),
             when(key){
 
                 BLOG_FILTER ->{
-                    viewModel.setBlogFilter(sharedPreferences.getString(key, BLOG_FILTER_DATE_UPDATED))
-                    onBlogFilterEvent()
+                    onBlogSearchOrFilter()
                 }
 
                 BLOG_ORDER ->{
-                    viewModel.setBlogOrder(sharedPreferences.getString(key, BLOG_ORDER_ASC))
-                    onBlogFilterEvent()
+                    onBlogSearchOrFilter()
                 }
                 else -> return
             }
         }
     }
 
-    fun onBlogFilterEvent(){
-        viewModel.setStateEvent(BlogSearchEvent())
+    fun onBlogSearchOrFilter(){
+        blog_post_recyclerview.smoothScrollToPosition(0)
+        if(viewModel.viewState.value!!.blogFields.searchQuery.isBlank()){
+            viewModel.setQuery("")
+            viewModel.loadFirstPage()
+            onQuerySubmitted()
+        }
+        else{
+            searchView.setQuery(viewModel.viewState.value!!.blogFields.searchQuery, true)
+        }
     }
 
     fun onQuerySubmitted(){
@@ -330,7 +338,7 @@ class BlogFragment : BaseBlogFragment(),
     }
 
     override fun onRefresh() {
-        onBlogFilterEvent()
+        onBlogSearchOrFilter()
         swipe_refresh.isRefreshing = false
     }
 
