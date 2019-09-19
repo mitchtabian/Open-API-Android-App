@@ -22,10 +22,7 @@ import com.codingwithmitch.openapi.util.FileUtil
 import com.codingwithmitch.openapi.util.SuccessHandling.NetworkSuccessResponses.Companion.SUCCESS_BLOG_CREATED
 import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView
-import kotlinx.android.synthetic.main.fragment_create_blog.blog_body
-import kotlinx.android.synthetic.main.fragment_create_blog.blog_image
-import kotlinx.android.synthetic.main.fragment_create_blog.blog_title
-import kotlinx.android.synthetic.main.fragment_create_blog.image_container
+import kotlinx.android.synthetic.main.fragment_create_blog.*
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -50,7 +47,13 @@ class CreateBlogFragment : BaseCreateFragment() {
         setHasOptionsMenu(true)
         subscribeObservers()
 
-        image_container.setOnClickListener {
+        blog_image.setOnClickListener {
+            if(stateChangeListener.isStoragePermissionGranted()){
+                pickFromGallery()
+            }
+        }
+
+        update_textview.setOnClickListener {
             if(stateChangeListener.isStoragePermissionGranted()){
                 pickFromGallery()
             }
