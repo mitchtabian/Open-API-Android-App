@@ -243,7 +243,7 @@ constructor(
             return object: NetworkBoundResource<Void, AccountProperties, AuthViewState>(
                 "checkPreviousAuthUser",
                 sessionManager.isConnectedToTheInternet(),
-                true,
+                false,
                 false,
                 false
             ){

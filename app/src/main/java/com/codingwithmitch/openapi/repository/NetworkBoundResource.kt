@@ -19,10 +19,10 @@ import kotlinx.coroutines.Dispatchers.Main
 abstract class NetworkBoundResource<ResponseObject, CacheObject, ViewStateType>
     (
     val methodName: String, // name of job (each method denotes a job)
-    isNetworkAvailable: Boolean, // is their a connection?
+    isNetworkAvailable: Boolean, // is their a network connection?
     isNetworkRequest: Boolean, // does this job include a network request?
-    shouldCancelIfNoInternet: Boolean, // should this job be cancelled if their is no network?
-    shouldLoadFromCache: Boolean // should the local cached data be loaded?
+    shouldCancelIfNoInternet: Boolean, // should this job be cancelled if there is no network?
+    shouldLoadFromCache: Boolean // should the cached data be loaded?
 ) {
 
     private val TAG: String = "AppDebug"
