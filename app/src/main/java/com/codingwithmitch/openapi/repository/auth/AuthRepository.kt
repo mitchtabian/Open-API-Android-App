@@ -53,7 +53,6 @@ constructor(
 
         return object: NetworkBoundResource<LoginResponse, Void, AuthViewState>("attemptLogin") {
 
-            // not applicable
             override fun isNetworkAvailable(): Boolean {
                 return sessionManager.isConnectedToTheInternet()
             }
