@@ -82,8 +82,8 @@ constructor(
         sessionManager.logout()
     }
 
-    fun cancelRequests(){
-        accountRepository.cancelRequests()
+    fun cancelActiveJobs(){
+        accountRepository.cancelActiveJobs()
         handlePendingData()
     }
 
@@ -93,7 +93,7 @@ constructor(
 
     override fun onCleared() {
         super.onCleared()
-        cancelRequests()
+        cancelActiveJobs()
     }
 
 

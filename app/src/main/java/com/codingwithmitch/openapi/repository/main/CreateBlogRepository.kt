@@ -9,6 +9,7 @@ import com.codingwithmitch.openapi.api.main.network_responses.BlogCreateUpdateRe
 import com.codingwithmitch.openapi.models.AuthToken
 import com.codingwithmitch.openapi.models.BlogPost
 import com.codingwithmitch.openapi.persistence.BlogPostDao
+import com.codingwithmitch.openapi.repository.JobManager
 import com.codingwithmitch.openapi.repository.NetworkBoundResource
 import com.codingwithmitch.openapi.session.SessionManager
 import com.codingwithmitch.openapi.ui.DataState
@@ -33,8 +34,7 @@ constructor(
 {
     private val TAG: String = "AppDebug"
 
-    private var job: Job? = null
-
+    private val jobManager: JobManager = JobManager()
 
     fun createNewBlogPost(
         authToken: AuthToken,
@@ -42,7 +42,7 @@ constructor(
         body: RequestBody,
         image: MultipartBody.Part?
     ): LiveData<DataState<CreateBlogViewState>> {
-        return object: NetworkBoundResource<BlogCreateUpdateResponse, BlogPost, CreateBlogViewState>(){
+        return object: NetworkBoundResource<BlogCreateUpdateResponse, BlogPost, CreateBlogViewState>("createNewBlogPost"){
 
             override fun isNetworkAvailable(): Boolean {
                 Log.d(TAG, "isNetworkAvailable: ${sessionManager.isConnectedToTheInternet()}")
@@ -106,9 +106,8 @@ constructor(
                 }
             }
 
-            override fun setCurrentJob(job: Job) {
-                this@CreateBlogRepository.job?.cancel() // cancel existing jobs
-                this@CreateBlogRepository.job = job
+            override fun setJob(job: Job) {
+                jobManager.addJob(methodName, job)
             }
 
             override fun cancelOperationIfNoInternetConnection(): Boolean {
@@ -123,9 +122,9 @@ constructor(
     }
 
 
-    fun cancelRequests(){
-        Log.d(TAG, "CreateBlogRepository: cancelling requests... ")
-        job?.cancel()
+    fun cancelActiveJobs(){
+        Log.d(TAG, "CreateBlogRepository: cancelling on-going jobs... ")
+        jobManager.cancelActiveJobs()
     }
 
 }

@@ -10,6 +10,7 @@ import com.codingwithmitch.openapi.api.main.OpenApiMainService
 import com.codingwithmitch.openapi.models.AccountProperties
 import com.codingwithmitch.openapi.models.AuthToken
 import com.codingwithmitch.openapi.persistence.AccountPropertiesDao
+import com.codingwithmitch.openapi.repository.JobManager
 import com.codingwithmitch.openapi.repository.NetworkBoundResource
 import com.codingwithmitch.openapi.session.SessionManager
 import com.codingwithmitch.openapi.ui.DataState
@@ -30,10 +31,10 @@ constructor(
 {
     private val TAG: String = "AppDebug"
 
-    private var job: Job? = null
+    private val jobManager: JobManager = JobManager()
 
     fun getAccountProperties(authToken: AuthToken): LiveData<DataState<AccountViewState>> {
-        return object: NetworkBoundResource<AccountProperties, AccountProperties, AccountViewState>(){
+        return object: NetworkBoundResource<AccountProperties, AccountProperties, AccountViewState>("getAccountProperties"){
 
             override fun isNetworkAvailable(): Boolean {
                 return sessionManager.isConnectedToTheInternet()
@@ -97,9 +98,8 @@ constructor(
                 return true
             }
 
-            override fun setCurrentJob(job: Job) {
-                this@AccountRepository.job?.cancel() // cancel existing jobs
-                this@AccountRepository.job = job
+            override fun setJob(job: Job) {
+                jobManager.addJob(methodName, job)
             }
 
             override fun isNetworkRequest(): Boolean {
@@ -110,7 +110,7 @@ constructor(
     }
 
     fun saveAccountProperties(authToken: AuthToken, accountProperties: AccountProperties): LiveData<DataState<AccountViewState>> {
-        return object: NetworkBoundResource<GenericResponse, AccountProperties, AccountViewState>(){
+        return object: NetworkBoundResource<GenericResponse, AccountProperties, AccountViewState>("saveAccountProperties"){
 
             // not applicable
             override fun isNetworkAvailable(): Boolean {
@@ -159,9 +159,8 @@ constructor(
                 )
             }
 
-            override fun setCurrentJob(job: Job) {
-                this@AccountRepository.job?.cancel() // cancel existing jobs
-                this@AccountRepository.job = job
+            override fun setJob(job: Job) {
+                jobManager.addJob(methodName, job)
             }
 
             override fun cancelOperationIfNoInternetConnection(): Boolean {
@@ -177,7 +176,7 @@ constructor(
 
 
     fun updatePassword(authToken: AuthToken, currentPassword: String, newPassword: String, confirmNewPassword: String): LiveData<DataState<AccountViewState>> {
-        return object: NetworkBoundResource<GenericResponse, Any, AccountViewState>(){
+        return object: NetworkBoundResource<GenericResponse, Any, AccountViewState>("updatePassword"){
 
             // not applicable
             override fun isNetworkAvailable(): Boolean {
@@ -221,9 +220,8 @@ constructor(
             override suspend fun updateLocalDb(cacheObject: Any?) {
             }
 
-            override fun setCurrentJob(job: Job) {
-                this@AccountRepository.job?.cancel() // cancel existing jobs
-                this@AccountRepository.job = job
+            override fun setJob(job: Job) {
+                jobManager.addJob(methodName, job)
             }
 
             override fun cancelOperationIfNoInternetConnection(): Boolean {
@@ -237,9 +235,9 @@ constructor(
         }.asLiveData()
     }
 
-    fun cancelRequests(){
-        Log.d(TAG, "AccountRepository: cancelling requests... ")
-        job?.cancel()
+    fun cancelActiveJobs(){
+        Log.d(TAG, "AccountRepository: cancelling on-going jobs... ")
+        jobManager.cancelActiveJobs()
     }
 }
 

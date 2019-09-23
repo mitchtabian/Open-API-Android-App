@@ -16,7 +16,10 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 
-abstract class NetworkBoundResource<ResponseObject, CacheObject, ViewStateType>{
+abstract class NetworkBoundResource<ResponseObject, CacheObject, ViewStateType>
+    (
+    val methodName: String
+) {
 
     private val TAG: String = "AppDebug"
 
@@ -25,7 +28,7 @@ abstract class NetworkBoundResource<ResponseObject, CacheObject, ViewStateType>{
     protected lateinit var coroutineScope: CoroutineScope
 
     init {
-        setCurrentJob(initNewJob())
+        setJob(initNewJob())
         setValue(DataState.loading(isLoading = true, cachedData = null))
 
         if(cancelOperationIfNoInternetConnection()){
@@ -174,12 +177,11 @@ abstract class NetworkBoundResource<ResponseObject, CacheObject, ViewStateType>{
 
     abstract suspend fun updateLocalDb(cacheObject: CacheObject?)
 
-    abstract fun setCurrentJob(job: Job)
+    abstract fun setJob(job: Job)
 
     abstract fun cancelOperationIfNoInternetConnection(): Boolean
     
     abstract fun isNetworkRequest(): Boolean
-
     
 }
 

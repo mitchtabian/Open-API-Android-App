@@ -53,7 +53,7 @@ abstract class BaseCreateFragment: DaggerFragment(){
         // When a fragment is destroyed make sure to cancel any on-going requests.
         // Note: If you wanted a particular request to continue even if the fragment was destroyed, you could write a
         //       special condition in the repository or something.
-        viewModel.cancelRequests()
+        viewModel.cancelActiveJobs()
     }
 
     /*

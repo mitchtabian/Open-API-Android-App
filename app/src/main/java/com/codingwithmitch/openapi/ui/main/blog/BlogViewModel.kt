@@ -268,8 +268,8 @@ constructor(
         return viewState.value!!.isAuthorOfBlogPost
     }
 
-    fun cancelRequests(){
-        blogRepository.cancelRequests()
+    fun cancelActiveJobs(){
+        blogRepository.cancelActiveJobs()
         handlePendingData()
     }
 
@@ -279,7 +279,7 @@ constructor(
 
     override fun onCleared() {
         super.onCleared()
-        cancelRequests()
+        cancelActiveJobs()
     }
 
     

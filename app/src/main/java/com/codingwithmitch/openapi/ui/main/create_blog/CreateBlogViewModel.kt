@@ -75,8 +75,8 @@ constructor(
         _viewState.value = update
     }
 
-    fun cancelRequests(){
-        createBlogRepository.cancelRequests()
+    fun cancelActiveJobs(){
+        createBlogRepository.cancelActiveJobs()
         handlePendingData()
     }
 
@@ -86,7 +86,7 @@ constructor(
 
     override fun onCleared() {
         super.onCleared()
-        cancelRequests()
+        cancelActiveJobs()
     }
 }
 

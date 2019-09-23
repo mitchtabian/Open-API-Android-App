@@ -9,6 +9,7 @@ import com.codingwithmitch.openapi.ui.DataState
 import com.codingwithmitch.openapi.ui.Loading
 import com.codingwithmitch.openapi.ui.auth.state.*
 import com.codingwithmitch.openapi.ui.auth.state.AuthStateEvent.*
+import com.codingwithmitch.openapi.ui.main.blog.state.BlogStateEvent
 import com.codingwithmitch.openapi.ui.main.blog.state.BlogViewState
 import javax.inject.Inject
 
@@ -76,6 +77,16 @@ constructor(
         }
         update.authToken = authToken
         _viewState.value = update
+    }
+
+    fun cancelActiveJobs(){
+        authRepository.cancelActiveJobs()
+    }
+
+
+    override fun onCleared() {
+        super.onCleared()
+        cancelActiveJobs()
     }
 }
 

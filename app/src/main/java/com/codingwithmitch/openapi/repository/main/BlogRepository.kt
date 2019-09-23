@@ -10,6 +10,7 @@ import com.codingwithmitch.openapi.api.main.network_responses.BlogListSearchResp
 import com.codingwithmitch.openapi.models.AuthToken
 import com.codingwithmitch.openapi.models.BlogPost
 import com.codingwithmitch.openapi.persistence.BlogPostDao
+import com.codingwithmitch.openapi.repository.JobManager
 import com.codingwithmitch.openapi.repository.NetworkBoundResource
 import com.codingwithmitch.openapi.session.SessionManager
 import com.codingwithmitch.openapi.ui.DataState
@@ -43,11 +44,11 @@ constructor(
 {
     private val TAG: String = "AppDebug"
 
-    private var job: Job? = null
-
+    private val jobManager: JobManager = JobManager()
+    
     fun searchBlogPosts(authToken: AuthToken, query: String, filterAndOrder: String, page: Int): LiveData<DataState<BlogViewState>> {
 
-        return object: NetworkBoundResource<BlogListSearchResponse, List<BlogPost>, BlogViewState>(){
+        return object: NetworkBoundResource<BlogListSearchResponse, List<BlogPost>, BlogViewState>("searchBlogPosts"){
 
             override fun isNetworkAvailable(): Boolean {
                 Log.d(TAG, "isNetworkAvailable: ${sessionManager.isConnectedToTheInternet()}")
@@ -162,9 +163,8 @@ constructor(
                 )
             }
 
-            override fun setCurrentJob(job: Job) {
-                this@BlogRepository.job?.cancel() // cancel existing jobs
-                this@BlogRepository.job = job
+            override fun setJob(job: Job) {
+                jobManager.addJob(methodName, job)
             }
 
             override fun isNetworkRequest(): Boolean {
@@ -179,7 +179,7 @@ constructor(
         authToken: AuthToken,
         slug: String
     ): LiveData<DataState<BlogViewState>> {
-        return object: NetworkBoundResource<GenericResponse, Any, BlogViewState>(){
+        return object: NetworkBoundResource<GenericResponse, Any, BlogViewState>("isAuthorOfBlogPost"){
 
             override fun isNetworkAvailable(): Boolean {
                 return sessionManager.isConnectedToTheInternet()
@@ -248,9 +248,8 @@ constructor(
                 return false
             }
 
-            override fun setCurrentJob(job: Job) {
-                this@BlogRepository.job?.cancel() // cancel existing jobs
-                this@BlogRepository.job = job
+            override fun setJob(job: Job) {
+                jobManager.addJob(methodName, job)
             }
 
             override fun isNetworkRequest(): Boolean {
@@ -265,7 +264,7 @@ constructor(
         authToken: AuthToken,
         blogPost: BlogPost
     ): LiveData<DataState<BlogViewState>>{
-        return object: NetworkBoundResource<GenericResponse, BlogPost, BlogViewState>(){
+        return object: NetworkBoundResource<GenericResponse, BlogPost, BlogViewState>("deleteBlogPost"){
 
             override fun isNetworkAvailable(): Boolean {
                 return sessionManager.isConnectedToTheInternet()
@@ -326,9 +325,8 @@ constructor(
                 return false
             }
 
-            override fun setCurrentJob(job: Job) {
-                this@BlogRepository.job?.cancel() // cancel existing jobs
-                this@BlogRepository.job = job
+            override fun setJob(job: Job) {
+                jobManager.addJob(methodName, job)
             }
 
             override fun isNetworkRequest(): Boolean {
@@ -345,7 +343,7 @@ constructor(
         body: RequestBody,
         image: MultipartBody.Part?
     ): LiveData<DataState<BlogViewState>> {
-        return object: NetworkBoundResource<BlogCreateUpdateResponse, BlogPost, BlogViewState>(){
+        return object: NetworkBoundResource<BlogCreateUpdateResponse, BlogPost, BlogViewState>("updateBlogPost"){
 
             override fun isNetworkAvailable(): Boolean {
                 return sessionManager.isConnectedToTheInternet()
@@ -413,9 +411,8 @@ constructor(
                 return false
             }
 
-            override fun setCurrentJob(job: Job) {
-                this@BlogRepository.job?.cancel() // cancel existing jobs
-                this@BlogRepository.job = job
+            override fun setJob(job: Job) {
+                jobManager.addJob(methodName, job)
             }
 
             override fun isNetworkRequest(): Boolean {
@@ -425,9 +422,9 @@ constructor(
         }.asLiveData()
     }
 
-    fun cancelRequests(){
-        Log.d(TAG, "BlogRepository: cancelling requests... ")
-        job?.cancel()
+    fun cancelActiveJobs(){
+        Log.d(TAG, "BlogRepository: cancelling on-going jobs... ")
+        jobManager.cancelActiveJobs()
     }
 
 }

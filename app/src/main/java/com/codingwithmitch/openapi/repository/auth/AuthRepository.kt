@@ -11,6 +11,7 @@ import com.codingwithmitch.openapi.models.AccountProperties
 import com.codingwithmitch.openapi.models.AuthToken
 import com.codingwithmitch.openapi.persistence.AccountPropertiesDao
 import com.codingwithmitch.openapi.persistence.AuthTokenDao
+import com.codingwithmitch.openapi.repository.JobManager
 import com.codingwithmitch.openapi.repository.NetworkBoundResource
 import com.codingwithmitch.openapi.session.SessionManager
 import com.codingwithmitch.openapi.ui.DataState
@@ -41,7 +42,7 @@ constructor(
 {
     private val TAG: String = "AppDebug"
 
-    private var job: Job? = null
+    private val jobManager: JobManager = JobManager()
 
     fun attemptLogin(email: String, password: String) : LiveData<DataState<AuthViewState>>{
 
@@ -50,7 +51,7 @@ constructor(
             return returnErrorResponse(loginFieldErrors, ResponseType.Dialog())
         }
 
-        return object: NetworkBoundResource<LoginResponse, Void, AuthViewState>() {
+        return object: NetworkBoundResource<LoginResponse, Void, AuthViewState>("attemptLogin") {
 
             // not applicable
             override fun isNetworkAvailable(): Boolean {
@@ -123,9 +124,8 @@ constructor(
 
             }
 
-            override fun setCurrentJob(job: Job) {
-                this@AuthRepository.job?.cancel() // cancel existing jobs
-                this@AuthRepository.job = job
+            override fun setJob(job: Job) {
+                jobManager.addJob(methodName, job)
             }
 
             override fun cancelOperationIfNoInternetConnection(): Boolean {
@@ -146,7 +146,7 @@ constructor(
             return returnErrorResponse(registrationFieldErrors, ResponseType.Dialog())
         }
 
-        return object: NetworkBoundResource<RegistrationResponse, Void, AuthViewState>(){
+        return object: NetworkBoundResource<RegistrationResponse, Void, AuthViewState>("attemptRegistration"){
 
 
             // not applicable
@@ -237,9 +237,8 @@ constructor(
 
             }
 
-            override fun setCurrentJob(job: Job) {
-                this@AuthRepository.job?.cancel() // cancel existing jobs
-                this@AuthRepository.job = job
+            override fun setJob(job: Job) {
+                jobManager.addJob(methodName, job)
             }
 
             override fun cancelOperationIfNoInternetConnection(): Boolean {
@@ -255,6 +254,7 @@ constructor(
 
 
     fun checkPreviousAuthUser(): LiveData<DataState<AuthViewState>>{
+
         val previousAuthUserEmail: String? = sharedPreferences.getString(PreferenceKeys.PREVIOUS_AUTH_USER, null)
 
         if(previousAuthUserEmail.isNullOrBlank()){
@@ -262,7 +262,7 @@ constructor(
             return returnNoTokenFound()
         }
         else{
-            return object: NetworkBoundResource<Void, AccountProperties, AuthViewState>(){
+            return object: NetworkBoundResource<Void, AccountProperties, AuthViewState>("checkPreviousAuthUser"){
 
                 override fun isNetworkAvailable(): Boolean {
                     return sessionManager.isConnectedToTheInternet()
@@ -362,9 +362,8 @@ constructor(
                 override suspend fun updateLocalDb(cacheObject: AccountProperties?) {
                 }
 
-                override fun setCurrentJob(job: Job) {
-                    this@AuthRepository.job?.cancel() // cancel existing jobs
-                    this@AuthRepository.job = job
+                override fun setJob(job: Job) {
+                    jobManager.addJob(methodName, job)
                 }
 
                 override fun cancelOperationIfNoInternetConnection(): Boolean {
@@ -402,6 +401,13 @@ constructor(
         sharedPrefsEditor.putString(PreferenceKeys.PREVIOUS_AUTH_USER, email)
         sharedPrefsEditor.apply()
     }
+
+
+    fun cancelActiveJobs(){
+        Log.d(TAG, "AuthRepository: cancelling on-going jobs... ")
+        jobManager.cancelActiveJobs()
+    }
+
 }
 
 
