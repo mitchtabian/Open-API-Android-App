@@ -51,13 +51,12 @@ constructor(
             return returnErrorResponse(loginFieldErrors, ResponseType.Dialog())
         }
 
-        return object: NetworkBoundResource<LoginResponse, Void, AuthViewState>(
-            "attemptLogin",
-            sessionManager.isConnectedToTheInternet(),
-            true,
-            true,
-            false
-        ) {
+        return object: NetworkBoundResource<LoginResponse, Void, AuthViewState>("attemptLogin") {
+
+            // not applicable
+            override fun isNetworkAvailable(): Boolean {
+                return sessionManager.isConnectedToTheInternet()
+            }
 
             // not applicable
             override suspend fun createCacheRequestAndReturn() {
@@ -111,6 +110,10 @@ constructor(
                 return openApiAuthService.login(email, password)
             }
 
+            override fun shouldLoadFromCache(): Boolean {
+                return false // Not loading anything from cache
+            }
+
             // not used in this case
             override fun loadFromCache(): LiveData<AuthViewState> {
                 return AbsentLiveData.create()
@@ -125,6 +128,14 @@ constructor(
                 jobManager.addJob(methodName, job)
             }
 
+            override fun cancelOperationIfNoInternetConnection(): Boolean {
+                return !sessionManager.isConnectedToTheInternet()
+            }
+
+            override fun isNetworkRequest(): Boolean {
+                return true
+            }
+
         }.asLiveData()
     }
 
@@ -135,13 +146,13 @@ constructor(
             return returnErrorResponse(registrationFieldErrors, ResponseType.Dialog())
         }
 
-        return object: NetworkBoundResource<RegistrationResponse, Void, AuthViewState>(
-            "attemptRegistration",
-            sessionManager.isConnectedToTheInternet(),
-            true,
-            true,
-            false
-        ){
+        return object: NetworkBoundResource<RegistrationResponse, Void, AuthViewState>("attemptRegistration"){
+
+
+            // not applicable
+            override fun isNetworkAvailable(): Boolean {
+                return sessionManager.isConnectedToTheInternet()
+            }
 
             // not applicable
             override suspend fun createCacheRequestAndReturn() {
@@ -212,6 +223,10 @@ constructor(
                 return openApiAuthService.register(email, username, password, confirmPassword)
             }
 
+            override fun shouldLoadFromCache(): Boolean {
+                return false // Not loading anything from cache
+            }
+
             // not used in this case
             override fun loadFromCache(): LiveData<AuthViewState> {
                 return AbsentLiveData.create()
@@ -226,6 +241,13 @@ constructor(
                 jobManager.addJob(methodName, job)
             }
 
+            override fun cancelOperationIfNoInternetConnection(): Boolean {
+                return !sessionManager.isConnectedToTheInternet()
+            }
+
+            override fun isNetworkRequest(): Boolean {
+                return true
+            }
 
         }.asLiveData()
     }
@@ -240,13 +262,11 @@ constructor(
             return returnNoTokenFound()
         }
         else{
-            return object: NetworkBoundResource<Void, AccountProperties, AuthViewState>(
-                "checkPreviousAuthUser",
-                sessionManager.isConnectedToTheInternet(),
-                false,
-                false,
-                false
-            ){
+            return object: NetworkBoundResource<Void, AccountProperties, AuthViewState>("checkPreviousAuthUser"){
+
+                override fun isNetworkAvailable(): Boolean {
+                    return sessionManager.isConnectedToTheInternet()
+                }
 
                 override suspend fun createCacheRequestAndReturn() {
                     accountPropertiesDao.searchByEmail(previousAuthUserEmail).let { accountProperties ->
@@ -329,6 +349,10 @@ constructor(
                     return AbsentLiveData.create()
                 }
 
+                override fun shouldLoadFromCache(): Boolean {
+                    return false
+                }
+
                 // not used in this case
                 override fun loadFromCache(): LiveData<AuthViewState> {
                     return AbsentLiveData.create()
@@ -341,6 +365,15 @@ constructor(
                 override fun setJob(job: Job) {
                     jobManager.addJob(methodName, job)
                 }
+
+                override fun cancelOperationIfNoInternetConnection(): Boolean {
+                    return false
+                }
+
+                override fun isNetworkRequest(): Boolean {
+                    return false
+                }
+
 
             }.asLiveData()
         }
