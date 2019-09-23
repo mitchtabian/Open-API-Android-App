@@ -147,8 +147,6 @@ constructor(
 
         return object: NetworkBoundResource<RegistrationResponse, Void, AuthViewState>("attemptRegistration"){
 
-
-            // not applicable
             override fun isNetworkAvailable(): Boolean {
                 return sessionManager.isConnectedToTheInternet()
             }
