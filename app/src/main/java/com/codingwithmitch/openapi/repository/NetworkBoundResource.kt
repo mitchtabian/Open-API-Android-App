@@ -18,7 +18,11 @@ import kotlinx.coroutines.Dispatchers.Main
 
 abstract class NetworkBoundResource<ResponseObject, CacheObject, ViewStateType>
     (
-    val methodName: String
+    val methodName: String, // name of job (each method denotes a job)
+    isNetworkAvailable: Boolean, // is their a connection?
+    isNetworkRequest: Boolean, // does this job include a network request?
+    shouldCancelIfNoInternet: Boolean, // should this job be cancelled if their is no network?
+    shouldLoadFromCache: Boolean // should the local cached data be loaded?
 ) {
 
     private val TAG: String = "AppDebug"
@@ -31,11 +35,11 @@ abstract class NetworkBoundResource<ResponseObject, CacheObject, ViewStateType>
         setJob(initNewJob())
         setValue(DataState.loading(isLoading = true, cachedData = null))
 
-        if(cancelOperationIfNoInternetConnection()){
+        if(!isNetworkAvailable && shouldCancelIfNoInternet){
             onCompleteJob(DataState.error(Response(ErrorHandling.UNABLE_TODO_OPERATION_WO_INTERNET, ResponseType.Dialog())))
         }
         else{
-            if(shouldLoadFromCache()){
+            if(shouldLoadFromCache){
                 // view cache to start
                 val dbSource = loadFromCache()
                 result.addSource(dbSource){
@@ -44,39 +48,29 @@ abstract class NetworkBoundResource<ResponseObject, CacheObject, ViewStateType>
                 }
             }
 
-            if(isNetworkAvailable()){
-                if(isNetworkRequest()){
+            if(isNetworkRequest && isNetworkAvailable){
+                coroutineScope.launch {
+                    // simulate network delay for testing
+                    delay(TESTING_NETWORK_DELAY)
 
-                    coroutineScope.launch {
-                        // simulate network delay for testing
-                        delay(TESTING_NETWORK_DELAY)
+                    withContext(Main){
+                        // make network call
+                        val apiResponse = createCall()
+                        result.addSource(apiResponse){ response ->
+                            result.removeSource(apiResponse)
 
-                        withContext(Main){
-                            // make network call
-                            val apiResponse = createCall()
-                            result.addSource(apiResponse){ response ->
-                                result.removeSource(apiResponse)
+                            coroutineScope.launch{
+                                handleNetworkCall(response)
+                            }
 
-                                coroutineScope.launch{
-                                    handleNetworkCall(response)
-                                }
-
-                                GlobalScope.launch(IO) {
-                                    delay(NETWORK_TIMEOUT)
-                                    if(!job.isCompleted){
-                                        Log.e(TAG, "NetworkBoundResource: JOB NETWORK TIMEOUT.")
-                                        job.cancel(CancellationException(ErrorHandling.UNABLE_TO_RESOLVE_HOST))
-                                    }
+                            GlobalScope.launch(IO) {
+                                delay(NETWORK_TIMEOUT)
+                                if(!job.isCompleted){
+                                    Log.e(TAG, "NetworkBoundResource: JOB NETWORK TIMEOUT.")
+                                    job.cancel(CancellationException(ErrorHandling.UNABLE_TO_RESOLVE_HOST))
                                 }
                             }
                         }
-                    }
-                }
-                else{
-                    coroutineScope.launch {
-                        delay(TESTING_CACHE_DELAY)
-                        // View data from cache only and return
-                        createCacheRequestAndReturn()
                     }
                 }
             }
@@ -163,15 +157,11 @@ abstract class NetworkBoundResource<ResponseObject, CacheObject, ViewStateType>
 
     fun asLiveData() = result as LiveData<DataState<ViewStateType>>
 
-    abstract fun isNetworkAvailable(): Boolean
-
     abstract suspend fun createCacheRequestAndReturn()
 
     abstract suspend fun handleApiSuccessResponse(response: ApiSuccessResponse<ResponseObject>)
 
     abstract fun createCall(): LiveData<GenericApiResponse<ResponseObject>>
-
-    abstract fun shouldLoadFromCache(): Boolean
 
     abstract fun loadFromCache(): LiveData<ViewStateType>
 
@@ -179,10 +169,6 @@ abstract class NetworkBoundResource<ResponseObject, CacheObject, ViewStateType>
 
     abstract fun setJob(job: Job)
 
-    abstract fun cancelOperationIfNoInternetConnection(): Boolean
-    
-    abstract fun isNetworkRequest(): Boolean
-    
 }
 
 

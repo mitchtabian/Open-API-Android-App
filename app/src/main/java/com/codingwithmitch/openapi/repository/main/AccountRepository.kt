@@ -34,11 +34,13 @@ constructor(
     private val jobManager: JobManager = JobManager()
 
     fun getAccountProperties(authToken: AuthToken): LiveData<DataState<AccountViewState>> {
-        return object: NetworkBoundResource<AccountProperties, AccountProperties, AccountViewState>("getAccountProperties"){
-
-            override fun isNetworkAvailable(): Boolean {
-                return sessionManager.isConnectedToTheInternet()
-            }
+        return object: NetworkBoundResource<AccountProperties, AccountProperties, AccountViewState>(
+            "getAccountProperties",
+            sessionManager.isConnectedToTheInternet(),
+            true,
+            false,
+            true
+        ){
 
             // if network is down, view the cache and return
             override suspend fun createCacheRequestAndReturn() {
@@ -61,10 +63,6 @@ constructor(
                         onCompleteJob(DataState.data(viewState, null))
                     }
                 }
-            }
-
-            override fun cancelOperationIfNoInternetConnection(): Boolean {
-                return false
             }
 
             override fun loadFromCache(): LiveData<AccountViewState> {
@@ -94,28 +92,22 @@ constructor(
                 }
             }
 
-            override fun shouldLoadFromCache(): Boolean {
-                return true
-            }
-
             override fun setJob(job: Job) {
                 jobManager.addJob(methodName, job)
             }
 
-            override fun isNetworkRequest(): Boolean {
-                return true
-            }
 
         }.asLiveData()
     }
 
     fun saveAccountProperties(authToken: AuthToken, accountProperties: AccountProperties): LiveData<DataState<AccountViewState>> {
-        return object: NetworkBoundResource<GenericResponse, AccountProperties, AccountViewState>("saveAccountProperties"){
-
-            // not applicable
-            override fun isNetworkAvailable(): Boolean {
-                return sessionManager.isConnectedToTheInternet()
-            }
+        return object: NetworkBoundResource<GenericResponse, AccountProperties, AccountViewState>(
+            "saveAccountProperties",
+            sessionManager.isConnectedToTheInternet(),
+            true,
+            true,
+            false
+        ){
 
             // not applicable
             override suspend fun createCacheRequestAndReturn() {
@@ -132,10 +124,6 @@ constructor(
                             Response(response.body.response, ResponseType.Toast())
                         ))
                 }
-            }
-
-            override fun shouldLoadFromCache(): Boolean {
-                return false // Not loading anything from cache
             }
 
             // not used in this case
@@ -163,25 +151,18 @@ constructor(
                 jobManager.addJob(methodName, job)
             }
 
-            override fun cancelOperationIfNoInternetConnection(): Boolean {
-                return !sessionManager.isConnectedToTheInternet()
-            }
-
-            override fun isNetworkRequest(): Boolean {
-                return true
-            }
-
         }.asLiveData()
     }
 
 
     fun updatePassword(authToken: AuthToken, currentPassword: String, newPassword: String, confirmNewPassword: String): LiveData<DataState<AccountViewState>> {
-        return object: NetworkBoundResource<GenericResponse, Any, AccountViewState>("updatePassword"){
-
-            // not applicable
-            override fun isNetworkAvailable(): Boolean {
-                return sessionManager.isConnectedToTheInternet()
-            }
+        return object: NetworkBoundResource<GenericResponse, Any, AccountViewState>(
+            "updatePassword",
+            sessionManager.isConnectedToTheInternet(),
+            true,
+            true,
+            false
+        ){
 
             // not applicable
             override suspend fun createCacheRequestAndReturn() {
@@ -196,10 +177,6 @@ constructor(
                             Response(response.body.response, ResponseType.Toast())
                         ))
                 }
-            }
-
-            override fun shouldLoadFromCache(): Boolean {
-                return false // Not loading anything from cache
             }
 
             // not used in this case
@@ -222,14 +199,6 @@ constructor(
 
             override fun setJob(job: Job) {
                 jobManager.addJob(methodName, job)
-            }
-
-            override fun cancelOperationIfNoInternetConnection(): Boolean {
-                return !sessionManager.isConnectedToTheInternet()
-            }
-
-            override fun isNetworkRequest(): Boolean {
-                return true
             }
 
         }.asLiveData()

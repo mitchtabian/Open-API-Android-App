@@ -48,12 +48,14 @@ constructor(
     
     fun searchBlogPosts(authToken: AuthToken, query: String, filterAndOrder: String, page: Int): LiveData<DataState<BlogViewState>> {
 
-        return object: NetworkBoundResource<BlogListSearchResponse, List<BlogPost>, BlogViewState>("searchBlogPosts"){
+        return object: NetworkBoundResource<BlogListSearchResponse, List<BlogPost>, BlogViewState>(
+            "searchBlogPosts",
+            sessionManager.isConnectedToTheInternet(),
+            true,
+            false,
+            true
+        ){
 
-            override fun isNetworkAvailable(): Boolean {
-                Log.d(TAG, "isNetworkAvailable: ${sessionManager.isConnectedToTheInternet()}")
-                return sessionManager.isConnectedToTheInternet()
-            }
 
             // if network is down, view cache only and return
             override suspend fun createCacheRequestAndReturn() {
@@ -98,10 +100,6 @@ constructor(
                         onCompleteJob(DataState.data(viewState, null))
                     }
                 }
-            }
-
-            override fun shouldLoadFromCache(): Boolean {
-                return true
             }
 
             override fun loadFromCache(): LiveData<BlogViewState> {
@@ -150,10 +148,6 @@ constructor(
                 }
             }
 
-            override fun cancelOperationIfNoInternetConnection(): Boolean {
-                return false
-            }
-
             override fun createCall(): LiveData<GenericApiResponse<BlogListSearchResponse>> {
                 return openApiMainService.searchListBlogPosts(
                     "Token ${authToken.token!!}",
@@ -167,9 +161,6 @@ constructor(
                 jobManager.addJob(methodName, job)
             }
 
-            override fun isNetworkRequest(): Boolean {
-                return true
-            }
 
         }.asLiveData()
     }
@@ -179,11 +170,14 @@ constructor(
         authToken: AuthToken,
         slug: String
     ): LiveData<DataState<BlogViewState>> {
-        return object: NetworkBoundResource<GenericResponse, Any, BlogViewState>("isAuthorOfBlogPost"){
+        return object: NetworkBoundResource<GenericResponse, Any, BlogViewState>(
+            "isAuthorOfBlogPost",
+            sessionManager.isConnectedToTheInternet(),
+            true,
+            true,
+            false
+        ){
 
-            override fun isNetworkAvailable(): Boolean {
-                return sessionManager.isConnectedToTheInternet()
-            }
 
             // not applicable
             override suspend fun createCacheRequestAndReturn() {
@@ -220,10 +214,6 @@ constructor(
                 }
             }
 
-            override fun cancelOperationIfNoInternetConnection(): Boolean {
-                return !sessionManager.isConnectedToTheInternet()
-            }
-
             // not applicable
             override fun loadFromCache(): LiveData<BlogViewState> {
                 return AbsentLiveData.create()
@@ -243,18 +233,10 @@ constructor(
 
             }
 
-            // not applicable
-            override fun shouldLoadFromCache(): Boolean {
-                return false
-            }
-
             override fun setJob(job: Job) {
                 jobManager.addJob(methodName, job)
             }
 
-            override fun isNetworkRequest(): Boolean {
-                return true
-            }
 
         }.asLiveData()
     }
@@ -264,11 +246,13 @@ constructor(
         authToken: AuthToken,
         blogPost: BlogPost
     ): LiveData<DataState<BlogViewState>>{
-        return object: NetworkBoundResource<GenericResponse, BlogPost, BlogViewState>("deleteBlogPost"){
-
-            override fun isNetworkAvailable(): Boolean {
-                return sessionManager.isConnectedToTheInternet()
-            }
+        return object: NetworkBoundResource<GenericResponse, BlogPost, BlogViewState>(
+            "deleteBlogPost",
+            sessionManager.isConnectedToTheInternet(),
+            true,
+            true,
+            false
+        ){
 
             // not applicable
             override suspend fun createCacheRequestAndReturn() {
@@ -290,10 +274,6 @@ constructor(
                         )
                     )
                 }
-            }
-
-            override fun cancelOperationIfNoInternetConnection(): Boolean {
-                return !sessionManager.isConnectedToTheInternet()
             }
 
             // not applicable
@@ -320,17 +300,8 @@ constructor(
                 }
             }
 
-            // not applicable
-            override fun shouldLoadFromCache(): Boolean {
-                return false
-            }
-
             override fun setJob(job: Job) {
                 jobManager.addJob(methodName, job)
-            }
-
-            override fun isNetworkRequest(): Boolean {
-                return true
             }
 
         }.asLiveData()
@@ -343,11 +314,13 @@ constructor(
         body: RequestBody,
         image: MultipartBody.Part?
     ): LiveData<DataState<BlogViewState>> {
-        return object: NetworkBoundResource<BlogCreateUpdateResponse, BlogPost, BlogViewState>("updateBlogPost"){
-
-            override fun isNetworkAvailable(): Boolean {
-                return sessionManager.isConnectedToTheInternet()
-            }
+        return object: NetworkBoundResource<BlogCreateUpdateResponse, BlogPost, BlogViewState>(
+            "updateBlogPost",
+            sessionManager.isConnectedToTheInternet(),
+            true,
+            true,
+            false
+        ){
 
             // not applicable
             override suspend fun createCacheRequestAndReturn() {
@@ -376,10 +349,6 @@ constructor(
                 }
             }
 
-            override fun cancelOperationIfNoInternetConnection(): Boolean {
-                return !sessionManager.isConnectedToTheInternet()
-            }
-
             // not applicable
             override fun loadFromCache(): LiveData<BlogViewState> {
                 return AbsentLiveData.create()
@@ -406,17 +375,8 @@ constructor(
                 }
             }
 
-            // not applicable
-            override fun shouldLoadFromCache(): Boolean {
-                return false
-            }
-
             override fun setJob(job: Job) {
                 jobManager.addJob(methodName, job)
-            }
-
-            override fun isNetworkRequest(): Boolean {
-                return true
             }
 
         }.asLiveData()

@@ -42,12 +42,13 @@ constructor(
         body: RequestBody,
         image: MultipartBody.Part?
     ): LiveData<DataState<CreateBlogViewState>> {
-        return object: NetworkBoundResource<BlogCreateUpdateResponse, BlogPost, CreateBlogViewState>("createNewBlogPost"){
-
-            override fun isNetworkAvailable(): Boolean {
-                Log.d(TAG, "isNetworkAvailable: ${sessionManager.isConnectedToTheInternet()}")
-                return sessionManager.isConnectedToTheInternet()
-            }
+        return object: NetworkBoundResource<BlogCreateUpdateResponse, BlogPost, CreateBlogViewState>(
+            "createNewBlogPost",
+            sessionManager.isConnectedToTheInternet(),
+            true,
+            true,
+            false
+        ){
 
             // not applicable
             override suspend fun createCacheRequestAndReturn() {
@@ -91,11 +92,6 @@ constructor(
             }
 
             // not applicable
-            override fun shouldLoadFromCache(): Boolean {
-                return false
-            }
-
-            // not applicable
             override fun loadFromCache(): LiveData<CreateBlogViewState> {
                 return AbsentLiveData.create()
             }
@@ -108,14 +104,6 @@ constructor(
 
             override fun setJob(job: Job) {
                 jobManager.addJob(methodName, job)
-            }
-
-            override fun cancelOperationIfNoInternetConnection(): Boolean {
-                return !sessionManager.isConnectedToTheInternet()
-            }
-
-            override fun isNetworkRequest(): Boolean {
-                return true
             }
 
         }.asLiveData()
