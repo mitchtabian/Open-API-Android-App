@@ -62,15 +62,14 @@ abstract class NetworkBoundResource<ResponseObject, CacheObject, ViewStateType>
                             coroutineScope.launch{
                                 handleNetworkCall(response)
                             }
-
-                            GlobalScope.launch(IO) {
-                                delay(NETWORK_TIMEOUT)
-                                if(!job.isCompleted){
-                                    Log.e(TAG, "NetworkBoundResource: JOB NETWORK TIMEOUT.")
-                                    job.cancel(CancellationException(ErrorHandling.UNABLE_TO_RESOLVE_HOST))
-                                }
-                            }
                         }
+                    }
+                }
+                GlobalScope.launch(IO) {
+                    delay(NETWORK_TIMEOUT)
+                    if(!job.isCompleted){
+                        Log.e(TAG, "NetworkBoundResource: JOB NETWORK TIMEOUT.")
+                        job.cancel(CancellationException(ErrorHandling.UNABLE_TO_RESOLVE_HOST))
                     }
                 }
             }
