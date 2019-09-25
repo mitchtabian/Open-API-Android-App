@@ -209,7 +209,7 @@ constructor(
                         )
                     }
                     else{
-                        onReturnError(ERROR_UNKNOWN, shouldUseDialog = false, shouldUseToast = false)
+                        onErrorReturn(ERROR_UNKNOWN, shouldUseDialog = false, shouldUseToast = false)
                     }
                 }
             }

@@ -70,7 +70,7 @@ constructor(
 
                 // Incorrect login credentials counts as a 200 response from server, so need to handle that
                 if(response.body.response.equals(GENERIC_AUTH_ERROR)){
-                    return onReturnError(response.body.errorMessage, true, false)
+                    return onErrorReturn(response.body.errorMessage, true, false)
                 }
 
                 // Don't care about result here. Just insert if it doesn't exist b/c of foreign key relationship
@@ -155,7 +155,7 @@ constructor(
 
                 // Credentials that are already in use will result in 200 code so need to handle that
                 if(response.body.response.equals(GENERIC_AUTH_ERROR)){
-                    return onReturnError(response.body.errorMessage, true, false)
+                    return onErrorReturn(response.body.errorMessage, true, false)
                 }
 
                 // The following situations will still return a 200 code:

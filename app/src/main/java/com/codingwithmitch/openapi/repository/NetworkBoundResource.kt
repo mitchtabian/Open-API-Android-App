@@ -92,11 +92,11 @@ abstract class NetworkBoundResource<ResponseObject, CacheObject, ViewStateType>
             }
             is ApiErrorResponse ->{
                 Log.e(TAG, "NetworkBoundResource: ${response.errorMessage}")
-                onReturnError(response.errorMessage, true, false)
+                onErrorReturn(response.errorMessage, true, false)
             }
             is ApiEmptyResponse ->{
                 Log.e(TAG, "NetworkBoundResource: Request returned NOTHING (HTTP 204).")
-                onReturnError("HTTP 204. Returned NOTHING.", true, false)
+                onErrorReturn("HTTP 204. Returned NOTHING.", true, false)
             }
         }
     }
@@ -108,7 +108,7 @@ abstract class NetworkBoundResource<ResponseObject, CacheObject, ViewStateType>
         }
     }
 
-    fun onReturnError(errorMessage: String?, shouldUseDialog: Boolean, shouldUseToast: Boolean){
+    fun onErrorReturn(errorMessage: String?, shouldUseDialog: Boolean, shouldUseToast: Boolean){
         var msg = errorMessage
         var useDialog = shouldUseDialog
         var responseType: ResponseType = ResponseType.None()
@@ -142,8 +142,8 @@ abstract class NetworkBoundResource<ResponseObject, CacheObject, ViewStateType>
                 if(job.isCancelled){
                     Log.e(TAG, "NetworkBoundResource: Job has been cancelled.")
                     cause?.let{
-                        onReturnError(it.message, false, true)
-                    }?: onReturnError("Unknown error.", false, true)
+                        onErrorReturn(it.message, false, true)
+                    }?: onErrorReturn("Unknown error.", false, true)
                 }
                 else if(job.isCompleted){
                     Log.e(TAG, "NetworkBoundResource: Job has been completed.")
