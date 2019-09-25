@@ -32,32 +32,35 @@ abstract class NetworkBoundResource<ResponseObject, CacheObject, ViewStateType>
 
         if(isNetworkAvailable){
             coroutineScope.launch {
-                // simulate network delay for testing
+
+                // simulate a network delay for testing
                 delay(TESTING_NETWORK_DELAY)
 
                 withContext(Main){
+
                     // make network call
                     val apiResponse = createCall()
                     result.addSource(apiResponse){ response ->
                         result.removeSource(apiResponse)
 
-                        coroutineScope.launch{
+                        coroutineScope.launch {
                             handleNetworkCall(response)
-                        }
-
-                        GlobalScope.launch(IO) {
-                            delay(NETWORK_TIMEOUT)
-                            if(!job.isCompleted){
-                                Log.e(TAG, "NetworkBoundResource: JOB NETWORK TIMEOUT.")
-                                job.cancel(CancellationException(ErrorHandling.UNABLE_TO_RESOLVE_HOST))
-                            }
                         }
                     }
                 }
             }
+
+            GlobalScope.launch(IO){
+                delay(NETWORK_TIMEOUT)
+
+                if(!job.isCompleted){
+                    Log.e(TAG, "NetworkBoundResource: JOB NETWORK TIMEOUT." )
+                    job.cancel(CancellationException(ErrorHandling.UNABLE_TO_RESOLVE_HOST))
+                }
+            }
         }
         else{
-            onCompleteJob(DataState.error(Response(ErrorHandling.UNABLE_TODO_OPERATION_WO_INTERNET, ResponseType.Dialog())))
+            onErrorReturn(ErrorHandling.UNABLE_TODO_OPERATION_WO_INTERNET, shouldUseDialog = true, shouldUseToast = false)
         }
     }
 
@@ -69,11 +72,11 @@ abstract class NetworkBoundResource<ResponseObject, CacheObject, ViewStateType>
             }
             is ApiErrorResponse ->{
                 Log.e(TAG, "NetworkBoundResource: ${response.errorMessage}")
-                onReturnError(response.errorMessage, true, false)
+                onErrorReturn(response.errorMessage, true, false)
             }
             is ApiEmptyResponse ->{
                 Log.e(TAG, "NetworkBoundResource: Request returned NOTHING (HTTP 204).")
-                onReturnError("HTTP 204. Returned NOTHING.", true, false)
+                onErrorReturn("HTTP 204. Returned NOTHING.", true, false)
             }
         }
     }
@@ -85,7 +88,7 @@ abstract class NetworkBoundResource<ResponseObject, CacheObject, ViewStateType>
         }
     }
 
-    fun onReturnError(errorMessage: String?, shouldUseDialog: Boolean, shouldUseToast: Boolean){
+    fun onErrorReturn(errorMessage: String?, shouldUseDialog: Boolean, shouldUseToast: Boolean){
         var msg = errorMessage
         var useDialog = shouldUseDialog
         var responseType: ResponseType = ResponseType.None()
@@ -119,8 +122,8 @@ abstract class NetworkBoundResource<ResponseObject, CacheObject, ViewStateType>
                 if(job.isCancelled){
                     Log.e(TAG, "NetworkBoundResource: Job has been cancelled.")
                     cause?.let{
-                        onReturnError(it.message, false, true)
-                    }?: onReturnError("Unknown error.", false, true)
+                        onErrorReturn(it.message, false, true)
+                    }?: onErrorReturn("Unknown error.", false, true)
                 }
                 else if(job.isCompleted){
                     Log.e(TAG, "NetworkBoundResource: Job has been completed.")
