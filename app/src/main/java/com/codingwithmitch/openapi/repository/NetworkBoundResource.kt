@@ -15,7 +15,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 
-abstract class NetworkBoundResource<ResponseObject, CacheObject, ViewStateType>
+abstract class NetworkBoundResource<ResponseObject, ViewStateType>
     (
     isNetworkAvailable: Boolean // is their a network connection?
 ) {
