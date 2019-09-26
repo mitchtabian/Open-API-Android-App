@@ -18,7 +18,7 @@ import com.codingwithmitch.openapi.ui.ResponseType
 import com.codingwithmitch.openapi.ui.main.create_blog.state.CreateBlogViewState
 import com.codingwithmitch.openapi.util.AbsentLiveData
 import com.codingwithmitch.openapi.util.DateUtils
-import com.codingwithmitch.openapi.util.SuccessHandling.NetworkSuccessResponses.Companion.RESPONSE_MUST_BECOME_CODINGWITHMITCH_MEMBER
+import com.codingwithmitch.openapi.util.SuccessHandling.Companion.RESPONSE_MUST_BECOME_CODINGWITHMITCH_MEMBER
 import kotlinx.coroutines.*
 import okhttp3.MultipartBody
 import okhttp3.RequestBody

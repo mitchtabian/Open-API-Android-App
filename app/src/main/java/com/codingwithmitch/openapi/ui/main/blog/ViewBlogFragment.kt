@@ -16,7 +16,7 @@ import com.codingwithmitch.openapi.ui.UIMessage
 import com.codingwithmitch.openapi.ui.UIMessageType
 import com.codingwithmitch.openapi.ui.main.blog.state.BlogStateEvent.*
 import com.codingwithmitch.openapi.util.DateUtils
-import com.codingwithmitch.openapi.util.SuccessHandling.NetworkSuccessResponses.Companion.SUCCESS_BLOG_DELETED
+import com.codingwithmitch.openapi.util.SuccessHandling.Companion.SUCCESS_BLOG_DELETED
 import kotlinx.android.synthetic.main.fragment_view_blog.*
 import java.lang.Exception
 

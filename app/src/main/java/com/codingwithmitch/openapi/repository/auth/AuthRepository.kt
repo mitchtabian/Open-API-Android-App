@@ -25,7 +25,7 @@ import com.codingwithmitch.openapi.util.ErrorHandling.Companion.ERROR_SAVE_ACCOU
 import com.codingwithmitch.openapi.util.ErrorHandling.Companion.ERROR_SAVE_AUTH_TOKEN
 import com.codingwithmitch.openapi.util.ErrorHandling.Companion.GENERIC_AUTH_ERROR
 import com.codingwithmitch.openapi.util.PreferenceKeys
-import com.codingwithmitch.openapi.util.SuccessHandling.NetworkSuccessResponses.Companion.RESPONSE_CHECK_PREVIOUS_AUTH_USER_DONE
+import com.codingwithmitch.openapi.util.SuccessHandling.Companion.RESPONSE_CHECK_PREVIOUS_AUTH_USER_DONE
 import kotlinx.coroutines.*
 import javax.inject.Inject
 
@@ -251,71 +251,33 @@ constructor(
                     accountPropertiesDao.searchByEmail(previousAuthUserEmail).let { accountProperties ->
                         Log.d(TAG, "createCacheRequestAndReturn: searching for token... account properties: ${accountProperties}")
 
-                        if (accountProperties == null) {
-                            Log.d(TAG, "createCacheRequestAndReturn: AccountProperties for email ${previousAuthUserEmail} are null. " +
-                                    "Completing job...")
-                            onCompleteJob(
-                                DataState.data(
-                                    null,
-                                    Response(
-                                        RESPONSE_CHECK_PREVIOUS_AUTH_USER_DONE,
-                                        ResponseType.None()
-                                    )
-                                )
-                            )
-                        }
-                        else{
+                        accountProperties?.let {
                             if(accountProperties.pk > -1){
                                 authTokenDao.searchByPk(accountProperties.pk).let { authToken ->
                                     if(authToken != null){
                                         if(authToken.token != null){
                                             onCompleteJob(
                                                 DataState.data(
-                                                    AuthViewState(authToken = authToken),
-                                                    null
+                                                    AuthViewState(authToken = authToken)
                                                 )
                                             )
+                                            Log.d(TAG, "createCacheRequestAndReturn: Found Auth Token: ${authToken}")
+                                            return
                                         }
-                                        else{
-                                            Log.d(TAG, "createCacheRequestAndReturn: token was null. Completing job...")
-                                            onCompleteJob(
-                                                DataState.data(
-                                                    null,
-                                                    Response(
-                                                        RESPONSE_CHECK_PREVIOUS_AUTH_USER_DONE,
-                                                        ResponseType.None()
-                                                    )
-                                                )
-                                            )
-                                        }
-                                    }
-                                    else{
-                                        Log.d(TAG, "createCacheRequestAndReturn: AuthToken was null. Completing job...")
-                                        onCompleteJob(
-                                            DataState.data(
-                                                null,
-                                                Response(
-                                                    RESPONSE_CHECK_PREVIOUS_AUTH_USER_DONE,
-                                                    ResponseType.None()
-                                                )
-                                            )
-                                        )
                                     }
                                 }
                             }
-                            else{
-                                Log.d(TAG, "createCacheRequestAndReturn: PK was null. Completing job...")
-                                onCompleteJob(
-                                    DataState.data(
-                                        null,
-                                        Response(
-                                            RESPONSE_CHECK_PREVIOUS_AUTH_USER_DONE,
-                                            ResponseType.None()
-                                        )
-                                    )
-                                )
-                            }
                         }
+                        Log.d(TAG, "createCacheRequestAndReturn: AuthToken not found...")
+                        onCompleteJob(
+                            DataState.data(
+                                null,
+                                Response(
+                                    RESPONSE_CHECK_PREVIOUS_AUTH_USER_DONE,
+                                    ResponseType.None()
+                                )
+                            )
+                        )
                     }
                 }
 

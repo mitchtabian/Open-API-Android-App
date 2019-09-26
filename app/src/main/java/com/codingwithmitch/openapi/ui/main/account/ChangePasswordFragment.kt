@@ -9,7 +9,7 @@ import androidx.navigation.fragment.findNavController
 
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.ui.main.account.state.AccountStateEvent.*
-import com.codingwithmitch.openapi.util.SuccessHandling.NetworkSuccessResponses.Companion.RESPONSE_PASSWORD_UPDATE_SUCCESS
+import com.codingwithmitch.openapi.util.SuccessHandling.Companion.RESPONSE_PASSWORD_UPDATE_SUCCESS
 import kotlinx.android.synthetic.main.fragment_change_password.*
 
 
