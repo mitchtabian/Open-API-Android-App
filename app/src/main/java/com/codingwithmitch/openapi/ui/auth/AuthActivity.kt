@@ -3,6 +3,7 @@ package com.codingwithmitch.openapi.ui.auth
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
@@ -13,6 +14,7 @@ import com.codingwithmitch.openapi.ui.BaseActivity
 import com.codingwithmitch.openapi.ui.ResponseType
 import com.codingwithmitch.openapi.ui.main.MainActivity
 import com.codingwithmitch.openapi.viewmodels.ViewModelProviderFactory
+import kotlinx.android.synthetic.main.activity_auth.*
 import javax.inject.Inject
 
 class AuthActivity : BaseActivity(),
@@ -45,6 +47,7 @@ class AuthActivity : BaseActivity(),
     private fun subscribeObservers(){
 
         viewModel.dataState.observe(this, Observer { dataState ->
+            onDataStateChange(dataState)
             dataState.data?.let { data ->
                 data.data?.let { event ->
                     event.getContentIfNotHandled()?.let {
@@ -97,6 +100,15 @@ class AuthActivity : BaseActivity(),
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
         finish()
+    }
+
+    override fun displayProgressBar(bool: Boolean){
+        if(bool){
+            progress_bar.visibility = View.VISIBLE
+        }
+        else{
+            progress_bar.visibility = View.GONE
+        }
     }
 }
 
