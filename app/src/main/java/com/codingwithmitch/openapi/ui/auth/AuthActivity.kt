@@ -12,7 +12,9 @@ import androidx.navigation.findNavController
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.ui.BaseActivity
 import com.codingwithmitch.openapi.ui.ResponseType
+import com.codingwithmitch.openapi.ui.auth.state.AuthStateEvent
 import com.codingwithmitch.openapi.ui.main.MainActivity
+import com.codingwithmitch.openapi.util.SuccessHandling.Companion.RESPONSE_CHECK_PREVIOUS_AUTH_USER_DONE
 import com.codingwithmitch.openapi.viewmodels.ViewModelProviderFactory
 import kotlinx.android.synthetic.main.activity_auth.*
 import javax.inject.Inject
@@ -42,6 +44,7 @@ class AuthActivity : BaseActivity(),
         findNavController(R.id.auth_nav_host_fragment).addOnDestinationChangedListener(this)
 
         subscribeObservers()
+        checkPreviousAuthUser()
     }
 
     private fun subscribeObservers(){
@@ -57,20 +60,11 @@ class AuthActivity : BaseActivity(),
                         }
                     }
                 }
-                data.response?.let {event ->
-                    event.getContentIfNotHandled()?.let{
-                        when(it.responseType){
-                            is ResponseType.Dialog ->{
-                                // show dialog
-                            }
-
-                            is ResponseType.Toast ->{
-                                // show toast
-                            }
-
-                            is ResponseType.None ->{
-                                // print to log
-                                Log.e(TAG, "AuthActivity: Response: ${it.message}, ${it.responseType}" )
+                data.response?.let{event ->
+                    event.peekContent().let{ response ->
+                        response.message?.let{ message ->
+                            if(message.equals(RESPONSE_CHECK_PREVIOUS_AUTH_USER_DONE)){
+                                onFinishCheckPreviousAuthUser()
                             }
                         }
                     }
@@ -100,6 +94,14 @@ class AuthActivity : BaseActivity(),
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
         finish()
+    }
+
+    private fun checkPreviousAuthUser(){
+        viewModel.setStateEvent(AuthStateEvent.CheckPreviousAuthEvent())
+    }
+
+    private fun onFinishCheckPreviousAuthUser(){
+        fragment_container.visibility = View.VISIBLE
     }
 
     override fun displayProgressBar(bool: Boolean){
