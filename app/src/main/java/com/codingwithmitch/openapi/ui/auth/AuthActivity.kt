@@ -57,24 +57,6 @@ class AuthActivity : BaseActivity(),
                         }
                     }
                 }
-                data.response?.let {event ->
-                    event.getContentIfNotHandled()?.let{
-                        when(it.responseType){
-                            is ResponseType.Dialog ->{
-                                // show dialog
-                            }
-
-                            is ResponseType.Toast ->{
-                                // show toast
-                            }
-
-                            is ResponseType.None ->{
-                                // print to log
-                                Log.e(TAG, "AuthActivity: Response: ${it.message}, ${it.responseType}" )
-                            }
-                        }
-                    }
-                }
             }
         })
 
