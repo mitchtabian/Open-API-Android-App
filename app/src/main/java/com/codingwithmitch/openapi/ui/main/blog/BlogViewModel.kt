@@ -65,12 +65,15 @@ constructor(
 
             is CheckAuthorOfBlogPost ->{
                 Log.d(TAG, "CheckAuthorOfBlogPost: called.")
-                return sessionManager.cachedToken.value?.let { authToken ->
-                    blogRepository.isAuthorOfBlogPost(
-                        authToken,
-                        viewState.value!!.blogPost!!.slug
+                if(sessionManager.isConnectedToTheInternet()){
+                    return sessionManager.cachedToken.value?.let { authToken ->
+                        blogRepository.isAuthorOfBlogPost(
+                            authToken,
+                            viewState.value!!.blogPost!!.slug
                         )
-                }?: AbsentLiveData.create()
+                    }?: AbsentLiveData.create()
+                }
+                return AbsentLiveData.create()
             }
 
             is UpdateBlogPostEvent -> {

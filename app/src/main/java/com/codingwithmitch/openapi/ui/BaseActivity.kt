@@ -3,11 +3,7 @@ package com.codingwithmitch.openapi.ui
 import android.content.Context
 import android.util.Log
 import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
-import com.afollestad.materialdialogs.MaterialDialog
-import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.session.SessionManager
-import com.codingwithmitch.openapi.util.displayToast
 import dagger.android.support.DaggerAppCompatActivity
 import javax.inject.Inject
 
@@ -19,13 +15,6 @@ abstract class BaseActivity : DaggerAppCompatActivity(),
 
     @Inject
     lateinit var sessionManager: SessionManager
-
-    interface AreYouSureCallback{
-
-        fun proceed()
-
-        fun cancel()
-    }
 
     override fun onDataStateChange(dataState: DataState<*>?) {
         dataState?.let{
@@ -66,47 +55,6 @@ abstract class BaseActivity : DaggerAppCompatActivity(),
 
     abstract fun displayProgressBar(bool: Boolean)
 
-
-    fun displayErrorDialog(errorMessage: String?){
-        MaterialDialog(this)
-            .show{
-                title(R.string.text_error)
-                message(text = errorMessage)
-                positiveButton(R.string.text_ok)
-            }
-    }
-
-    fun displaySuccessDialog(message: String?){
-        MaterialDialog(this)
-            .show{
-                title(R.string.text_success)
-                message(text = message)
-                positiveButton(R.string.text_ok)
-            }
-    }
-
-    fun displayInfoDialog(message: String?){
-        MaterialDialog(this)
-            .show{
-                title(R.string.text_info)
-                message(text = message)
-                positiveButton(R.string.text_ok)
-            }
-    }
-
-    fun areYouSureDialog(message: String, callback: AreYouSureCallback){
-        MaterialDialog(this)
-            .show{
-                title(R.string.are_you_sure)
-                message(text = message)
-                negativeButton(R.string.text_cancel){
-                    callback.cancel()
-                }
-                positiveButton(R.string.text_yes){
-                    callback.proceed()
-                }
-            }
-    }
 
     private fun handleStateResponse(event: Event<Response>){
         event.getContentIfNotHandled()?.let{
@@ -154,18 +102,12 @@ abstract class BaseActivity : DaggerAppCompatActivity(),
         }
     }
 
- //Using kotlin extention for toast aka dsl
-//    private fun displayTost(message: String?){
-//        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-//    }
-
     override fun hideSoftKeyboard() {
         if (currentFocus != null) {
             val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             inputMethodManager.hideSoftInputFromWindow(currentFocus!!.windowToken, 0)
         }
     }
-
 
 }
 

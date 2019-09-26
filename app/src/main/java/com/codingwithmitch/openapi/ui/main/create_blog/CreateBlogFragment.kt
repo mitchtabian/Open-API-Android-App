@@ -14,7 +14,6 @@ import androidx.lifecycle.Observer
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.ui.*
 import com.codingwithmitch.openapi.ui.main.create_blog.state.CreateBlogStateEvent
-import com.codingwithmitch.openapi.util.Constants.Companion.CROP_IMAGE_INTENT_CODE
 import com.codingwithmitch.openapi.util.Constants.Companion.GALLERY_REQUEST_CODE
 import com.codingwithmitch.openapi.util.ErrorHandling.Companion.ERROR_MUST_SELECT_IMAGE
 import com.codingwithmitch.openapi.util.ErrorHandling.Companion.ERROR_SOMETHING_WRONG_WITH_IMAGE
@@ -224,7 +223,7 @@ class CreateBlogFragment : BaseCreateFragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
             R.id.publish -> {
-                val callback: BaseActivity.AreYouSureCallback = object: BaseActivity.AreYouSureCallback {
+                val callback: AreYouSureCallback = object: AreYouSureCallback {
 
                     override fun proceed() {
                         publishNewBlog()

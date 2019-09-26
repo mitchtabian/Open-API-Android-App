@@ -10,6 +10,7 @@ import androidx.navigation.fragment.findNavController
 
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.models.BlogPost
+import com.codingwithmitch.openapi.ui.AreYouSureCallback
 import com.codingwithmitch.openapi.ui.BaseActivity
 import com.codingwithmitch.openapi.ui.UIMessage
 import com.codingwithmitch.openapi.ui.UIMessageType
@@ -47,7 +48,7 @@ class ViewBlogFragment : BaseBlogFragment() {
     }
 
     fun confirmDeleteRequest(){
-        val callback: BaseActivity.AreYouSureCallback = object: BaseActivity.AreYouSureCallback {
+        val callback: AreYouSureCallback = object: AreYouSureCallback {
 
             override fun proceed() {
                 deleteBlogPost()
@@ -75,17 +76,20 @@ class ViewBlogFragment : BaseBlogFragment() {
     fun subscribeObservers(){
         viewModel.dataState.observe(viewLifecycleOwner, Observer{ dataState ->
             stateChangeListener.onDataStateChange(dataState)
-            dataState.data?.let{ data ->
-                data.data?.getContentIfNotHandled()?.let { viewState ->
-                    viewModel.setIsAuthorOfBlogPost(viewState.isAuthorOfBlogPost)
-                }
-                data.response?.peekContent()?.let{ response ->
-                    if(response.message.equals(SUCCESS_BLOG_DELETED)){
-                        viewModel.removeDeletedBlogPost()
-                        findNavController().popBackStack()
+            dataState?.let{
+                it.data?.let{ data ->
+                    data.data?.getContentIfNotHandled()?.let { viewState ->
+                        viewModel.setIsAuthorOfBlogPost(viewState.isAuthorOfBlogPost)
+                    }
+                    data.response?.peekContent()?.let{ response ->
+                        if(response.message.equals(SUCCESS_BLOG_DELETED)){
+                            viewModel.removeDeletedBlogPost()
+                            findNavController().popBackStack()
+                        }
                     }
                 }
             }
+
         })
 
         viewModel.viewState.observe(viewLifecycleOwner, Observer { viewState ->
