@@ -3,6 +3,9 @@ package com.codingwithmitch.openapi.ui
 import android.util.Log
 import com.codingwithmitch.openapi.session.SessionManager
 import dagger.android.support.DaggerAppCompatActivity
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 abstract class BaseActivity: DaggerAppCompatActivity(),
@@ -17,15 +20,17 @@ abstract class BaseActivity: DaggerAppCompatActivity(),
 
     override fun onDataStateChange(dataState: DataState<*>?) {
         dataState?.let{
-            displayProgressBar(dataState.loading.isLoading)
+            GlobalScope.launch(Main){
+                displayProgressBar(it.loading.isLoading)
 
-            dataState.error?.let {
-                handleStateError(it)
-            }
+                it.error?.let { errorEvent ->
+                    handleStateError(errorEvent)
+                }
 
-            dataState.data?.let {
-                it.response?.let {
-                    handleStateResponse(it)
+                it.data?.let {
+                    it.response?.let { responseEvent ->
+                        handleStateResponse(responseEvent)
+                    }
                 }
             }
         }
