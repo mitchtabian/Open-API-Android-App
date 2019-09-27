@@ -10,17 +10,23 @@ import androidx.annotation.NavigationRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.codingwithmitch.openapi.R
+import com.codingwithmitch.openapi.ui.main.account.ChangePasswordFragment
+import com.codingwithmitch.openapi.ui.main.account.UpdateAccountFragment
+import com.codingwithmitch.openapi.ui.main.blog.UpdateBlogFragment
+import com.codingwithmitch.openapi.ui.main.blog.ViewBlogFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
 /**
  * Class credit: Allan Veloso
  * https://stackoverflow.com/questions/50577356/android-jetpack-navigation-bottomnavigationview-with-youtube-or-instagram-like#_=_
+ * @property navigationBackStack: Backstack for the bottom navigation
  */
 class BottomNavController(
     val context: Context,
@@ -76,10 +82,49 @@ class BottomNavController(
         this.graphChangeListener = graphChangeListener
     }
 
-    fun onNavigationItemReselected(item: MenuItem) {
-        // If the user press a second time the navigation button, we pop the back stack to the root
-        activity.findNavController(containerId).popBackStack(item.itemId, false)
+
+    fun onNavigationItemReselected() {
+
+        // WORKAROUND for bug
+        fragmentManager.findFragmentById(containerId)!!.childFragmentManager.fragments[0]?.let{ fragment ->
+            when(fragment){
+
+                is ViewBlogFragment -> {
+                    activity
+                        .findNavController(containerId)
+                        .navigate(R.id.action_viewBlogFragment_to_home)
+                }
+
+                is UpdateBlogFragment -> {
+                    activity
+                        .findNavController(containerId)
+                        .navigate(R.id.action_updateBlogFragment_to_home)
+                }
+
+                is UpdateAccountFragment -> {
+                    activity
+                        .findNavController(containerId)
+                        .navigate(R.id.action_updateAccountFragment_to_home)
+                }
+
+                is ChangePasswordFragment -> {
+                    activity
+                        .findNavController(containerId)
+                        .navigate(R.id.action_changePasswordFragment_to_home)
+                }
+            }
+        }
+
     }
+
+    // THIS HAS A BUG... After popping the backstack it still thinks it's in the same fragment.
+    // If you try to nav to another fragment within the same child stack, it causes a
+    // "'action' is unknown to this NavController" error
+//    fun onNavigationItemReselected(item: MenuItem) {
+//        // If the user press a second time the navigation button, we pop the back stack to the root
+//        activity.findNavController(containerId).popBackStack(item.itemId, false)
+//    }
+
 
     fun onNavigationItemSelected(itemId: Int = navigationBackStack.last()): Boolean {
 
@@ -167,7 +212,7 @@ fun BottomNavigationView.setUpNavigation(bottomNavController: BottomNavControlle
 
     }
     setOnNavigationItemReselectedListener {
-        bottomNavController.onNavigationItemReselected(it)
+        bottomNavController.onNavigationItemReselected()
         onReselect?.invoke(it)
     }
     bottomNavController.setOnItemNavigationChanged { itemId ->
@@ -175,6 +220,42 @@ fun BottomNavigationView.setUpNavigation(bottomNavController: BottomNavControlle
     }
 
 }
+
+
+/**
+ *
+ * NavHostFragment = fragmentManager.findFragmentById(containerId)!!
+ *  ex: NavHostFragment for each bottom navigation selection
+ *
+ * Children Fragments = fragmentManager.findFragmentById(containerId)!!.childFragmentManager.fragments
+ *  ex: BlogFragment, ViewBlogFragment, UpdateBlogFragment
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

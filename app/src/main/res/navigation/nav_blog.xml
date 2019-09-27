@@ -36,12 +36,35 @@
                 app:enterAnim="@anim/slide_in_right"
                 app:exitAnim="@anim/slide_out_left"
         />
+
+        <action
+                android:id="@+id/action_viewBlogFragment_to_home"
+                app:destination="@id/blogFragment"
+                app:popEnterAnim="@anim/fade_in"
+                app:popExitAnim="@anim/fade_out"
+                app:enterAnim="@anim/fade_in"
+                app:exitAnim="@anim/fade_out"
+                app:launchSingleTop="true"
+                app:popUpTo="@+id/nav_blog"
+                app:popUpToInclusive="true" />
+
     </fragment>
 
     <fragment android:id="@+id/updateBlogFragment"
               android:name="com.codingwithmitch.openapi.ui.main.blog.UpdateBlogFragment"
               android:label="@string/fragment_update_blog"
               tools:layout="@layout/fragment_update_blog">
+
+        <action
+                android:id="@+id/action_updateBlogFragment_to_home"
+                app:destination="@id/blogFragment"
+                app:popEnterAnim="@anim/fade_in"
+                app:popExitAnim="@anim/fade_out"
+                app:enterAnim="@anim/fade_in"
+                app:exitAnim="@anim/fade_out"
+                app:launchSingleTop="true"
+                app:popUpTo="@+id/nav_blog"
+                app:popUpToInclusive="true" />
 
     </fragment>
 </navigation>

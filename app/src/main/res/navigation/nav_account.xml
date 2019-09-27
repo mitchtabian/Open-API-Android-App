@@ -29,7 +29,20 @@
     <fragment android:id="@+id/changePasswordFragment"
               android:name="com.codingwithmitch.openapi.ui.main.account.ChangePasswordFragment"
               android:label="@string/fragment_change_password"
-              tools:layout="@layout/fragment_change_password"/>
+              tools:layout="@layout/fragment_change_password">
+
+        <action android:id="@+id/action_changePasswordFragment_to_home"
+                app:destination="@id/accountFragment"
+                app:popEnterAnim="@anim/fade_in"
+                app:popExitAnim="@anim/fade_out"
+                app:enterAnim="@anim/fade_in"
+                app:exitAnim="@anim/fade_out"
+                app:launchSingleTop="true"
+                app:popUpTo="@+id/nav_account"
+                app:popUpToInclusive="true"
+                />
+
+    </fragment>
 
 
     <fragment android:id="@+id/updateAccountFragment"
@@ -38,6 +51,16 @@
               tools:layout="@layout/fragment_update_account">
 
 
+        <action android:id="@+id/action_updateAccountFragment_to_home"
+                app:destination="@id/accountFragment"
+                app:popEnterAnim="@anim/fade_in"
+                app:popExitAnim="@anim/fade_out"
+                app:enterAnim="@anim/fade_in"
+                app:exitAnim="@anim/fade_out"
+                app:launchSingleTop="true"
+                app:popUpTo="@+id/nav_account"
+                app:popUpToInclusive="true"
+                />
     </fragment>
 
 </navigation>
