@@ -7,11 +7,9 @@ import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
-import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
-import com.bumptech.glide.RequestManager
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.ui.*
 import com.codingwithmitch.openapi.ui.auth.AuthActivity
@@ -23,7 +21,6 @@ import com.codingwithmitch.openapi.util.Constants.Companion.PERMISSIONS_REQUEST_
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_main.*
-import javax.inject.Inject
 
 class MainActivity : BaseActivity(),
     BottomNavController.NavGraphProvider,
