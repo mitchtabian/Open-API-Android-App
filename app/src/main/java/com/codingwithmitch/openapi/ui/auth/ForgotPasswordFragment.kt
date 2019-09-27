@@ -33,8 +33,9 @@ class ForgotPasswordFragment : BaseAuthFragment() {
         override fun onError(errorMessage: String) {
             Log.e(TAG, "onError: $errorMessage")
 
-            // can't infer the DataState type so need to declare variable
-            val dataState: DataState<Any> = DataState.error(Response(errorMessage, ResponseType.None()))
+            val dataState = DataState.error<Any>(
+                response = Response(errorMessage, ResponseType.Dialog())
+            )
             stateChangeListener.onDataStateChange(
                 dataState = dataState
             )
