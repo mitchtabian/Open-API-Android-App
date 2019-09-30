@@ -24,27 +24,27 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 class BottomNavController(
     val context: Context,
     @IdRes val containerId: Int,
-    @IdRes val appStartDestinationId: Int
+    @IdRes val appStartDestinationId: Int,
+    val graphChangeListener: OnNavigationGraphChanged?,
+    val navGraphProvider: NavGraphProvider
 ) {
     private val TAG: String = "AppDebug"
     private val navigationBackStack = BackStack.of(appStartDestinationId)
     lateinit var activity: Activity
     lateinit var fragmentManager: FragmentManager
-    private var listener: OnNavigationItemChanged? = null
-    private var navGraphProvider: NavGraphProvider? = null
-    private var graphChangeListener: OnNavigationGraphChanged? = null
+    private var navItemChangeListener: OnNavigationItemChanged? = null
 
     interface OnNavigationItemChanged {
         fun onItemChanged(itemId: Int)
     }
 
+    interface OnNavigationGraphChanged{
+        fun onGraphChange()
+    }
+
     interface NavGraphProvider {
         @NavigationRes
         fun getNavGraphId(itemId: Int): Int
-    }
-
-    interface OnNavigationGraphChanged{
-        fun onGraphChange()
     }
 
     interface OnNavigationReselectedListener{
@@ -59,20 +59,13 @@ class BottomNavController(
         }
     }
 
+    // prgramatically invoked interface call internally
     fun setOnItemNavigationChanged(listener: (itemId: Int) -> Unit) {
-        this.listener = object : OnNavigationItemChanged {
+        this.navItemChangeListener = object : OnNavigationItemChanged {
             override fun onItemChanged(itemId: Int) {
                 listener.invoke(itemId)
             }
         }
-    }
-
-    fun setNavGraphProvider(provider: NavGraphProvider) {
-        navGraphProvider = provider
-    }
-
-    fun setNavGraphChangeListener(graphChangeListener: OnNavigationGraphChanged){
-        this.graphChangeListener = graphChangeListener
     }
 
     // THIS HAS A BUG... After popping the backstack it still thinks it's in the same fragment.
@@ -106,7 +99,7 @@ class BottomNavController(
         // Add to back stack
         navigationBackStack.moveLast(itemId)
 
-        listener?.onItemChanged(itemId)
+        navItemChangeListener?.onItemChanged(itemId)
         graphChangeListener?.onGraphChange()
 
         return true

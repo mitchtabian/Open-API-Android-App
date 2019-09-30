@@ -38,7 +38,12 @@ class MainActivity : BaseActivity(),
     private lateinit var bottomNavigationView: BottomNavigationView
 
     private val bottomNavController by lazy(LazyThreadSafetyMode.NONE) {
-        BottomNavController(this, R.id.main_nav_host_fragment, R.id.nav_blog)
+        BottomNavController(
+            this,
+            R.id.main_nav_host_fragment,
+            R.id.nav_blog,
+            this,
+            this)
     }
 
 
@@ -48,11 +53,6 @@ class MainActivity : BaseActivity(),
         bottomNavigationView = findViewById(R.id.bottom_navigation_view)
         setupActionBar()
         Log.d(TAG, "MainActivity: onCreate: called.")
-
-        bottomNavController.apply {
-            setNavGraphProvider(this@MainActivity)
-            setNavGraphChangeListener(this@MainActivity)
-        }
 
         bottomNavigationView.setUpNavigation(bottomNavController, this)
         if (savedInstanceState == null) {
