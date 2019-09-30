@@ -35,6 +35,8 @@ class MainActivity : BaseActivity() {
         })
     }
 
+
+
     private fun navAuthActivity(){
         val intent = Intent(this, AuthActivity::class.java)
         startActivity(intent)
