@@ -53,14 +53,9 @@ class BottomNavController(
     }
 
     init {
-        var ctx = context
-        while (ctx is ContextWrapper) {
-            if (ctx is Activity) {
-                activity = ctx
-                fragmentManager = (activity as FragmentActivity).supportFragmentManager
-                break
-            }
-            ctx = ctx.baseContext
+        if (context is Activity) {
+            activity = context
+            fragmentManager = (activity as FragmentActivity).supportFragmentManager
         }
     }
 
