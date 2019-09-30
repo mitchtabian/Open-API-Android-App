@@ -9,12 +9,16 @@ import android.view.MenuItem
 import android.view.View
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.navigation.NavController
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.ui.*
 import com.codingwithmitch.openapi.ui.auth.AuthActivity
 import com.codingwithmitch.openapi.ui.main.account.*
 import com.codingwithmitch.openapi.ui.main.blog.BaseBlogFragment
+import com.codingwithmitch.openapi.ui.main.blog.UpdateBlogFragment
+import com.codingwithmitch.openapi.ui.main.blog.ViewBlogFragment
 import com.codingwithmitch.openapi.ui.main.create_blog.BaseCreateFragment
 import com.codingwithmitch.openapi.util.*
 import com.codingwithmitch.openapi.util.Constants.Companion.PERMISSIONS_REQUEST_READ_STORAGE
@@ -24,8 +28,10 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : BaseActivity(),
     BottomNavController.NavGraphProvider,
-    BottomNavController.OnNavigationGraphChanged
+    BottomNavController.OnNavigationGraphChanged,
+    BottomNavController.OnNavigationReselectedListener
 {
+
 
     private val TAG: String = "AppDebug"
 
@@ -47,7 +53,8 @@ class MainActivity : BaseActivity(),
             setNavGraphProvider(this@MainActivity)
             setNavGraphChangeListener(this@MainActivity)
         }
-        bottomNavigationView.setUpNavigation(bottomNavController)
+
+        bottomNavigationView.setUpNavigation(bottomNavController, this)
         if (savedInstanceState == null) {
             bottomNavController.onNavigationItemSelected()
         }
@@ -171,6 +178,30 @@ class MainActivity : BaseActivity(),
     override fun expandAppBar() {
         findViewById<AppBarLayout>(R.id.app_bar).setExpanded(true)
     }
+
+
+    override fun onReselectNavItem(navController: NavController, fragment: Fragment) {
+        when(fragment){
+
+            is ViewBlogFragment -> {
+                navController.navigate(R.id.action_viewBlogFragment_to_home)
+            }
+
+            is UpdateBlogFragment -> {
+                navController.navigate(R.id.action_updateBlogFragment_to_home)
+            }
+
+            is UpdateAccountFragment -> {
+                navController.navigate(R.id.action_updateAccountFragment_to_home)
+            }
+
+            is ChangePasswordFragment -> {
+                navController.navigate(R.id.action_changePasswordFragment_to_home)
+            }
+        }
+    }
+
+
 }
 
 

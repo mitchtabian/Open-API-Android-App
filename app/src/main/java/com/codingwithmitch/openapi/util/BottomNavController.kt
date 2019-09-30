@@ -3,18 +3,16 @@ package com.codingwithmitch.openapi.util
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
-import android.view.MenuItem
 import androidx.annotation.IdRes
 import androidx.annotation.NavigationRes
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
+import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import com.codingwithmitch.openapi.R
-import com.codingwithmitch.openapi.ui.main.account.ChangePasswordFragment
-import com.codingwithmitch.openapi.ui.main.account.UpdateAccountFragment
-import com.codingwithmitch.openapi.ui.main.blog.UpdateBlogFragment
-import com.codingwithmitch.openapi.ui.main.blog.ViewBlogFragment
+import com.codingwithmitch.openapi.util.BottomNavController.*
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
@@ -49,6 +47,11 @@ class BottomNavController(
         fun onGraphChange()
     }
 
+    interface OnNavigationReselectedListener{
+
+        fun onReselectNavItem(navController: NavController, fragment: Fragment)
+    }
+
     init {
         var ctx = context
         while (ctx is ContextWrapper) {
@@ -75,41 +78,6 @@ class BottomNavController(
 
     fun setNavGraphChangeListener(graphChangeListener: OnNavigationGraphChanged){
         this.graphChangeListener = graphChangeListener
-    }
-
-
-    fun onNavigationItemReselected() {
-
-        // WORKAROUND for bug
-        fragmentManager.findFragmentById(containerId)!!.childFragmentManager.fragments[0]?.let{ fragment ->
-            when(fragment){
-
-                is ViewBlogFragment -> {
-                    activity
-                        .findNavController(containerId)
-                        .navigate(R.id.action_viewBlogFragment_to_home)
-                }
-
-                is UpdateBlogFragment -> {
-                    activity
-                        .findNavController(containerId)
-                        .navigate(R.id.action_updateBlogFragment_to_home)
-                }
-
-                is UpdateAccountFragment -> {
-                    activity
-                        .findNavController(containerId)
-                        .navigate(R.id.action_updateAccountFragment_to_home)
-                }
-
-                is ChangePasswordFragment -> {
-                    activity
-                        .findNavController(containerId)
-                        .navigate(R.id.action_changePasswordFragment_to_home)
-                }
-            }
-        }
-
     }
 
     // THIS HAS A BUG... After popping the backstack it still thinks it's in the same fragment.
@@ -197,24 +165,40 @@ class BottomNavController(
             add(item)
         }
     }
+
+
 }
 
 // Convenience extension to set up the navigation
-fun BottomNavigationView.setUpNavigation(bottomNavController: BottomNavController, onReselect: ((menuItem: MenuItem) -> Unit)? = null) {
+fun BottomNavigationView.setUpNavigation(
+    bottomNavController: BottomNavController,
+    onReselectListener: OnNavigationReselectedListener) {
 
     setOnNavigationItemSelectedListener {
         bottomNavController.onNavigationItemSelected(it.itemId)
 
     }
+
     setOnNavigationItemReselectedListener {
-        bottomNavController.onNavigationItemReselected()
-        onReselect?.invoke(it)
+        bottomNavController
+            .fragmentManager
+            .findFragmentById(bottomNavController.containerId)!!
+            .childFragmentManager
+            .fragments[0]?.let { fragment ->
+
+            onReselectListener.onReselectNavItem(
+                bottomNavController.activity.findNavController(bottomNavController.containerId),
+                fragment
+            )
+        }
     }
+
     bottomNavController.setOnItemNavigationChanged { itemId ->
         menu.findItem(itemId).isChecked = true
     }
-
 }
+
+
 
 
 /**
