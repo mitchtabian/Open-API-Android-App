@@ -22,6 +22,7 @@ import javax.inject.Inject
 class AuthActivity : BaseActivity(),
     NavController.OnDestinationChangedListener
 {
+
     override fun onDestinationChanged(
         controller: NavController,
         destination: NavDestination,
@@ -111,6 +112,10 @@ class AuthActivity : BaseActivity(),
         else{
             progress_bar.visibility = View.GONE
         }
+    }
+
+    override fun expandAppBar() {
+        // ignore
     }
 }
 
