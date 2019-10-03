@@ -1,21 +1,21 @@
 package com.codingwithmitch.openapi.ui
 
-import android.content.Context
+import android.app.Activity
 import android.widget.Toast
 import androidx.annotation.StringRes
 import com.afollestad.materialdialogs.MaterialDialog
 import com.codingwithmitch.openapi.R
 
 
-fun Context.displayToast(@StringRes message:Int){
+fun Activity.displayToast(@StringRes message:Int){
+    Toast.makeText(this, message,Toast.LENGTH_LONG).show()
+}
+
+fun Activity.displayToast(message:String){
     Toast.makeText(this,message,Toast.LENGTH_LONG).show()
 }
 
-fun Context.displayToast(message:String){
-    Toast.makeText(this,message,Toast.LENGTH_LONG).show()
-}
-
-fun Context.displaySuccessDialog(message: String?){
+fun Activity.displaySuccessDialog(message: String?){
     MaterialDialog(this)
         .show{
             title(R.string.text_success)
@@ -24,7 +24,7 @@ fun Context.displaySuccessDialog(message: String?){
         }
 }
 
-fun Context.displayErrorDialog(errorMessage: String?){
+fun Activity.displayErrorDialog(errorMessage: String?){
     MaterialDialog(this)
         .show{
             title(R.string.text_error)
@@ -33,7 +33,7 @@ fun Context.displayErrorDialog(errorMessage: String?){
         }
 }
 
-fun Context.displayInfoDialog(message: String?){
+fun Activity.displayInfoDialog(message: String?){
     MaterialDialog(this)
         .show{
             title(R.string.text_info)
@@ -42,7 +42,7 @@ fun Context.displayInfoDialog(message: String?){
         }
 }
 
-fun Context.areYouSureDialog(message: String, callback: AreYouSureCallback){
+fun Activity.areYouSureDialog(message: String, callback: AreYouSureCallback){
     MaterialDialog(this)
         .show{
             title(R.string.are_you_sure)
