@@ -53,7 +53,7 @@ constructor(
             return returnErrorResponse(loginFieldErrors, ResponseType.Dialog())
         }
 
-        return object: NetworkBoundResource<LoginResponse, Void, AuthViewState>(
+        return object: NetworkBoundResource<LoginResponse, AuthViewState>(
             sessionManager.isConnectedToTheInternet(),
             true
         ){
@@ -129,7 +129,7 @@ constructor(
             return returnErrorResponse(registrationFieldErrors, ResponseType.Dialog())
         }
 
-        return object: NetworkBoundResource<RegistrationResponse, Void, AuthViewState>(
+        return object: NetworkBoundResource<RegistrationResponse, AuthViewState>(
             sessionManager.isConnectedToTheInternet(),
             true
         ){
@@ -209,7 +209,7 @@ constructor(
             return returnNoTokenFound()
         }
         else{
-            return object: NetworkBoundResource<Void, AccountProperties, AuthViewState>(
+            return object: NetworkBoundResource<Void, AuthViewState>(
                 sessionManager.isConnectedToTheInternet(),
                 false
             ){
