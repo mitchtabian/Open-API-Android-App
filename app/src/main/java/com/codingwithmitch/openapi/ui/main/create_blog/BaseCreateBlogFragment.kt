@@ -18,7 +18,7 @@ import dagger.android.support.DaggerFragment
 import javax.inject.Inject
 
 
-abstract class BaseCreateFragment: DaggerFragment(){
+abstract class BaseCreateBlogFragment: DaggerFragment(){
 
     val TAG: String = "AppDebug"
 

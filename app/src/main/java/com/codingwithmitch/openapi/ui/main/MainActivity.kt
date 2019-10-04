@@ -19,7 +19,7 @@ import com.codingwithmitch.openapi.ui.main.account.*
 import com.codingwithmitch.openapi.ui.main.blog.BaseBlogFragment
 import com.codingwithmitch.openapi.ui.main.blog.UpdateBlogFragment
 import com.codingwithmitch.openapi.ui.main.blog.ViewBlogFragment
-import com.codingwithmitch.openapi.ui.main.create_blog.BaseCreateFragment
+import com.codingwithmitch.openapi.ui.main.create_blog.BaseCreateBlogFragment
 import com.codingwithmitch.openapi.util.*
 import com.codingwithmitch.openapi.util.Constants.Companion.PERMISSIONS_REQUEST_READ_STORAGE
 import com.google.android.material.appbar.AppBarLayout
@@ -122,7 +122,7 @@ class MainActivity : BaseActivity(),
                 if(fragment is BaseBlogFragment){
                     fragment.cancelActiveJobs()
                 }
-                if(fragment is BaseCreateFragment){
+                if(fragment is BaseCreateBlogFragment){
                     fragment.cancelActiveJobs()
                 }
             }

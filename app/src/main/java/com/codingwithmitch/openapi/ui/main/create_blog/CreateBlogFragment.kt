@@ -28,7 +28,7 @@ import okhttp3.RequestBody
 import java.io.File
 
 
-class CreateBlogFragment : BaseCreateFragment() {
+class CreateBlogFragment : BaseCreateBlogFragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
