@@ -13,7 +13,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:padding="16dp"
-    >
+            >
 
         <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
@@ -26,14 +26,14 @@
                 app:helperText="@string/email_field"
                 android:layout_marginTop="50dp"
                 app:layout_constraintVertical_chainStyle="packed"
-        >
+                >
             <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="#000"
                     android:inputType="textEmailAddress"
                     android:id="@+id/input_email"
-
+                    android:imeOptions="flagNoExtractUi"
                     />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -50,7 +50,7 @@
                 android:id="@+id/username_layout"
                 app:helperText="@string/field_username"
                 android:layout_marginTop="50dp"
-        >
+                >
             <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -58,16 +58,12 @@
                     android:textColor="#000"
                     android:inputType="text"
                     android:layout_marginTop="30dp"
-
-            />
+                    android:imeOptions="flagNoExtractUi"
+                    />
 
         </com.google.android.material.textfield.TextInputLayout>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-
-
 
 </ScrollView>
