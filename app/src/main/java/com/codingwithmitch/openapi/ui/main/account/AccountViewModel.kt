@@ -1,6 +1,7 @@
 package com.codingwithmitch.openapi.ui.main.account
 
 import androidx.lifecycle.LiveData
+import com.codingwithmitch.openapi.models.AccountProperties
 import com.codingwithmitch.openapi.repository.main.AccountRepository
 import com.codingwithmitch.openapi.session.SessionManager
 import com.codingwithmitch.openapi.ui.BaseViewModel
@@ -39,6 +40,15 @@ constructor(
 
     override fun initNewViewState(): AccountViewState {
         return AccountViewState()
+    }
+
+    fun setAccountPropertiesData(accountProperties: AccountProperties){
+        val update = getCurrentViewStateOrNew()
+        if(update.accountProperties == accountProperties){
+            return
+        }
+        update.accountProperties = accountProperties
+        _viewState.value = update
     }
 
     fun logout(){
