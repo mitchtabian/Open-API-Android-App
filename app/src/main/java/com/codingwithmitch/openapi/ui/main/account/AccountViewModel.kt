@@ -6,6 +6,7 @@ import com.codingwithmitch.openapi.repository.main.AccountRepository
 import com.codingwithmitch.openapi.session.SessionManager
 import com.codingwithmitch.openapi.ui.BaseViewModel
 import com.codingwithmitch.openapi.ui.DataState
+import com.codingwithmitch.openapi.ui.Loading
 import com.codingwithmitch.openapi.ui.main.account.state.AccountStateEvent
 import com.codingwithmitch.openapi.ui.main.account.state.AccountStateEvent.*
 import com.codingwithmitch.openapi.ui.main.account.state.AccountViewState
@@ -57,7 +58,12 @@ constructor(
             }
 
             is None ->{
-                return AbsentLiveData.create()
+                return object: LiveData<DataState<AccountViewState>>(){
+                    override fun onActive() {
+                        super.onActive()
+                        value = DataState(null, Loading(false), null)
+                    }
+                }
             }
         }
     }
@@ -79,6 +85,19 @@ constructor(
         sessionManager.logout()
     }
 
+    fun cancelActiveJobs(){
+        accountRepository.cancelActiveJobs() // cancel active jobs
+        handlePendingData() // hide progress bar
+    }
+
+    fun handlePendingData(){
+        setStateEvent(None())
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        cancelActiveJobs()
+    }
 }
 
 
