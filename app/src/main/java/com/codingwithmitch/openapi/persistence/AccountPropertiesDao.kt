@@ -21,6 +21,9 @@ interface AccountPropertiesDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insertOrIgnore(accountProperties: AccountProperties): Long
+
+    @Query("UPDATE account_properties SET email = :email, username = :username WHERE pk = :pk")
+    fun updateAccountProperties(pk: Int, email: String, username: String)
 }
 
 
