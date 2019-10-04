@@ -117,13 +117,13 @@ class MainActivity : BaseActivity(),
         if(fragments != null){
             for(fragment in fragments){
                 if(fragment is BaseAccountFragment){
-                    fragment.cancelPreviousJobs()
+                    fragment.cancelActiveJobs()
                 }
                 if(fragment is BaseBlogFragment){
-                    fragment.cancelPreviousJobs()
+                    fragment.cancelActiveJobs()
                 }
                 if(fragment is BaseCreateFragment){
-                    fragment.cancelPreviousJobs()
+                    fragment.cancelActiveJobs()
                 }
             }
         }

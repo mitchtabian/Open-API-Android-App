@@ -47,10 +47,10 @@ abstract class BaseBlogFragment : DaggerFragment(){
         // Cancels jobs when switching between fragments in the same graph
         // ex: from AccountFragment to UpdateAccountFragment
         // NOTE: Must call before "subscribeObservers" b/c that will create new jobs for the next fragment
-        cancelPreviousJobs()
+        cancelActiveJobs()
     }
 
-    fun cancelPreviousJobs(){
+    fun cancelActiveJobs(){
         Log.d(TAG, "cancelling jobs...: ")
         // When a fragment is destroyed make sure to cancel any on-going requests.
         // Note: If you wanted a particular request to continue even if the fragment was destroyed, you could write a
