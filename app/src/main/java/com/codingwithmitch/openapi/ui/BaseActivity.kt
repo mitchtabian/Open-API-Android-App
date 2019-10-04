@@ -1,6 +1,8 @@
 package com.codingwithmitch.openapi.ui
 
+import android.content.Context
 import android.util.Log
+import android.view.inputmethod.InputMethodManager
 import com.codingwithmitch.openapi.session.SessionManager
 import dagger.android.support.DaggerAppCompatActivity
 import kotlinx.coroutines.Dispatchers.Main
@@ -84,6 +86,14 @@ abstract class BaseActivity: DaggerAppCompatActivity(),
         }
     }
 
+    override fun hideSoftKeyboard() {
+        if (currentFocus != null) {
+            val inputMethodManager = getSystemService(
+                Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            inputMethodManager
+                .hideSoftInputFromWindow(currentFocus!!.windowToken, 0)
+        }
+    }
 }
 
 

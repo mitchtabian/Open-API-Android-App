@@ -33,7 +33,7 @@
                     android:textColor="#000"
                     android:inputType="textEmailAddress"
                     android:id="@+id/input_email"
-
+                    android:imeOptions="flagNoExtractUi"
                     />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -58,7 +58,7 @@
                     android:textColor="#000"
                     android:inputType="text"
                     android:layout_marginTop="30dp"
-
+                    android:imeOptions="flagNoExtractUi"
                     />
 
         </com.google.android.material.textfield.TextInputLayout>
