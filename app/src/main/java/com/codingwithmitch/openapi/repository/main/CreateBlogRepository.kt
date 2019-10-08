@@ -30,11 +30,8 @@ constructor(
     val openApiMainService: OpenApiMainService,
     val blogPostDao: BlogPostDao,
     val sessionManager: SessionManager
-)
-{
+): JobManager() {
     private val TAG: String = "AppDebug"
-
-    private val jobManager: JobManager = JobManager()
 
     fun createNewBlogPost(
         authToken: AuthToken,
@@ -42,13 +39,14 @@ constructor(
         body: RequestBody,
         image: MultipartBody.Part?
     ): LiveData<DataState<CreateBlogViewState>> {
-        return object: NetworkBoundResource<BlogCreateUpdateResponse, BlogPost, CreateBlogViewState>(
-            "createNewBlogPost",
-            sessionManager.isConnectedToTheInternet(),
-            true,
-            true,
-            false
-        ){
+        return object :
+            NetworkBoundResource<BlogCreateUpdateResponse, BlogPost, CreateBlogViewState>(
+                "createNewBlogPost",
+                sessionManager.isConnectedToTheInternet(),
+                true,
+                true,
+                false
+            ) {
 
             // not applicable
             override suspend fun createCacheRequestAndReturn() {
@@ -59,7 +57,7 @@ constructor(
 
                 // If they don't have a paid membership account it will still return a 200
                 // Need to account for that
-                if(!response.body.response.equals(RESPONSE_MUST_BECOME_CODINGWITHMITCH_MEMBER)){
+                if (!response.body.response.equals(RESPONSE_MUST_BECOME_CODINGWITHMITCH_MEMBER)) {
                     val updatedBlogPost = BlogPost(
                         response.body.pk,
                         response.body.title,
@@ -72,13 +70,14 @@ constructor(
                     updateLocalDb(updatedBlogPost)
                 }
 
-                withContext(Dispatchers.Main){
+                withContext(Dispatchers.Main) {
                     // finish with success response
                     onCompleteJob(
                         DataState.data(
                             null,
                             Response(response.body.response, ResponseType.Dialog())
-                        ))
+                        )
+                    )
                 }
             }
 
@@ -97,26 +96,19 @@ constructor(
             }
 
             override suspend fun updateLocalDb(cacheObject: BlogPost?) {
-                cacheObject?.let{
+                cacheObject?.let {
                     blogPostDao.insert(it)
                 }
             }
 
             override fun setJob(job: Job) {
-                jobManager.addJob(methodName, job)
+                addJob(methodName, job)
             }
 
         }.asLiveData()
     }
 
-
-    fun cancelActiveJobs(){
-        Log.d(TAG, "CreateBlogRepository: cancelling on-going jobs... ")
-        jobManager.cancelActiveJobs()
-    }
-
 }
-
 
 
 

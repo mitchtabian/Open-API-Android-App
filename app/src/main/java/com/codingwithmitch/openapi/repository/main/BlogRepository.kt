@@ -40,12 +40,10 @@ constructor(
     val openApiMainService: OpenApiMainService,
     val blogPostDao: BlogPostDao,
     val sessionManager: SessionManager
-)
+): JobManager()
 {
     private val TAG: String = "AppDebug"
 
-    private val jobManager: JobManager = JobManager()
-    
     fun searchBlogPosts(authToken: AuthToken, query: String, filterAndOrder: String, page: Int): LiveData<DataState<BlogViewState>> {
 
         return object: NetworkBoundResource<BlogListSearchResponse, List<BlogPost>, BlogViewState>(
@@ -158,7 +156,7 @@ constructor(
             }
 
             override fun setJob(job: Job) {
-                jobManager.addJob(methodName, job)
+                addJob(methodName, job)
             }
 
 
@@ -234,7 +232,7 @@ constructor(
             }
 
             override fun setJob(job: Job) {
-                jobManager.addJob(methodName, job)
+                addJob(methodName, job)
             }
 
 
@@ -301,7 +299,7 @@ constructor(
             }
 
             override fun setJob(job: Job) {
-                jobManager.addJob(methodName, job)
+                addJob(methodName, job)
             }
 
         }.asLiveData()
@@ -376,16 +374,12 @@ constructor(
             }
 
             override fun setJob(job: Job) {
-                jobManager.addJob(methodName, job)
+                addJob(methodName, job)
             }
 
         }.asLiveData()
     }
 
-    fun cancelActiveJobs(){
-        Log.d(TAG, "BlogRepository: cancelling on-going jobs... ")
-        jobManager.cancelActiveJobs()
-    }
 
 }
 

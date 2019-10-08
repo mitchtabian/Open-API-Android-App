@@ -27,11 +27,9 @@ constructor(
     val openApiMainService: OpenApiMainService,
     val accountPropertiesDao: AccountPropertiesDao,
     val sessionManager: SessionManager
-)
+): JobManager()
 {
     private val TAG: String = "AppDebug"
-
-    private val jobManager: JobManager = JobManager()
 
     fun getAccountProperties(authToken: AuthToken): LiveData<DataState<AccountViewState>> {
         return object: NetworkBoundResource<AccountProperties, AccountProperties, AccountViewState>(
@@ -93,7 +91,7 @@ constructor(
             }
 
             override fun setJob(job: Job) {
-                jobManager.addJob(methodName, job)
+                addJob(methodName, job)
             }
 
 
@@ -148,7 +146,7 @@ constructor(
             }
 
             override fun setJob(job: Job) {
-                jobManager.addJob(methodName, job)
+                addJob(methodName, job)
             }
 
         }.asLiveData()
@@ -198,16 +196,12 @@ constructor(
             }
 
             override fun setJob(job: Job) {
-                jobManager.addJob(methodName, job)
+                addJob(methodName, job)
             }
 
         }.asLiveData()
     }
 
-    fun cancelActiveJobs(){
-        Log.d(TAG, "AccountRepository: cancelling on-going jobs... ")
-        jobManager.cancelActiveJobs()
-    }
 }
 
 

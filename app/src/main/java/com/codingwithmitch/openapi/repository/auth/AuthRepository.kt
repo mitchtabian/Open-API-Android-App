@@ -38,11 +38,9 @@ constructor(
     val openApiAuthService: OpenApiAuthService,
     val sharedPreferences: SharedPreferences,
     val sharedPrefsEditor: SharedPreferences.Editor
-    )
+): JobManager()
 {
     private val TAG: String = "AppDebug"
-
-    private val jobManager: JobManager = JobManager()
 
     fun attemptLogin(email: String, password: String) : LiveData<DataState<AuthViewState>>{
 
@@ -122,7 +120,7 @@ constructor(
             }
 
             override fun setJob(job: Job) {
-                jobManager.addJob(methodName, job)
+                addJob(methodName, job)
             }
 
         }.asLiveData()
@@ -223,7 +221,7 @@ constructor(
             }
 
             override fun setJob(job: Job) {
-                jobManager.addJob(methodName, job)
+                addJob(methodName, job)
             }
 
         }.asLiveData()
@@ -301,7 +299,7 @@ constructor(
                 }
 
                 override fun setJob(job: Job) {
-                    jobManager.addJob(methodName, job)
+                    addJob(methodName, job)
                 }
 
 
@@ -330,12 +328,6 @@ constructor(
     fun saveAuthenticatedUserToPrefs(email: String){
         sharedPrefsEditor.putString(PreferenceKeys.PREVIOUS_AUTH_USER, email)
         sharedPrefsEditor.apply()
-    }
-
-
-    fun cancelActiveJobs(){
-        Log.d(TAG, "AuthRepository: cancelling on-going jobs... ")
-        jobManager.cancelActiveJobs()
     }
 
 }

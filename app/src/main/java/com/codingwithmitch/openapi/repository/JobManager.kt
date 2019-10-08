@@ -3,7 +3,7 @@ package com.codingwithmitch.openapi.repository
 import android.util.Log
 import kotlinx.coroutines.Job
 
-class JobManager {
+open class JobManager {
 
     private val TAG: String = "AppDebug"
 
