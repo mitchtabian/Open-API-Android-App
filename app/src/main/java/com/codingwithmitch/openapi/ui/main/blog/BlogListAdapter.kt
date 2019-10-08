@@ -61,7 +61,7 @@ class BlogListAdapter(
         }
 
         override fun onInserted(position: Int, count: Int) {
-            Log.d(TAG, "MyCallback: onInserted...position,count: ${position}, $count")
+            Log.d(TAG, "MyCallback: onInserted...")
             adapter.notifyItemRangeChanged(position, count)
         }
 

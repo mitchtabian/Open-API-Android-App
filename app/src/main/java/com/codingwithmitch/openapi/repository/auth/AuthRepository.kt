@@ -231,6 +231,7 @@ constructor(
     fun checkPreviousAuthUser(): LiveData<DataState<AuthViewState>>{
 
         val previousAuthUserEmail: String? = sharedPreferences.getString(PreferenceKeys.PREVIOUS_AUTH_USER, null)
+        Log.d(TAG, "checkPreviousAuthUser: previously authenticated user email: ${previousAuthUserEmail}")
 
         if(previousAuthUserEmail.isNullOrBlank()){
             Log.d(TAG, "checkPreviousAuthUser: No previously authenticated user found.")
@@ -246,37 +247,33 @@ constructor(
             ){
 
                 override suspend fun createCacheRequestAndReturn() {
-                    accountPropertiesDao.searchByEmail(previousAuthUserEmail).let { accountProperties ->
+                    accountPropertiesDao.searchByEmail(previousAuthUserEmail)?.let { accountProperties ->
                         Log.d(TAG, "createCacheRequestAndReturn: searching for token... account properties: ${accountProperties}")
-
-                        accountProperties?.let {
-                            if(accountProperties.pk > -1){
-                                authTokenDao.searchByPk(accountProperties.pk).let { authToken ->
-                                    if(authToken != null){
-                                        if(authToken.token != null){
-                                            onCompleteJob(
-                                                DataState.data(
-                                                    AuthViewState(authToken = authToken)
-                                                )
+                        if(accountProperties.pk > -1){
+                            authTokenDao.searchByPk(accountProperties.pk).let { authToken ->
+                                if(authToken != null){
+                                    if(authToken.token != null){
+                                        onCompleteJob(
+                                            DataState.data(
+                                                AuthViewState(authToken = authToken)
                                             )
-                                            Log.d(TAG, "createCacheRequestAndReturn: Found Auth Token: ${authToken}")
-                                            return
-                                        }
+                                        )
+                                        return
                                     }
                                 }
                             }
                         }
-                        Log.d(TAG, "createCacheRequestAndReturn: AuthToken not found...")
-                        onCompleteJob(
-                            DataState.data(
-                                null,
-                                Response(
-                                    RESPONSE_CHECK_PREVIOUS_AUTH_USER_DONE,
-                                    ResponseType.None()
-                                )
+                    }
+                    Log.d(TAG, "createCacheRequestAndReturn: AuthToken not found...")
+                    onCompleteJob(
+                        DataState.data(
+                            null,
+                            Response(
+                                RESPONSE_CHECK_PREVIOUS_AUTH_USER_DONE,
+                                ResponseType.None()
                             )
                         )
-                    }
+                    )
                 }
 
                 // not used in this case

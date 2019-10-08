@@ -101,6 +101,7 @@ abstract class NetworkBoundResource<ResponseObject, CacheObject, ViewStateType>
     }
 
     fun onCompleteJob(dataState: DataState<ViewStateType>){
+        Log.d(TAG, "onCompleteJob: called...")
         GlobalScope.launch(Main) {
             job.complete()
             setValue(dataState)
