@@ -25,28 +25,18 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
 import com.afollestad.materialdialogs.customview.getCustomView
-import com.codingwithmitch.openapi.models.BlogPost
 import com.codingwithmitch.openapi.repository.main.BlogQueryUtils.Companion.BLOG_FILTER_DATE_UPDATED
 import com.codingwithmitch.openapi.repository.main.BlogQueryUtils.Companion.BLOG_FILTER_USERNAME
 import com.codingwithmitch.openapi.repository.main.BlogQueryUtils.Companion.BLOG_ORDER_ASC
 import com.codingwithmitch.openapi.ui.*
-import com.codingwithmitch.openapi.ui.main.blog.state.BlogStateEvent.*
 import com.codingwithmitch.openapi.util.PreferenceKeys.Companion.BLOG_FILTER
 import com.codingwithmitch.openapi.util.PreferenceKeys.Companion.BLOG_ORDER
 
 class BlogFragment : BaseBlogFragment(),
     BlogListAdapter.BlogViewHolder.BlogClickListener,
     SharedPreferences.OnSharedPreferenceChangeListener,
-    SwipeRefreshLayout.OnRefreshListener,
-    BlogListAdapter.BlogListDataListener
+    SwipeRefreshLayout.OnRefreshListener
 {
-    override fun onDataMoved() {
-        blog_post_recyclerview.smoothScrollToPosition(0)
-    }
-
-    override fun onDataRemoved() {
-        blog_post_recyclerview.smoothScrollToPosition(0)
-    }
 
     @Inject
     lateinit var sharedPreferences: SharedPreferences
@@ -131,7 +121,7 @@ class BlogFragment : BaseBlogFragment(),
         blog_post_recyclerview.removeItemDecoration(topSpacingDecorator) // does nothing if not applied already
         blog_post_recyclerview.addItemDecoration(topSpacingDecorator)
 
-        recyclerAdapter = BlogListAdapter(requestManager,  this@BlogFragment, this)
+        recyclerAdapter = BlogListAdapter(requestManager,  this@BlogFragment)
         blog_post_recyclerview.addOnScrollListener(object: RecyclerView.OnScrollListener(){
 
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {

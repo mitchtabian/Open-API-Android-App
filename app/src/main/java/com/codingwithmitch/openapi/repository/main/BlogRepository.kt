@@ -112,7 +112,8 @@ constructor(
                                 super.onActive()
                                 value = BlogViewState(
                                     BlogFields(
-                                        blogList = it, isQueryInProgress = true
+                                        blogList = it,
+                                        isQueryInProgress = true
                                     )
                                 )
                             }

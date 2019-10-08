@@ -16,8 +16,7 @@ import com.codingwithmitch.openapi.R
 
 class BlogListAdapter(
     private val requestManager: RequestManager,
-    private var blogClickListener: BlogViewHolder.BlogClickListener,
-    private val blogListDataListener: BlogListDataListener
+    private var blogClickListener: BlogViewHolder.BlogClickListener
 
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>()
 {
@@ -26,7 +25,15 @@ class BlogListAdapter(
 
     private val NO_MORE_RESULTS = -1
     private val BLOG_ITEM = 0
-    private val NO_MORE_RESULTS_BLOG_MARKER = BlogPost(NO_MORE_RESULTS, "" ,"", "", "", 0, "")
+    private val NO_MORE_RESULTS_BLOG_MARKER = BlogPost(
+        NO_MORE_RESULTS,
+        "" ,
+        "",
+        "",
+        "",
+        0,
+        ""
+    )
 
     val DIFF_CALLBACK = object: DiffUtil.ItemCallback<BlogPost>(){
 
@@ -39,14 +46,13 @@ class BlogListAdapter(
         }
     }
     private val differ =
-    AsyncListDiffer(
-        BlogRecyclerChangeCallback(this, blogListDataListener),
-        AsyncDifferConfig.Builder(DIFF_CALLBACK).build()
-    )
+        AsyncListDiffer(
+            BlogRecyclerChangeCallback(this),
+            AsyncDifferConfig.Builder(DIFF_CALLBACK).build()
+        )
 
     internal inner class BlogRecyclerChangeCallback(
-        private val adapter: BlogListAdapter,
-        private val blogListDataListener: BlogListDataListener
+        private val adapter: BlogListAdapter
     ) : ListUpdateCallback {
 
         override fun onChanged(position: Int, count: Int, payload: Any?) {
@@ -55,20 +61,18 @@ class BlogListAdapter(
         }
 
         override fun onInserted(position: Int, count: Int) {
-            Log.d(TAG, "MyCallback: onInserted...")
-            adapter.notifyItemRangeInserted(position, count)
+            Log.d(TAG, "MyCallback: onInserted...position,count: ${position}, $count")
+            adapter.notifyItemRangeChanged(position, count)
         }
 
         override fun onMoved(fromPosition: Int, toPosition: Int) {
             Log.d(TAG, "MyCallback: onMoved...")
-            adapter.notifyItemMoved(fromPosition, toPosition)
-            blogListDataListener.onDataMoved()
+            adapter.notifyDataSetChanged()
         }
 
         override fun onRemoved(position: Int, count: Int) {
             Log.d(TAG, "MyCallback: onRemoved...")
-            adapter.notifyItemRangeRemoved(position, count)
-            blogListDataListener.onDataRemoved()
+            adapter.notifyDataSetChanged()
         }
     }
 
@@ -170,13 +174,6 @@ class BlogListAdapter(
         interface BlogClickListener{
             fun onBlogSelected(itemPosition: Int)
         }
-    }
-
-    interface BlogListDataListener{
-
-        fun onDataMoved()
-
-        fun onDataRemoved()
     }
 
 }
