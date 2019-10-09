@@ -12,9 +12,6 @@ interface BlogPostDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(blogPost: BlogPost): Long
-
-    @Query("SELECT * FROM blog_post")
-    fun getAllBlogPosts(): LiveData<List<BlogPost>>
 }
 
 

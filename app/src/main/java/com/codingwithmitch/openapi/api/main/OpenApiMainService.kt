@@ -32,12 +32,6 @@ interface OpenApiMainService {
         @Field("confirm_new_password") confirmNewPassword: String
     ): LiveData<GenericApiResponse<GenericResponse>>
 
-    @GET("blog/list")
-    fun searchListBlogPosts(
-        @Header("Authorization") authorization: String,
-        @Query("search") query: String
-    ): LiveData<GenericApiResponse<BlogListSearchResponse>>
-
 }
 
 
