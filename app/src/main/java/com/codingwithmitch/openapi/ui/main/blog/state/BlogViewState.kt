@@ -11,7 +11,8 @@ data class BlogViewState (
 )
 {
     data class BlogFields(
-        var blogList: List<BlogPost> = ArrayList<BlogPost>()
+        var blogList: List<BlogPost> = ArrayList<BlogPost>(),
+        var searchQuery: String = ""
     )
 
 
