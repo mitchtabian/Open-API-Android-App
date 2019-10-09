@@ -12,6 +12,8 @@ abstract class AppDatabase: RoomDatabase() {
 
     abstract fun getAccountPropertiesDao(): AccountPropertiesDao
 
+    abstract fun getBlogPostDao(): BlogPostDao
+
     companion object{
         val DATABASE_NAME: String = "app_db"
     }
