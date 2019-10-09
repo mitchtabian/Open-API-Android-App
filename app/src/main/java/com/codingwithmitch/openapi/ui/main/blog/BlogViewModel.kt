@@ -1,6 +1,10 @@
 package com.codingwithmitch.openapi.ui.main.blog
 
+import android.content.SharedPreferences
 import androidx.lifecycle.LiveData
+import com.bumptech.glide.RequestManager
+import com.codingwithmitch.openapi.repository.main.BlogRepository
+import com.codingwithmitch.openapi.session.SessionManager
 import com.codingwithmitch.openapi.ui.BaseViewModel
 import com.codingwithmitch.openapi.ui.DataState
 import com.codingwithmitch.openapi.ui.main.blog.state.BlogStateEvent
@@ -12,7 +16,10 @@ import javax.inject.Inject
 class BlogViewModel
 @Inject
 constructor(
-
+    private val sessionManager: SessionManager,
+    private val blogRepository: BlogRepository,
+    private val sharedPreferences: SharedPreferences,
+    private val requestManager: RequestManager
 ): BaseViewModel<BlogStateEvent, BlogViewState>(){
     override fun handleStateEvent(stateEvent: BlogStateEvent): LiveData<DataState<BlogViewState>> {
         when(stateEvent){
@@ -31,5 +38,29 @@ constructor(
         return BlogViewState()
     }
 
+    fun cancelActiveJobs(){
+        blogRepository.cancelActiveJobs() // cancel active jobs
+        handlePendingData() // hide progress bar
+    }
+
+    fun handlePendingData(){
+        setStateEvent(None())
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        cancelActiveJobs()
+    }
 
 }
+
+
+
+
+
+
+
+
+
+
+
