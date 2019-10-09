@@ -3,6 +3,7 @@ package com.codingwithmitch.openapi.ui.main.blog
 import android.content.SharedPreferences
 import androidx.lifecycle.LiveData
 import com.bumptech.glide.RequestManager
+import com.codingwithmitch.openapi.models.BlogPost
 import com.codingwithmitch.openapi.repository.main.BlogRepository
 import com.codingwithmitch.openapi.session.SessionManager
 import com.codingwithmitch.openapi.ui.BaseViewModel
@@ -41,6 +42,18 @@ constructor(
 
     override fun initNewViewState(): BlogViewState {
         return BlogViewState()
+    }
+
+    fun setQuery(query: String){
+        val update = getCurrentViewStateOrNew()
+        update.blogFields.searchQuery = query
+        _viewState.value = update
+    }
+
+    fun setBlogListData(blogList: List<BlogPost>){
+        val update = getCurrentViewStateOrNew()
+        update.blogFields.blogList = blogList
+        _viewState.value = update
     }
 
     fun cancelActiveJobs(){

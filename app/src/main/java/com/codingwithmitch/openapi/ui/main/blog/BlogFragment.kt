@@ -46,6 +46,7 @@ class BlogFragment : BaseBlogFragment(){
                     it.data?.let{
                         it.getContentIfNotHandled()?.let{
                             Log.d(TAG, "BlogFragment, DataState: ${it}")
+                            viewModel.setBlogListData(it.blogFields.blogList)
                         }
                     }
                 }
