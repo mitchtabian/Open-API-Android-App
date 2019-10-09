@@ -12,8 +12,7 @@ data class BlogViewState (
     var blogFields: BlogFields = BlogFields(),
 
     // ViewBlogFragment vars
-    var blogPost: BlogPost? = null,
-    var isAuthorOfBlogPost: Boolean = false,
+    var viewBlogFields: ViewBlogFields = ViewBlogFields(),
 
     // UpdateBlogFragment vars
     var updatedBlogFields: UpdatedBlogFields = UpdatedBlogFields()
@@ -27,6 +26,11 @@ data class BlogViewState (
         var blogList: List<BlogPost> = ArrayList<BlogPost>(),
         var isQueryInProgress: Boolean = false,
         var isQueryExhausted: Boolean = false
+    )
+
+    data class ViewBlogFields(
+        var blogPost: BlogPost? = null,
+        var isAuthorOfBlogPost: Boolean = false
     )
 
     data class UpdatedBlogFields(

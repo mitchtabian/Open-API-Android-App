@@ -79,7 +79,9 @@ class ViewBlogFragment : BaseBlogFragment() {
             dataState?.let{
                 it.data?.let{ data ->
                     data.data?.getContentIfNotHandled()?.let { viewState ->
-                        viewModel.setIsAuthorOfBlogPost(viewState.isAuthorOfBlogPost)
+                        viewModel.setIsAuthorOfBlogPost(
+                            viewState.viewBlogFields.isAuthorOfBlogPost
+                        )
                     }
                     data.response?.peekContent()?.let{ response ->
                         if(response.message.equals(SUCCESS_BLOG_DELETED)){
@@ -93,10 +95,10 @@ class ViewBlogFragment : BaseBlogFragment() {
         })
 
         viewModel.viewState.observe(viewLifecycleOwner, Observer { viewState ->
-            viewState.blogPost?.let{ blogPost ->
+            viewState.viewBlogFields.blogPost?.let{ blogPost ->
                 setBlogProperties(blogPost)
             }
-            if(viewState.isAuthorOfBlogPost){
+            if(viewState.viewBlogFields.isAuthorOfBlogPost){
                 adaptViewToAuthorMode()
             }
 
@@ -140,9 +142,9 @@ class ViewBlogFragment : BaseBlogFragment() {
         try{
             // prep for next fragment
             viewModel.setUpdatedBlogFields(
-                viewModel.viewState.value!!.blogPost!!.title,
-                viewModel.viewState.value!!.blogPost!!.body,
-                viewModel.viewState.value!!.blogPost!!.image.toUri()
+                viewModel.viewState.value!!.viewBlogFields.blogPost!!.title,
+                viewModel.viewState.value!!.viewBlogFields.blogPost!!.body,
+                viewModel.viewState.value!!.viewBlogFields.blogPost!!.image.toUri()
             )
             findNavController().navigate(R.id.action_viewBlogFragment_to_updateBlogFragment)
         }catch (e: Exception){

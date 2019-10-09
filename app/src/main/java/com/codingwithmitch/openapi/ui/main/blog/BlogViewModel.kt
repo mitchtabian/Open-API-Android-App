@@ -69,7 +69,7 @@ constructor(
                     return sessionManager.cachedToken.value?.let { authToken ->
                         blogRepository.isAuthorOfBlogPost(
                             authToken,
-                            viewState.value!!.blogPost!!.slug
+                            viewState.value!!.viewBlogFields.blogPost!!.slug
                         )
                     }?: AbsentLiveData.create()
                 }
@@ -85,7 +85,7 @@ constructor(
 
                     blogRepository.updateBlogPost(
                         authToken,
-                        viewState.value!!.blogPost!!.slug,
+                        viewState.value!!.viewBlogFields.blogPost!!.slug,
                         title,
                         body,
                         stateEvent.image
@@ -96,7 +96,7 @@ constructor(
             is DeleteBlogPostEvent -> {
                 return sessionManager.cachedToken.value?.let { authToken ->
                     viewState.value?.let{blogViewState ->
-                        blogViewState.blogPost?.let { blogPost ->
+                        blogViewState.viewBlogFields.blogPost?.let { blogPost ->
                             blogRepository.deleteBlogPost(
                                 authToken,
                                 blogPost
@@ -220,7 +220,7 @@ constructor(
 
     fun setBlogPost(blogPost: BlogPost){
         val update = getCurrentViewStateOrNew()
-        update.blogPost = blogPost
+        update.viewBlogFields.blogPost = blogPost
         _viewState.value = update
     }
 
@@ -241,8 +241,8 @@ constructor(
         val update = getCurrentViewStateOrNew()
         val list = update.blogFields.blogList.toMutableList()
         for(i in 0..(list.size - 1)){
-            if(list[i] == viewState.value!!.blogPost){
-                list.remove(viewState.value!!.blogPost)
+            if(list[i] == viewState.value!!.viewBlogFields.blogPost){
+                list.remove(viewState.value!!.viewBlogFields.blogPost)
                 break
             }
         }
@@ -262,13 +262,13 @@ constructor(
 
     fun setIsAuthorOfBlogPost(isAuthorOfBlogPost: Boolean){
         val update = getCurrentViewStateOrNew()
-        update.isAuthorOfBlogPost = isAuthorOfBlogPost
+        update.viewBlogFields.isAuthorOfBlogPost = isAuthorOfBlogPost
         _viewState.value = update
     }
 
     fun isAuthorOfBlogPost(): Boolean{
-        Log.d(TAG, "isAuthorOfBlogPost: ${viewState.value!!.isAuthorOfBlogPost}")
-        return viewState.value!!.isAuthorOfBlogPost
+        Log.d(TAG, "isAuthorOfBlogPost: ${viewState.value!!.viewBlogFields.isAuthorOfBlogPost}")
+        return viewState.value!!.viewBlogFields.isAuthorOfBlogPost
     }
 
     fun cancelActiveJobs(){

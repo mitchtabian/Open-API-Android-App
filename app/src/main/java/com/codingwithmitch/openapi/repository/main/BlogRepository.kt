@@ -191,7 +191,9 @@ constructor(
                         onCompleteJob(
                             DataState.data(
                                 data = BlogViewState(
-                                    isAuthorOfBlogPost = false
+                                    viewBlogFields = ViewBlogFields(
+                                        isAuthorOfBlogPost = false
+                                    )
                                 ),
                                 response = null
                             )
@@ -201,7 +203,9 @@ constructor(
                         onCompleteJob(
                             DataState.data(
                                 data = BlogViewState(
-                                    isAuthorOfBlogPost = true
+                                    viewBlogFields = ViewBlogFields(
+                                        isAuthorOfBlogPost = true
+                                    )
                                 ),
                                 response = null
                             )
@@ -342,7 +346,11 @@ constructor(
                     // finish with success response
                     onCompleteJob(
                         DataState.data(
-                            BlogViewState(blogPost = updatedBlogPost),
+                            BlogViewState(
+                                viewBlogFields = ViewBlogFields(
+                                    blogPost = updatedBlogPost
+                                )
+                            ),
                             Response(response.body.response, ResponseType.Toast())
                         ))
                 }

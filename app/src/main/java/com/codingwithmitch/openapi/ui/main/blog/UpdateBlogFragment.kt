@@ -117,7 +117,7 @@ class UpdateBlogFragment : BaseBlogFragment() {
             stateChangeListener.onDataStateChange(dataState)
             dataState.data?.let{ data ->
                 data.data?.getContentIfNotHandled()?.let{ viewState ->
-                    viewState.blogPost?.let{ blogPost ->
+                    viewState.viewBlogFields.blogPost?.let{ blogPost ->
                         viewModel.setUpdatedBlogFields(
                             uri = null,
                             title = blogPost.title,
