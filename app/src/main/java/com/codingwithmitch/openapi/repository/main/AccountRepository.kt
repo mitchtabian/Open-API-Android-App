@@ -53,13 +53,7 @@ constructor(
             override suspend fun handleApiSuccessResponse(response: ApiSuccessResponse<AccountProperties>) {
                 updateLocalDb(response.body)
 
-                withContext(Dispatchers.Main){
-
-                    // finishing by viewing db cache
-                    result.addSource(loadFromCache()){ viewState ->
-                        onCompleteJob(DataState.data(viewState, null))
-                    }
-                }
+                createCacheRequestAndReturn()
             }
 
             override fun loadFromCache(): LiveData<AccountViewState> {
