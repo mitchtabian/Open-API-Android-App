@@ -40,21 +40,13 @@ data class BlogPost(
 
 ) {
 
-    override fun equals(other: Any?): Boolean {
-        if (javaClass != other?.javaClass) return false
-
-        other as BlogPost
-
-        if (pk != other.pk) return false
-        if (slug != other.slug) return false
-        if (title != other.title) return false
-        if (image != other.image) return false
-
-        return true
-    }
-
     override fun toString(): String {
-        return "BlogPost(pk=$pk, title='$title', slug='$slug', image='$image', date_updated=$date_updated, username='$username')"
+        return "BlogPost(pk=$pk, " +
+                "title='$title', " +
+                "slug='$slug', " +
+                "image='$image', " +
+                "date_updated=$date_updated, " +
+                "username='$username')"
     }
 
 

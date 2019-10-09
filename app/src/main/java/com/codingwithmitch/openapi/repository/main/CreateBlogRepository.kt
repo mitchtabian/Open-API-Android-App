@@ -1,6 +1,5 @@
 package com.codingwithmitch.openapi.repository.main
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import com.codingwithmitch.openapi.util.ApiSuccessResponse
 import com.codingwithmitch.openapi.util.GenericApiResponse
@@ -30,7 +29,7 @@ constructor(
     val openApiMainService: OpenApiMainService,
     val blogPostDao: BlogPostDao,
     val sessionManager: SessionManager
-): JobManager() {
+): JobManager("CreateBlogRepository") {
     private val TAG: String = "AppDebug"
 
     fun createNewBlogPost(

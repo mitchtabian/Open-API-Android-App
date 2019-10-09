@@ -1,9 +1,12 @@
 package com.codingwithmitch.openapi.repository
 
+
 import android.util.Log
 import kotlinx.coroutines.Job
 
-open class JobManager {
+open class JobManager(
+    private val className: String
+) {
 
     private val TAG: String = "AppDebug"
 
@@ -30,16 +33,12 @@ open class JobManager {
     fun cancelActiveJobs(){
         for((methodName, job) in jobs){
             if(job.isActive){
-                Log.e(TAG, "JobManager: cancelling job in method: '$methodName'")
+                Log.e(TAG, "$className: cancelling job in method: '$methodName'")
                 job.cancel()
             }
         }
     }
 }
-
-
-
-
 
 
 

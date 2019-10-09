@@ -27,7 +27,7 @@ constructor(
     val openApiMainService: OpenApiMainService,
     val accountPropertiesDao: AccountPropertiesDao,
     val sessionManager: SessionManager
-): JobManager()
+): JobManager("AccountRepository")
 {
     private val TAG: String = "AppDebug"
 

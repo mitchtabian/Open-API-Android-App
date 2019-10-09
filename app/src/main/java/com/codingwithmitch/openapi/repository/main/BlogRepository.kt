@@ -40,7 +40,7 @@ constructor(
     val openApiMainService: OpenApiMainService,
     val blogPostDao: BlogPostDao,
     val sessionManager: SessionManager
-): JobManager()
+): JobManager("BlogRepository")
 {
     private val TAG: String = "AppDebug"
 

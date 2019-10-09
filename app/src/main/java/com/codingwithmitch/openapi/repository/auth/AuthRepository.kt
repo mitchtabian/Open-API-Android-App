@@ -38,7 +38,7 @@ constructor(
     val openApiAuthService: OpenApiAuthService,
     val sharedPreferences: SharedPreferences,
     val sharedPrefsEditor: SharedPreferences.Editor
-): JobManager()
+): JobManager("AuthRepository")
 {
     private val TAG: String = "AppDebug"
 
