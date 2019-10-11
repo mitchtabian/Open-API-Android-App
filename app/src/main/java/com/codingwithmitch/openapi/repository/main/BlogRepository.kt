@@ -118,11 +118,10 @@ constructor(
                         for(blogPost in cacheObject){
                             try{
                                 // Launch each insert as a separate job to be executed in parallel
-                                val j = launch {
+                                launch {
                                     Log.d(TAG, "updateLocalDb: inserting blog: ${blogPost}")
                                     blogPostDao.insert(blogPost)
                                 }
-                                j.join() // wait for completion before proceeding to next
                             }catch (e: Exception){
                                 Log.e(TAG, "updateLocalDb: error updating cache data on blog post with slug: ${blogPost.slug}. " +
                                         "${e.message}")

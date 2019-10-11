@@ -42,6 +42,8 @@ open class Event<out T>(private val content: T) {
      */
     fun peekContent(): T = content
 
+
+
     override fun toString(): String {
         return "Event(content=$content, hasBeenHandled=$hasBeenHandled)"
     }
