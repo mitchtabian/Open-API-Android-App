@@ -1,41 +1,107 @@
 package com.codingwithmitch.openapi.ui.main.blog
 
-import androidx.recyclerview.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.AsyncListDiffer
-import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.*
+import com.bumptech.glide.RequestManager
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.models.BlogPost
+import com.codingwithmitch.openapi.util.DateUtils
+import com.codingwithmitch.openapi.util.GenericViewHolder
+import kotlinx.android.synthetic.main.layout_blog_list_item.view.*
 
-class BlogListAdapter(private val interaction: Interaction? = null) :
+class BlogListAdapter(
+    private val requestManager: RequestManager,
+    private val interaction: Interaction? = null
+    ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    private val TAG: String = "AppDebug"
+    private val NO_MORE_RESULTS = -1
+    private val BLOG_ITEM = 0
+    private val NO_MORE_RESULTS_BLOG_MARKER = BlogPost(
+        NO_MORE_RESULTS,
+        "" ,
+        "",
+        "",
+        "",
+        0,
+        ""
+    )
 
     val DIFF_CALLBACK = object : DiffUtil.ItemCallback<BlogPost>() {
 
         override fun areItemsTheSame(oldItem: BlogPost, newItem: BlogPost): Boolean {
-            TODO("not implemented")
+            return oldItem.pk == newItem.pk
         }
 
         override fun areContentsTheSame(oldItem: BlogPost, newItem: BlogPost): Boolean {
-            TODO("not implemented")
+            return oldItem == newItem
         }
 
     }
-    private val differ = AsyncListDiffer(this, DIFF_CALLBACK)
+    private val differ =
+        AsyncListDiffer(
+            BlogRecyclerChangeCallback(this),
+            AsyncDifferConfig.Builder(DIFF_CALLBACK).build()
+        )
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
 
-        return BlogViewHolder(
-            LayoutInflater.from(parent.context).inflate(
-                R.layout.layout_blog_list_item,
-                parent,
-                false
-            ),
-            interaction
-        )
+        when(viewType){
+
+            NO_MORE_RESULTS ->{
+                Log.e(TAG, "onCreateViewHolder: No more results...")
+                return GenericViewHolder(
+                    LayoutInflater.from(parent.context).inflate(
+                        R.layout.layout_no_more_results,
+                        parent,
+                        false
+                    )
+                )
+            }
+
+            BLOG_ITEM ->{
+                return BlogViewHolder(
+                    LayoutInflater.from(parent.context)
+                        .inflate(R.layout.layout_blog_list_item, parent, false),
+                    interaction = interaction,
+                    requestManager = requestManager
+                )
+            }
+            else -> {
+                return BlogViewHolder(
+                    LayoutInflater.from(parent.context).inflate(R.layout.layout_blog_list_item, parent, false),
+                    interaction = interaction,
+                    requestManager = requestManager
+                )
+            }
+        }
+    }
+
+    internal inner class BlogRecyclerChangeCallback(
+        private val adapter: BlogListAdapter
+    ) : ListUpdateCallback {
+
+        override fun onChanged(position: Int, count: Int, payload: Any?) {
+            adapter.notifyItemRangeChanged(position, count, payload)
+        }
+
+        override fun onInserted(position: Int, count: Int) {
+            adapter.notifyItemRangeChanged(position, count)
+        }
+
+        override fun onMoved(fromPosition: Int, toPosition: Int) {
+            adapter.notifyDataSetChanged()
+        }
+
+        override fun onRemoved(position: Int, count: Int) {
+            adapter.notifyDataSetChanged()
+        }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -50,13 +116,21 @@ class BlogListAdapter(private val interaction: Interaction? = null) :
         return differ.currentList.size
     }
 
-    fun submitList(list: List<BlogPost>) {
-        differ.submitList(list)
+    fun submitList(blogList: List<BlogPost>?, isQueryExhausted: Boolean){
+        val newList = blogList?.toMutableList()
+        if (isQueryExhausted)
+            newList?.add(NO_MORE_RESULTS_BLOG_MARKER)
+        differ.submitList(newList)
+    }
+
+    fun findBlogPost(position: Int): BlogPost{
+        return differ.currentList[position]
     }
 
     class BlogViewHolder
     constructor(
         itemView: View,
+        val requestManager: RequestManager,
         private val interaction: Interaction?
     ) : RecyclerView.ViewHolder(itemView) {
 
@@ -65,7 +139,13 @@ class BlogListAdapter(private val interaction: Interaction? = null) :
                 interaction?.onItemSelected(adapterPosition, item)
             }
 
-            TODO("bind view with data")
+            requestManager
+                .load(item.image)
+                .transition(withCrossFade())
+                .into(itemView.blog_image)
+            itemView.blog_title.text = item.title
+            itemView.blog_author.text = item.username
+            itemView.blog_update_date.text = DateUtils.convertLongToStringDate(item.date_updated)
         }
     }
 
