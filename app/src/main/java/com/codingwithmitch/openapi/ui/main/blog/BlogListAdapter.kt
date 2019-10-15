@@ -16,7 +16,7 @@ import com.codingwithmitch.openapi.R
 
 class BlogListAdapter(
     private val requestManager: RequestManager,
-    private var blogClickListener: BlogViewHolder.BlogClickListener
+    private var interaction: BlogViewHolder.Interaction
 
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>()
 {
@@ -94,14 +94,14 @@ class BlogListAdapter(
             BLOG_ITEM ->{
                 return BlogViewHolder(
                     LayoutInflater.from(parent.context).inflate(R.layout.layout_blog_list_item, parent, false),
-                    blogClickListener = blogClickListener,
+                    interaction= interaction,
                     requestManager = requestManager
                 )
             }
             else -> {
                 return BlogViewHolder(
                     LayoutInflater.from(parent.context).inflate(R.layout.layout_blog_list_item, parent, false),
-                    blogClickListener = blogClickListener,
+                    interaction = interaction,
                     requestManager = requestManager
                 )
             }
@@ -148,31 +148,29 @@ class BlogListAdapter(
     constructor(
         itemView: View,
         val requestManager: RequestManager,
-        val blogClickListener: BlogClickListener
-    ): RecyclerView.ViewHolder(itemView), View.OnClickListener{
+        private val interaction: Interaction?
+    ): RecyclerView.ViewHolder(itemView){
 
 
-        init {
-            itemView.setOnClickListener(this)
-        }
+        fun bind(item: BlogPost) = with(itemView){
+            itemView.setOnClickListener {
+                interaction?.onItemSelected(adapterPosition, item)
+            }
 
-        fun bind(blogPost: BlogPost) = with(itemView){
             requestManager
-                .load(blogPost.image)
+                .load(item.image)
                 .transition(withCrossFade())
                 .into(itemView.blog_image)
-            itemView.blog_title.text = blogPost.title
-            itemView.blog_author.text = blogPost.username
-            itemView.blog_update_date.text = DateUtils.convertLongToStringDate(blogPost.date_updated)
-        }
-
-        override fun onClick(v: View?) {
-            blogClickListener.onBlogSelected(adapterPosition)
+            itemView.blog_title.text = item.title
+            itemView.blog_author.text = item.username
+            itemView.blog_update_date.text = DateUtils.convertLongToStringDate(item.date_updated)
         }
 
 
-        interface BlogClickListener{
-            fun onBlogSelected(itemPosition: Int)
+
+
+        interface Interaction {
+            fun onItemSelected(position: Int, item: BlogPost)
         }
     }
 

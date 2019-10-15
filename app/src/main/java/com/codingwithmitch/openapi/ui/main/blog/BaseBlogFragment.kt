@@ -30,9 +30,6 @@ abstract class BaseBlogFragment : DaggerFragment(){
 
     lateinit var viewModel: BlogViewModel
 
-    @Inject
-    lateinit var requestManager: RequestManager
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         // setup back navigation for this graph

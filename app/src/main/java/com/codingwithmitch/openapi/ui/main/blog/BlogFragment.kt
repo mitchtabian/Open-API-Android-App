@@ -25,6 +25,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
 import com.afollestad.materialdialogs.customview.getCustomView
+import com.bumptech.glide.RequestManager
+import com.codingwithmitch.openapi.models.BlogPost
 import com.codingwithmitch.openapi.repository.main.BlogQueryUtils.Companion.BLOG_FILTER_DATE_UPDATED
 import com.codingwithmitch.openapi.repository.main.BlogQueryUtils.Companion.BLOG_FILTER_USERNAME
 import com.codingwithmitch.openapi.repository.main.BlogQueryUtils.Companion.BLOG_ORDER_ASC
@@ -33,10 +35,13 @@ import com.codingwithmitch.openapi.util.PreferenceKeys.Companion.BLOG_FILTER
 import com.codingwithmitch.openapi.util.PreferenceKeys.Companion.BLOG_ORDER
 
 class BlogFragment : BaseBlogFragment(),
-    BlogListAdapter.BlogViewHolder.BlogClickListener,
+    BlogListAdapter.BlogViewHolder.Interaction,
     SharedPreferences.OnSharedPreferenceChangeListener,
     SwipeRefreshLayout.OnRefreshListener
 {
+
+    @Inject
+    lateinit var requestManager: RequestManager
 
     @Inject
     lateinit var sharedPreferences: SharedPreferences
@@ -138,12 +143,6 @@ class BlogFragment : BaseBlogFragment(),
         blog_post_recyclerview.adapter = recyclerAdapter
     }
 
-    override fun onBlogSelected(itemPosition: Int) {
-        recyclerAdapter.findBlogPost(itemPosition).let{
-            viewModel.setBlogPost(it)
-            findNavController().navigate(R.id.action_blogFragment_to_viewBlogFragment)
-        }
-    }
 
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -330,6 +329,13 @@ class BlogFragment : BaseBlogFragment(),
     override fun onRefresh() {
         onBlogSearchOrFilter()
         swipe_refresh.isRefreshing = false
+    }
+
+    override fun onItemSelected(position: Int, item: BlogPost) {
+        recyclerAdapter.findBlogPost(position).let{
+            viewModel.setBlogPost(it)
+            findNavController().navigate(R.id.action_blogFragment_to_viewBlogFragment)
+        }
     }
 
     override fun onDestroyView() {
