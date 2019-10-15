@@ -15,9 +15,6 @@
             android:layout_height="wrap_content"
     >
 
-        <!-- Center inside: https://developer.android.com/reference/android/widget/ImageView.ScaleType#CENTER_INSIDE -->
-        <!-- Server image limitations: (h <= w) -->
-        <!-- ALL images will have height less than or equal to width. So we can fit the width -->
         <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
