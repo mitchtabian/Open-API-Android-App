@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:layout_width="match_parent"
+        android:layout_height="@dimen/recycler_loading_view_height"
+        xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No more results..."
+            android:drawableEnd="@drawable/ic_mood_bad_black_24dp"
+            android:layout_centerInParent="true"
+            android:padding="5dp"
+            android:drawablePadding="5dp"/>
+
+</RelativeLayout>
