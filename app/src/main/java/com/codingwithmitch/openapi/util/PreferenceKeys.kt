@@ -12,8 +12,5 @@ class PreferenceKeys {
         const val BLOG_FILTER: String = "com.codingwithmitch.openapi.BLOG_FILTER"
         const val BLOG_ORDER: String = "com.codingwithmitch.openapi.BLOG_ORDER"
 
-
-
-
     }
 }

@@ -18,13 +18,11 @@ import kotlinx.android.synthetic.main.fragment_blog.*
 import javax.inject.Inject
 import android.view.inputmethod.EditorInfo
 import android.widget.*
-import androidx.fragment.app.FragmentActivity
 import androidx.navigation.fragment.findNavController
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
 import com.afollestad.materialdialogs.customview.getCustomView
-import com.bumptech.glide.RequestManager
 import com.codingwithmitch.openapi.models.BlogPost
 import com.codingwithmitch.openapi.repository.main.BlogQueryUtils.Companion.BLOG_FILTER_DATE_UPDATED
 import com.codingwithmitch.openapi.repository.main.BlogQueryUtils.Companion.BLOG_FILTER_USERNAME
@@ -32,21 +30,15 @@ import com.codingwithmitch.openapi.repository.main.BlogQueryUtils.Companion.BLOG
 import com.codingwithmitch.openapi.ui.DataState
 import com.codingwithmitch.openapi.ui.main.blog.state.*
 import com.codingwithmitch.openapi.ui.main.blog.state.BlogStateEvent.*
+import com.codingwithmitch.openapi.ui.main.blog.viewmodel.*
 import com.codingwithmitch.openapi.util.ErrorHandling
 import com.codingwithmitch.openapi.util.PreferenceKeys.Companion.BLOG_FILTER
 import com.codingwithmitch.openapi.util.PreferenceKeys.Companion.BLOG_ORDER
 
 class BlogFragment : BaseBlogFragment(),
     BlogListAdapter.BlogViewHolder.Interaction,
-    SharedPreferences.OnSharedPreferenceChangeListener,
     SwipeRefreshLayout.OnRefreshListener
 {
-
-    @Inject
-    lateinit var sharedPreferences: SharedPreferences
-
-    @Inject
-    lateinit var editor: SharedPreferences.Editor
 
     private lateinit var searchView: SearchView
     private lateinit var recyclerAdapter: BlogListAdapter
@@ -66,7 +58,10 @@ class BlogFragment : BaseBlogFragment(),
         setHasOptionsMenu(true)
         initRecyclerView()
         subscribeObservers()
-        viewModel.loadFirstPage()
+
+        if(savedInstanceState == null){
+            viewModel.loadFirstPage()
+        }
     }
 
     private fun subscribeObservers(){
@@ -140,25 +135,12 @@ class BlogFragment : BaseBlogFragment(),
                     val layoutManager = recyclerView.layoutManager as LinearLayoutManager
                     val lastPosition = layoutManager.findLastVisibleItemPosition()
                     if (lastPosition == recyclerAdapter.itemCount.minus(1)) {
-                        Log.d(TAG, "BlogFragment: attempting to load next page...")
-                        viewModel.setStateEvent(NextPageEvent())
+                        viewModel.nextPage()
                     }
                 }
             })
             adapter = recyclerAdapter
         }
-    }
-
-    fun onBlogSearchOrFilter(){
-        viewModel.loadFirstPage().let {
-            onQuerySubmitted()
-        }
-    }
-
-    fun onQuerySubmitted(){
-        blog_post_recyclerview.smoothScrollToPosition(0)
-        stateChangeListener.hideSoftKeyboard()
-        focusable_view.requestFocus()
     }
 
     private fun initSearchView(menu: Menu){
@@ -198,6 +180,18 @@ class BlogFragment : BaseBlogFragment(),
         }
     }
 
+    fun onBlogSearchOrFilter(){
+        viewModel.loadFirstPage().let {
+            resetUI()
+        }
+    }
+
+    fun resetUI(){
+        blog_post_recyclerview.smoothScrollToPosition(0)
+        stateChangeListener.hideSoftKeyboard()
+        focusable_view.requestFocus()
+    }
+
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.search_menu, menu)
@@ -213,16 +207,6 @@ class BlogFragment : BaseBlogFragment(),
             }
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        sharedPreferences.registerOnSharedPreferenceChangeListener(this)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
     }
 
     override fun onRefresh() {
@@ -250,8 +234,8 @@ class BlogFragment : BaseBlogFragment(),
 
             val view = dialog.getCustomView()
 
-            val filter = sharedPreferences.getString(BLOG_FILTER, BLOG_FILTER_DATE_UPDATED)
-            val order = sharedPreferences.getString(BLOG_ORDER, BLOG_ORDER_ASC)
+            val filter = viewModel.getFilter()
+            val order = viewModel.getOrder()
 
             if(filter.equals(BLOG_FILTER_DATE_UPDATED)){
                 view.findViewById<RadioGroup>(R.id.filter_group).check(R.id.filter_date)
@@ -286,10 +270,11 @@ class BlogFragment : BaseBlogFragment(),
                 if(selectedOrder.text.toString().equals(getString(R.string.filter_desc))){
                     order = "-"
                 }
-                applyFilterOptions(
-                    filter,
-                    order
-                )
+                viewModel.saveFilterOptions(filter, order).let{
+                    viewModel.setBlogFilter(filter)
+                    viewModel.setBlogOrder(order)
+                    onBlogSearchOrFilter()
+                }
                 dialog.dismiss()
             }
 
@@ -302,31 +287,6 @@ class BlogFragment : BaseBlogFragment(),
         }
     }
 
-    fun applyFilterOptions(filter: String, order: String){
-        Log.d(TAG, "applyFilterOptions: $filter, $order")
-        editor.putString(BLOG_FILTER, filter)
-        editor.apply()
-
-        editor.putString(BLOG_ORDER, order)
-        editor.apply()
-    }
-
-    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-
-        sharedPreferences?.let{
-            when(key){
-
-                BLOG_FILTER ->{
-                    onBlogSearchOrFilter()
-                }
-
-                BLOG_ORDER ->{
-                    onBlogSearchOrFilter()
-                }
-                else -> return
-            }
-        }
-    }
 }
 
 

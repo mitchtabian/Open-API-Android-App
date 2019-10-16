@@ -1,4 +1,4 @@
-package com.codingwithmitch.openapi.ui.main.blog.state
+package com.codingwithmitch.openapi.ui.main.blog.viewmodel
 
 
 import android.net.Uri

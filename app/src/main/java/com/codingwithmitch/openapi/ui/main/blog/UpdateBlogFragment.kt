@@ -14,9 +14,9 @@ import android.net.Uri
 import android.util.Log
 import com.codingwithmitch.openapi.ui.*
 import com.codingwithmitch.openapi.ui.main.blog.state.BlogStateEvent
-import com.codingwithmitch.openapi.ui.main.blog.state.setBlogPost
-import com.codingwithmitch.openapi.ui.main.blog.state.setUpdatedBlogFields
-import com.codingwithmitch.openapi.ui.main.blog.state.updateListItem
+import com.codingwithmitch.openapi.ui.main.blog.viewmodel.setBlogPost
+import com.codingwithmitch.openapi.ui.main.blog.viewmodel.setUpdatedBlogFields
+import com.codingwithmitch.openapi.ui.main.blog.viewmodel.updateListItem
 import com.codingwithmitch.openapi.util.Constants.Companion.GALLERY_REQUEST_CODE
 import com.codingwithmitch.openapi.util.FileUtil
 import com.theartofdev.edmodo.cropper.CropImage

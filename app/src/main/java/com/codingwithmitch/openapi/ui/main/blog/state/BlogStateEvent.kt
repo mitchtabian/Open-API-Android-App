@@ -7,8 +7,6 @@ sealed class BlogStateEvent{
 
     class BlogSearchEvent: BlogStateEvent()
 
-    class NextPageEvent: BlogStateEvent()
-
     class CheckAuthorOfBlogPost: BlogStateEvent()
 
     class DeleteBlogPostEvent: BlogStateEvent()

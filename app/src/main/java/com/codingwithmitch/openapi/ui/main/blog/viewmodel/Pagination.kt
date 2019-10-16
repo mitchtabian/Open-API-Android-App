@@ -1,8 +1,18 @@
-package com.codingwithmitch.openapi.ui.main.blog.state
+package com.codingwithmitch.openapi.ui.main.blog.viewmodel
 
 
 import android.util.Log
+import com.codingwithmitch.openapi.ui.main.blog.state.BlogStateEvent.*
+import com.codingwithmitch.openapi.ui.main.blog.state.BlogViewState
 
+
+fun BlogViewModel.loadFirstPage() {
+    setQueryInProgress(true)
+    setQueryExhausted(false)
+    resetPage()
+    setStateEvent(BlogSearchEvent())
+    Log.e(TAG, "BlogViewModel: loadFirstPage: ${viewState.value!!.blogFields.searchQuery}")
+}
 
 fun BlogViewModel.resetPage(){
     val update = getCurrentViewStateOrNew()
@@ -10,7 +20,17 @@ fun BlogViewModel.resetPage(){
     setViewState(update)
 }
 
-fun BlogViewModel.incrementPageNumber(){
+fun BlogViewModel.nextPage(){
+    if(!viewState.value!!.blogFields.isQueryInProgress
+        && !viewState.value!!.blogFields.isQueryExhausted){
+        Log.d(TAG, "BlogViewModel: Attempting to load next page...")
+        incrementPageNumber()
+        setQueryInProgress(true)
+        setStateEvent(BlogSearchEvent())
+    }
+}
+
+private fun BlogViewModel.incrementPageNumber(){
     val update = getCurrentViewStateOrNew()
     val page = update.copy().blogFields.page
     update.blogFields.page = page + 1

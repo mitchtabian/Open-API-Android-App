@@ -11,13 +11,12 @@ import androidx.navigation.fragment.findNavController
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.models.BlogPost
 import com.codingwithmitch.openapi.ui.AreYouSureCallback
-import com.codingwithmitch.openapi.ui.BaseActivity
 import com.codingwithmitch.openapi.ui.UIMessage
 import com.codingwithmitch.openapi.ui.UIMessageType
 import com.codingwithmitch.openapi.ui.main.blog.state.BlogStateEvent.*
-import com.codingwithmitch.openapi.ui.main.blog.state.removeDeletedBlogPost
-import com.codingwithmitch.openapi.ui.main.blog.state.setIsAuthorOfBlogPost
-import com.codingwithmitch.openapi.ui.main.blog.state.setUpdatedBlogFields
+import com.codingwithmitch.openapi.ui.main.blog.viewmodel.removeDeletedBlogPost
+import com.codingwithmitch.openapi.ui.main.blog.viewmodel.setIsAuthorOfBlogPost
+import com.codingwithmitch.openapi.ui.main.blog.viewmodel.setUpdatedBlogFields
 import com.codingwithmitch.openapi.util.DateUtils
 import com.codingwithmitch.openapi.util.SuccessHandling.Companion.SUCCESS_BLOG_DELETED
 import kotlinx.android.synthetic.main.fragment_view_blog.*

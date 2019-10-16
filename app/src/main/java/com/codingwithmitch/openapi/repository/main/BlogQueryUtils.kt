@@ -65,7 +65,11 @@ class BlogQueryUtils{
                         query = query,
                         page = page)
                 }
-                else -> throw Exception("Must specify a valid order for all blog queries. See BLogQueryUtils class.")
+                else ->
+                    return blogPostDao.searchBlogPostsOrderByDateASC(
+                        query = query,
+                        page = page
+                    )
             }
         }
     }
