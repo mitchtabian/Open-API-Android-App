@@ -97,10 +97,8 @@ class BlogFragment : BaseBlogFragment(),
     }
 
     override fun onItemSelected(position: Int, item: BlogPost) {
-        recyclerAdapter.findBlogPost(position).let{
-            viewModel.setBlogPost(it)
-            findNavController().navigate(R.id.action_blogFragment_to_viewBlogFragment)
-        }
+        viewModel.setBlogPost(item)
+        findNavController().navigate(R.id.action_blogFragment_to_viewBlogFragment)
     }
 
     override fun onDestroyView() {

@@ -123,10 +123,6 @@ class BlogListAdapter(
         differ.submitList(newList)
     }
 
-    fun findBlogPost(position: Int): BlogPost{
-        return differ.currentList[position]
-    }
-
     class BlogViewHolder
     constructor(
         itemView: View,
