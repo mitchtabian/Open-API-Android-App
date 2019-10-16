@@ -1,6 +1,5 @@
 package com.codingwithmitch.openapi.repository.main
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import com.codingwithmitch.openapi.models.BlogPost
 import com.codingwithmitch.openapi.persistence.BlogPostDao
@@ -34,7 +33,12 @@ class BlogQueryUtils{
          * a Room query. (ex: can't pass 'date_updated' and use it as a field reference in the query)
          * @see BlogPostDao
          */
-        fun returnOrderedBlogQuery(blogPostDao: BlogPostDao, query: String, filterAndOrder: String, page: Int): LiveData<List<BlogPost>> {
+        fun returnOrderedBlogQuery(
+            blogPostDao: BlogPostDao,
+            query: String,
+            filterAndOrder: String,
+            page: Int
+        ): LiveData<List<BlogPost>> {
 
             when{
 
