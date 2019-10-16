@@ -2,9 +2,8 @@ package com.codingwithmitch.openapi.di.main
 
 import androidx.lifecycle.ViewModel
 import com.codingwithmitch.openapi.di.ViewModelKey
-import com.codingwithmitch.openapi.ui.auth.AuthViewModel
 import com.codingwithmitch.openapi.ui.main.account.AccountViewModel
-import com.codingwithmitch.openapi.ui.main.blog.BlogViewModel
+import com.codingwithmitch.openapi.ui.main.blog.state.BlogViewModel
 import com.codingwithmitch.openapi.ui.main.create_blog.CreateBlogViewModel
 import dagger.Binds
 import dagger.Module

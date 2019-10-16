@@ -13,24 +13,23 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
 import com.codingwithmitch.openapi.R
-import com.codingwithmitch.openapi.ui.main.blog.state.BlogViewState
 import com.codingwithmitch.openapi.util.TopSpacingItemDecoration
-import com.codingwithmitch.openapi.util.ErrorHandling
 import kotlinx.android.synthetic.main.fragment_blog.*
 import javax.inject.Inject
 import android.view.inputmethod.EditorInfo
 import android.widget.*
+import androidx.fragment.app.FragmentActivity
 import androidx.navigation.fragment.findNavController
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
 import com.afollestad.materialdialogs.customview.getCustomView
-import com.bumptech.glide.RequestManager
 import com.codingwithmitch.openapi.models.BlogPost
 import com.codingwithmitch.openapi.repository.main.BlogQueryUtils.Companion.BLOG_FILTER_DATE_UPDATED
 import com.codingwithmitch.openapi.repository.main.BlogQueryUtils.Companion.BLOG_FILTER_USERNAME
 import com.codingwithmitch.openapi.repository.main.BlogQueryUtils.Companion.BLOG_ORDER_ASC
-import com.codingwithmitch.openapi.ui.*
+import com.codingwithmitch.openapi.ui.main.blog.state.*
+import com.codingwithmitch.openapi.ui.main.blog.state.BlogStateEvent.*
 import com.codingwithmitch.openapi.util.PreferenceKeys.Companion.BLOG_FILTER
 import com.codingwithmitch.openapi.util.PreferenceKeys.Companion.BLOG_ORDER
 
@@ -39,9 +38,6 @@ class BlogFragment : BaseBlogFragment(),
     SharedPreferences.OnSharedPreferenceChangeListener,
     SwipeRefreshLayout.OnRefreshListener
 {
-
-    @Inject
-    lateinit var requestManager: RequestManager
 
     @Inject
     lateinit var sharedPreferences: SharedPreferences
@@ -70,42 +66,11 @@ class BlogFragment : BaseBlogFragment(),
         viewModel.loadInitialBlogs()
     }
 
-    // check for end of pagination (with network request)
-    // must do this b/c server will return an ApiErrorResponse if page is not valid
-    fun checkPaginationEnd(dataState: DataState<BlogViewState>?){
-        dataState?.let{
-            it.error?.let{ event ->
-                event.peekContent().response.message?.let{
-                    if(ErrorHandling.isPaginationDone(it)){
-
-                        // handle the error message event so it doesn't display in UI
-                        event.getContentIfNotHandled()
-
-                        // set query exhausted to update RecyclerView with "No more results..." list item
-                        viewModel.setQueryExhausted(true)
-                    }
-                }
-            }
-        }
-    }
-
     private fun subscribeObservers(){
         viewModel.dataState.observe(viewLifecycleOwner, Observer{ dataState ->
             if(dataState != null){
-                checkPaginationEnd(dataState)
+                handlePagination(dataState)
                 stateChangeListener.onDataStateChange(dataState)
-                dataState.data?.let {
-                    it.data?.let{
-                        it.getContentIfNotHandled()?.let{
-                            Log.d(TAG, "BlogFragment, DataState: ${it}")
-                            Log.d(TAG, "BlogFragment, DataState: isQueryInProgress?: ${it.blogFields.isQueryInProgress}")
-                            Log.d(TAG, "BlogFragment, DataState: isQueryExhausted?: ${it.blogFields.isQueryExhausted}")
-                            viewModel.setQueryInProgress(it.blogFields.isQueryInProgress)
-                            viewModel.setQueryExhausted(it.blogFields.isQueryExhausted)
-                            viewModel.setBlogListData(it.blogFields.blogList)
-                        }
-                    }
-                }
             }
         })
 
@@ -135,7 +100,7 @@ class BlogFragment : BaseBlogFragment(),
                 val lastPosition = layoutManager.findLastVisibleItemPosition()
                 if (lastPosition == recyclerAdapter.itemCount.minus(1)) {
                     Log.d(TAG, "BlogFragment: attempting to load next page...")
-                    viewModel.loadNextPage()
+                    viewModel.setStateEvent(NextPageEvent())
                 }
             }
         })
@@ -149,55 +114,82 @@ class BlogFragment : BaseBlogFragment(),
         super.onCreateOptionsMenu(menu, inflater)
 
         inflater.inflate(R.menu.search_menu, menu)
+        initSearchView(menu)
 
-        activity?.let {
-            val searchManager: SearchManager = it.getSystemService(SEARCH_SERVICE) as SearchManager
-            searchView = menu.findItem(R.id.action_search).actionView as SearchView
-            searchView.setSearchableInfo(searchManager.getSearchableInfo(it.componentName))
-            searchView.maxWidth = Integer.MAX_VALUE
-            searchView.setIconifiedByDefault(true)
-            searchView.isSubmitButtonEnabled = true
+        // QUERY SUBMITTED
+//        searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
+//
+//            override fun onQueryTextSubmit(query: String): Boolean {
+//                Log.e(TAG, "SearchView: onQueryTextSubmit: ${query}")
+//                viewModel.loadFirstPage().let {
+//                    onQuerySubmitted()
+//                }
+//                return true
+//            }
+//
+//            override fun onQueryTextChange(newText: String?): Boolean {
+//                return false
+//            }
+//
+//        })
 
-            // QUERY SUBMITTED
-            searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
+        // ENTER ON COMPUTER KEYBOARD OR ARROW ON VIRTUAL KEYBOARD
+        val searchPlate = searchView.findViewById(R.id.search_src_text) as EditText
+        searchPlate.setOnEditorActionListener { v, actionId, event ->
 
-                override fun onQueryTextSubmit(query: String): Boolean {
-                    Log.e(TAG, "onQueryTextSubmit: ${query}")
-                    viewModel.setQuery(query)
-                    viewModel.loadFirstPage()
-                    onQuerySubmitted()
-                    return true
-                }
-
-                override fun onQueryTextChange(newText: String?): Boolean {
-                    return false
-                }
-
-            })
-
-            // ENTER ON COMPUTER KEYBOARD OR ARROW ON VIRTUAL KEYBOARD
-            val searchPlate = searchView.findViewById(R.id.search_src_text) as EditText
-            searchPlate.setOnEditorActionListener { v, actionId, event ->
-
-                Log.d(TAG, "SearchPlate: clicked")
-
-                if (actionId == EditorInfo.IME_ACTION_UNSPECIFIED || actionId == EditorInfo.IME_ACTION_SEARCH ) {
-                    val searchQuery = v.text.toString()
-                    Log.e(TAG, "SearchPlate: executing search...: ${searchQuery}")
-                    viewModel.setQuery(searchQuery)
+            if (actionId == EditorInfo.IME_ACTION_UNSPECIFIED || actionId == EditorInfo.IME_ACTION_SEARCH ) {
+                val searchQuery = v.text.toString()
+                Log.e(TAG, "SearchView: (keyboard or arrow) executing search...: ${searchQuery}")
+                viewModel.setQuery(searchQuery).let{
                     onBlogSearchOrFilter()
                 }
-                true
             }
+            true
+        }
 
-            // SEARCH BUTTON CLICKED
-            val searchButton = searchView.findViewById(R.id.search_go_btn) as View
-            searchButton.setOnClickListener {
-                val searchQuery = searchPlate.text.toString()
-                Log.e(TAG, "SearchButton: executing search...: ${searchQuery}")
-                viewModel.setQuery(searchQuery)
+        // SEARCH BUTTON CLICKED
+        val searchButton = searchView.findViewById(R.id.search_go_btn) as View
+        searchButton.setOnClickListener {
+            val searchQuery = searchPlate.text.toString()
+            Log.e(TAG, "SearchView: (button) executing search...: ${searchQuery}")
+            viewModel.setQuery(searchQuery).let {
                 onBlogSearchOrFilter()
             }
+
+        }
+    }
+
+    fun onBlogSearchOrFilter(){
+        blog_post_recyclerview.smoothScrollToPosition(0)
+
+
+//        if(viewModel.viewState.value!!.blogFields.searchQuery.isBlank()){
+//            viewModel.loadFirstPage().let {
+//                onQuerySubmitted()
+//            }
+//        }
+//        else{
+//            searchView.setQuery(
+//                viewModel.viewState.value!!.blogFields.searchQuery,
+//                true
+//            )
+//        }
+
+
+        viewModel.loadFirstPage().let {
+            onQuerySubmitted()
+        }
+    }
+
+
+    private fun initSearchView(menu: Menu){
+        activity?.apply {
+            val searchManager: SearchManager = getSystemService(SEARCH_SERVICE) as SearchManager
+            searchView = menu.findItem(R.id.action_search).actionView as SearchView
+            searchView.setSearchableInfo(searchManager.getSearchableInfo(componentName))
+            searchView.maxWidth = java.lang.Integer.MAX_VALUE
+            searchView.setIconifiedByDefault(true)
+            searchView.isSubmitButtonEnabled = true
         }
     }
 
@@ -210,6 +202,39 @@ class BlogFragment : BaseBlogFragment(),
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    fun onQuerySubmitted(){
+        stateChangeListener.hideSoftKeyboard()
+        focusable_view.requestFocus()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
+    }
+
+    override fun onRefresh() {
+        onBlogSearchOrFilter()
+        swipe_refresh.isRefreshing = false
+    }
+
+    override fun onItemSelected(position: Int, item: BlogPost) {
+        recyclerAdapter.findBlogPost(position).let{
+            viewModel.setBlogPost(it)
+            findNavController().navigate(R.id.action_blogFragment_to_viewBlogFragment)
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        // clear references (can leak memory)
+        blog_post_recyclerview.adapter = null
     }
 
     fun showFilterDialog(){
@@ -297,51 +322,6 @@ class BlogFragment : BaseBlogFragment(),
                 else -> return
             }
         }
-    }
-
-    fun onBlogSearchOrFilter(){
-        blog_post_recyclerview.smoothScrollToPosition(0)
-        if(viewModel.viewState.value!!.blogFields.searchQuery.isBlank()){
-            viewModel.setQuery("")
-            viewModel.loadFirstPage()
-            onQuerySubmitted()
-        }
-        else{
-            searchView.setQuery(viewModel.viewState.value!!.blogFields.searchQuery, true)
-        }
-    }
-
-    fun onQuerySubmitted(){
-        stateChangeListener.hideSoftKeyboard()
-        focusable_view.requestFocus()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        sharedPreferences.registerOnSharedPreferenceChangeListener(this)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
-    }
-
-    override fun onRefresh() {
-        onBlogSearchOrFilter()
-        swipe_refresh.isRefreshing = false
-    }
-
-    override fun onItemSelected(position: Int, item: BlogPost) {
-        recyclerAdapter.findBlogPost(position).let{
-            viewModel.setBlogPost(it)
-            findNavController().navigate(R.id.action_blogFragment_to_viewBlogFragment)
-        }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        // clear references (can leak memory)
-        blog_post_recyclerview.adapter = null
     }
 }
 

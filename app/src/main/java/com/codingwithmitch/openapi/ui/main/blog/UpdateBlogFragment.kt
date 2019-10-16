@@ -6,19 +6,18 @@ import android.view.*
 import androidx.lifecycle.Observer
 
 import com.codingwithmitch.openapi.R
-import com.codingwithmitch.openapi.models.BlogPost
 import kotlinx.android.synthetic.main.fragment_view_blog.blog_body
 import kotlinx.android.synthetic.main.fragment_view_blog.blog_image
 import kotlinx.android.synthetic.main.fragment_view_blog.blog_title
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
-import androidx.core.net.toUri
 import com.codingwithmitch.openapi.ui.*
 import com.codingwithmitch.openapi.ui.main.blog.state.BlogStateEvent
-import com.codingwithmitch.openapi.util.Constants.Companion.CROP_IMAGE_INTENT_CODE
+import com.codingwithmitch.openapi.ui.main.blog.state.setBlogPost
+import com.codingwithmitch.openapi.ui.main.blog.state.setUpdatedBlogFields
+import com.codingwithmitch.openapi.ui.main.blog.state.updateListItem
 import com.codingwithmitch.openapi.util.Constants.Companion.GALLERY_REQUEST_CODE
-import com.codingwithmitch.openapi.util.ErrorHandling
 import com.codingwithmitch.openapi.util.FileUtil
 import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView

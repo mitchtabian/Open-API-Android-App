@@ -13,6 +13,7 @@ import com.bumptech.glide.RequestManager
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.ui.DataStateChangeListener
 import com.codingwithmitch.openapi.ui.UICommunicationListener
+import com.codingwithmitch.openapi.ui.main.blog.state.BlogViewModel
 import com.codingwithmitch.openapi.viewmodels.ViewModelProviderFactory
 import dagger.android.support.DaggerFragment
 import javax.inject.Inject
@@ -20,6 +21,9 @@ import javax.inject.Inject
 abstract class BaseBlogFragment : DaggerFragment(){
 
     val TAG: String = "AppDebug"
+
+    @Inject
+    lateinit var requestManager: RequestManager
 
     @Inject
     lateinit var providerFactory: ViewModelProviderFactory
