@@ -14,6 +14,7 @@ import com.codingwithmitch.openapi.session.SessionManager
 import com.codingwithmitch.openapi.ui.DataState
 import com.codingwithmitch.openapi.ui.main.blog.state.BlogViewState
 import com.codingwithmitch.openapi.util.ApiSuccessResponse
+import com.codingwithmitch.openapi.util.Constants.Companion.PAGINATION_PAGE_SIZE
 import com.codingwithmitch.openapi.util.DateUtils
 import com.codingwithmitch.openapi.util.GenericApiResponse
 import kotlinx.coroutines.Dispatchers
@@ -36,7 +37,8 @@ constructor(
 
     fun searchBlogPosts(
         authToken: AuthToken,
-        query: String
+        query: String,
+        page: Int
     ): LiveData<DataState<BlogViewState>> {
         return object: NetworkBoundResource<BlogListSearchResponse, List<BlogPost>, BlogViewState>(
             sessionManager.isConnectedToTheInternet(),
@@ -50,6 +52,10 @@ constructor(
 
                     // finishing by viewing db cache
                     result.addSource(loadFromCache()){ viewState ->
+                        viewState.blogFields.isQueryInProgress = false
+                        if(page * PAGINATION_PAGE_SIZE > viewState.blogFields.blogList.size){
+                            viewState.blogFields.isQueryExhausted = true
+                        }
                         onCompleteJob(DataState.data(viewState, null))
                     }
                 }
@@ -83,12 +89,15 @@ constructor(
             override fun createCall(): LiveData<GenericApiResponse<BlogListSearchResponse>> {
                 return openApiMainService.searchListBlogPosts(
                     "Token ${authToken.token!!}",
-                    query = query
+                    query = query,
+                    page = page
                 )
             }
 
             override fun loadFromCache(): LiveData<BlogViewState> {
-                return blogPostDao.getAllBlogPosts()
+                return blogPostDao.getAllBlogPosts(
+                    query = query,
+                    page = page)
                     .switchMap {
                         object: LiveData<BlogViewState>(){
                             override fun onActive() {
@@ -110,11 +119,10 @@ constructor(
                         for(blogPost in cacheObject){
                             try{
                                 // Launch each insert as a separate job to be executed in parallel
-                                val j = launch {
+                                launch {
                                     Log.d(TAG, "updateLocalDb: inserting blog: ${blogPost}")
                                     blogPostDao.insert(blogPost)
                                 }
-                                j.join() // wait for completion before proceeding to next
                             }catch (e: Exception){
                                 Log.e(TAG, "updateLocalDb: error updating cache data on blog post with slug: ${blogPost.slug}. " +
                                         "${e.message}")

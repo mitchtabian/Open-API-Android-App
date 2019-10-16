@@ -7,14 +7,14 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.RequestManager
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.models.BlogPost
-import com.codingwithmitch.openapi.ui.main.blog.state.BlogStateEvent
+import com.codingwithmitch.openapi.ui.DataState
+import com.codingwithmitch.openapi.ui.main.blog.state.*
 import com.codingwithmitch.openapi.ui.main.blog.state.BlogStateEvent.*
+import com.codingwithmitch.openapi.util.ErrorHandling
 import com.codingwithmitch.openapi.util.TopSpacingItemDecoration
 import kotlinx.android.synthetic.main.fragment_blog.*
-import javax.inject.Inject
 
 class BlogFragment : BaseBlogFragment(),
     BlogListAdapter.Interaction
@@ -41,21 +41,15 @@ class BlogFragment : BaseBlogFragment(),
 
     private fun executeSearch(){
         viewModel.setQuery("")
-        viewModel.setStateEvent(BlogSearchEvent())
+        viewModel.loadFirstPage()
     }
 
     private fun subscribeObservers(){
         viewModel.dataState.observe(viewLifecycleOwner, Observer{ dataState ->
-            if(dataState != null){
+            if(dataState != null) {
+                // call before onDataStateChange to consume error if there is one
+                handlePagination(dataState)
                 stateChangeListener.onDataStateChange(dataState)
-                dataState.data?.let {
-                    it.data?.let{
-                        it.getContentIfNotHandled()?.let{
-                            Log.d(TAG, "BlogFragment, DataState: ${it}")
-                            viewModel.setBlogListData(it.blogFields.blogList)
-                        }
-                    }
-                }
             }
         })
 
@@ -64,7 +58,7 @@ class BlogFragment : BaseBlogFragment(),
             if(viewState != null){
                 recyclerAdapter.submitList(
                     blogList = viewState.blogFields.blogList,
-                    isQueryExhausted = true
+                    isQueryExhausted = viewState.blogFields.isQueryExhausted
                 )
             }
         })
@@ -87,7 +81,7 @@ class BlogFragment : BaseBlogFragment(),
                     val lastPosition = layoutManager.findLastVisibleItemPosition()
                     if (lastPosition == recyclerAdapter.itemCount.minus(1)) {
                         Log.d(TAG, "BlogFragment: attempting to load next page...")
-//                    TODO("load next page using ViewModel")
+                        viewModel.setStateEvent(NextPageEvent())
                     }
                 }
             })
