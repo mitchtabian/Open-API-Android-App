@@ -1,6 +1,7 @@
-package com.codingwithmitch.openapi.ui.main.blog.state
+package com.codingwithmitch.openapi.ui.main.blog.viewmodel
 
 import com.codingwithmitch.openapi.models.BlogPost
+import com.codingwithmitch.openapi.ui.main.blog.viewmodel.BlogViewModel
 
 fun BlogViewModel.setQuery(query: String){
     val update = getCurrentViewStateOrNew()

@@ -9,10 +9,16 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.models.BlogPost
-import com.codingwithmitch.openapi.ui.main.blog.state.*
-import com.codingwithmitch.openapi.ui.main.blog.state.BlogStateEvent.*
+import com.codingwithmitch.openapi.ui.DataState
+import com.codingwithmitch.openapi.ui.main.blog.state.BlogViewState
+import com.codingwithmitch.openapi.ui.main.blog.viewmodel.setBlogPost
+import com.codingwithmitch.openapi.ui.main.blog.viewmodel.setQueryExhausted
+import com.codingwithmitch.openapi.util.ErrorHandling
 import com.codingwithmitch.openapi.util.TopSpacingItemDecoration
+import handleIncomingBlogListData
 import kotlinx.android.synthetic.main.fragment_blog.*
+import loadFirstPage
+import nextPage
 
 class BlogFragment : BaseBlogFragment(),
     BlogListAdapter.Interaction
@@ -34,12 +40,10 @@ class BlogFragment : BaseBlogFragment(),
 
         initRecyclerView()
         subscribeObservers()
-        executeSearch()
-    }
 
-    private fun executeSearch(){
-        viewModel.setQuery("")
-        viewModel.loadFirstPage()
+        if(savedInstanceState == null){
+            viewModel.loadFirstPage()
+        }
     }
 
     private fun subscribeObservers(){
@@ -62,6 +66,35 @@ class BlogFragment : BaseBlogFragment(),
         })
     }
 
+    private fun handlePagination(dataState: DataState<BlogViewState>){
+
+        // Handle incoming data from DataState
+        dataState.data?.let {
+            it.data?.let{
+                it.getContentIfNotHandled()?.let{
+                    viewModel.handleIncomingBlogListData(it)
+                }
+            }
+        }
+
+        // Check for pagination end (no more results)
+        // must do this b/c server will return an ApiErrorResponse if page is not valid,
+        // -> meaning there is no more data.
+        dataState.error?.let{ event ->
+            event.peekContent().response.message?.let{
+                if(ErrorHandling.isPaginationDone(it)){
+
+                    // handle the error message event so it doesn't display in UI
+                    event.getContentIfNotHandled()
+
+                    // set query exhausted to update RecyclerView with
+                    // "No more results..." list item
+                    viewModel.setQueryExhausted(true)
+                }
+            }
+        }
+    }
+
     private fun initRecyclerView(){
 
         blog_post_recyclerview.apply {
@@ -79,20 +112,17 @@ class BlogFragment : BaseBlogFragment(),
                     val lastPosition = layoutManager.findLastVisibleItemPosition()
                     if (lastPosition == recyclerAdapter.itemCount.minus(1)) {
                         Log.d(TAG, "BlogFragment: attempting to load next page...")
-                        viewModel.setStateEvent(NextPageEvent())
+                        viewModel.nextPage()
                     }
                 }
             })
             adapter = recyclerAdapter
         }
-
     }
 
     override fun onItemSelected(position: Int, item: BlogPost) {
-        recyclerAdapter.findBlogPost(position).let{
-            viewModel.setBlogPost(it)
-            findNavController().navigate(R.id.action_blogFragment_to_viewBlogFragment)
-        }
+        viewModel.setBlogPost(item)
+        findNavController().navigate(R.id.action_blogFragment_to_viewBlogFragment)
     }
 
     override fun onDestroyView() {

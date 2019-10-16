@@ -1,14 +1,16 @@
-package com.codingwithmitch.openapi.ui.main.blog.state
+package com.codingwithmitch.openapi.ui.main.blog.viewmodel
 
 import android.content.SharedPreferences
-import android.util.Log
 import androidx.lifecycle.LiveData
 import com.bumptech.glide.RequestManager
 import com.codingwithmitch.openapi.repository.main.BlogRepository
 import com.codingwithmitch.openapi.session.SessionManager
 import com.codingwithmitch.openapi.ui.BaseViewModel
 import com.codingwithmitch.openapi.ui.DataState
+import com.codingwithmitch.openapi.ui.Loading
+import com.codingwithmitch.openapi.ui.main.blog.state.BlogStateEvent
 import com.codingwithmitch.openapi.ui.main.blog.state.BlogStateEvent.*
+import com.codingwithmitch.openapi.ui.main.blog.state.BlogViewState
 import com.codingwithmitch.openapi.util.AbsentLiveData
 import javax.inject.Inject
 
@@ -34,33 +36,17 @@ constructor(
                 }?: AbsentLiveData.create()
             }
 
-            is NextPageEvent -> {
-                Log.d(TAG, "BlogViewModel: NextPageEvent detected...")
-
-                if(!viewState.value!!.blogFields.isQueryInProgress
-                    && !viewState.value!!.blogFields.isQueryExhausted){
-                    Log.d(TAG, "BlogViewModel: Attempting to load next page...")
-                    setQueryInProgress(true)
-                    incrementPageNumber()
-                    return sessionManager.cachedToken.value?.let { authToken ->
-                        blogRepository.searchBlogPosts(
-                            authToken,
-                            viewState.value!!.blogFields.searchQuery,
-                            viewState.value!!.blogFields.page
-                        )
-                    }?: AbsentLiveData.create()
-                }
-                else{
-                    return AbsentLiveData.create()
-                }
-            }
-
             is CheckAuthorOfBlogPost -> {
                 return AbsentLiveData.create()
             }
 
             is None ->{
-                return AbsentLiveData.create()
+                return object: LiveData<DataState<BlogViewState>>(){
+                    override fun onActive() {
+                        super.onActive()
+                        value = DataState(null, Loading(false), null)
+                    }
+                }
             }
         }
     }

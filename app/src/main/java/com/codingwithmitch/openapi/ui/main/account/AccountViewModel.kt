@@ -74,7 +74,7 @@ constructor(
             return
         }
         update.accountProperties = accountProperties
-        _viewState.value = update
+        setViewState(update)
     }
 
     override fun initNewViewState(): AccountViewState {

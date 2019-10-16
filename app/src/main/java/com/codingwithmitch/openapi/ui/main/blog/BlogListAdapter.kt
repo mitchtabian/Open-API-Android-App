@@ -67,15 +67,22 @@ class BlogListAdapter(
 
             BLOG_ITEM ->{
                 return BlogViewHolder(
-                    LayoutInflater.from(parent.context)
-                        .inflate(R.layout.layout_blog_list_item, parent, false),
+                    LayoutInflater.from(parent.context).inflate(
+                            R.layout.layout_blog_list_item,
+                        parent,
+                        false
+                    ),
                     interaction = interaction,
                     requestManager = requestManager
                 )
             }
             else -> {
                 return BlogViewHolder(
-                    LayoutInflater.from(parent.context).inflate(R.layout.layout_blog_list_item, parent, false),
+                    LayoutInflater.from(parent.context).inflate(
+                        R.layout.layout_blog_list_item,
+                        parent,
+                        false
+                    ),
                     interaction = interaction,
                     requestManager = requestManager
                 )
@@ -112,6 +119,13 @@ class BlogListAdapter(
         }
     }
 
+    override fun getItemViewType(position: Int): Int {
+        if(differ.currentList.get(position).pk > -1){
+            return BLOG_ITEM
+        }
+        return differ.currentList.get(position).pk
+    }
+
     override fun getItemCount(): Int {
         return differ.currentList.size
     }
@@ -121,10 +135,6 @@ class BlogListAdapter(
         if (isQueryExhausted)
             newList?.add(NO_MORE_RESULTS_BLOG_MARKER)
         differ.submitList(newList)
-    }
-
-    fun findBlogPost(position: Int): BlogPost{
-        return differ.currentList[position]
     }
 
     class BlogViewHolder
