@@ -26,8 +26,7 @@ class BlogViewModel
 constructor(
     private val sessionManager: SessionManager,
     private val blogRepository: BlogRepository,
-    private val sharedPreferences: SharedPreferences,
-    private val requestManager: RequestManager
+    private val sharedPreferences: SharedPreferences
 )
     : BaseViewModel<BlogStateEvent, BlogViewState>()
 {
@@ -126,16 +125,6 @@ constructor(
 
     override fun initNewViewState(): BlogViewState {
         return BlogViewState()
-    }
-
-    // Prepare the images that will be displayed in the RecyclerView.
-    // This also ensures if the network connection is lost, they will be in the cache
-    private fun preloadGlideImages(list: List<BlogPost>){
-        for(blogPost in list){
-            requestManager
-                .load(blogPost.image)
-                .preload()
-        }
     }
 
     fun loadFirstPage() {
