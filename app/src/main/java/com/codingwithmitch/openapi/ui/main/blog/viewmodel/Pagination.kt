@@ -32,8 +32,9 @@ fun BlogViewModel.nextPage(){
 
 private fun BlogViewModel.incrementPageNumber(){
     val update = getCurrentViewStateOrNew()
-    val page = update.copy().blogFields.page
+    val page = update.copy().blogFields.page // get current page
     update.blogFields.page = page + 1
+    setViewState(update)
 }
 
 fun BlogViewModel.handleIncomingBlogListData(viewState: BlogViewState){

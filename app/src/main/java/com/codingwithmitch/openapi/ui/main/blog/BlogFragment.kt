@@ -2,7 +2,6 @@ package com.codingwithmitch.openapi.ui.main.blog
 
 import android.app.SearchManager
 import android.content.Context.SEARCH_SERVICE
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -15,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.util.TopSpacingItemDecoration
 import kotlinx.android.synthetic.main.fragment_blog.*
-import javax.inject.Inject
 import android.view.inputmethod.EditorInfo
 import android.widget.*
 import androidx.navigation.fragment.findNavController
@@ -29,11 +27,8 @@ import com.codingwithmitch.openapi.repository.main.BlogQueryUtils.Companion.BLOG
 import com.codingwithmitch.openapi.repository.main.BlogQueryUtils.Companion.BLOG_ORDER_ASC
 import com.codingwithmitch.openapi.ui.DataState
 import com.codingwithmitch.openapi.ui.main.blog.state.*
-import com.codingwithmitch.openapi.ui.main.blog.state.BlogStateEvent.*
 import com.codingwithmitch.openapi.ui.main.blog.viewmodel.*
 import com.codingwithmitch.openapi.util.ErrorHandling
-import com.codingwithmitch.openapi.util.PreferenceKeys.Companion.BLOG_FILTER
-import com.codingwithmitch.openapi.util.PreferenceKeys.Companion.BLOG_ORDER
 
 class BlogFragment : BaseBlogFragment(),
     BlogListAdapter.BlogViewHolder.Interaction,
