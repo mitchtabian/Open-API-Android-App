@@ -112,6 +112,13 @@ class BlogListAdapter(
         }
     }
 
+    override fun getItemViewType(position: Int): Int {
+        if(differ.currentList.get(position).pk > -1){
+            return BLOG_ITEM
+        }
+        return differ.currentList.get(position).pk
+    }
+
     override fun getItemCount(): Int {
         return differ.currentList.size
     }
