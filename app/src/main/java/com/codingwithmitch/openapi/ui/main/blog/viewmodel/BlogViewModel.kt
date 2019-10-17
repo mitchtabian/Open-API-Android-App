@@ -121,16 +121,22 @@ constructor(
         return BlogViewState()
     }
 
-    fun getFilter(): String{
-        return viewState.value!!.blogFields.filter
+    fun getFilter(): String? {
+       getCurrentViewStateOrNew().let {
+           return it.blogFields.filter
+       }
     }
 
     fun getOrder(): String {
-        return viewState.value!!.blogFields.order
+        getCurrentViewStateOrNew().let {
+            return it.blogFields.order
+        }
     }
 
     fun isAuthorOfBlogPost(): Boolean{
-        return viewState.value!!.viewBlogFields.isAuthorOfBlogPost
+        getCurrentViewStateOrNew().let {
+            return it.viewBlogFields.isAuthorOfBlogPost
+        }
     }
 
     fun saveFilterOptions(filter: String, order: String){
