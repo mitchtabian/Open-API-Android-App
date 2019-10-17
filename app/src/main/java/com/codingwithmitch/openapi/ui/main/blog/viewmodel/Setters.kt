@@ -1,5 +1,6 @@
 package com.codingwithmitch.openapi.ui.main.blog.viewmodel
 
+import android.net.Uri
 import com.codingwithmitch.openapi.models.BlogPost
 import com.codingwithmitch.openapi.ui.main.blog.viewmodel.BlogViewModel
 
@@ -67,8 +68,18 @@ fun BlogViewModel.removeDeletedBlogPost(){
         }
     }
     setBlogListData(list)
-//    setViewState(update)
 }
+
+fun BlogViewModel.setUpdatedBlogFields(title: String?, body: String?, uri: Uri?){
+    val update = getCurrentViewStateOrNew()
+    val updatedBlogFields = update.updatedBlogFields
+    title?.let{ updatedBlogFields.updatedBlogTitle = it }
+    body?.let{ updatedBlogFields.updatedBlogBody = it }
+    uri?.let{ updatedBlogFields.updatedImageUri = it }
+    update.updatedBlogFields = updatedBlogFields
+    setViewState(update)
+}
+
 
 
 
