@@ -74,8 +74,8 @@ fun BlogViewModel.removeDeletedBlogPost(){
     val update = getCurrentViewStateOrNew()
     val list = update.blogFields.blogList.toMutableList()
     for(i in 0..(list.size - 1)){
-        if(list[i] == viewState.value!!.viewBlogFields.blogPost){
-            list.remove(viewState.value!!.viewBlogFields.blogPost)
+        if(list[i] == getBlogPost()){
+            list.remove(getBlogPost())
             break
         }
     }

@@ -1,10 +1,9 @@
 package com.codingwithmitch.openapi.ui.main.blog.state
 
 import android.net.Uri
-import com.codingwithmitch.openapi.models.AccountProperties
 import com.codingwithmitch.openapi.models.BlogPost
-import com.codingwithmitch.openapi.repository.main.BlogQueryUtils.Companion.BLOG_ORDER_ASC
-import com.codingwithmitch.openapi.repository.main.BlogQueryUtils.Companion.ORDER_BY_ASC_DATE_UPDATED
+import com.codingwithmitch.openapi.persistence.BlogQueryUtils.Companion.BLOG_ORDER_ASC
+import com.codingwithmitch.openapi.persistence.BlogQueryUtils.Companion.ORDER_BY_ASC_DATE_UPDATED
 
 data class BlogViewState (
 

@@ -14,6 +14,7 @@ import com.codingwithmitch.openapi.ui.AreYouSureCallback
 import com.codingwithmitch.openapi.ui.UIMessage
 import com.codingwithmitch.openapi.ui.UIMessageType
 import com.codingwithmitch.openapi.ui.main.blog.state.BlogStateEvent.*
+import com.codingwithmitch.openapi.ui.main.blog.viewmodel.isAuthorOfBlogPost
 import com.codingwithmitch.openapi.ui.main.blog.viewmodel.removeDeletedBlogPost
 import com.codingwithmitch.openapi.ui.main.blog.viewmodel.setIsAuthorOfBlogPost
 import com.codingwithmitch.openapi.ui.main.blog.viewmodel.setUpdatedBlogFields

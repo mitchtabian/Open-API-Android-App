@@ -10,6 +10,8 @@ import com.codingwithmitch.openapi.api.main.network_responses.BlogListSearchResp
 import com.codingwithmitch.openapi.models.AuthToken
 import com.codingwithmitch.openapi.models.BlogPost
 import com.codingwithmitch.openapi.persistence.BlogPostDao
+import com.codingwithmitch.openapi.persistence.BlogQueryUtils
+import com.codingwithmitch.openapi.persistence.returnOrderedBlogQuery
 import com.codingwithmitch.openapi.repository.JobManager
 import com.codingwithmitch.openapi.repository.NetworkBoundResource
 import com.codingwithmitch.openapi.session.SessionManager
@@ -29,7 +31,6 @@ import com.codingwithmitch.openapi.util.SuccessHandling.Companion.RESPONSE_NO_PE
 import com.codingwithmitch.openapi.util.SuccessHandling.Companion.SUCCESS_BLOG_DELETED
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
-import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import javax.inject.Inject
@@ -91,8 +92,7 @@ constructor(
             }
 
             override fun loadFromCache(): LiveData<BlogViewState> {
-                return BlogQueryUtils.returnOrderedBlogQuery(
-                    blogPostDao = blogPostDao,
+                return blogPostDao.returnOrderedBlogQuery(
                     query = query,
                     filterAndOrder = filterAndOrder,
                     page = page)

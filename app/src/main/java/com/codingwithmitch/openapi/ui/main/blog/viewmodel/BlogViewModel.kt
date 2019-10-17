@@ -4,7 +4,7 @@ import android.content.SharedPreferences
 import android.util.Log
 import androidx.lifecycle.*
 import com.codingwithmitch.openapi.models.BlogPost
-import com.codingwithmitch.openapi.repository.main.BlogQueryUtils
+import com.codingwithmitch.openapi.persistence.BlogQueryUtils
 import com.codingwithmitch.openapi.repository.main.BlogRepository
 import com.codingwithmitch.openapi.session.SessionManager
 import com.codingwithmitch.openapi.ui.BaseViewModel
@@ -54,11 +54,10 @@ constructor(
             is BlogSearchEvent -> {
                 return sessionManager.cachedToken.value?.let { authToken ->
                     blogRepository.searchBlogPosts(
-                        authToken,
-                        viewState.value!!.blogFields.searchQuery,
-                        viewState.value!!.blogFields.order
-                                + viewState.value!!.blogFields.filter,
-                        viewState.value!!.blogFields.page
+                        authToken = authToken,
+                        query = getSearchQuery(),
+                        filterAndOrder = getOrder() + getFilter(),
+                        page = getPage()
                     )
                 }?: AbsentLiveData.create()
             }
@@ -68,8 +67,8 @@ constructor(
                 if(sessionManager.isConnectedToTheInternet()){
                     return sessionManager.cachedToken.value?.let { authToken ->
                         blogRepository.isAuthorOfBlogPost(
-                            authToken,
-                            viewState.value!!.viewBlogFields.blogPost!!.slug
+                            authToken = authToken,
+                            slug = getSlug()
                         )
                     }?: AbsentLiveData.create()
                 }
@@ -84,11 +83,11 @@ constructor(
                     val body = RequestBody.create(MediaType.parse("text/plain"), stateEvent.body)
 
                     blogRepository.updateBlogPost(
-                        authToken,
-                        viewState.value!!.viewBlogFields.blogPost!!.slug,
-                        title,
-                        body,
-                        stateEvent.image
+                        authToken = authToken,
+                        slug = getSlug(),
+                        title = title,
+                        body = body,
+                        image = stateEvent.image
                     )
                 }?: AbsentLiveData.create()
             }
@@ -119,24 +118,6 @@ constructor(
 
     override fun initNewViewState(): BlogViewState {
         return BlogViewState()
-    }
-
-    fun getFilter(): String? {
-       getCurrentViewStateOrNew().let {
-           return it.blogFields.filter
-       }
-    }
-
-    fun getOrder(): String {
-        getCurrentViewStateOrNew().let {
-            return it.blogFields.order
-        }
-    }
-
-    fun isAuthorOfBlogPost(): Boolean{
-        getCurrentViewStateOrNew().let {
-            return it.viewBlogFields.isAuthorOfBlogPost
-        }
     }
 
     fun saveFilterOptions(filter: String, order: String){
