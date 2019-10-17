@@ -48,6 +48,11 @@ interface OpenApiMainService {
     ): LiveData<GenericApiResponse<GenericResponse>>
 
 
+    @DELETE("blog/{slug}/delete")
+    fun deleteBlogPost(
+        @Header("Authorization") authorization: String,
+        @Path("slug") slug: String
+    ): LiveData<GenericApiResponse<GenericResponse>>
 }
 
 

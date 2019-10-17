@@ -6,5 +6,7 @@ sealed class BlogStateEvent {
 
     class CheckAuthorOfBlogPost: BlogStateEvent()
 
+    class DeleteBlogPostEvent: BlogStateEvent()
+
     class None: BlogStateEvent()
 }

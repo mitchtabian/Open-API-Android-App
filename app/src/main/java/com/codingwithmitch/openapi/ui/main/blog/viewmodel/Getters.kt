@@ -1,5 +1,7 @@
 package com.codingwithmitch.openapi.ui.main.blog.viewmodel
 
+import com.codingwithmitch.openapi.models.BlogPost
+
 fun BlogViewModel.getFilter(): String {
     getCurrentViewStateOrNew().let {
         return it.blogFields.filter
@@ -38,6 +40,23 @@ fun BlogViewModel.isAuthorOfBlogPost(): Boolean{
         return it.viewBlogFields.isAuthorOfBlogPost
     }
 }
+
+
+fun BlogViewModel.getBlogPost(): BlogPost {
+    getCurrentViewStateOrNew().let {
+        return it.viewBlogFields.blogPost?.let {
+            return it
+        }?: getDummyBlogPost()
+    }
+}
+
+fun BlogViewModel.getDummyBlogPost(): BlogPost{
+    return BlogPost(-1, "" , "", "", "", 1, "")
+}
+
+
+
+
 
 
 
