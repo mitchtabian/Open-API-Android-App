@@ -94,6 +94,16 @@ fun BlogViewModel.setUpdatedBlogFields(title: String?, body: String?, uri: Uri?)
 }
 
 
+fun BlogViewModel.onBlogPostUpdateSuccess(blogPost: BlogPost){
+    setUpdatedBlogFields(
+        uri = null,
+        title = blogPost.title,
+        body = blogPost.body
+    ) // update UpdateBlogFragment (not really necessary since navigating back)
+    setBlogPost(blogPost) // update ViewBlogFragment
+    updateListItem(blogPost) // update BlogFragment
+}
+
 
 
 

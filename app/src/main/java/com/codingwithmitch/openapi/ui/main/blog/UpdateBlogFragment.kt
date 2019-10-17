@@ -12,11 +12,10 @@ import kotlinx.android.synthetic.main.fragment_view_blog.blog_title
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
+import androidx.navigation.fragment.findNavController
 import com.codingwithmitch.openapi.ui.*
 import com.codingwithmitch.openapi.ui.main.blog.state.BlogStateEvent
-import com.codingwithmitch.openapi.ui.main.blog.viewmodel.setBlogPost
-import com.codingwithmitch.openapi.ui.main.blog.viewmodel.setUpdatedBlogFields
-import com.codingwithmitch.openapi.ui.main.blog.viewmodel.updateListItem
+import com.codingwithmitch.openapi.ui.main.blog.viewmodel.*
 import com.codingwithmitch.openapi.util.Constants.Companion.GALLERY_REQUEST_CODE
 import com.codingwithmitch.openapi.util.FileUtil
 import com.theartofdev.edmodo.cropper.CropImage
@@ -116,14 +115,12 @@ class UpdateBlogFragment : BaseBlogFragment() {
             stateChangeListener.onDataStateChange(dataState)
             dataState.data?.let{ data ->
                 data.data?.getContentIfNotHandled()?.let{ viewState ->
+
+                    // if this is not null, the blogpost was updated
                     viewState.viewBlogFields.blogPost?.let{ blogPost ->
-                        viewModel.setUpdatedBlogFields(
-                            uri = null,
-                            title = blogPost.title,
-                            body = blogPost.body
-                        )
-                        viewModel.setBlogPost(blogPost)
-                        viewModel.updateListItem(blogPost)
+                        viewModel.onBlogPostUpdateSuccess(blogPost).let {
+                            findNavController().popBackStack()
+                        }
                     }
                 }
             }
@@ -150,7 +147,7 @@ class UpdateBlogFragment : BaseBlogFragment() {
 
     private fun saveChanges(){
         var multipartBody: MultipartBody.Part? = null
-        viewModel.viewState.value?.updatedBlogFields?.updatedImageUri?.let{ imageUri ->
+        viewModel.getUpdatedBlogUri()?.let{ imageUri ->
             imageUri.path?.let{filePath ->
                 view?.context?.let{ context ->
                     FileUtil.getUriRealPathAboveKitkat(context, imageUri)?.let{ filepath ->
