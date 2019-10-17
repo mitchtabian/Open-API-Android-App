@@ -23,3 +23,27 @@ fun BlogViewModel.getPage(): Int{
         return it.blogFields.page
     }
 }
+
+fun BlogViewModel.getSlug(): String{
+    getCurrentViewStateOrNew().let {
+        it.viewBlogFields.blogPost?.let {
+            return it.slug
+        }
+    }
+    return ""
+}
+
+fun BlogViewModel.isAuthorOfBlogPost(): Boolean{
+    getCurrentViewStateOrNew().let {
+        return it.viewBlogFields.isAuthorOfBlogPost
+    }
+}
+
+
+
+
+
+
+
+
+
