@@ -201,6 +201,8 @@ class BlogFragment : BaseBlogFragment(),
         onBlogSearchOrFilter()
         swipe_refresh.isRefreshing = false
     }
+
+
 }
 
 

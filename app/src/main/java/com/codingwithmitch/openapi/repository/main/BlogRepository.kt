@@ -8,11 +8,13 @@ import com.codingwithmitch.openapi.api.main.responses.BlogListSearchResponse
 import com.codingwithmitch.openapi.models.AuthToken
 import com.codingwithmitch.openapi.models.BlogPost
 import com.codingwithmitch.openapi.persistence.BlogPostDao
+import com.codingwithmitch.openapi.persistence.returnOrderedBlogQuery
 import com.codingwithmitch.openapi.repository.JobManager
 import com.codingwithmitch.openapi.repository.NetworkBoundResource
 import com.codingwithmitch.openapi.session.SessionManager
 import com.codingwithmitch.openapi.ui.DataState
 import com.codingwithmitch.openapi.ui.main.blog.state.BlogViewState
+import com.codingwithmitch.openapi.ui.main.blog.state.BlogViewState.*
 import com.codingwithmitch.openapi.util.ApiSuccessResponse
 import com.codingwithmitch.openapi.util.Constants.Companion.PAGINATION_PAGE_SIZE
 import com.codingwithmitch.openapi.util.DateUtils
@@ -38,6 +40,7 @@ constructor(
     fun searchBlogPosts(
         authToken: AuthToken,
         query: String,
+        filterAndOrder: String,
         page: Int
     ): LiveData<DataState<BlogViewState>> {
         return object: NetworkBoundResource<BlogListSearchResponse, List<BlogPost>, BlogViewState>(
@@ -90,20 +93,22 @@ constructor(
                 return openApiMainService.searchListBlogPosts(
                     "Token ${authToken.token!!}",
                     query = query,
+                    ordering = filterAndOrder,
                     page = page
                 )
             }
 
             override fun loadFromCache(): LiveData<BlogViewState> {
-                return blogPostDao.getAllBlogPosts(
+                return blogPostDao.returnOrderedBlogQuery(
                     query = query,
+                    filterAndOrder = filterAndOrder,
                     page = page)
                     .switchMap {
                         object: LiveData<BlogViewState>(){
                             override fun onActive() {
                                 super.onActive()
                                 value = BlogViewState(
-                                    BlogViewState.BlogFields(
+                                    BlogFields(
                                         blogList = it,
                                         isQueryInProgress = true
                                     )
