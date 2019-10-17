@@ -48,6 +48,7 @@ class BlogFragment : BaseBlogFragment(),
         super.onViewCreated(view, savedInstanceState)
         (activity as AppCompatActivity).supportActionBar?.setDisplayShowTitleEnabled(false)
         setHasOptionsMenu(true)
+        swipe_refresh.setOnRefreshListener(this)
 
         initRecyclerView()
         subscribeObservers()
