@@ -1,5 +1,6 @@
 package com.codingwithmitch.openapi.ui.main.create_blog
 
+import android.net.Uri
 import androidx.lifecycle.LiveData
 import com.codingwithmitch.openapi.repository.main.CreateBlogRepository
 import com.codingwithmitch.openapi.session.SessionManager
@@ -47,6 +48,16 @@ constructor(
 
     override fun initNewViewState(): CreateBlogViewState {
         return CreateBlogViewState()
+    }
+
+    fun setNewBlogFields(title: String?, body: String?, uri: Uri?){
+        val update = getCurrentViewStateOrNew()
+        val newBlogFields = update.blogFields
+        title?.let{ newBlogFields.newBlogTitle = it }
+        body?.let{ newBlogFields.newBlogBody = it }
+        uri?.let{ newBlogFields.newImageUri = it }
+        update.blogFields = newBlogFields
+        _viewState.value = update
     }
 
     fun clearNewBlogFields(){
