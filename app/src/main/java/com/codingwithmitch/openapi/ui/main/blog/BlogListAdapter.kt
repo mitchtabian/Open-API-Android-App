@@ -123,9 +123,13 @@ class BlogListAdapter(
         differ.submitList(newList)
     }
 
-    fun findBlogPost(position: Int): BlogPost{
-        return differ.currentList[position]
+    override fun getItemViewType(position: Int): Int {
+        if(differ.currentList.get(position).pk > -1){
+            return BLOG_ITEM
+        }
+        return differ.currentList.get(position).pk
     }
+
 
     class BlogViewHolder
     constructor(
