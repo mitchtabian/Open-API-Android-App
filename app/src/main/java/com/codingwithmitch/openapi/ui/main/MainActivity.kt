@@ -61,32 +61,6 @@ class MainActivity : BaseActivity(),
         subscribeObservers()
     }
 
-
-    override fun isStoragePermissionGranted(): Boolean{
-        if (
-            ContextCompat.checkSelfPermission(this,
-                Manifest.permission.READ_EXTERNAL_STORAGE)
-            != PackageManager.PERMISSION_GRANTED &&
-            ContextCompat.checkSelfPermission(this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE)
-            != PackageManager.PERMISSION_GRANTED  ) {
-
-
-            ActivityCompat.requestPermissions(this,
-                arrayOf(
-                    Manifest.permission.READ_EXTERNAL_STORAGE,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE
-                ),
-                PERMISSIONS_REQUEST_READ_STORAGE
-            )
-
-            return false
-        } else {
-            // Permission has already been granted
-            return true
-        }
-    }
-
     private fun setupActionBar(){
         setSupportActionBar(tool_bar)
     }
