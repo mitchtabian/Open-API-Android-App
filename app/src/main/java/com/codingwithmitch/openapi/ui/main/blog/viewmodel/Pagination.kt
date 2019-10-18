@@ -1,10 +1,7 @@
 import android.util.Log
 import com.codingwithmitch.openapi.ui.main.blog.state.BlogStateEvent.*
 import com.codingwithmitch.openapi.ui.main.blog.state.BlogViewState
-import com.codingwithmitch.openapi.ui.main.blog.viewmodel.BlogViewModel
-import com.codingwithmitch.openapi.ui.main.blog.viewmodel.setBlogListData
-import com.codingwithmitch.openapi.ui.main.blog.viewmodel.setQueryExhausted
-import com.codingwithmitch.openapi.ui.main.blog.viewmodel.setQueryInProgress
+import com.codingwithmitch.openapi.ui.main.blog.viewmodel.*
 
 
 fun BlogViewModel.resetPage(){
@@ -18,7 +15,7 @@ fun BlogViewModel.loadFirstPage() {
     setQueryExhausted(false)
     resetPage()
     setStateEvent(BlogSearchEvent())
-    Log.e(TAG, "BlogViewModel: loadFirstPage: ${viewState.value!!.blogFields.searchQuery}")
+    Log.e(TAG, "BlogViewModel: loadFirstPage: ${getSearchQuery()}")
 }
 
 private fun BlogViewModel.incrementPageNumber(){
@@ -29,8 +26,8 @@ private fun BlogViewModel.incrementPageNumber(){
 }
 
 fun BlogViewModel.nextPage(){
-    if(!viewState.value!!.blogFields.isQueryInProgress
-        && !viewState.value!!.blogFields.isQueryExhausted){
+    if(!getIsQueryInProgress()
+        && !getIsQueryExhausted()){
         Log.d(TAG, "BlogViewModel: Attempting to load next page...")
         incrementPageNumber()
         setQueryInProgress(true)

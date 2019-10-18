@@ -30,8 +30,8 @@ constructor(
                 return sessionManager.cachedToken.value?.let { authToken ->
                     blogRepository.searchBlogPosts(
                         authToken,
-                        viewState.value!!.blogFields.searchQuery,
-                        viewState.value!!.blogFields.page
+                        getSearchQuery(),
+                        getPage()
                     )
                 }?: AbsentLiveData.create()
             }
