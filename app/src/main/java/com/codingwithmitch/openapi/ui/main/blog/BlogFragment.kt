@@ -54,7 +54,7 @@ class BlogFragment : BaseBlogFragment(),
         subscribeObservers()
 
         if(savedInstanceState == null){
-            onBlogSearchOrFilter()
+            viewModel.loadFirstPage()
         }
     }
 
