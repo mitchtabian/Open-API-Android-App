@@ -47,6 +47,7 @@ class ForgotPasswordFragment : BaseAuthFragment() {
         }
 
         override fun onLoading(isLoading: Boolean) {
+            Log.d(TAG, "onLoading... ")
             CoroutineScope(Main).launch {
                 stateChangeListener.onDataStateChange(
                     DataState.loading(isLoading = isLoading, cachedData = null)
@@ -92,25 +93,12 @@ class ForgotPasswordFragment : BaseAuthFragment() {
         webView.addJavascriptInterface(WebAppInterface(webInteractionCallback), "AndroidTextListener")
     }
 
-    fun onPasswordResetLinkSent(){
-        CoroutineScope(Main).launch{
-            parent_view.removeView(webView)
-            webView.destroy()
-
-            val animation = TranslateAnimation(
-                password_reset_done_container.width.toFloat(),
-                0f,
-                0f,
-                0f
-            )
-            animation.duration = 500
-            password_reset_done_container.startAnimation(animation)
-            password_reset_done_container.visibility = View.VISIBLE
-        }
-    }
 
 
-    class WebAppInterface constructor(val callback: OnWebInteractionCallback) {
+    class WebAppInterface
+    constructor(
+        private val callback: OnWebInteractionCallback
+    ) {
 
         private val TAG: String = "AppDebug"
 
@@ -139,6 +127,23 @@ class ForgotPasswordFragment : BaseAuthFragment() {
         }
     }
 
+    fun onPasswordResetLinkSent(){
+        CoroutineScope(Main).launch{
+            parent_view.removeView(webView)
+            webView.destroy()
+
+            val animation = TranslateAnimation(
+                password_reset_done_container.width.toFloat(),
+                0f,
+                0f,
+                0f
+            )
+            animation.duration = 500
+            password_reset_done_container.startAnimation(animation)
+            password_reset_done_container.visibility = View.VISIBLE
+        }
+    }
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         try{
@@ -148,6 +153,7 @@ class ForgotPasswordFragment : BaseAuthFragment() {
         }
     }
 }
+
 
 
 

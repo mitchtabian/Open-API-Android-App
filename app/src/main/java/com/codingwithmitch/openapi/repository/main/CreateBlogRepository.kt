@@ -1,10 +1,8 @@
 package com.codingwithmitch.openapi.repository.main
 
 import androidx.lifecycle.LiveData
-import com.codingwithmitch.openapi.util.ApiSuccessResponse
-import com.codingwithmitch.openapi.util.GenericApiResponse
 import com.codingwithmitch.openapi.api.main.OpenApiMainService
-import com.codingwithmitch.openapi.api.main.network_responses.BlogCreateUpdateResponse
+import com.codingwithmitch.openapi.api.main.responses.BlogCreateUpdateResponse
 import com.codingwithmitch.openapi.models.AuthToken
 import com.codingwithmitch.openapi.models.BlogPost
 import com.codingwithmitch.openapi.persistence.BlogPostDao
@@ -16,9 +14,13 @@ import com.codingwithmitch.openapi.ui.Response
 import com.codingwithmitch.openapi.ui.ResponseType
 import com.codingwithmitch.openapi.ui.main.create_blog.state.CreateBlogViewState
 import com.codingwithmitch.openapi.util.AbsentLiveData
+import com.codingwithmitch.openapi.util.ApiSuccessResponse
 import com.codingwithmitch.openapi.util.DateUtils
+import com.codingwithmitch.openapi.util.GenericApiResponse
 import com.codingwithmitch.openapi.util.SuccessHandling.Companion.RESPONSE_MUST_BECOME_CODINGWITHMITCH_MEMBER
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.withContext
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import javax.inject.Inject
@@ -30,6 +32,7 @@ constructor(
     val blogPostDao: BlogPostDao,
     val sessionManager: SessionManager
 ): JobManager("CreateBlogRepository") {
+
     private val TAG: String = "AppDebug"
 
     fun createNewBlogPost(
@@ -40,7 +43,6 @@ constructor(
     ): LiveData<DataState<CreateBlogViewState>> {
         return object :
             NetworkBoundResource<BlogCreateUpdateResponse, BlogPost, CreateBlogViewState>(
-                "createNewBlogPost",
                 sessionManager.isConnectedToTheInternet(),
                 true,
                 true,
@@ -101,22 +103,12 @@ constructor(
             }
 
             override fun setJob(job: Job) {
-                addJob(methodName, job)
+                addJob("createNewBlogPost", job)
             }
 
         }.asLiveData()
     }
-
 }
-
-
-
-
-
-
-
-
-
 
 
 

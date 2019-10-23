@@ -5,25 +5,3 @@ import com.codingwithmitch.openapi.models.AccountProperties
 class AccountViewState(
     var accountProperties: AccountProperties? = null
 )
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

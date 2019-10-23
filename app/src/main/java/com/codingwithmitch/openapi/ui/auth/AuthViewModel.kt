@@ -1,6 +1,5 @@
 package com.codingwithmitch.openapi.ui.auth
 
-import android.util.Log
 import androidx.lifecycle.*
 import com.codingwithmitch.openapi.models.AuthToken
 import com.codingwithmitch.openapi.repository.auth.AuthRepository
@@ -8,6 +7,7 @@ import com.codingwithmitch.openapi.ui.BaseViewModel
 import com.codingwithmitch.openapi.ui.DataState
 import com.codingwithmitch.openapi.ui.auth.state.*
 import com.codingwithmitch.openapi.ui.auth.state.AuthStateEvent.*
+import com.codingwithmitch.openapi.util.AbsentLiveData
 import javax.inject.Inject
 
 class AuthViewModel
@@ -20,7 +20,6 @@ constructor(
         when(stateEvent){
 
             is LoginAttemptEvent -> {
-                Log.d(TAG, "handleStateEvent: attempting login... ")
                 return authRepository.attemptLogin(
                     stateEvent.email,
                     stateEvent.password
@@ -28,7 +27,6 @@ constructor(
             }
 
             is RegisterAttemptEvent -> {
-                Log.d(TAG, "handleStateEvent: attempting registration...")
                 return authRepository.attemptRegistration(
                     stateEvent.email,
                     stateEvent.username,
@@ -40,6 +38,7 @@ constructor(
             is CheckPreviousAuthEvent -> {
                 return authRepository.checkPreviousAuthUser()
             }
+
 
             is None ->{
                 return object: LiveData<DataState<AuthViewState>>(){
@@ -62,7 +61,7 @@ constructor(
             return
         }
         update.registrationFields = registrationFields
-        _viewState.value = update
+        setViewState(update)
     }
 
     fun setLoginFields(loginFields: LoginFields){
@@ -71,7 +70,7 @@ constructor(
             return
         }
         update.loginFields = loginFields
-        _viewState.value = update
+        setViewState(update)
     }
 
     fun setAuthToken(authToken: AuthToken){
@@ -80,7 +79,7 @@ constructor(
             return
         }
         update.authToken = authToken
-        _viewState.value = update
+        setViewState(update)
     }
 
     fun cancelActiveJobs(){
@@ -97,6 +96,10 @@ constructor(
         cancelActiveJobs()
     }
 }
+
+
+
+
 
 
 

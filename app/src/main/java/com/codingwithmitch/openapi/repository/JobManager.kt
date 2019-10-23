@@ -1,6 +1,5 @@
 package com.codingwithmitch.openapi.repository
 
-
 import android.util.Log
 import kotlinx.coroutines.Job
 
@@ -39,8 +38,3 @@ open class JobManager(
         }
     }
 }
-
-
-
-
-

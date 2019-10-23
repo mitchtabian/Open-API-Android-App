@@ -17,13 +17,15 @@ import com.codingwithmitch.openapi.viewmodels.ViewModelProviderFactory
 import dagger.android.support.DaggerFragment
 import javax.inject.Inject
 
-
-abstract class BaseCreateBlogFragment: DaggerFragment(){
+abstract class BaseCreateBlogFragment : DaggerFragment(){
 
     val TAG: String = "AppDebug"
 
     @Inject
     lateinit var providerFactory: ViewModelProviderFactory
+
+    @Inject
+    lateinit var requestManager: RequestManager
 
     lateinit var stateChangeListener: DataStateChangeListener
 
@@ -31,34 +33,24 @@ abstract class BaseCreateBlogFragment: DaggerFragment(){
 
     lateinit var viewModel: CreateBlogViewModel
 
-    @Inject
-    lateinit var requestManager: RequestManager
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        // setup back navigation for this graph
         setupActionBarWithNavController(R.id.createBlogFragment, activity as AppCompatActivity)
 
         viewModel = activity?.run {
             ViewModelProvider(this, providerFactory).get(CreateBlogViewModel::class.java)
         }?: throw Exception("Invalid Activity")
 
-        // Cancels jobs when switching between fragments in the same graph
-        // ex: from AccountFragment to UpdateAccountFragment
-        // NOTE: Must call before "subscribeObservers" b/c that will create new jobs for the next fragment
         cancelActiveJobs()
     }
 
     fun cancelActiveJobs(){
-        // When a fragment is destroyed make sure to cancel any on-going requests.
-        // Note: If you wanted a particular request to continue even if the fragment was destroyed, you could write a
-        //       special condition in the repository or something.
         viewModel.cancelActiveJobs()
     }
 
     /*
-      @fragmentId is id of fragment from graph to be EXCLUDED from action back bar nav
-    */
+          @fragmentId is id of fragment from graph to be EXCLUDED from action back bar nav
+        */
     fun setupActionBarWithNavController(fragmentId: Int, activity: AppCompatActivity){
         val appBarConfiguration = AppBarConfiguration(setOf(fragmentId))
         NavigationUI.setupActionBarWithNavController(
@@ -83,19 +75,3 @@ abstract class BaseCreateBlogFragment: DaggerFragment(){
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

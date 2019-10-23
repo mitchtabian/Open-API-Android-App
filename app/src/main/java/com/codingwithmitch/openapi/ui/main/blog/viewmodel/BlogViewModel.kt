@@ -1,8 +1,8 @@
 package com.codingwithmitch.openapi.ui.main.blog.viewmodel
 
 import android.content.SharedPreferences
-import android.util.Log
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import com.bumptech.glide.RequestManager
 import com.codingwithmitch.openapi.models.BlogPost
 import com.codingwithmitch.openapi.persistence.BlogQueryUtils
 import com.codingwithmitch.openapi.repository.main.BlogRepository
@@ -25,16 +25,12 @@ class BlogViewModel
 constructor(
     private val sessionManager: SessionManager,
     private val blogRepository: BlogRepository,
-    sharedPreferences: SharedPreferences,
+    private val sharedPreferences: SharedPreferences,
     private val editor: SharedPreferences.Editor
-)
-    : BaseViewModel<BlogStateEvent, BlogViewState>()
-{
+): BaseViewModel<BlogStateEvent, BlogViewState>(){
+
 
     init {
-        // set empty list to start
-        setBlogListData(ArrayList<BlogPost>())
-
         setBlogFilter(
             sharedPreferences.getString(
                 BLOG_FILTER,
@@ -51,6 +47,7 @@ constructor(
 
     override fun handleStateEvent(stateEvent: BlogStateEvent): LiveData<DataState<BlogViewState>> {
         when(stateEvent){
+
             is BlogSearchEvent -> {
                 return sessionManager.cachedToken.value?.let { authToken ->
                     blogRepository.searchBlogPosts(
@@ -62,25 +59,36 @@ constructor(
                 }?: AbsentLiveData.create()
             }
 
-            is CheckAuthorOfBlogPost ->{
-                Log.d(TAG, "CheckAuthorOfBlogPost: called.")
-                if(sessionManager.isConnectedToTheInternet()){
-                    return sessionManager.cachedToken.value?.let { authToken ->
-                        blogRepository.isAuthorOfBlogPost(
-                            authToken = authToken,
-                            slug = getSlug()
-                        )
-                    }?: AbsentLiveData.create()
-                }
-                return AbsentLiveData.create()
+            is CheckAuthorOfBlogPost -> {
+                return sessionManager.cachedToken.value?.let { authToken ->
+                    blogRepository.isAuthorOfBlogPost(
+                        authToken = authToken,
+                        slug = getSlug()
+                    )
+                }?: AbsentLiveData.create()
+            }
+
+            is DeleteBlogPostEvent -> {
+                return sessionManager.cachedToken.value?.let { authToken ->
+                    blogRepository.deleteBlogPost(
+                        authToken = authToken,
+                        blogPost = getBlogPost()
+                    )
+                }?: AbsentLiveData.create()
             }
 
             is UpdateBlogPostEvent -> {
 
                 return sessionManager.cachedToken.value?.let { authToken ->
 
-                    val title = RequestBody.create(MediaType.parse("text/plain"), stateEvent.title)
-                    val body = RequestBody.create(MediaType.parse("text/plain"), stateEvent.body)
+                    val title = RequestBody.create(
+                        MediaType.parse("text/plain"),
+                        stateEvent.title
+                    )
+                    val body = RequestBody.create(
+                        MediaType.parse("text/plain"),
+                        stateEvent.body
+                    )
 
                     blogRepository.updateBlogPost(
                         authToken = authToken,
@@ -89,19 +97,6 @@ constructor(
                         body = body,
                         image = stateEvent.image
                     )
-                }?: AbsentLiveData.create()
-            }
-
-            is DeleteBlogPostEvent -> {
-                return sessionManager.cachedToken.value?.let { authToken ->
-                    viewState.value?.let{blogViewState ->
-                        blogViewState.viewBlogFields.blogPost?.let { blogPost ->
-                            blogRepository.deleteBlogPost(
-                                authToken,
-                                blogPost
-                            )
-                        }?: AbsentLiveData.create()
-                    }?: AbsentLiveData.create()
                 }?: AbsentLiveData.create()
             }
 
@@ -129,8 +124,8 @@ constructor(
     }
 
     fun cancelActiveJobs(){
-        blogRepository.cancelActiveJobs()
-        handlePendingData()
+        blogRepository.cancelActiveJobs() // cancel active jobs
+        handlePendingData() // hide progress bar
     }
 
     fun handlePendingData(){
@@ -142,15 +137,7 @@ constructor(
         cancelActiveJobs()
     }
 
-    
 }
-
-
-
-
-
-
-
 
 
 

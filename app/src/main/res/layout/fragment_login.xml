@@ -12,7 +12,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
 
-    >
+            >
         <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -25,7 +25,7 @@
                 android:text="Login"
                 android:id="@+id/login_text"
                 android:layout_marginTop="50dp"
-        />
+                />
 
         <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="0dp"
@@ -37,7 +37,7 @@
                 android:padding="16dp"
                 android:id="@+id/input_email_layout"
                 android:layout_marginTop="30dp"
-        >
+                >
 
             <EditText
                     android:layout_width="match_parent"
@@ -46,7 +46,7 @@
                     android:textColor="#000"
                     android:hint="@string/email_field"
                     android:inputType="textEmailAddress"
-            />
+                    />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -59,7 +59,7 @@
                 app:layout_constraintBottom_toTopOf="@+id/login_button"
                 android:padding="16dp"
                 android:id="@+id/input_password_layout"
-        >
+                >
 
             <EditText
                     android:layout_width="match_parent"
@@ -68,7 +68,7 @@
                     android:textColor="#000"
                     android:hint="@string/field_password"
                     android:inputType="textPassword"
-            />
+                    />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -86,7 +86,7 @@
                 android:textColor="#fff"
                 android:textSize="16sp"
                 android:layout_margin="15dp"
-        />
+                />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

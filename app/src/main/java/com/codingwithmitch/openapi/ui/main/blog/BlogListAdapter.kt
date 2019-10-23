@@ -6,23 +6,20 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.*
 import com.bumptech.glide.RequestManager
-import com.codingwithmitch.openapi.models.BlogPost
-import com.codingwithmitch.openapi.util.DateUtils
-import kotlinx.android.synthetic.main.layout_blog_list_item.view.*
-import com.codingwithmitch.openapi.util.GenericViewHolder
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade
 import com.codingwithmitch.openapi.R
-
+import com.codingwithmitch.openapi.models.BlogPost
+import com.codingwithmitch.openapi.util.DateUtils
+import com.codingwithmitch.openapi.util.GenericViewHolder
+import kotlinx.android.synthetic.main.layout_blog_list_item.view.*
 
 class BlogListAdapter(
     private val requestManager: RequestManager,
-    private var interaction: BlogViewHolder.Interaction
-
-) : RecyclerView.Adapter<RecyclerView.ViewHolder>()
-{
+    private val interaction: Interaction? = null
+    ) :
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val TAG: String = "AppDebug"
-
     private val NO_MORE_RESULTS = -1
     private val BLOG_ITEM = 0
     private val NO_MORE_RESULTS_BLOG_MARKER = BlogPost(
@@ -35,7 +32,7 @@ class BlogListAdapter(
         ""
     )
 
-    val DIFF_CALLBACK = object: DiffUtil.ItemCallback<BlogPost>(){
+    val DIFF_CALLBACK = object : DiffUtil.ItemCallback<BlogPost>() {
 
         override fun areItemsTheSame(oldItem: BlogPost, newItem: BlogPost): Boolean {
             return oldItem.pk == newItem.pk
@@ -44,6 +41,7 @@ class BlogListAdapter(
         override fun areContentsTheSame(oldItem: BlogPost, newItem: BlogPost): Boolean {
             return oldItem == newItem
         }
+
     }
     private val differ =
         AsyncListDiffer(
@@ -51,30 +49,6 @@ class BlogListAdapter(
             AsyncDifferConfig.Builder(DIFF_CALLBACK).build()
         )
 
-    internal inner class BlogRecyclerChangeCallback(
-        private val adapter: BlogListAdapter
-    ) : ListUpdateCallback {
-
-        override fun onChanged(position: Int, count: Int, payload: Any?) {
-            Log.d(TAG, "MyCallback: onChanged...")
-            adapter.notifyItemRangeChanged(position, count, payload)
-        }
-
-        override fun onInserted(position: Int, count: Int) {
-            Log.d(TAG, "MyCallback: onInserted...")
-            adapter.notifyItemRangeChanged(position, count)
-        }
-
-        override fun onMoved(fromPosition: Int, toPosition: Int) {
-            Log.d(TAG, "MyCallback: onMoved...")
-            adapter.notifyDataSetChanged()
-        }
-
-        override fun onRemoved(position: Int, count: Int) {
-            Log.d(TAG, "MyCallback: onRemoved...")
-            adapter.notifyDataSetChanged()
-        }
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
 
@@ -93,14 +67,22 @@ class BlogListAdapter(
 
             BLOG_ITEM ->{
                 return BlogViewHolder(
-                    LayoutInflater.from(parent.context).inflate(R.layout.layout_blog_list_item, parent, false),
-                    interaction= interaction,
+                    LayoutInflater.from(parent.context).inflate(
+                            R.layout.layout_blog_list_item,
+                        parent,
+                        false
+                    ),
+                    interaction = interaction,
                     requestManager = requestManager
                 )
             }
             else -> {
                 return BlogViewHolder(
-                    LayoutInflater.from(parent.context).inflate(R.layout.layout_blog_list_item, parent, false),
+                    LayoutInflater.from(parent.context).inflate(
+                        R.layout.layout_blog_list_item,
+                        parent,
+                        false
+                    ),
                     interaction = interaction,
                     requestManager = requestManager
                 )
@@ -108,15 +90,31 @@ class BlogListAdapter(
         }
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        when(holder) {
+    internal inner class BlogRecyclerChangeCallback(
+        private val adapter: BlogListAdapter
+    ) : ListUpdateCallback {
 
+        override fun onChanged(position: Int, count: Int, payload: Any?) {
+            adapter.notifyItemRangeChanged(position, count, payload)
+        }
+
+        override fun onInserted(position: Int, count: Int) {
+            adapter.notifyItemRangeChanged(position, count)
+        }
+
+        override fun onMoved(fromPosition: Int, toPosition: Int) {
+            adapter.notifyDataSetChanged()
+        }
+
+        override fun onRemoved(position: Int, count: Int) {
+            adapter.notifyDataSetChanged()
+        }
+    }
+
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        when (holder) {
             is BlogViewHolder -> {
                 holder.bind(differ.currentList.get(position))
-            }
-
-            is GenericViewHolder -> {
-                // do nothing
             }
         }
     }
@@ -157,10 +155,9 @@ class BlogListAdapter(
         itemView: View,
         val requestManager: RequestManager,
         private val interaction: Interaction?
-    ): RecyclerView.ViewHolder(itemView){
+    ) : RecyclerView.ViewHolder(itemView) {
 
-
-        fun bind(item: BlogPost) = with(itemView){
+        fun bind(item: BlogPost) = with(itemView) {
             itemView.setOnClickListener {
                 interaction?.onItemSelected(adapterPosition, item)
             }
@@ -173,37 +170,9 @@ class BlogListAdapter(
             itemView.blog_author.text = item.username
             itemView.blog_update_date.text = DateUtils.convertLongToStringDate(item.date_updated)
         }
-
-
-
-
-        interface Interaction {
-            fun onItemSelected(position: Int, item: BlogPost)
-        }
     }
 
+    interface Interaction {
+        fun onItemSelected(position: Int, item: BlogPost)
+    }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

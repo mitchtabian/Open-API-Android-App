@@ -7,13 +7,14 @@
         app:cardElevation="10dp"
         app:cardCornerRadius="2dp"
         app:cardPreventCornerOverlap="false"
->
+        >
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-    >
+            >
+
 
         <ImageView
                 android:layout_width="match_parent"
@@ -26,7 +27,7 @@
                 android:layout_margin="0dp"
                 android:adjustViewBounds="true"
                 android:scaleType="fitXY"
-        />
+                />
 
 
         <LinearLayout
@@ -39,7 +40,7 @@
                 android:orientation="vertical"
                 android:padding="10dp"
                 android:id="@+id/container1"
-        >
+                >
             <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -47,7 +48,7 @@
                     android:text="The Title of a Blog"
                     android:textColor="#000"
                     android:textSize="19sp"
-            />
+                    />
 
             <TextView
                     android:layout_width="match_parent"
@@ -57,7 +58,7 @@
                     android:textColor="@color/grey5"
                     android:textSize="15sp"
                     android:layout_marginTop="10dp"
-            />
+                    />
 
             <TextView
                     android:layout_width="match_parent"
@@ -67,13 +68,9 @@
                     android:textColor="@color/grey5"
                     android:textSize="13sp"
                     android:layout_marginTop="10dp"
-            />
-
-
+                    />
 
         </LinearLayout>
-
-
 
 
 

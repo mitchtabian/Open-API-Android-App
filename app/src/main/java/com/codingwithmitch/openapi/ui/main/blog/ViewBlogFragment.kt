@@ -1,29 +1,25 @@
 package com.codingwithmitch.openapi.ui.main.blog
 
-
 import android.os.Bundle
 import android.util.Log
 import android.view.*
 import androidx.core.net.toUri
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.models.BlogPost
 import com.codingwithmitch.openapi.ui.AreYouSureCallback
 import com.codingwithmitch.openapi.ui.UIMessage
 import com.codingwithmitch.openapi.ui.UIMessageType
+import com.codingwithmitch.openapi.ui.main.blog.state.BlogStateEvent
 import com.codingwithmitch.openapi.ui.main.blog.state.BlogStateEvent.*
-import com.codingwithmitch.openapi.ui.main.blog.viewmodel.isAuthorOfBlogPost
-import com.codingwithmitch.openapi.ui.main.blog.viewmodel.removeDeletedBlogPost
-import com.codingwithmitch.openapi.ui.main.blog.viewmodel.setIsAuthorOfBlogPost
-import com.codingwithmitch.openapi.ui.main.blog.viewmodel.setUpdatedBlogFields
+import com.codingwithmitch.openapi.ui.main.blog.viewmodel.*
 import com.codingwithmitch.openapi.util.DateUtils
 import com.codingwithmitch.openapi.util.SuccessHandling.Companion.SUCCESS_BLOG_DELETED
 import kotlinx.android.synthetic.main.fragment_view_blog.*
-import java.lang.Exception
 
-class ViewBlogFragment : BaseBlogFragment() {
+class ViewBlogFragment : BaseBlogFragment(){
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,11 +39,6 @@ class ViewBlogFragment : BaseBlogFragment() {
         delete_button.setOnClickListener {
             confirmDeleteRequest()
         }
-    }
-
-    fun checkIsAuthorOfBlogPost(){
-        viewModel.setIsAuthorOfBlogPost(false) // reset
-        viewModel.setStateEvent(CheckAuthorOfBlogPost())
     }
 
     fun confirmDeleteRequest(){
@@ -76,35 +67,38 @@ class ViewBlogFragment : BaseBlogFragment() {
         )
     }
 
+    fun checkIsAuthorOfBlogPost(){
+        viewModel.setIsAuthorOfBlogPost(false) // reset
+        viewModel.setStateEvent(CheckAuthorOfBlogPost())
+    }
+
     fun subscribeObservers(){
         viewModel.dataState.observe(viewLifecycleOwner, Observer{ dataState ->
             stateChangeListener.onDataStateChange(dataState)
-            dataState?.let{
-                it.data?.let{ data ->
-                    data.data?.getContentIfNotHandled()?.let { viewState ->
-                        viewModel.setIsAuthorOfBlogPost(
-                            viewState.viewBlogFields.isAuthorOfBlogPost
-                        )
-                    }
-                    data.response?.peekContent()?.let{ response ->
-                        if(response.message.equals(SUCCESS_BLOG_DELETED)){
-                            viewModel.removeDeletedBlogPost()
-                            findNavController().popBackStack()
-                        }
+
+            dataState.data?.let { data ->
+                data.data?.getContentIfNotHandled()?.let { viewState ->
+                    viewModel.setIsAuthorOfBlogPost(
+                        viewState.viewBlogFields.isAuthorOfBlogPost
+                    )
+                }
+                data.response?.peekContent()?.let{ response ->
+                    if(response.message.equals(SUCCESS_BLOG_DELETED)){
+                        viewModel.removeDeletedBlogPost()
+                        findNavController().popBackStack()
                     }
                 }
             }
-
         })
 
         viewModel.viewState.observe(viewLifecycleOwner, Observer { viewState ->
             viewState.viewBlogFields.blogPost?.let{ blogPost ->
                 setBlogProperties(blogPost)
             }
+
             if(viewState.viewBlogFields.isAuthorOfBlogPost){
                 adaptViewToAuthorMode()
             }
-
         })
     }
 
@@ -145,9 +139,9 @@ class ViewBlogFragment : BaseBlogFragment() {
         try{
             // prep for next fragment
             viewModel.setUpdatedBlogFields(
-                viewModel.viewState.value!!.viewBlogFields.blogPost!!.title,
-                viewModel.viewState.value!!.viewBlogFields.blogPost!!.body,
-                viewModel.viewState.value!!.viewBlogFields.blogPost!!.image.toUri()
+                viewModel.getBlogPost().title,
+                viewModel.getBlogPost().body,
+                viewModel.getBlogPost().image.toUri()
             )
             findNavController().navigate(R.id.action_viewBlogFragment_to_updateBlogFragment)
         }catch (e: Exception){
@@ -155,17 +149,7 @@ class ViewBlogFragment : BaseBlogFragment() {
             Log.e(TAG, "Exception: ${e.message}")
         }
     }
-
 }
-
-
-
-
-
-
-
-
-
 
 
 

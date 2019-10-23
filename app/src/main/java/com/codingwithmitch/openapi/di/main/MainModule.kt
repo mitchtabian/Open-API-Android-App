@@ -25,11 +25,11 @@ class MainModule {
 
     @MainScope
     @Provides
-    fun provideMainRepository(
+    fun provideAccountRepository(
         openApiMainService: OpenApiMainService,
         accountPropertiesDao: AccountPropertiesDao,
         sessionManager: SessionManager
-        ): AccountRepository {
+    ): AccountRepository {
         return AccountRepository(openApiMainService, accountPropertiesDao, sessionManager)
     }
 
@@ -45,10 +45,9 @@ class MainModule {
         openApiMainService: OpenApiMainService,
         blogPostDao: BlogPostDao,
         sessionManager: SessionManager
-        ): BlogRepository{
+    ): BlogRepository {
         return BlogRepository(openApiMainService, blogPostDao, sessionManager)
     }
-
 
     @MainScope
     @Provides
@@ -56,15 +55,10 @@ class MainModule {
         openApiMainService: OpenApiMainService,
         blogPostDao: BlogPostDao,
         sessionManager: SessionManager
-    ): CreateBlogRepository{
+    ): CreateBlogRepository {
         return CreateBlogRepository(openApiMainService, blogPostDao, sessionManager)
     }
-
-
 }
-
-
-
 
 
 

@@ -15,9 +15,9 @@ import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.util.BottomNavController.*
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
-
 /**
  * Class credit: Allan Veloso
+ * I took the concept from Allan Veloso and made alterations to fit our needs.
  * https://stackoverflow.com/questions/50577356/android-jetpack-navigation-bottomnavigationview-with-youtube-or-instagram-like#_=_
  * @property navigationBackStack: Backstack for the bottom navigation
  */
@@ -32,25 +32,8 @@ class BottomNavController(
     private val navigationBackStack = BackStack.of(appStartDestinationId)
     lateinit var activity: Activity
     lateinit var fragmentManager: FragmentManager
-    private var navItemChangeListener: OnNavigationItemChanged? = null
+    lateinit var navItemChangeListener: OnNavigationItemChanged
 
-    interface OnNavigationItemChanged {
-        fun onItemChanged(itemId: Int)
-    }
-
-    interface OnNavigationGraphChanged{
-        fun onGraphChange()
-    }
-
-    interface NavGraphProvider {
-        @NavigationRes
-        fun getNavGraphId(itemId: Int): Int
-    }
-
-    interface OnNavigationReselectedListener{
-
-        fun onReselectNavItem(navController: NavController, fragment: Fragment)
-    }
 
     init {
         if (context is Activity) {
@@ -59,32 +42,11 @@ class BottomNavController(
         }
     }
 
-    // prgramatically invoked interface call internally
-    fun setOnItemNavigationChanged(listener: (itemId: Int) -> Unit) {
-        this.navItemChangeListener = object : OnNavigationItemChanged {
-            override fun onItemChanged(itemId: Int) {
-                listener.invoke(itemId)
-            }
-        }
-    }
-
-    // THIS HAS A BUG... After popping the backstack it still thinks it's in the same fragment.
-    // If you try to nav to another fragment within the same child stack, it causes a
-    // "'action' is unknown to this NavController" error
-//    fun onNavigationItemReselected(item: MenuItem) {
-//        // If the user press a second time the navigation button, we pop the back stack to the root
-//        activity.findNavController(containerId).popBackStack(item.itemId, false)
-//    }
-
-
     fun onNavigationItemSelected(itemId: Int = navigationBackStack.last()): Boolean {
 
         // Replace fragment representing a navigation item
         val fragment = fragmentManager.findFragmentByTag(itemId.toString())
-            ?: NavHostFragment.create(navGraphProvider?.getNavGraphId(itemId)
-                ?: throw RuntimeException("You need to set up a NavGraphProvider with " +
-                        "BottomNavController#setNavGraphProvider")
-            )
+            ?: NavHostFragment.create(navGraphProvider.getNavGraphId(itemId))
         fragmentManager.beginTransaction()
             .setCustomAnimations(
                 R.anim.fade_in,
@@ -99,7 +61,10 @@ class BottomNavController(
         // Add to back stack
         navigationBackStack.moveLast(itemId)
 
-        navItemChangeListener?.onItemChanged(itemId)
+        // Update checked icon
+        navItemChangeListener.onItemChanged(itemId)
+
+        // communicate with Activity
         graphChangeListener?.onGraphChange()
 
         return true
@@ -148,19 +113,54 @@ class BottomNavController(
         }
 
         fun removeLast() = removeAt(size - 1)
+
         fun moveLast(item: Int) {
-            remove(item)
-            add(item)
+            remove(item) // if present, remove
+            add(item) // add to end of list
         }
     }
 
+
+    // For setting the checked icon in the bottom nav
+    interface OnNavigationItemChanged {
+        fun onItemChanged(itemId: Int)
+    }
+
+    // Get id of each graph
+    // ex: R.navigation.nav_blog
+    // ex: R.navigation.nav_create_blog
+    interface NavGraphProvider {
+        @NavigationRes
+        fun getNavGraphId(itemId: Int): Int
+    }
+
+    // Execute when Navigation Graph changes.
+    // ex: Select a new item on the bottom navigation
+    // ex: Home -> Account
+    interface OnNavigationGraphChanged{
+        fun onGraphChange()
+    }
+
+    interface OnNavigationReselectedListener{
+
+        fun onReselectNavItem(navController: NavController, fragment: Fragment)
+    }
+
+    fun setOnItemNavigationChanged(listener: (itemId: Int) -> Unit) {
+        this.navItemChangeListener = object : OnNavigationItemChanged {
+            override fun onItemChanged(itemId: Int) {
+                listener.invoke(itemId)
+            }
+        }
+    }
 
 }
 
 // Convenience extension to set up the navigation
 fun BottomNavigationView.setUpNavigation(
     bottomNavController: BottomNavController,
-    onReselectListener: OnNavigationReselectedListener) {
+    onReselectListener: OnNavigationReselectedListener
+) {
 
     setOnNavigationItemSelectedListener {
         bottomNavController.onNavigationItemSelected(it.itemId)
@@ -185,44 +185,6 @@ fun BottomNavigationView.setUpNavigation(
         menu.findItem(itemId).isChecked = true
     }
 }
-
-
-
-
-/**
- *
- * NavHostFragment = fragmentManager.findFragmentById(containerId)!!
- *  ex: NavHostFragment for each bottom navigation selection
- *
- * Children Fragments = fragmentManager.findFragmentById(containerId)!!.childFragmentManager.fragments
- *  ex: BlogFragment, ViewBlogFragment, UpdateBlogFragment
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

@@ -1,6 +1,5 @@
 package com.codingwithmitch.openapi.di.auth
 
-
 import com.codingwithmitch.openapi.ui.auth.ForgotPasswordFragment
 import com.codingwithmitch.openapi.ui.auth.LauncherFragment
 import com.codingwithmitch.openapi.ui.auth.LoginFragment

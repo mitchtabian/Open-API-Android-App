@@ -1,20 +1,17 @@
 package com.codingwithmitch.openapi.api.main
 
 import androidx.lifecycle.LiveData
-import com.codingwithmitch.openapi.util.GenericApiResponse
 import com.codingwithmitch.openapi.api.GenericResponse
-import com.codingwithmitch.openapi.api.main.network_responses.BlogCreateUpdateResponse
-import com.codingwithmitch.openapi.api.main.network_responses.BlogListSearchResponse
+import com.codingwithmitch.openapi.api.main.responses.BlogCreateUpdateResponse
+import com.codingwithmitch.openapi.api.main.responses.BlogListSearchResponse
 import com.codingwithmitch.openapi.models.AccountProperties
-import com.codingwithmitch.openapi.models.BlogPost
+import com.codingwithmitch.openapi.util.GenericApiResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.*
-import retrofit2.http.Multipart
-
-
 
 interface OpenApiMainService {
+
 
     @GET("account/properties")
     fun getAccountProperties(
@@ -38,7 +35,6 @@ interface OpenApiMainService {
         @Field("confirm_new_password") confirmNewPassword: String
     ): LiveData<GenericApiResponse<GenericResponse>>
 
-
     @GET("blog/list")
     fun searchListBlogPosts(
         @Header("Authorization") authorization: String,
@@ -47,17 +43,13 @@ interface OpenApiMainService {
         @Query("page") page: Int
     ): LiveData<GenericApiResponse<BlogListSearchResponse>>
 
-    @GET("blog/{slug}")
-    fun getBlogPost(
-        @Header("Authorization") authorization: String,
-        @Path("slug") slug: String
-    ): LiveData<GenericApiResponse<BlogPost>>
 
     @GET("blog/{slug}/is_author")
     fun isAuthorOfBlogPost(
         @Header("Authorization") authorization: String,
         @Path("slug") slug: String
     ): LiveData<GenericApiResponse<GenericResponse>>
+
 
     @DELETE("blog/{slug}/delete")
     fun deleteBlogPost(
@@ -75,6 +67,7 @@ interface OpenApiMainService {
         @Part image: MultipartBody.Part?
     ): LiveData<GenericApiResponse<BlogCreateUpdateResponse>>
 
+
     @Multipart
     @POST("blog/create")
     fun createBlog(
@@ -84,13 +77,6 @@ interface OpenApiMainService {
         @Part image: MultipartBody.Part?
     ): LiveData<GenericApiResponse<BlogCreateUpdateResponse>>
 }
-
-
-
-
-
-
-
 
 
 

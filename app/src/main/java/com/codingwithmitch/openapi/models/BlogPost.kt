@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName
 
 /**
  * Local data class for modeling: https://open-api.xyz/ blog objects
-    see example: https://gist.github.com/mitchtabian/93f287bd1370e7a1ad3c9588b0b22e3d
+see example: https://gist.github.com/mitchtabian/93f287bd1370e7a1ad3c9588b0b22e3d
  * Docs: https://open-api.xyz/api/
  */
 
@@ -51,17 +51,3 @@ data class BlogPost(
 
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

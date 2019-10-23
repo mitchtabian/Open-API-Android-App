@@ -30,20 +30,3 @@ class LoginResponse(
         return "LoginResponse(response='$response', errorMessage='$errorMessage', token='$token', pk=$pk, email='$email')"
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

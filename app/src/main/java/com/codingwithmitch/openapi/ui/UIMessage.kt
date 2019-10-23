@@ -1,11 +1,9 @@
 package com.codingwithmitch.openapi.ui
 
-import com.codingwithmitch.openapi.ui.BaseActivity.*
-
 data class UIMessage(
     val message: String,
     val uiMessageType: UIMessageType
-    )
+)
 
 sealed class UIMessageType{
 

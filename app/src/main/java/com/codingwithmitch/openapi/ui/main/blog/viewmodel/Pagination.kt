@@ -1,10 +1,17 @@
-package com.codingwithmitch.openapi.ui.main.blog.viewmodel
-
-
 import android.util.Log
 import com.codingwithmitch.openapi.ui.main.blog.state.BlogStateEvent.*
 import com.codingwithmitch.openapi.ui.main.blog.state.BlogViewState
+import com.codingwithmitch.openapi.ui.main.blog.viewmodel.BlogViewModel
+import com.codingwithmitch.openapi.ui.main.blog.viewmodel.setBlogListData
+import com.codingwithmitch.openapi.ui.main.blog.viewmodel.setQueryExhausted
+import com.codingwithmitch.openapi.ui.main.blog.viewmodel.setQueryInProgress
 
+
+fun BlogViewModel.resetPage(){
+    val update = getCurrentViewStateOrNew()
+    update.blogFields.page = 1
+    setViewState(update)
+}
 
 fun BlogViewModel.loadFirstPage() {
     setQueryInProgress(true)
@@ -14,9 +21,10 @@ fun BlogViewModel.loadFirstPage() {
     Log.e(TAG, "BlogViewModel: loadFirstPage: ${viewState.value!!.blogFields.searchQuery}")
 }
 
-fun BlogViewModel.resetPage(){
+private fun BlogViewModel.incrementPageNumber(){
     val update = getCurrentViewStateOrNew()
-    update.blogFields.page = 1
+    val page = update.copy().blogFields.page // get current page
+    update.blogFields.page = page + 1
     setViewState(update)
 }
 
@@ -30,13 +38,6 @@ fun BlogViewModel.nextPage(){
     }
 }
 
-private fun BlogViewModel.incrementPageNumber(){
-    val update = getCurrentViewStateOrNew()
-    val page = update.copy().blogFields.page // get current page
-    update.blogFields.page = page + 1
-    setViewState(update)
-}
-
 fun BlogViewModel.handleIncomingBlogListData(viewState: BlogViewState){
     Log.d(TAG, "BlogViewModel, DataState: ${viewState}")
     Log.d(TAG, "BlogViewModel, DataState: isQueryInProgress?: " +
@@ -47,6 +48,5 @@ fun BlogViewModel.handleIncomingBlogListData(viewState: BlogViewState){
     setQueryExhausted(viewState.blogFields.isQueryExhausted)
     setBlogListData(viewState.blogFields.blogList)
 }
-
 
 

@@ -7,14 +7,10 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.models.AccountProperties
-import com.codingwithmitch.openapi.ui.main.account.state.AccountStateEvent.*
-
+import com.codingwithmitch.openapi.ui.main.account.state.AccountStateEvent
 import kotlinx.android.synthetic.main.fragment_account.*
-import kotlinx.android.synthetic.main.fragment_account.focusable_view
 
-
-class AccountFragment : BaseAccountFragment() {
-
+class AccountFragment : BaseAccountFragment(){
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -27,7 +23,6 @@ class AccountFragment : BaseAccountFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
-        setupActionBar()
 
         change_password.setOnClickListener{
             findNavController().navigate(R.id.action_accountFragment_to_changePasswordFragment)
@@ -38,19 +33,18 @@ class AccountFragment : BaseAccountFragment() {
         }
 
         subscribeObservers()
-        focusable_view.requestFocus() // reset focus
     }
 
     private fun subscribeObservers(){
         viewModel.dataState.observe(viewLifecycleOwner, Observer{ dataState ->
             stateChangeListener.onDataStateChange(dataState)
             if(dataState != null){
-                dataState.data?.let {
-                    it.data?.let{
-                        it.getContentIfNotHandled()?.let{
-                            it.accountProperties?.let{
-                                Log.d(TAG, "AccountFragment, DataState: ${it}")
-                                viewModel.setAccountPropertiesData(it)
+                dataState.data?.let { data ->
+                    data.data?.let{ event ->
+                        event.getContentIfNotHandled()?.let{ viewState ->
+                            viewState.accountProperties?.let{ accountProperties ->
+                                Log.d(TAG, "AccountFragment, DataState: ${accountProperties}")
+                                viewModel.setAccountPropertiesData(accountProperties)
                             }
                         }
                     }
@@ -68,14 +62,9 @@ class AccountFragment : BaseAccountFragment() {
         })
     }
 
-    private fun setupActionBar(){
-        stateChangeListener.setActionBarTitle(getString(R.string.fragment_account))
-    }
-
     override fun onResume() {
         super.onResume()
-        Log.d(TAG, "onResume: called")
-        viewModel.setStateEvent(GetAccountPropertiesEvent())
+        viewModel.setStateEvent(AccountStateEvent.GetAccountPropertiesEvent())
     }
 
     private fun setAccountDataFields(accountProperties: AccountProperties){
@@ -97,28 +86,3 @@ class AccountFragment : BaseAccountFragment() {
         return super.onOptionsItemSelected(item)
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

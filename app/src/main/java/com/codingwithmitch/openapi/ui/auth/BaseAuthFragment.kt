@@ -7,7 +7,7 @@ import com.codingwithmitch.openapi.viewmodels.ViewModelProviderFactory
 import dagger.android.support.DaggerFragment
 import javax.inject.Inject
 
-abstract class BaseAuthFragment : DaggerFragment() {
+abstract class BaseAuthFragment: DaggerFragment(){
 
     val TAG: String = "AppDebug"
 
@@ -22,7 +22,6 @@ abstract class BaseAuthFragment : DaggerFragment() {
         viewModel = activity?.run {
             ViewModelProvider(this, providerFactory).get(AuthViewModel::class.java)
         } ?: throw Exception("Invalid Activity")
-
         cancelActiveJobs()
     }
 
@@ -30,8 +29,9 @@ abstract class BaseAuthFragment : DaggerFragment() {
         viewModel.cancelActiveJobs()
     }
 
-
 }
+
+
 
 
 

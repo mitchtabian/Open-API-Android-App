@@ -5,33 +5,38 @@ import android.content.Context.SEARCH_SERVICE
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import android.view.inputmethod.EditorInfo
+import android.widget.EditText
+import android.widget.RadioButton
+import android.widget.RadioGroup
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-
-import com.codingwithmitch.openapi.R
-import com.codingwithmitch.openapi.util.TopSpacingItemDecoration
-import kotlinx.android.synthetic.main.fragment_blog.*
-import android.view.inputmethod.EditorInfo
-import android.widget.*
-import androidx.navigation.fragment.findNavController
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
 import com.afollestad.materialdialogs.customview.getCustomView
+import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.models.BlogPost
 import com.codingwithmitch.openapi.persistence.BlogQueryUtils.Companion.BLOG_FILTER_DATE_UPDATED
 import com.codingwithmitch.openapi.persistence.BlogQueryUtils.Companion.BLOG_FILTER_USERNAME
 import com.codingwithmitch.openapi.persistence.BlogQueryUtils.Companion.BLOG_ORDER_ASC
 import com.codingwithmitch.openapi.ui.DataState
-import com.codingwithmitch.openapi.ui.main.blog.state.*
+import com.codingwithmitch.openapi.ui.main.blog.state.BlogViewState
 import com.codingwithmitch.openapi.ui.main.blog.viewmodel.*
 import com.codingwithmitch.openapi.util.ErrorHandling
+import com.codingwithmitch.openapi.util.TopSpacingItemDecoration
+import handleIncomingBlogListData
+import kotlinx.android.synthetic.main.fragment_blog.*
+import loadFirstPage
+import nextPage
 
 class BlogFragment : BaseBlogFragment(),
-    BlogListAdapter.BlogViewHolder.Interaction,
+    BlogListAdapter.Interaction,
     SwipeRefreshLayout.OnRefreshListener
 {
 
@@ -49,8 +54,9 @@ class BlogFragment : BaseBlogFragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (activity as AppCompatActivity).supportActionBar?.setDisplayShowTitleEnabled(false)
-        swipe_refresh.setOnRefreshListener(this)
         setHasOptionsMenu(true)
+        swipe_refresh.setOnRefreshListener(this)
+
         initRecyclerView()
         subscribeObservers()
 
@@ -61,8 +67,8 @@ class BlogFragment : BaseBlogFragment(),
 
     private fun subscribeObservers(){
         viewModel.dataState.observe(viewLifecycleOwner, Observer{ dataState ->
-            if(dataState != null){
-                // Must call handlePagination before onDataStateChange to consume error
+            if(dataState != null) {
+                // call before onDataStateChange to consume error if there is one
                 handlePagination(dataState)
                 stateChangeListener.onDataStateChange(dataState)
             }
@@ -73,69 +79,17 @@ class BlogFragment : BaseBlogFragment(),
             if(viewState != null){
                 recyclerAdapter.apply {
                     preloadGlideImages(
-                        requestManager,
-                        viewState.blogFields.blogList
+                        requestManager = requestManager,
+                        list = viewState.blogFields.blogList
                     )
                     submitList(
-                        viewState.blogFields.blogList,
-                        viewState.blogFields.isQueryExhausted
+                        blogList = viewState.blogFields.blogList,
+                        isQueryExhausted = viewState.blogFields.isQueryExhausted
                     )
                 }
+
             }
         })
-    }
-
-    private fun handlePagination(dataState: DataState<BlogViewState>){
-
-        // Handle incoming data from DataState
-        dataState.data?.let {
-            it.data?.let{
-                it.getContentIfNotHandled()?.let{
-                    viewModel.handleIncomingBlogListData(it)
-                }
-            }
-        }
-
-        // Check for pagination end (no more results)
-        // must do this b/c server will return an ApiErrorResponse if page is not valid,
-        // -> meaning there is no more data.
-        dataState.error?.let{ event ->
-            event.peekContent().response.message?.let{
-                if(ErrorHandling.isPaginationDone(it)){
-
-                    // handle the error message event so it doesn't display in UI
-                    event.getContentIfNotHandled()
-
-                    // set query exhausted to update RecyclerView with
-                    // "No more results..." list item
-                    viewModel.setQueryExhausted(true)
-                }
-            }
-        }
-
-    }
-
-    private fun initRecyclerView(){
-        blog_post_recyclerview.apply{
-            layoutManager = LinearLayoutManager(this@BlogFragment.context)
-            val topSpacingDecorator = TopSpacingItemDecoration(30)
-            removeItemDecoration(topSpacingDecorator) // does nothing if not applied already
-            addItemDecoration(topSpacingDecorator)
-
-            recyclerAdapter = BlogListAdapter(requestManager,  this@BlogFragment)
-            addOnScrollListener(object: RecyclerView.OnScrollListener(){
-
-                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                    super.onScrollStateChanged(recyclerView, newState)
-                    val layoutManager = recyclerView.layoutManager as LinearLayoutManager
-                    val lastPosition = layoutManager.findLastVisibleItemPosition()
-                    if (lastPosition == recyclerAdapter.itemCount.minus(1)) {
-                        viewModel.nextPage()
-                    }
-                }
-            })
-            adapter = recyclerAdapter
-        }
     }
 
     private fun initSearchView(menu: Menu){
@@ -175,16 +129,70 @@ class BlogFragment : BaseBlogFragment(),
         }
     }
 
-    fun onBlogSearchOrFilter(){
+    private fun onBlogSearchOrFilter(){
         viewModel.loadFirstPage().let {
             resetUI()
         }
     }
 
-    fun resetUI(){
+    private  fun resetUI(){
         blog_post_recyclerview.smoothScrollToPosition(0)
         stateChangeListener.hideSoftKeyboard()
         focusable_view.requestFocus()
+    }
+
+    private fun handlePagination(dataState: DataState<BlogViewState>){
+
+        // Handle incoming data from DataState
+        dataState.data?.let {
+            it.data?.let{
+                it.getContentIfNotHandled()?.let{
+                    viewModel.handleIncomingBlogListData(it)
+                }
+            }
+        }
+
+        // Check for pagination end (no more results)
+        // must do this b/c server will return an ApiErrorResponse if page is not valid,
+        // -> meaning there is no more data.
+        dataState.error?.let{ event ->
+            event.peekContent().response.message?.let{
+                if(ErrorHandling.isPaginationDone(it)){
+
+                    // handle the error message event so it doesn't display in UI
+                    event.getContentIfNotHandled()
+
+                    // set query exhausted to update RecyclerView with
+                    // "No more results..." list item
+                    viewModel.setQueryExhausted(true)
+                }
+            }
+        }
+    }
+
+    private fun initRecyclerView(){
+
+        blog_post_recyclerview.apply {
+            layoutManager = LinearLayoutManager(this@BlogFragment.context)
+            val topSpacingDecorator = TopSpacingItemDecoration(30)
+            removeItemDecoration(topSpacingDecorator) // does nothing if not applied already
+            addItemDecoration(topSpacingDecorator)
+
+            recyclerAdapter = BlogListAdapter(requestManager,  this@BlogFragment)
+            addOnScrollListener(object: RecyclerView.OnScrollListener(){
+
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    super.onScrollStateChanged(recyclerView, newState)
+                    val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+                    val lastPosition = layoutManager.findLastVisibleItemPosition()
+                    if (lastPosition == recyclerAdapter.itemCount.minus(1)) {
+                        Log.d(TAG, "BlogFragment: attempting to load next page...")
+                        viewModel.nextPage()
+                    }
+                }
+            })
+            adapter = recyclerAdapter
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -204,11 +212,6 @@ class BlogFragment : BaseBlogFragment(),
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onRefresh() {
-        onBlogSearchOrFilter()
-        swipe_refresh.isRefreshing = false
-    }
-
     override fun onItemSelected(position: Int, item: BlogPost) {
         viewModel.setBlogPost(item)
         findNavController().navigate(R.id.action_blogFragment_to_viewBlogFragment)
@@ -218,6 +221,11 @@ class BlogFragment : BaseBlogFragment(),
         super.onDestroyView()
         // clear references (can leak memory)
         blog_post_recyclerview.adapter = null
+    }
+
+    override fun onRefresh() {
+        onBlogSearchOrFilter()
+        swipe_refresh.isRefreshing = false
     }
 
     fun showFilterDialog(){
@@ -281,11 +289,7 @@ class BlogFragment : BaseBlogFragment(),
             dialog.show()
         }
     }
-
 }
-
-
-
 
 
 

@@ -11,12 +11,11 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.ui.DataStateChangeListener
-import com.codingwithmitch.openapi.ui.UICommunicationListener
 import com.codingwithmitch.openapi.viewmodels.ViewModelProviderFactory
 import dagger.android.support.DaggerFragment
 import javax.inject.Inject
 
-abstract class BaseAccountFragment: DaggerFragment(){
+abstract class BaseAccountFragment : DaggerFragment(){
 
     val TAG: String = "AppDebug"
 
@@ -25,13 +24,12 @@ abstract class BaseAccountFragment: DaggerFragment(){
 
     lateinit var stateChangeListener: DataStateChangeListener
 
-    lateinit var uiCommunicationListener: UICommunicationListener
-
     lateinit var viewModel: AccountViewModel
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupActionBarWithNavController(R.id.accountFragment, activity as AppCompatActivity)
+
         viewModel = activity?.run {
             ViewModelProvider(this, providerFactory).get(AccountViewModel::class.java)
         }?: throw Exception("Invalid Activity")
@@ -50,8 +48,8 @@ abstract class BaseAccountFragment: DaggerFragment(){
     }
 
     /*
-      @fragmentId is id of fragment from graph to be EXCLUDED from action back bar nav
-    */
+          @fragmentId is id of fragment from graph to be EXCLUDED from action back bar nav
+        */
     fun setupActionBarWithNavController(fragmentId: Int, activity: AppCompatActivity){
         val appBarConfiguration = AppBarConfiguration(setOf(fragmentId))
         NavigationUI.setupActionBarWithNavController(
@@ -68,16 +66,8 @@ abstract class BaseAccountFragment: DaggerFragment(){
         }catch(e: ClassCastException){
             Log.e(TAG, "$context must implement DataStateChangeListener" )
         }
-
-        try{
-            uiCommunicationListener = context as UICommunicationListener
-        }catch(e: ClassCastException){
-            Log.e(TAG, "$context must implement UICommunicationListener" )
-        }
     }
 }
-
-
 
 
 

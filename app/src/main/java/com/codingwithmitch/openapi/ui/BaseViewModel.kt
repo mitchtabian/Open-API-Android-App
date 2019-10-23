@@ -25,9 +25,7 @@ abstract class BaseViewModel<StateEvent, ViewState> : ViewModel()
         }
 
     fun setStateEvent(event: StateEvent){
-        val state: StateEvent
-        state = event
-        _stateEvent.value = state
+        _stateEvent.value = event
     }
 
     fun getCurrentViewStateOrNew(): ViewState{
@@ -46,48 +44,3 @@ abstract class BaseViewModel<StateEvent, ViewState> : ViewModel()
     abstract fun initNewViewState(): ViewState
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

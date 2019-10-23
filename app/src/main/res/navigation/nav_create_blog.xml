@@ -7,9 +7,9 @@
         app:startDestination="@id/createBlogFragment">
 
     <fragment android:id="@+id/createBlogFragment"
-              android:name="com.codingwithmitch.openapi.ui.main.create_blog.CreateBlogFragment"
-              android:label="@string/fragment_create_blog"
-              tools:layout="@layout/fragment_create_blog">
+            android:name="com.codingwithmitch.openapi.ui.main.create_blog.CreateBlogFragment"
+            android:label="@string/fragment_create_blog"
+            tools:layout="@layout/fragment_create_blog">
 
     </fragment>
 </navigation>

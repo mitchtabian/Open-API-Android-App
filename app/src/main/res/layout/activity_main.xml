@@ -12,14 +12,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/app_bar"
-    >
+            >
 
         <androidx.appcompat.widget.Toolbar
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:id="@+id/tool_bar"
                 app:layout_scrollFlags="scroll|enterAlways"
-        >
+                >
 
         </androidx.appcompat.widget.Toolbar>
 
@@ -30,14 +30,14 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
-    >
+            >
 
         <FrameLayout
                 android:id="@+id/main_nav_host_fragment"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginBottom="?attr/actionBarSize"
-        />
+                />
 
         <ProgressBar
                 android:layout_width="wrap_content"
@@ -49,7 +49,7 @@
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintVertical_bias="0.10"
                 android:visibility="gone"
-        />
+                />
 
 
 
@@ -67,10 +67,7 @@
             app:itemTextColor="@color/bottom_nav_selector"
             app:itemIconTint="@color/bottom_nav_selector"
             app:menu="@menu/main_bottom_navigation_menu"
-    />
+            />
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
-
-

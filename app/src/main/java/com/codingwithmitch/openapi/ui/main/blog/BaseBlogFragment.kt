@@ -28,41 +28,30 @@ abstract class BaseBlogFragment : DaggerFragment(){
     @Inject
     lateinit var providerFactory: ViewModelProviderFactory
 
-    lateinit var stateChangeListener: DataStateChangeListener
-
     lateinit var uiCommunicationListener: UICommunicationListener
+
+    lateinit var stateChangeListener: DataStateChangeListener
 
     lateinit var viewModel: BlogViewModel
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        // setup back navigation for this graph
         setupActionBarWithNavController(R.id.blogFragment, activity as AppCompatActivity)
 
         viewModel = activity?.run {
             ViewModelProvider(this, providerFactory).get(BlogViewModel::class.java)
         }?: throw Exception("Invalid Activity")
 
-        Log.d(TAG, "BlogViewModel: ${viewModel}")
-
-        // Cancels jobs when switching between fragments in the same graph
-        // ex: from AccountFragment to UpdateAccountFragment
-        // NOTE: Must call before "subscribeObservers" b/c that will create new jobs for the next fragment
         cancelActiveJobs()
     }
 
     fun cancelActiveJobs(){
-        Log.d(TAG, "cancelling jobs...: ")
-        // When a fragment is destroyed make sure to cancel any on-going requests.
-        // Note: If you wanted a particular request to continue even if the fragment was destroyed, you could write a
-        //       special condition in the repository or something.
         viewModel.cancelActiveJobs()
     }
 
-
     /*
-      @fragmentId is id of fragment from graph to be EXCLUDED from action back bar nav
-    */
+          @fragmentId is id of fragment from graph to be EXCLUDED from action back bar nav
+        */
     fun setupActionBarWithNavController(fragmentId: Int, activity: AppCompatActivity){
         val appBarConfiguration = AppBarConfiguration(setOf(fragmentId))
         NavigationUI.setupActionBarWithNavController(
@@ -86,30 +75,4 @@ abstract class BaseBlogFragment : DaggerFragment(){
             Log.e(TAG, "$context must implement UICommunicationListener" )
         }
     }
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

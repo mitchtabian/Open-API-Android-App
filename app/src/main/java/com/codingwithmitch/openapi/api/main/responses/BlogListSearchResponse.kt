@@ -1,8 +1,5 @@
-package com.codingwithmitch.openapi.api.main.network_responses
+package com.codingwithmitch.openapi.api.main.responses
 
-import androidx.room.ColumnInfo
-import androidx.room.PrimaryKey
-import com.codingwithmitch.openapi.models.BlogPost
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
@@ -25,14 +22,3 @@ class BlogListSearchResponse(
         return "BlogListSearchResponse(results=$results, detail='$detail')"
     }
 }
-
-
-
-
-
-
-
-
-
-
-

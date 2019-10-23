@@ -25,19 +25,3 @@ interface OpenApiAuthService {
     ): LiveData<GenericApiResponse<RegistrationResponse>>
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

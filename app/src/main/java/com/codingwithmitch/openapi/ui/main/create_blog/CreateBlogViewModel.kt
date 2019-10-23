@@ -1,13 +1,12 @@
 package com.codingwithmitch.openapi.ui.main.create_blog
 
 import android.net.Uri
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
 import com.codingwithmitch.openapi.repository.main.CreateBlogRepository
 import com.codingwithmitch.openapi.session.SessionManager
 import com.codingwithmitch.openapi.ui.BaseViewModel
 import com.codingwithmitch.openapi.ui.DataState
 import com.codingwithmitch.openapi.ui.Loading
-import com.codingwithmitch.openapi.ui.main.blog.state.BlogViewState
 import com.codingwithmitch.openapi.ui.main.create_blog.state.CreateBlogStateEvent
 import com.codingwithmitch.openapi.ui.main.create_blog.state.CreateBlogStateEvent.*
 import com.codingwithmitch.openapi.ui.main.create_blog.state.CreateBlogViewState
@@ -22,13 +21,14 @@ class CreateBlogViewModel
 constructor(
     val createBlogRepository: CreateBlogRepository,
     val sessionManager: SessionManager
-)
-    : BaseViewModel<CreateBlogStateEvent, CreateBlogViewState>()
-{
+): BaseViewModel<CreateBlogStateEvent, CreateBlogViewState>() {
 
+    override fun handleStateEvent(
+        stateEvent: CreateBlogStateEvent
+    ): LiveData<DataState<CreateBlogViewState>> {
 
-    override fun handleStateEvent(stateEvent: CreateBlogStateEvent): LiveData<DataState<CreateBlogViewState>> {
-        when(stateEvent) {
+        when(stateEvent){
+
             is CreateNewBlogEvent -> {
                 return sessionManager.cachedToken.value?.let { authToken ->
 
@@ -48,7 +48,11 @@ constructor(
                 return object: LiveData<DataState<CreateBlogViewState>>(){
                     override fun onActive() {
                         super.onActive()
-                        value = DataState(null, Loading(false), null)
+                        value = DataState(
+                            null,
+                            Loading(false),
+                            null
+                        )
                     }
                 }
             }
@@ -72,7 +76,7 @@ constructor(
     fun clearNewBlogFields(){
         val update = getCurrentViewStateOrNew()
         update.blogFields = NewBlogFields()
-        _viewState.value = update
+        setViewState(update)
     }
 
     fun cancelActiveJobs(){
@@ -88,16 +92,8 @@ constructor(
         super.onCleared()
         cancelActiveJobs()
     }
+
 }
-
-
-
-
-
-
-
-
-
 
 
 

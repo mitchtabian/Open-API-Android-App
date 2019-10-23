@@ -2,20 +2,24 @@ package com.codingwithmitch.openapi.ui.auth
 
 
 import android.os.Bundle
+import android.util.Log
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import androidx.lifecycle.Observer
 
 import com.codingwithmitch.openapi.R
+import com.codingwithmitch.openapi.ui.auth.state.AuthStateEvent
 import com.codingwithmitch.openapi.ui.auth.state.AuthStateEvent.*
 import com.codingwithmitch.openapi.ui.auth.state.RegistrationFields
+import com.codingwithmitch.openapi.util.ApiEmptyResponse
+import com.codingwithmitch.openapi.util.ApiErrorResponse
+import com.codingwithmitch.openapi.util.ApiSuccessResponse
 import kotlinx.android.synthetic.main.fragment_register.*
 
 
 class RegisterFragment : BaseAuthFragment() {
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -27,19 +31,12 @@ class RegisterFragment : BaseAuthFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        register_button.setOnClickListener { register() }
-        subscribeObservers()
-    }
+        Log.d(TAG, "RegisterFragment: ${viewModel}")
 
-    fun register(){
-        viewModel.setStateEvent(
-            RegisterAttemptEvent(
-                input_email.text.toString(),
-                input_username.text.toString(),
-                input_password.text.toString(),
-                input_password_confirm.text.toString()
-            )
-        )
+        register_button.setOnClickListener {
+            register()
+        }
+        subscribeObservers()
     }
 
     fun subscribeObservers(){
@@ -53,6 +50,17 @@ class RegisterFragment : BaseAuthFragment() {
         })
     }
 
+    fun register(){
+        viewModel.setStateEvent(
+            RegisterAttemptEvent(
+                input_email.text.toString(),
+                input_username.text.toString(),
+                input_password.text.toString(),
+                input_password_confirm.text.toString()
+            )
+        )
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         viewModel.setRegistrationFields(
@@ -64,22 +72,4 @@ class RegisterFragment : BaseAuthFragment() {
             )
         )
     }
-
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -1,11 +1,9 @@
 package com.codingwithmitch.openapi.util
 
-import android.util.Log
 import java.text.SimpleDateFormat
 import java.util.*
 
 class DateUtils {
-
 
     companion object{
 
@@ -36,12 +34,3 @@ class DateUtils {
 
 
 }
-
-
-
-
-
-
-
-
-

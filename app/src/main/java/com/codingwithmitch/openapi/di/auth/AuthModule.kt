@@ -29,12 +29,13 @@ class AuthModule{
         accountPropertiesDao: AccountPropertiesDao,
         openApiAuthService: OpenApiAuthService,
         preferences: SharedPreferences,
-        editor: SharedPreferences.Editor): AuthRepository {
+        editor: SharedPreferences.Editor
+        ): AuthRepository {
         return AuthRepository(
-            sessionManager,
             authTokenDao,
             accountPropertiesDao,
             openApiAuthService,
+            sessionManager,
             preferences,
             editor
         )

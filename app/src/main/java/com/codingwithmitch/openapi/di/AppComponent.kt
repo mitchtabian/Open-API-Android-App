@@ -1,6 +1,5 @@
 package com.codingwithmitch.openapi.di
 
-
 import android.app.Application
 import com.codingwithmitch.openapi.BaseApplication
 import com.codingwithmitch.openapi.session.SessionManager
@@ -19,7 +18,7 @@ import javax.inject.Singleton
         ViewModelFactoryModule::class
     ]
 )
-interface AppComponent: AndroidInjector<BaseApplication> {
+interface AppComponent : AndroidInjector<BaseApplication>{
 
     val sessionManager: SessionManager // must add here b/c injecting into abstract class
 
@@ -32,8 +31,6 @@ interface AppComponent: AndroidInjector<BaseApplication> {
         fun build(): AppComponent
     }
 }
-
-
 
 
 

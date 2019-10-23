@@ -27,18 +27,4 @@ abstract class ActivityBuildersModule {
         modules = [MainModule::class, MainFragmentBuildersModule::class, MainViewModelModule::class]
     )
     abstract fun contributeMainActivity(): MainActivity
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

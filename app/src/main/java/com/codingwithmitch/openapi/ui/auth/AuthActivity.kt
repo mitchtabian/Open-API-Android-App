@@ -9,9 +9,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
-
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.ui.BaseActivity
+import com.codingwithmitch.openapi.ui.ResponseType
 import com.codingwithmitch.openapi.ui.auth.state.AuthStateEvent
 import com.codingwithmitch.openapi.ui.main.MainActivity
 import com.codingwithmitch.openapi.util.SuccessHandling.Companion.RESPONSE_CHECK_PREVIOUS_AUTH_USER_DONE
@@ -20,8 +20,9 @@ import kotlinx.android.synthetic.main.activity_auth.*
 import javax.inject.Inject
 
 class AuthActivity : BaseActivity(),
-        NavController.OnDestinationChangedListener
+    NavController.OnDestinationChangedListener
 {
+
     override fun onDestinationChanged(
         controller: NavController,
         destination: NavDestination,
@@ -30,12 +31,11 @@ class AuthActivity : BaseActivity(),
         viewModel.cancelActiveJobs()
     }
 
-    private val TAG: String = "AppDebug"
-
-    lateinit var viewModel: AuthViewModel
 
     @Inject
     lateinit var providerFactory: ViewModelProviderFactory
+
+    lateinit var viewModel: AuthViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,26 +53,25 @@ class AuthActivity : BaseActivity(),
         checkPreviousAuthUser()
     }
 
-    fun subscribeObservers(){
+    private fun subscribeObservers(){
 
-        viewModel.dataState.observe(this, Observer{ dataState ->
-            Log.d(TAG, "AuthActivity, subscribeObservers: ${dataState}")
+        viewModel.dataState.observe(this, Observer { dataState ->
             onDataStateChange(dataState)
-            dataState.data?.let{ data ->
+            dataState.data?.let { data ->
+                data.data?.let { event ->
+                    event.getContentIfNotHandled()?.let {
+                        it.authToken?.let {
+                            Log.d(TAG, "AuthActivity, DataState: ${it}")
+                            viewModel.setAuthToken(it)
+                        }
+                    }
+                }
                 data.response?.let{event ->
                     event.peekContent().let{ response ->
                         response.message?.let{ message ->
                             if(message.equals(RESPONSE_CHECK_PREVIOUS_AUTH_USER_DONE)){
                                 onFinishCheckPreviousAuthUser()
                             }
-                        }
-                    }
-                }
-                data.data?.let { event ->
-                    event.getContentIfNotHandled()?.let {
-                        it.authToken?.let {
-                            Log.d(TAG, "AuthActivity, DataState: ${it}")
-                            viewModel.setAuthToken(it)
                         }
                     }
                 }
@@ -86,7 +85,6 @@ class AuthActivity : BaseActivity(),
             }
         })
 
-
         sessionManager.cachedToken.observe(this, Observer{ dataState ->
             Log.d(TAG, "AuthActivity, subscribeObservers: AuthDataState: ${dataState}")
             dataState.let{ authToken ->
@@ -97,19 +95,19 @@ class AuthActivity : BaseActivity(),
         })
     }
 
-    private fun onFinishCheckPreviousAuthUser(){
-        fragment_container.visibility = View.VISIBLE
+    fun navMainActivity(){
+        Log.d(TAG, "navMainActivity: called.")
+        val intent = Intent(this, MainActivity::class.java)
+        startActivity(intent)
+        finish()
     }
 
     private fun checkPreviousAuthUser(){
         viewModel.setStateEvent(AuthStateEvent.CheckPreviousAuthEvent())
     }
 
-    fun navMainActivity(){
-        Log.d(TAG, "navMainActivity: called.")
-        val intent = Intent(this, MainActivity::class.java)
-        startActivity(intent)
-        finish()
+    private fun onFinishCheckPreviousAuthUser(){
+        fragment_container.visibility = View.VISIBLE
     }
 
     override fun displayProgressBar(bool: Boolean){
@@ -121,24 +119,10 @@ class AuthActivity : BaseActivity(),
         }
     }
 
-    override fun setActionBarTitle(title: String) {
-        //ignore
-    }
-
     override fun expandAppBar() {
         // ignore
     }
-
-    override fun isStoragePermissionGranted(): Boolean {
-        // ignore
-        return true
-    }
-
 }
-
-
-
-
 
 
 

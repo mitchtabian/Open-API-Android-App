@@ -4,9 +4,9 @@ import com.codingwithmitch.openapi.ui.main.account.AccountFragment
 import com.codingwithmitch.openapi.ui.main.account.ChangePasswordFragment
 import com.codingwithmitch.openapi.ui.main.account.UpdateAccountFragment
 import com.codingwithmitch.openapi.ui.main.blog.BlogFragment
-import com.codingwithmitch.openapi.ui.main.create_blog.CreateBlogFragment
 import com.codingwithmitch.openapi.ui.main.blog.UpdateBlogFragment
 import com.codingwithmitch.openapi.ui.main.blog.ViewBlogFragment
+import com.codingwithmitch.openapi.ui.main.create_blog.CreateBlogFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 

@@ -13,18 +13,4 @@ class SuccessHandling {
         const val SUCCESS_BLOG_DELETED = "deleted"
 
     }
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

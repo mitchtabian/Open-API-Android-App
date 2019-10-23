@@ -6,7 +6,7 @@ import com.codingwithmitch.openapi.models.AccountProperties
 import com.codingwithmitch.openapi.models.AuthToken
 import com.codingwithmitch.openapi.models.BlogPost
 
-@Database(entities = arrayOf(AuthToken::class, AccountProperties::class, BlogPost::class), version = 1)
+@Database(entities = [AuthToken::class, AccountProperties::class, BlogPost::class], version = 1)
 abstract class AppDatabase: RoomDatabase() {
 
     abstract fun getAuthTokenDao(): AuthTokenDao
@@ -21,3 +21,11 @@ abstract class AppDatabase: RoomDatabase() {
 
 
 }
+
+
+
+
+
+
+
+

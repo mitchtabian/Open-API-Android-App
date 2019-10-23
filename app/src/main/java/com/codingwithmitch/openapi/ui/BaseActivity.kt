@@ -8,21 +8,46 @@ import android.view.inputmethod.InputMethodManager
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.codingwithmitch.openapi.session.SessionManager
-import com.codingwithmitch.openapi.util.Constants
+import com.codingwithmitch.openapi.util.Constants.Companion.PERMISSIONS_REQUEST_READ_STORAGE
 import dagger.android.support.DaggerAppCompatActivity
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-abstract class BaseActivity : DaggerAppCompatActivity(),
+abstract class BaseActivity: DaggerAppCompatActivity(),
     DataStateChangeListener,
     UICommunicationListener
 {
-    private val TAG: String = "AppDebug"
+
+    val TAG: String = "AppDebug"
 
     @Inject
     lateinit var sessionManager: SessionManager
+
+    override fun onUIMessageReceived(uiMessage: UIMessage) {
+        when(uiMessage.uiMessageType){
+
+            is UIMessageType.AreYouSureDialog -> {
+                areYouSureDialog(
+                    uiMessage.message,
+                    uiMessage.uiMessageType.callback
+                )
+            }
+
+            is UIMessageType.Toast -> {
+                displayToast(uiMessage.message)
+            }
+
+            is UIMessageType.Dialog -> {
+                displayInfoDialog(uiMessage.message)
+            }
+
+            is UIMessageType.None -> {
+                Log.i(TAG, "onUIMessageReceived: ${uiMessage.message}")
+            }
+        }
+    }
 
     override fun onDataStateChange(dataState: DataState<*>?) {
         dataState?.let{
@@ -42,29 +67,7 @@ abstract class BaseActivity : DaggerAppCompatActivity(),
         }
     }
 
-    override fun onUIMessageReceived(uiMessage: UIMessage) {
-        when(uiMessage.uiMessageType){
-
-            is UIMessageType.AreYouSureDialog -> {
-                areYouSureDialog(uiMessage.message, uiMessage.uiMessageType.callback)
-            }
-
-            is UIMessageType.Toast -> {
-                displayToast(uiMessage.message)
-            }
-
-            is UIMessageType.Dialog -> {
-                displayInfoDialog(uiMessage.message)
-            }
-
-            is UIMessageType.None -> {
-                Log.i(TAG, "onUIMessageReceived: ${uiMessage.message}")
-            }
-        }
-    }
-
     abstract fun displayProgressBar(bool: Boolean)
-
 
     private fun handleStateResponse(event: Event<Response>){
         event.getContentIfNotHandled()?.let{
@@ -112,6 +115,15 @@ abstract class BaseActivity : DaggerAppCompatActivity(),
         }
     }
 
+    override fun hideSoftKeyboard() {
+        if (currentFocus != null) {
+            val inputMethodManager = getSystemService(
+                Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            inputMethodManager
+                .hideSoftInputFromWindow(currentFocus!!.windowToken, 0)
+        }
+    }
+
     override fun isStoragePermissionGranted(): Boolean{
         if (
             ContextCompat.checkSelfPermission(this,
@@ -127,7 +139,7 @@ abstract class BaseActivity : DaggerAppCompatActivity(),
                     Manifest.permission.READ_EXTERNAL_STORAGE,
                     Manifest.permission.WRITE_EXTERNAL_STORAGE
                 ),
-                Constants.PERMISSIONS_REQUEST_READ_STORAGE
+                PERMISSIONS_REQUEST_READ_STORAGE
             )
 
             return false
@@ -136,32 +148,7 @@ abstract class BaseActivity : DaggerAppCompatActivity(),
             return true
         }
     }
-
-    override fun hideSoftKeyboard() {
-        if (currentFocus != null) {
-            val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            inputMethodManager.hideSoftInputFromWindow(currentFocus!!.windowToken, 0)
-        }
-    }
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

@@ -1,33 +1,30 @@
 package com.codingwithmitch.openapi.ui.main.blog
 
 import android.app.Activity
-import android.os.Bundle
-import android.view.*
-import androidx.lifecycle.Observer
-
-import com.codingwithmitch.openapi.R
-import kotlinx.android.synthetic.main.fragment_view_blog.blog_body
-import kotlinx.android.synthetic.main.fragment_view_blog.blog_image
-import kotlinx.android.synthetic.main.fragment_view_blog.blog_title
 import android.content.Intent
 import android.net.Uri
+import android.os.Bundle
 import android.util.Log
+import android.view.*
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.ui.*
 import com.codingwithmitch.openapi.ui.main.blog.state.BlogStateEvent
-import com.codingwithmitch.openapi.ui.main.blog.viewmodel.*
+import com.codingwithmitch.openapi.ui.main.blog.viewmodel.getUpdatedBlogUri
+import com.codingwithmitch.openapi.ui.main.blog.viewmodel.onBlogPostUpdateSuccess
+import com.codingwithmitch.openapi.ui.main.blog.viewmodel.setUpdatedBlogFields
 import com.codingwithmitch.openapi.util.Constants.Companion.GALLERY_REQUEST_CODE
-import com.codingwithmitch.openapi.util.FileUtil
 import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView
 import kotlinx.android.synthetic.main.fragment_update_blog.*
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import java.io.*
+import java.io.File
 
+class UpdateBlogFragment : BaseBlogFragment(){
 
-class UpdateBlogFragment : BaseBlogFragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -50,7 +47,10 @@ class UpdateBlogFragment : BaseBlogFragment() {
     }
 
     private fun pickFromGallery() {
-        val intent = Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        val intent = Intent(
+            Intent.ACTION_PICK,
+            android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+        )
         intent.type = "image/*"
         val mimeTypes = arrayOf("image/jpeg", "image/png", "image/jpg")
         intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes)
@@ -64,7 +64,21 @@ class UpdateBlogFragment : BaseBlogFragment() {
                 .setGuidelines(CropImageView.Guidelines.ON)
                 .start(it, this)
         }
+    }
 
+    private fun showImageSelectionError(){
+        stateChangeListener.onDataStateChange(
+            DataState(
+                Event(StateError(
+                    Response(
+                        "Something went wrong with the image.",
+                        ResponseType.Dialog()
+                    )
+                )),
+                Loading(isLoading = false),
+                Data(Event.dataEvent(null), null)
+            )
+        )
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -100,16 +114,6 @@ class UpdateBlogFragment : BaseBlogFragment() {
         }
     }
 
-    fun showImageSelectionError(){
-        stateChangeListener.onDataStateChange(
-            DataState(
-                Event(StateError(Response("Something went wrong with the image.", ResponseType.Dialog()))),
-                Loading(isLoading = false),
-                Data(Event.dataEvent(null), null)
-            )
-        )
-    }
-
     fun subscribeObservers(){
         viewModel.dataState.observe(viewLifecycleOwner, Observer { dataState ->
             stateChangeListener.onDataStateChange(dataState)
@@ -141,34 +145,30 @@ class UpdateBlogFragment : BaseBlogFragment() {
         requestManager
             .load(image)
             .into(blog_image)
-        blog_title.text = title
-        blog_body.text = body
+        blog_title.setText(title)
+        blog_body.setText(body)
     }
 
     private fun saveChanges(){
         var multipartBody: MultipartBody.Part? = null
         viewModel.getUpdatedBlogUri()?.let{ imageUri ->
             imageUri.path?.let{filePath ->
-                view?.context?.let{ context ->
-                    FileUtil.getUriRealPathAboveKitkat(context, imageUri)?.let{ filepath ->
-                        val imageFile = File(filepath)
-                        Log.d(TAG, "UpdateBlogFragment, imageFile: file: ${imageFile}")
-                        if(imageFile.exists()){
-                            val requestBody =
-                                RequestBody.create(
-                                    MediaType.parse("image/*"),
-                                    imageFile
-                                )
-                            // name = field name in serializer
-                            // filename = name of the image file
-                            // requestBody = file with file type information
-                            multipartBody = MultipartBody.Part.createFormData(
-                                "image",
-                                imageFile.name,
-                                requestBody
-                            )
-                        }
-                    }
+                val imageFile = File(filePath)
+                Log.d(TAG, "UpdateBlogFragment, imageFile: file: ${imageFile}")
+                if(imageFile.exists()){
+                    val requestBody =
+                        RequestBody.create(
+                            MediaType.parse("image/*"),
+                            imageFile
+                        )
+                    // name = field name in serializer
+                    // filename = name of the image file
+                    // requestBody = file with file type information
+                    multipartBody = MultipartBody.Part.createFormData(
+                        "image",
+                        imageFile.name,
+                        requestBody
+                    )
                 }
             }
         }
@@ -204,26 +204,7 @@ class UpdateBlogFragment : BaseBlogFragment() {
             body = blog_body.text.toString()
         )
     }
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

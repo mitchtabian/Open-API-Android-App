@@ -3,8 +3,6 @@ package com.codingwithmitch.openapi.repository.main
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.switchMap
-import com.codingwithmitch.openapi.util.ApiSuccessResponse
-import com.codingwithmitch.openapi.util.GenericApiResponse
 import com.codingwithmitch.openapi.api.GenericResponse
 import com.codingwithmitch.openapi.api.main.OpenApiMainService
 import com.codingwithmitch.openapi.models.AccountProperties
@@ -17,8 +15,12 @@ import com.codingwithmitch.openapi.ui.DataState
 import com.codingwithmitch.openapi.ui.Response
 import com.codingwithmitch.openapi.ui.ResponseType
 import com.codingwithmitch.openapi.ui.main.account.state.AccountViewState
-import com.codingwithmitch.openapi.util.*
-import kotlinx.coroutines.*
+import com.codingwithmitch.openapi.util.AbsentLiveData
+import com.codingwithmitch.openapi.util.ApiSuccessResponse
+import com.codingwithmitch.openapi.util.GenericApiResponse
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class AccountRepository
@@ -29,11 +31,11 @@ constructor(
     val sessionManager: SessionManager
 ): JobManager("AccountRepository")
 {
+
     private val TAG: String = "AppDebug"
 
     fun getAccountProperties(authToken: AuthToken): LiveData<DataState<AccountViewState>> {
         return object: NetworkBoundResource<AccountProperties, AccountProperties, AccountViewState>(
-            "getAccountProperties",
             sessionManager.isConnectedToTheInternet(),
             true,
             false,
@@ -58,7 +60,6 @@ constructor(
             }
 
             override fun loadFromCache(): LiveData<AccountViewState> {
-
                 return accountPropertiesDao.searchByPk(authToken.account_pk!!)
                     .switchMap {
                         object: LiveData<AccountViewState>(){
@@ -70,22 +71,26 @@ constructor(
                     }
             }
 
-            override fun createCall(): LiveData<GenericApiResponse<AccountProperties>> {
-                return openApiMainService.getAccountProperties("Token ${authToken.token!!}")
-            }
-
-            override suspend fun updateLocalDb(accountProp: AccountProperties?) {
-                accountProp?.let {
+            override suspend fun updateLocalDb(cacheObject: AccountProperties?) {
+                cacheObject?.let {
                     accountPropertiesDao.updateAccountProperties(
-                        accountProp.pk,
-                        accountProp.email,
-                        accountProp.username
+                        cacheObject.pk,
+                        cacheObject.email,
+                        cacheObject.username
                     )
                 }
             }
 
+            override fun createCall(): LiveData<GenericApiResponse<AccountProperties>> {
+                return openApiMainService
+                    .getAccountProperties(
+                        "Token ${authToken.token!!}"
+                    )
+            }
+
+
             override fun setJob(job: Job) {
-                addJob(methodName, job)
+                addJob("getAccountProperties", job)
             }
 
 
@@ -93,8 +98,7 @@ constructor(
     }
 
     fun saveAccountProperties(authToken: AuthToken, accountProperties: AccountProperties): LiveData<DataState<AccountViewState>> {
-        return object: NetworkBoundResource<GenericResponse, AccountProperties, AccountViewState>(
-            "saveAccountProperties",
+        return object: NetworkBoundResource<GenericResponse, Any, AccountViewState>(
             sessionManager.isConnectedToTheInternet(),
             true,
             true,
@@ -107,13 +111,14 @@ constructor(
             }
 
             override suspend fun handleApiSuccessResponse(response: ApiSuccessResponse<GenericResponse>) {
-                updateLocalDb(null) // don't care about GenericResponse in local db
+                updateLocalDb(null) // The update does not return a CacheObject
 
                 withContext(Dispatchers.Main){
                     // finish with success response
                     onCompleteJob(
-                        DataState.data(null,
-                            Response(response.body.response, ResponseType.Toast())
+                        DataState.data(
+                            data = null,
+                            response = Response(response.body.response, ResponseType.Toast())
                         ))
                 }
             }
@@ -131,7 +136,7 @@ constructor(
                 )
             }
 
-            override suspend fun updateLocalDb(cacheObject: AccountProperties?) {
+            override suspend fun updateLocalDb(cacheObject: Any?) {
                 return accountPropertiesDao.updateAccountProperties(
                     accountProperties.pk,
                     accountProperties.email,
@@ -140,16 +145,14 @@ constructor(
             }
 
             override fun setJob(job: Job) {
-                addJob(methodName, job)
+                addJob("saveAccountProperties", job)
             }
 
         }.asLiveData()
     }
 
-
     fun updatePassword(authToken: AuthToken, currentPassword: String, newPassword: String, confirmNewPassword: String): LiveData<DataState<AccountViewState>> {
         return object: NetworkBoundResource<GenericResponse, Any, AccountViewState>(
-            "updatePassword",
             sessionManager.isConnectedToTheInternet(),
             true,
             true,
@@ -190,20 +193,13 @@ constructor(
             }
 
             override fun setJob(job: Job) {
-                addJob(methodName, job)
+                addJob("updatePassword", job)
             }
 
         }.asLiveData()
     }
 
 }
-
-
-
-
-
-
-
 
 
 

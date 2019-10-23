@@ -1,13 +1,9 @@
-package com.codingwithmitch.openapi.api.main.network_responses
+package com.codingwithmitch.openapi.api.main.responses
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-class BlogCreateUpdateResponse(
-
-    @SerializedName("response")
-    @Expose
-    var response: String,
+class BlogSearchResponse(
 
     @SerializedName("pk")
     @Expose
@@ -39,4 +35,8 @@ class BlogCreateUpdateResponse(
 
 
 
-)
+) {
+    override fun toString(): String {
+        return "BlogSearchResponse(pk=$pk, title='$title', slug='$slug',  image='$image', date_updated='$date_updated', username='$username')"
+    }
+}

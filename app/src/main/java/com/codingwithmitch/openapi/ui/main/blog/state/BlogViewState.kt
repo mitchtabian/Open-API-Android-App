@@ -18,13 +18,18 @@ data class BlogViewState (
 )
 {
     data class BlogFields(
-        var searchQuery: String = "",
-        var filter: String = ORDER_BY_ASC_DATE_UPDATED,
-        var order: String = BLOG_ORDER_ASC,
-        var page: Int = 1,
         var blogList: List<BlogPost> = ArrayList<BlogPost>(),
+        var searchQuery: String = "",
+        var page: Int = 1,
         var isQueryInProgress: Boolean = false,
-        var isQueryExhausted: Boolean = false
+        var isQueryExhausted: Boolean = false,
+        var filter: String = ORDER_BY_ASC_DATE_UPDATED,
+        var order: String = BLOG_ORDER_ASC
+    )
+
+    data class ViewBlogFields(
+        var blogPost: BlogPost? = null,
+        var isAuthorOfBlogPost: Boolean = false
     )
 
     data class ViewBlogFields(
@@ -38,3 +43,11 @@ data class BlogViewState (
         var updatedImageUri: Uri? = null
     )
 }
+
+
+
+
+
+
+
+

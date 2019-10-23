@@ -3,7 +3,6 @@ package com.codingwithmitch.openapi.ui.main.blog.viewmodel
 import android.net.Uri
 import com.codingwithmitch.openapi.models.BlogPost
 
-
 fun BlogViewModel.getFilter(): String {
     getCurrentViewStateOrNew().let {
         return it.blogFields.filter
@@ -28,13 +27,6 @@ fun BlogViewModel.getPage(): Int{
     }
 }
 
-fun BlogViewModel.isAuthorOfBlogPost(): Boolean{
-    getCurrentViewStateOrNew().let {
-        return it.viewBlogFields.isAuthorOfBlogPost
-    }
-}
-
-
 fun BlogViewModel.getSlug(): String{
     getCurrentViewStateOrNew().let {
         it.viewBlogFields.blogPost?.let {
@@ -44,8 +36,14 @@ fun BlogViewModel.getSlug(): String{
     return ""
 }
 
+fun BlogViewModel.isAuthorOfBlogPost(): Boolean{
+    getCurrentViewStateOrNew().let {
+        return it.viewBlogFields.isAuthorOfBlogPost
+    }
+}
 
-fun BlogViewModel.getBlogPost(): BlogPost{
+
+fun BlogViewModel.getBlogPost(): BlogPost {
     getCurrentViewStateOrNew().let {
         return it.viewBlogFields.blogPost?.let {
             return it
@@ -57,7 +55,6 @@ fun BlogViewModel.getDummyBlogPost(): BlogPost{
     return BlogPost(-1, "" , "", "", "", 1, "")
 }
 
-
 fun BlogViewModel.getUpdatedBlogUri(): Uri? {
     getCurrentViewStateOrNew().let {
         it.updatedBlogFields.updatedImageUri?.let {
@@ -66,8 +63,6 @@ fun BlogViewModel.getUpdatedBlogUri(): Uri? {
     }
     return null
 }
-
-
 
 
 

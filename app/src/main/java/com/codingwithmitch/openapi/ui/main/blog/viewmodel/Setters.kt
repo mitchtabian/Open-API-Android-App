@@ -1,8 +1,8 @@
 package com.codingwithmitch.openapi.ui.main.blog.viewmodel
 
-
 import android.net.Uri
 import com.codingwithmitch.openapi.models.BlogPost
+import com.codingwithmitch.openapi.ui.main.blog.viewmodel.BlogViewModel
 
 fun BlogViewModel.setQuery(query: String){
     val update = getCurrentViewStateOrNew()
@@ -40,6 +40,7 @@ fun BlogViewModel.setQueryInProgress(isInProgress: Boolean){
     setViewState(update)
 }
 
+
 // Filter can be "date_updated" or "username"
 fun BlogViewModel.setBlogFilter(filter: String?){
     filter?.let{
@@ -57,19 +58,6 @@ fun BlogViewModel.setBlogOrder(order: String){
     setViewState(update)
 }
 
-fun BlogViewModel.updateListItem(newBlogPost: BlogPost){
-    val update = getCurrentViewStateOrNew()
-    val list = update.blogFields.blogList.toMutableList()
-    for(i in 0..(list.size - 1)){
-        if(list[i].pk == newBlogPost.pk){
-            list[i] = newBlogPost
-            break
-        }
-    }
-    update.blogFields.blogList = list
-    setViewState(update)
-}
-
 fun BlogViewModel.removeDeletedBlogPost(){
     val update = getCurrentViewStateOrNew()
     val list = update.blogFields.blogList.toMutableList()
@@ -79,8 +67,7 @@ fun BlogViewModel.removeDeletedBlogPost(){
             break
         }
     }
-    update.blogFields.blogList = list
-    setViewState(update)
+    setBlogListData(list)
 }
 
 fun BlogViewModel.setUpdatedBlogFields(title: String?, body: String?, uri: Uri?){
@@ -94,6 +81,20 @@ fun BlogViewModel.setUpdatedBlogFields(title: String?, body: String?, uri: Uri?)
 }
 
 
+fun BlogViewModel.updateListItem(newBlogPost: BlogPost){
+    val update = getCurrentViewStateOrNew()
+    val list = update.blogFields.blogList.toMutableList()
+    for(i in 0..(list.size - 1)){
+        if(list[i].pk == newBlogPost.pk){
+            list[i] = newBlogPost
+            break
+        }
+    }
+    update.blogFields.blogList = list
+    setViewState(update)
+}
+
+
 fun BlogViewModel.onBlogPostUpdateSuccess(blogPost: BlogPost){
     setUpdatedBlogFields(
         uri = null,
@@ -103,14 +104,6 @@ fun BlogViewModel.onBlogPostUpdateSuccess(blogPost: BlogPost){
     setBlogPost(blogPost) // update ViewBlogFragment
     updateListItem(blogPost) // update BlogFragment
 }
-
-
-
-
-
-
-
-
 
 
 

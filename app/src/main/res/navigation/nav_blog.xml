@@ -5,12 +5,12 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/nav_blog"
         app:startDestination="@id/blogFragment"
->
+        >
 
     <fragment android:id="@+id/blogFragment"
-              android:name="com.codingwithmitch.openapi.ui.main.blog.BlogFragment"
-              android:label="@string/fragment_blog"
-              tools:layout="@layout/fragment_blog">
+            android:name="com.codingwithmitch.openapi.ui.main.blog.BlogFragment"
+            android:label="@string/fragment_blog"
+            tools:layout="@layout/fragment_blog">
 
 
         <action android:id="@+id/action_blogFragment_to_viewBlogFragment"
@@ -19,14 +19,14 @@
                 app:popExitAnim="@anim/slide_out_right"
                 app:enterAnim="@anim/slide_in_right"
                 app:exitAnim="@anim/slide_out_left"
-        />
+                />
 
     </fragment>
 
     <fragment android:id="@+id/viewBlogFragment"
-              android:name="com.codingwithmitch.openapi.ui.main.blog.ViewBlogFragment"
-              android:label="@string/fragment_view_blog"
-              tools:layout="@layout/fragment_view_blog">
+            android:name="com.codingwithmitch.openapi.ui.main.blog.ViewBlogFragment"
+            android:label="@string/fragment_view_blog"
+            tools:layout="@layout/fragment_view_blog">
 
 
         <action android:id="@+id/action_viewBlogFragment_to_updateBlogFragment"
@@ -35,7 +35,7 @@
                 app:popExitAnim="@anim/slide_out_right"
                 app:enterAnim="@anim/slide_in_right"
                 app:exitAnim="@anim/slide_out_left"
-        />
+                />
 
         <action
                 android:id="@+id/action_viewBlogFragment_to_home"
@@ -50,9 +50,9 @@
     </fragment>
 
     <fragment android:id="@+id/updateBlogFragment"
-              android:name="com.codingwithmitch.openapi.ui.main.blog.UpdateBlogFragment"
-              android:label="@string/fragment_update_blog"
-              tools:layout="@layout/fragment_update_blog">
+            android:name="com.codingwithmitch.openapi.ui.main.blog.UpdateBlogFragment"
+            android:label="@string/fragment_update_blog"
+            tools:layout="@layout/fragment_update_blog">
 
         <action
                 android:id="@+id/action_updateBlogFragment_to_home"

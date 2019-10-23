@@ -1,24 +1,21 @@
 package com.codingwithmitch.openapi.ui.main.account
 
-
 import android.os.Bundle
 import android.util.Log
 import android.view.*
 import androidx.lifecycle.Observer
-
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.models.AccountProperties
-import com.codingwithmitch.openapi.ui.main.account.state.AccountStateEvent.*
+import com.codingwithmitch.openapi.ui.main.account.state.AccountStateEvent
 import kotlinx.android.synthetic.main.fragment_update_account.*
 
+class UpdateAccountFragment : BaseAccountFragment(){
 
-class UpdateAccountFragment : BaseAccountFragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_update_account, container, false)
     }
@@ -26,10 +23,10 @@ class UpdateAccountFragment : BaseAccountFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
-        subscribeObervers()
+        subscribeObservers()
     }
 
-    private fun subscribeObervers(){
+    private fun subscribeObservers(){
         viewModel.dataState.observe(viewLifecycleOwner, Observer{ dataState ->
             stateChangeListener.onDataStateChange(dataState)
             Log.d(TAG, "UpdateAccountFragment, DataState: ${dataState}")
@@ -56,7 +53,10 @@ class UpdateAccountFragment : BaseAccountFragment() {
 
     private fun saveChanges(){
         viewModel.setStateEvent(
-            UpdateAccountPropertiesEvent(input_email.text.toString(), input_username.text.toString())
+            AccountStateEvent.UpdateAccountPropertiesEvent(
+                input_email.text.toString(),
+                input_username.text.toString()
+            )
         )
         stateChangeListener.hideSoftKeyboard()
     }
@@ -74,18 +74,7 @@ class UpdateAccountFragment : BaseAccountFragment() {
         }
         return super.onOptionsItemSelected(item)
     }
-
 }
-
-
-
-
-
-
-
-
-
-
 
 
 

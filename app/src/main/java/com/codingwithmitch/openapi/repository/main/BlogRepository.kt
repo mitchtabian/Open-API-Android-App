@@ -3,14 +3,13 @@ package com.codingwithmitch.openapi.repository.main
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.switchMap
-import com.codingwithmitch.openapi.api.*
+import com.codingwithmitch.openapi.api.GenericResponse
 import com.codingwithmitch.openapi.api.main.OpenApiMainService
-import com.codingwithmitch.openapi.api.main.network_responses.BlogCreateUpdateResponse
-import com.codingwithmitch.openapi.api.main.network_responses.BlogListSearchResponse
+import com.codingwithmitch.openapi.api.main.responses.BlogCreateUpdateResponse
+import com.codingwithmitch.openapi.api.main.responses.BlogListSearchResponse
 import com.codingwithmitch.openapi.models.AuthToken
 import com.codingwithmitch.openapi.models.BlogPost
 import com.codingwithmitch.openapi.persistence.BlogPostDao
-import com.codingwithmitch.openapi.persistence.BlogQueryUtils
 import com.codingwithmitch.openapi.persistence.returnOrderedBlogQuery
 import com.codingwithmitch.openapi.repository.JobManager
 import com.codingwithmitch.openapi.repository.NetworkBoundResource
@@ -29,8 +28,11 @@ import com.codingwithmitch.openapi.util.GenericApiResponse
 import com.codingwithmitch.openapi.util.SuccessHandling.Companion.RESPONSE_HAS_PERMISSION_TO_EDIT
 import com.codingwithmitch.openapi.util.SuccessHandling.Companion.RESPONSE_NO_PERMISSION_TO_EDIT
 import com.codingwithmitch.openapi.util.SuccessHandling.Companion.SUCCESS_BLOG_DELETED
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import javax.inject.Inject
@@ -43,19 +45,21 @@ constructor(
     val sessionManager: SessionManager
 ): JobManager("BlogRepository")
 {
+
     private val TAG: String = "AppDebug"
 
-    fun searchBlogPosts(authToken: AuthToken, query: String, filterAndOrder: String, page: Int): LiveData<DataState<BlogViewState>> {
-
+    fun searchBlogPosts(
+        authToken: AuthToken,
+        query: String,
+        filterAndOrder: String,
+        page: Int
+    ): LiveData<DataState<BlogViewState>> {
         return object: NetworkBoundResource<BlogListSearchResponse, List<BlogPost>, BlogViewState>(
-            "searchBlogPosts",
             sessionManager.isConnectedToTheInternet(),
             true,
             false,
             true
-        ){
-
-
+        ) {
             // if network is down, view cache only and return
             override suspend fun createCacheRequestAndReturn() {
                 withContext(Dispatchers.Main){
@@ -71,7 +75,10 @@ constructor(
                 }
             }
 
-            override suspend fun handleApiSuccessResponse(response: ApiSuccessResponse<BlogListSearchResponse>) {
+            override suspend fun handleApiSuccessResponse(
+                response: ApiSuccessResponse<BlogListSearchResponse>
+            ) {
+
                 val blogPostList: ArrayList<BlogPost> = ArrayList()
                 for(blogPostResponse in response.body.results){
                     blogPostList.add(
@@ -81,7 +88,9 @@ constructor(
                             slug = blogPostResponse.slug,
                             body = blogPostResponse.body,
                             image = blogPostResponse.image,
-                            date_updated = DateUtils.convertServerStringDateToLong(blogPostResponse.date_updated),
+                            date_updated = DateUtils.convertServerStringDateToLong(
+                                blogPostResponse.date_updated
+                            ),
                             username = blogPostResponse.username
                         )
                     )
@@ -89,6 +98,15 @@ constructor(
                 updateLocalDb(blogPostList)
 
                 createCacheRequestAndReturn()
+            }
+
+            override fun createCall(): LiveData<GenericApiResponse<BlogListSearchResponse>> {
+                return openApiMainService.searchListBlogPosts(
+                    "Token ${authToken.token!!}",
+                    query = query,
+                    ordering = filterAndOrder,
+                    page = page
+                )
             }
 
             override fun loadFromCache(): LiveData<BlogViewState> {
@@ -136,19 +154,9 @@ constructor(
                 }
             }
 
-            override fun createCall(): LiveData<GenericApiResponse<BlogListSearchResponse>> {
-                return openApiMainService.searchListBlogPosts(
-                    "Token ${authToken.token!!}",
-                    query = query,
-                    ordering = filterAndOrder,
-                    page = page
-                )
-            }
-
             override fun setJob(job: Job) {
-                addJob(methodName, job)
+                addJob("searchBlogPosts", job)
             }
-
 
         }.asLiveData()
     }
@@ -159,7 +167,6 @@ constructor(
         slug: String
     ): LiveData<DataState<BlogViewState>> {
         return object: NetworkBoundResource<GenericResponse, Any, BlogViewState>(
-            "isAuthorOfBlogPost",
             sessionManager.isConnectedToTheInternet(),
             true,
             true,
@@ -226,20 +233,18 @@ constructor(
             }
 
             override fun setJob(job: Job) {
-                addJob(methodName, job)
+                addJob("isAuthorOfBlogPost", job)
             }
 
 
         }.asLiveData()
     }
 
-
     fun deleteBlogPost(
         authToken: AuthToken,
         blogPost: BlogPost
     ): LiveData<DataState<BlogViewState>>{
         return object: NetworkBoundResource<GenericResponse, BlogPost, BlogViewState>(
-            "deleteBlogPost",
             sessionManager.isConnectedToTheInternet(),
             true,
             true,
@@ -293,7 +298,7 @@ constructor(
             }
 
             override fun setJob(job: Job) {
-                addJob(methodName, job)
+                addJob("deleteBlogPost", job)
             }
 
         }.asLiveData()
@@ -307,7 +312,6 @@ constructor(
         image: MultipartBody.Part?
     ): LiveData<DataState<BlogViewState>> {
         return object: NetworkBoundResource<BlogCreateUpdateResponse, BlogPost, BlogViewState>(
-            "updateBlogPost",
             sessionManager.isConnectedToTheInternet(),
             true,
             true,
@@ -319,7 +323,9 @@ constructor(
 
             }
 
-            override suspend fun handleApiSuccessResponse(response: ApiSuccessResponse<BlogCreateUpdateResponse>) {
+            override suspend fun handleApiSuccessResponse(
+                response: ApiSuccessResponse<BlogCreateUpdateResponse>
+            ) {
 
                 val updatedBlogPost = BlogPost(
                     response.body.pk,
@@ -330,7 +336,9 @@ constructor(
                     DateUtils.convertServerStringDateToLong(response.body.date_updated),
                     response.body.username
                 )
+
                 updateLocalDb(updatedBlogPost)
+
                 withContext(Dispatchers.Main){
                     // finish with success response
                     onCompleteJob(
@@ -372,24 +380,13 @@ constructor(
             }
 
             override fun setJob(job: Job) {
-                addJob(methodName, job)
+                addJob("updateBlogPost", job)
             }
 
         }.asLiveData()
     }
 
-
 }
-
-
-
-
-
-
-
-
-
-
 
 
 

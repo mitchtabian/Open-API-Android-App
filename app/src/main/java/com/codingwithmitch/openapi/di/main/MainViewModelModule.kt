@@ -12,10 +12,6 @@ import dagger.multibindings.IntoMap
 @Module
 abstract class MainViewModelModule {
 
-    @Binds
-    @IntoMap
-    @ViewModelKey(BlogViewModel::class)
-    abstract fun bindBlogViewModel(blogViewModel: BlogViewModel): ViewModel
 
     @Binds
     @IntoMap
@@ -24,6 +20,19 @@ abstract class MainViewModelModule {
 
     @Binds
     @IntoMap
+    @ViewModelKey(BlogViewModel::class)
+    abstract fun bindBlogViewModel(blogViewModel: BlogViewModel): ViewModel
+
+    @Binds
+    @IntoMap
     @ViewModelKey(CreateBlogViewModel::class)
     abstract fun bindCreateBlogViewModel(createBlogViewModel: CreateBlogViewModel): ViewModel
 }
+
+
+
+
+
+
+
+

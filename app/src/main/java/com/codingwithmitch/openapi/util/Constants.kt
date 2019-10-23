@@ -2,13 +2,12 @@ package com.codingwithmitch.openapi.util
 
 class Constants {
 
-    companion object {
-        const val BASE_URL: String = "https://open-api.xyz/api/"
-        const val PASSWORD_RESET_URL: String = "https://open-api.xyz/password_reset/"
-        const val PASSWORD_CHANGE_URL: String = "https://open-api.xyz/password_change/"
-        const val CONFIRM_ACCOUNT_EXISTS_URL: String = "https://open-api.xyz/api/account/check_if_account_exists/"
+    companion object{
 
-        const val NETWORK_TIMEOUT = 3000L
+        const val BASE_URL = "https://open-api.xyz/api/"
+        const val PASSWORD_RESET_URL: String = "https://open-api.xyz/password_reset/"
+
+        const val NETWORK_TIMEOUT = 6000L
         const val TESTING_NETWORK_DELAY = 0L // fake network delay for testing
         const val TESTING_CACHE_DELAY = 0L // fake cache delay for testing
 
@@ -19,24 +18,3 @@ class Constants {
         const val CROP_IMAGE_INTENT_CODE: Int = 401
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

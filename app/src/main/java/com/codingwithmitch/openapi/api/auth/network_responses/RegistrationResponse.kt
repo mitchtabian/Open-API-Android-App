@@ -34,20 +34,3 @@ class RegistrationResponse(
         return "RegistrationResponse(response='$response', errorMessage='$errorMessage', email='$email', username='$username', token='$token')"
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

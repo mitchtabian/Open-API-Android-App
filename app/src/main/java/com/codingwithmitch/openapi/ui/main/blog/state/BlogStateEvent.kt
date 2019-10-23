@@ -2,10 +2,9 @@ package com.codingwithmitch.openapi.ui.main.blog.state
 
 import okhttp3.MultipartBody
 
+sealed class BlogStateEvent {
 
-sealed class BlogStateEvent{
-
-    class BlogSearchEvent: BlogStateEvent()
+    class BlogSearchEvent : BlogStateEvent()
 
     class CheckAuthorOfBlogPost: BlogStateEvent()
 
@@ -18,6 +17,4 @@ sealed class BlogStateEvent{
     ): BlogStateEvent()
 
     class None: BlogStateEvent()
-
-
 }
