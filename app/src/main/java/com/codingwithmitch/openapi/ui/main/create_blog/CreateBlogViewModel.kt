@@ -12,6 +12,8 @@ import com.codingwithmitch.openapi.ui.main.create_blog.state.CreateBlogStateEven
 import com.codingwithmitch.openapi.ui.main.create_blog.state.CreateBlogViewState
 import com.codingwithmitch.openapi.ui.main.create_blog.state.CreateBlogViewState.*
 import com.codingwithmitch.openapi.util.AbsentLiveData
+import okhttp3.MediaType
+import okhttp3.RequestBody
 import javax.inject.Inject
 
 class CreateBlogViewModel
@@ -28,7 +30,18 @@ constructor(
         when(stateEvent){
 
             is CreateNewBlogEvent -> {
-               return AbsentLiveData.create()
+                return sessionManager.cachedToken.value?.let { authToken ->
+
+                    val title = RequestBody.create(MediaType.parse("text/plain"), stateEvent.title)
+                    val body = RequestBody.create(MediaType.parse("text/plain"), stateEvent.body)
+
+                    createBlogRepository.createNewBlogPost(
+                        authToken,
+                        title,
+                        body,
+                        stateEvent.image
+                    )
+                }?: AbsentLiveData.create()
             }
 
             is None -> {
