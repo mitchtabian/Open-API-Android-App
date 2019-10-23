@@ -32,11 +32,6 @@ data class BlogViewState (
         var isAuthorOfBlogPost: Boolean = false
     )
 
-    data class ViewBlogFields(
-        var blogPost: BlogPost? = null,
-        var isAuthorOfBlogPost: Boolean = false
-    )
-
     data class UpdatedBlogFields(
         var updatedBlogTitle: String? = null,
         var updatedBlogBody: String? = null,
