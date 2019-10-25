@@ -1,6 +1,7 @@
 package com.codingwithmitch.openapi.ui.main.account
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.liveData
 import com.codingwithmitch.openapi.models.AccountProperties
 import com.codingwithmitch.openapi.repository.main.AccountRepository
 import com.codingwithmitch.openapi.session.SessionManager
@@ -58,11 +59,14 @@ constructor(
             }
 
             is None ->{
-                return object: LiveData<DataState<AccountViewState>>(){
-                    override fun onActive() {
-                        super.onActive()
-                        value = DataState(null, Loading(false), null)
-                    }
+                return liveData {
+                    emit(
+                        DataState(
+                            null,
+                            Loading(false),
+                            null
+                        )
+                    )
                 }
             }
         }

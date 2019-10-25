@@ -2,6 +2,7 @@ package com.codingwithmitch.openapi.ui.main.create_blog
 
 import android.net.Uri
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.liveData
 import com.codingwithmitch.openapi.repository.main.CreateBlogRepository
 import com.codingwithmitch.openapi.session.SessionManager
 import com.codingwithmitch.openapi.ui.BaseViewModel
@@ -45,15 +46,14 @@ constructor(
             }
 
             is None -> {
-                return object: LiveData<DataState<CreateBlogViewState>>(){
-                    override fun onActive() {
-                        super.onActive()
-                        value = DataState(
+                return liveData {
+                    emit(
+                        DataState(
                             null,
                             Loading(false),
                             null
                         )
-                    }
+                    )
                 }
             }
         }

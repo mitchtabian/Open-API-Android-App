@@ -2,6 +2,7 @@ package com.codingwithmitch.openapi.ui.main.blog.viewmodel
 
 import android.content.SharedPreferences
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.liveData
 import com.bumptech.glide.RequestManager
 import com.codingwithmitch.openapi.models.BlogPost
 import com.codingwithmitch.openapi.persistence.BlogQueryUtils
@@ -101,11 +102,14 @@ constructor(
             }
 
             is None ->{
-                return object: LiveData<DataState<BlogViewState>>(){
-                    override fun onActive() {
-                        super.onActive()
-                        value = DataState(null, Loading(false), null)
-                    }
+                return liveData {
+                    emit(
+                        DataState(
+                            null,
+                            Loading(false),
+                            null
+                        )
+                    )
                 }
             }
         }

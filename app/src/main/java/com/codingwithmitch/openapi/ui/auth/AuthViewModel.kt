@@ -5,9 +5,9 @@ import com.codingwithmitch.openapi.models.AuthToken
 import com.codingwithmitch.openapi.repository.auth.AuthRepository
 import com.codingwithmitch.openapi.ui.BaseViewModel
 import com.codingwithmitch.openapi.ui.DataState
+import com.codingwithmitch.openapi.ui.Loading
 import com.codingwithmitch.openapi.ui.auth.state.*
 import com.codingwithmitch.openapi.ui.auth.state.AuthStateEvent.*
-import com.codingwithmitch.openapi.util.AbsentLiveData
 import javax.inject.Inject
 
 class AuthViewModel
@@ -41,11 +41,14 @@ constructor(
 
 
             is None ->{
-                return object: LiveData<DataState<AuthViewState>>(){
-                    override fun onActive() {
-                        super.onActive()
-                        value = DataState.data(null, null)
-                    }
+                return liveData {
+                    emit(
+                        DataState(
+                            null,
+                            Loading(false),
+                            null
+                        )
+                    )
                 }
             }
         }
