@@ -5,9 +5,9 @@
 <p>Watch the video course here: <a href="https://codingwithmitch.com/courses/powerful-android-apps-with-jetpack-architecture/">Powerful Android Apps with Jetpack Architecture</a>.</p>
 
 <p>In this course you'll learn to build a real application that interacts with the website <a href="https://open-api.xyz" target="_blank">open-api.xyz</a>.</p>
-<p>Open-api.xyz is a sandbox website for codingwithmitch members to practice interacting with a Rest API. </p>
+<p>Open-api.xyz is a sandbox website for codingwithmitch members to practice interacting with a Rest API. </p><br>
 
-<h4><strong>Prerequisites</strong> (Recommended not required):</h4>
+<h2><strong>Prerequisites</strong> (Recommended not required):</h2>
 <ol>
 <li>
 <p><strong><a href="https://codingwithmitch.com/courses/dagger22-android/">Dagger 2</a></strong></p>
@@ -24,7 +24,7 @@
 </ol>
 <br>
 
-<h4><strong>What you'll learn:</strong></h4>
+<h2><strong>What you'll learn:</strong></h2>
 <ul>
 <li><strong>Kotlin</strong>:</li>
 <li>
