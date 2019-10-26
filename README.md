@@ -6,7 +6,6 @@
 
 <p>In this course you'll learn to build a real application that interacts with the website <a href="https://open-api.xyz" target="_blank">open-api.xyz</a>.</p>
 <p>Open-api.xyz is a sandbox website for codingwithmitch members to practice interacting with a Rest API. </p>
-<br>
 
 <h4><strong>Prerequisites</strong> (Recommended not required):</h4>
 <ol>
@@ -23,7 +22,7 @@
 </li>
 
 </ol>
-<br><br>
+<br>
 
 <h4><strong>What you'll learn:</strong></h4>
 <ul>
