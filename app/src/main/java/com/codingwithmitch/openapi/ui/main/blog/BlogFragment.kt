@@ -25,6 +25,7 @@ import com.codingwithmitch.openapi.models.BlogPost
 import com.codingwithmitch.openapi.persistence.BlogQueryUtils.Companion.BLOG_FILTER_DATE_UPDATED
 import com.codingwithmitch.openapi.persistence.BlogQueryUtils.Companion.BLOG_FILTER_USERNAME
 import com.codingwithmitch.openapi.persistence.BlogQueryUtils.Companion.BLOG_ORDER_ASC
+import com.codingwithmitch.openapi.persistence.BlogQueryUtils.Companion.BLOG_ORDER_DESC
 import com.codingwithmitch.openapi.ui.DataState
 import com.codingwithmitch.openapi.ui.main.blog.state.BlogViewState
 import com.codingwithmitch.openapi.ui.main.blog.viewmodel.*
@@ -240,44 +241,44 @@ class BlogFragment : BaseBlogFragment(),
             val filter = viewModel.getFilter()
             val order = viewModel.getOrder()
 
-            if(filter.equals(BLOG_FILTER_DATE_UPDATED)){
-                view.findViewById<RadioGroup>(R.id.filter_group).check(R.id.filter_date)
-            }
-            else{
-                view.findViewById<RadioGroup>(R.id.filter_group).check(R.id.filter_author)
-            }
-
-            if(order.equals(BLOG_ORDER_ASC)){
-                view.findViewById<RadioGroup>(R.id.order_group).check(R.id.filter_asc)
-            }
-            else{
-                view.findViewById<RadioGroup>(R.id.order_group).check(R.id.filter_desc)
+            view.findViewById<RadioGroup>(R.id.filter_group).apply {
+                when (filter) {
+                    BLOG_FILTER_DATE_UPDATED -> check(R.id.filter_date)
+                    BLOG_FILTER_USERNAME -> check(R.id.filter_author)
+                }
             }
 
-            view.findViewById<TextView>(R.id.positive_button).setOnClickListener{
+            view.findViewById<RadioGroup>(R.id.order_group).apply {
+                when (order) {
+                    BLOG_ORDER_ASC -> check(R.id.filter_asc)
+                    BLOG_ORDER_DESC -> check(R.id.filter_desc)
+                }
+            }
+
+            view.findViewById<TextView>(R.id.positive_button).setOnClickListener {
                 Log.d(TAG, "FilterDialog: apply filter.")
 
-                val selectedFilter = dialog.getCustomView().findViewById<RadioButton>(
-                    dialog.getCustomView().findViewById<RadioGroup>(R.id.filter_group).checkedRadioButtonId
-                )
-                val selectedOrder= dialog.getCustomView().findViewById<RadioButton>(
-                    dialog.getCustomView().findViewById<RadioGroup>(R.id.order_group).checkedRadioButtonId
-                )
+                val newFilter =
+                    when (view.findViewById<RadioGroup>(R.id.filter_group).checkedRadioButtonId) {
+                        R.id.filter_author -> BLOG_FILTER_USERNAME
+                        R.id.filter_date -> BLOG_FILTER_DATE_UPDATED
+                        else -> BLOG_FILTER_DATE_UPDATED
+                    }
 
-                var filter = BLOG_FILTER_DATE_UPDATED
-                if(selectedFilter.text.toString().equals(getString(R.string.filter_author))){
-                    filter = BLOG_FILTER_USERNAME
+                val newOrder =
+                    when (view.findViewById<RadioGroup>(R.id.order_group).checkedRadioButtonId) {
+                        R.id.filter_desc -> "-"
+                        else -> ""
+                    }
+
+                viewModel.apply {
+                    saveFilterOptions(newFilter, newOrder)
+                    setBlogFilter(newFilter)
+                    setBlogOrder(newOrder)
                 }
 
-                var order = ""
-                if(selectedOrder.text.toString().equals(getString(R.string.filter_desc))){
-                    order = "-"
-                }
-                viewModel.saveFilterOptions(filter, order).let{
-                    viewModel.setBlogFilter(filter)
-                    viewModel.setBlogOrder(order)
-                    onBlogSearchOrFilter()
-                }
+                onBlogSearchOrFilter()
+
                 dialog.dismiss()
             }
 
