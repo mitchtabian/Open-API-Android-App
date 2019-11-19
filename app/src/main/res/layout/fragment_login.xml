@@ -22,7 +22,7 @@
                 app:layout_constraintBottom_toTopOf="@+id/input_email_layout"
                 android:textSize="25sp"
                 android:textColor="#000"
-                android:text="Login"
+                android:text="@string/text_login"
                 android:id="@+id/login_text"
                 android:layout_marginTop="50dp"
                 />

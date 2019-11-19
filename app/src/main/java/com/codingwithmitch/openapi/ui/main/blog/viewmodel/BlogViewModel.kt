@@ -3,6 +3,7 @@ package com.codingwithmitch.openapi.ui.main.blog.viewmodel
 import android.content.SharedPreferences
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
+import androidx.lifecycle.viewModelScope
 import com.bumptech.glide.RequestManager
 import com.codingwithmitch.openapi.models.BlogPost
 import com.codingwithmitch.openapi.persistence.BlogQueryUtils
@@ -17,6 +18,10 @@ import com.codingwithmitch.openapi.ui.main.blog.state.BlogViewState
 import com.codingwithmitch.openapi.util.AbsentLiveData
 import com.codingwithmitch.openapi.util.PreferenceKeys.Companion.BLOG_FILTER
 import com.codingwithmitch.openapi.util.PreferenceKeys.Companion.BLOG_ORDER
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.*
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import javax.inject.Inject
@@ -29,7 +34,6 @@ constructor(
     private val sharedPreferences: SharedPreferences,
     private val editor: SharedPreferences.Editor
 ): BaseViewModel<BlogStateEvent, BlogViewState>(){
-
 
     init {
         setBlogFilter(
@@ -44,6 +48,8 @@ constructor(
                 BlogQueryUtils.BLOG_ORDER_ASC
             )
         )
+
+
     }
 
     override fun handleStateEvent(stateEvent: BlogStateEvent): LiveData<DataState<BlogViewState>> {

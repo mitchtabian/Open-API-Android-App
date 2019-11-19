@@ -11,7 +11,6 @@ import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.ui.BaseActivity
-import com.codingwithmitch.openapi.ui.ResponseType
 import com.codingwithmitch.openapi.ui.auth.state.AuthStateEvent
 import com.codingwithmitch.openapi.ui.main.MainActivity
 import com.codingwithmitch.openapi.util.SuccessHandling.Companion.RESPONSE_CHECK_PREVIOUS_AUTH_USER_DONE
@@ -31,13 +30,13 @@ class AuthActivity : BaseActivity(),
         viewModel.cancelActiveJobs()
     }
 
-
     @Inject
     lateinit var providerFactory: ViewModelProviderFactory
 
     lateinit var viewModel: AuthViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_auth)
 

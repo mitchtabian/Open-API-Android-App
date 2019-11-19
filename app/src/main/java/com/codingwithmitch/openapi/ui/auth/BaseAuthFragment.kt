@@ -3,16 +3,17 @@ package com.codingwithmitch.openapi.ui.auth
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
-import com.codingwithmitch.openapi.viewmodels.ViewModelProviderFactory
+import com.codingwithmitch.openapi.testing.OpenForTesting
 import dagger.android.support.DaggerFragment
 import javax.inject.Inject
 
+@OpenForTesting
 abstract class BaseAuthFragment: DaggerFragment(){
 
     val TAG: String = "AppDebug"
 
     @Inject
-    lateinit var providerFactory: ViewModelProviderFactory
+    lateinit var providerFactory: ViewModelProvider.Factory
 
     lateinit var viewModel: AuthViewModel
 
@@ -28,7 +29,6 @@ abstract class BaseAuthFragment: DaggerFragment(){
     private fun cancelActiveJobs(){
         viewModel.cancelActiveJobs()
     }
-
 }
 
 

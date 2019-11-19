@@ -1,6 +1,7 @@
 package com.codingwithmitch.openapi.di
 
 import android.app.Application
+import androidx.fragment.app.FragmentFactory
 import com.codingwithmitch.openapi.BaseApplication
 import com.codingwithmitch.openapi.session.SessionManager
 import dagger.BindsInstance

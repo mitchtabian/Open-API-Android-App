@@ -2,16 +2,16 @@ package com.codingwithmitch.openapi.ui.auth
 
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 
 import com.codingwithmitch.openapi.R
+import com.codingwithmitch.openapi.testing.OpenForTesting
 import kotlinx.android.synthetic.main.fragment_launcher.*
 
-
+@OpenForTesting
 class LauncherFragment : BaseAuthFragment() {
 
     override fun onCreateView(
@@ -39,7 +39,7 @@ class LauncherFragment : BaseAuthFragment() {
 
         focusable_view.requestFocus() // reset focus
 
-        Log.d(TAG, "LauncherFragment: ${viewModel}")
+//        Log.d(TAG, "LauncherFragment: ${viewModel}")
     }
 
     fun navLogin(){
@@ -53,6 +53,7 @@ class LauncherFragment : BaseAuthFragment() {
     fun navForgotPassword(){
         findNavController().navigate(R.id.action_launcherFragment_to_forgotPasswordFragment)
     }
+
 }
 
 
