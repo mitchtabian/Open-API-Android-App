@@ -2,13 +2,15 @@ package com.codingwithmitch.openapi.ui.auth
 
 import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.codingwithmitch.openapi.di.Injectable
 import com.codingwithmitch.openapi.testing.OpenForTesting
 import dagger.android.support.DaggerFragment
 import javax.inject.Inject
 
 @OpenForTesting
-abstract class BaseAuthFragment: DaggerFragment(){
+abstract class BaseAuthFragment: Fragment(), Injectable{
 
     val TAG: String = "AppDebug"
 
