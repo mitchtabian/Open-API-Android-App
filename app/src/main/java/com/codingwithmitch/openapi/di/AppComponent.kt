@@ -6,7 +6,6 @@ import com.codingwithmitch.openapi.session.SessionManager
 import dagger.BindsInstance
 import dagger.Component
 import dagger.android.AndroidInjectionModule
-import dagger.android.AndroidInjector
 import javax.inject.Singleton
 
 @Singleton
@@ -18,7 +17,7 @@ import javax.inject.Singleton
         ViewModelFactoryModule::class
     ]
 )
-interface AppComponent : AndroidInjector<BaseApplication>{
+interface AppComponent  {
 
     val sessionManager: SessionManager // must add here b/c injecting into abstract class
 
@@ -30,9 +29,9 @@ interface AppComponent : AndroidInjector<BaseApplication>{
 
         fun build(): AppComponent
     }
+
+    fun inject(app: BaseApplication)
 }
-
-
 
 
 
