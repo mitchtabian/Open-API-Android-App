@@ -15,13 +15,15 @@ import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.di.Injectable
 import com.codingwithmitch.openapi.ui.DataStateChangeListener
 import com.codingwithmitch.openapi.ui.UICommunicationListener
+import com.codingwithmitch.openapi.ui.main.blog.state.BLOG_VIEW_STATE_BUNDLE_KEY
+import com.codingwithmitch.openapi.ui.main.blog.state.BlogViewState
 import com.codingwithmitch.openapi.ui.main.blog.viewmodel.BlogViewModel
 import com.codingwithmitch.openapi.viewmodels.ViewModelProviderFactory
-import dagger.android.support.DaggerFragment
 import javax.inject.Inject
 
 //abstract class BaseBlogFragment : DaggerFragment(){
-abstract class BaseBlogFragment : Fragment(), Injectable {
+abstract class BaseBlogFragment : Fragment(), Injectable
+{
 
     val TAG: String = "AppDebug"
 
@@ -37,6 +39,7 @@ abstract class BaseBlogFragment : Fragment(), Injectable {
 
     lateinit var viewModel: BlogViewModel
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupActionBarWithNavController(R.id.blogFragment, activity as AppCompatActivity)
@@ -50,6 +53,34 @@ abstract class BaseBlogFragment : Fragment(), Injectable {
 
     fun cancelActiveJobs(){
         viewModel.cancelActiveJobs()
+    }
+
+    fun isViewModelInitialized() = ::viewModel.isInitialized
+
+    /**
+     * !IMPORTANT!
+     * Must save ViewState b/c in event of process death the LiveData in ViewModel will be lost
+     */
+    override fun onSaveInstanceState(outState: Bundle) {
+        if(isViewModelInitialized()){
+            outState.putParcelable(
+                BLOG_VIEW_STATE_BUNDLE_KEY,
+                viewModel.viewState.value
+            )
+        }
+        super.onSaveInstanceState(outState)
+    }
+
+    /**
+     * Restore ViewState after process death
+     */
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+        savedInstanceState?.let { inState ->
+            (inState[BLOG_VIEW_STATE_BUNDLE_KEY] as BlogViewState?)?.let { viewState ->
+                viewModel.setViewState(viewState)
+            }
+        }
     }
 
     /*

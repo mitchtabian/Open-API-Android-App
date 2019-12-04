@@ -2,6 +2,8 @@ package com.codingwithmitch.openapi.ui.main
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.PersistableBundle
+import android.os.Process
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
@@ -9,14 +11,15 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import com.codingwithmitch.openapi.R
+import com.codingwithmitch.openapi.models.AUTH_TOKEN_BUNDLE_KEY
+import com.codingwithmitch.openapi.models.AuthToken
 import com.codingwithmitch.openapi.ui.BaseActivity
 import com.codingwithmitch.openapi.ui.auth.AuthActivity
 import com.codingwithmitch.openapi.ui.main.account.BaseAccountFragment
 import com.codingwithmitch.openapi.ui.main.account.ChangePasswordFragment
 import com.codingwithmitch.openapi.ui.main.account.UpdateAccountFragment
-import com.codingwithmitch.openapi.ui.main.blog.BaseBlogFragment
-import com.codingwithmitch.openapi.ui.main.blog.UpdateBlogFragment
-import com.codingwithmitch.openapi.ui.main.blog.ViewBlogFragment
+import com.codingwithmitch.openapi.ui.main.blog.*
+import com.codingwithmitch.openapi.ui.main.blog.state.BlogViewState
 import com.codingwithmitch.openapi.ui.main.create_blog.BaseCreateBlogFragment
 import com.codingwithmitch.openapi.util.BottomNavController
 import com.codingwithmitch.openapi.util.setUpNavigation
@@ -33,6 +36,7 @@ class MainActivity : BaseActivity(),
 {
 
     private lateinit var bottomNavigationView: BottomNavigationView
+
 
     private val bottomNavController by lazy(LazyThreadSafetyMode.NONE) {
         BottomNavController(
@@ -132,6 +136,18 @@ class MainActivity : BaseActivity(),
         }
 
         subscribeObservers()
+        restoreSession(savedInstanceState)
+    }
+
+    private fun restoreSession(savedInstanceState: Bundle?){
+        savedInstanceState?.get(AUTH_TOKEN_BUNDLE_KEY)?.let{ authToken ->
+            sessionManager.setValue(authToken as AuthToken)
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putParcelable(AUTH_TOKEN_BUNDLE_KEY, sessionManager.cachedToken.value)
     }
 
     fun subscribeObservers(){
@@ -166,6 +182,8 @@ class MainActivity : BaseActivity(),
             progress_bar.visibility = View.GONE
         }
     }
+
+
 
 
 }

@@ -13,8 +13,9 @@ import androidx.navigation.ui.NavigationUI
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.di.Injectable
 import com.codingwithmitch.openapi.ui.DataStateChangeListener
+import com.codingwithmitch.openapi.ui.main.account.state.ACCOUNT_VIEW_STATE_BUNDLE_KEY
+import com.codingwithmitch.openapi.ui.main.account.state.AccountViewState
 import com.codingwithmitch.openapi.viewmodels.ViewModelProviderFactory
-import dagger.android.support.DaggerFragment
 import javax.inject.Inject
 
 //abstract class BaseAccountFragment : DaggerFragment(){
@@ -41,6 +42,34 @@ abstract class BaseAccountFragment : Fragment(), Injectable {
         // ex: from AccountFragment to UpdateAccountFragment
         // NOTE: Must call before "subscribeObservers" b/c that will create new jobs for the next fragment
         cancelActiveJobs()
+    }
+
+    fun isViewModelInitialized() = ::viewModel.isInitialized
+
+    /**
+     * !IMPORTANT!
+     * Must save ViewState b/c in event of process death the LiveData in ViewModel will be lost
+     */
+    override fun onSaveInstanceState(outState: Bundle) {
+        if(isViewModelInitialized()){
+            outState.putParcelable(
+                ACCOUNT_VIEW_STATE_BUNDLE_KEY,
+                viewModel.viewState.value
+            )
+        }
+        super.onSaveInstanceState(outState)
+    }
+
+    /**
+     * Restore ViewState after process death
+     */
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+        savedInstanceState?.let { inState ->
+            (inState[ACCOUNT_VIEW_STATE_BUNDLE_KEY] as AccountViewState?)?.let { viewState ->
+                viewModel.setViewState(viewState)
+            }
+        }
     }
 
     fun cancelActiveJobs(){

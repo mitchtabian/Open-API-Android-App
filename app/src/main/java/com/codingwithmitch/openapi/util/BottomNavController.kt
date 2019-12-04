@@ -11,7 +11,6 @@ import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import com.codingwithmitch.openapi.R
-import com.codingwithmitch.openapi.testing.OpenForTesting
 import com.codingwithmitch.openapi.util.BottomNavController.*
 import com.google.android.material.bottomnavigation.BottomNavigationView
 

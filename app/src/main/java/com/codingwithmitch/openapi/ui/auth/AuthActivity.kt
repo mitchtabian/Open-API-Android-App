@@ -2,6 +2,7 @@ package com.codingwithmitch.openapi.ui.auth
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Process
 import android.util.Log
 import android.view.View
 import androidx.lifecycle.Observer
@@ -31,7 +32,7 @@ class AuthActivity : BaseActivity(),
     }
 
     @Inject
-    lateinit var providerFactory: ViewModelProviderFactory
+    lateinit var providerFactory: ViewModelProvider.Factory
 
     lateinit var viewModel: AuthViewModel
 
@@ -44,7 +45,6 @@ class AuthActivity : BaseActivity(),
         findNavController(R.id.auth_nav_host_fragment).addOnDestinationChangedListener(this)
 
         subscribeObservers()
-
     }
 
     override fun onResume() {

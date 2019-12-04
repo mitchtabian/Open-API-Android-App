@@ -4,10 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
-import com.codingwithmitch.openapi.testing.OpenForTesting
 
 
-@OpenForTesting
 abstract class BaseViewModel<StateEvent, ViewState> : ViewModel()
 {
 

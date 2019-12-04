@@ -71,6 +71,7 @@
     <string name="text_login">Login</string>
     <string name="text_register">Register</string>
     <string name="text_forgot_password">Forgot password</string>
+    <string name="process_death_state">process_death_state</string>
 
 </resources>
 

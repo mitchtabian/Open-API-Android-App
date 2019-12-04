@@ -8,10 +8,8 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 
 import com.codingwithmitch.openapi.R
-import com.codingwithmitch.openapi.testing.OpenForTesting
 import kotlinx.android.synthetic.main.fragment_launcher.*
 
-@OpenForTesting
 class LauncherFragment : BaseAuthFragment() {
 
     override fun onCreateView(

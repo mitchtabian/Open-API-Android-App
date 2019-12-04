@@ -63,8 +63,6 @@ class BlogFragment : BaseBlogFragment(),
         if(savedInstanceState == null){
             viewModel.loadFirstPage()
         }
-
-
     }
 
     private fun subscribeObservers(){

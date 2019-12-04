@@ -3,12 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: "androidx.navigation.safeargs.kotlin"
-apply plugin: 'kotlin-allopen'
 
-allOpen {
-    // allows mocking for classes w/o directly opening them for release builds
-    annotation 'com.codingwithmitch.openapi.testing.OpenClass'
-}
 android {
     compileSdkVersion 28
     defaultConfig {
@@ -17,7 +12,7 @@ android {
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "com.codingwithmitch.openapi.utils.OpenApiTestRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         javaCompileOptions {
             annotationProcessorOptions {
@@ -29,9 +24,6 @@ android {
 
     }
     buildTypes {
-        debug{
-            testCoverageEnabled !project.hasProperty('android.injected.invoked.from.ide')
-        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
@@ -53,10 +45,6 @@ android {
         experimental = true
     }
 
-    sourceSets {
-        androidTest.java.srcDirs += "src/test-common/java"
-        test.java.srcDirs += "src/test-common/java"
-    }
 
 }
 
@@ -72,6 +60,7 @@ dependencies {
     // Core library
     def androidx_test_espresso = "3.1.0"
     androidTestImplementation "androidx.test.espresso:espresso-core:$androidx_test_espresso"
+    androidTestImplementation "androidx.test.espresso:espresso-intents:$androidx_test_espresso"
 
     // AndroidJUnitRunner and JUnit Rules
     def androidx_test = "1.1.1"
@@ -92,10 +81,6 @@ dependencies {
     def ext_junit_version = "1.1.0"
     androidTestImplementation "androidx.test.ext:junit-ktx:$ext_junit_version"
 
-//    // testing fragments
-//    def fragment_version = "1.1.0"
-//    debugImplementation  "androidx.fragment:fragment-testing:$fragment_version"
-
     def fragment = "1.2.0-alpha02"
     implementation "androidx.fragment:fragment-ktx:$fragment"
 
@@ -104,13 +89,6 @@ dependencies {
     androidTestImplementation "org.mockito:mockito-core:$mockito_core"
     def mockito_android = "2.25.0"
     androidTestImplementation "org.mockito:mockito-android:$mockito_android"
-
-
-//    def hamcrest = "1.3"
-//    androidTestImplementation "org.hamcrest:hamcrest-library:$hamcrest"
-
-//    def ui_automator = "2.2.0"
-//    androidTestImplementation "androidx.test.uiautomator:uiautomator:$ui_automator"
 
     // -- Retrofit2
     def retrofit2_version = "2.6.0"
@@ -122,6 +100,9 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-runtime:$lifecycle_version"
     kapt "androidx.lifecycle:lifecycle-compiler:$lifecycle_version"
 
+    // Saved State
+    def saved_state_version = "1.0.0-alpha01"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$saved_state_version"
 
     // -- Coroutines
     def coroutines_version = "1.2.1"
@@ -130,6 +111,7 @@ dependencies {
 
     // LiveData Coroutines
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
+
 
     // -- Room
     def room_version = "2.1.0"
@@ -185,11 +167,4 @@ dependencies {
     // Android-Image-Cropper
     def android_image_cropper_version = "2.8.+"
     api "com.theartofdev.edmodo:android-image-cropper:$android_image_cropper_version"
-}
-
-// we need all open to run tests which  a we enable only for debug builds.
-project.tasks.whenTaskAdded {
-    if (it.name == "testReleaseUnitTest") {
-        it.enabled = false
-    }
 }

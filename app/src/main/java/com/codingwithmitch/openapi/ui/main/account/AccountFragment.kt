@@ -37,6 +37,7 @@ class AccountFragment : BaseAccountFragment(){
 
     private fun subscribeObservers(){
         viewModel.dataState.observe(viewLifecycleOwner, Observer{ dataState ->
+            Log.d(TAG, "AccountFragment: DataState: $dataState")
             stateChangeListener.onDataStateChange(dataState)
             if(dataState != null){
                 dataState.data?.let { data ->
@@ -53,9 +54,9 @@ class AccountFragment : BaseAccountFragment(){
         })
 
         viewModel.viewState.observe(viewLifecycleOwner, Observer{ viewState->
+            Log.d(TAG, "AccountFragment, ViewState: ${viewState}")
             if(viewState != null){
                 viewState.accountProperties?.let{
-                    Log.d(TAG, "AccountFragment, ViewState: ${it}")
                     setAccountDataFields(it)
                 }
             }

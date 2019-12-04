@@ -3,7 +3,6 @@ package com.codingwithmitch.openapi.ui.auth
 import androidx.lifecycle.*
 import com.codingwithmitch.openapi.models.AuthToken
 import com.codingwithmitch.openapi.repository.auth.AuthRepository
-import com.codingwithmitch.openapi.testing.OpenForTesting
 import com.codingwithmitch.openapi.ui.BaseViewModel
 import com.codingwithmitch.openapi.ui.DataState
 import com.codingwithmitch.openapi.ui.Loading

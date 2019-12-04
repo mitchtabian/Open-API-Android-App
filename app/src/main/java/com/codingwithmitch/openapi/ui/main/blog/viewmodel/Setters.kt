@@ -2,7 +2,6 @@ package com.codingwithmitch.openapi.ui.main.blog.viewmodel
 
 import android.net.Uri
 import com.codingwithmitch.openapi.models.BlogPost
-import com.codingwithmitch.openapi.ui.main.blog.viewmodel.BlogViewModel
 
 fun BlogViewModel.setQuery(query: String){
     val update = getCurrentViewStateOrNew()
@@ -70,17 +69,6 @@ fun BlogViewModel.removeDeletedBlogPost(){
     setBlogListData(list)
 }
 
-fun BlogViewModel.setUpdatedBlogFields(title: String?, body: String?, uri: Uri?){
-    val update = getCurrentViewStateOrNew()
-    val updatedBlogFields = update.updatedBlogFields
-    title?.let{ updatedBlogFields.updatedBlogTitle = it }
-    body?.let{ updatedBlogFields.updatedBlogBody = it }
-    uri?.let{ updatedBlogFields.updatedImageUri = it }
-    update.updatedBlogFields = updatedBlogFields
-    setViewState(update)
-}
-
-
 fun BlogViewModel.updateListItem(newBlogPost: BlogPost){
     val update = getCurrentViewStateOrNew()
     val list = update.blogFields.blogList.toMutableList()
@@ -105,6 +93,23 @@ fun BlogViewModel.onBlogPostUpdateSuccess(blogPost: BlogPost){
     updateListItem(blogPost) // update BlogFragment
 }
 
+
+/**
+ * Only change the values passed into constructor
+ */
+fun BlogViewModel.setUpdatedBlogFields(
+    title: String?,
+    body: String?,
+    uri: Uri?
+){
+    val update = getCurrentViewStateOrNew()
+    val updatedBlogFields = update.updatedBlogFields
+    title?.let{ updatedBlogFields.updatedBlogTitle = it }
+    body?.let{ updatedBlogFields.updatedBlogBody = it }
+    uri?.let{ updatedBlogFields.updatedImageUri = it }
+    update.updatedBlogFields = updatedBlogFields
+    setViewState(update)
+}
 
 
 
