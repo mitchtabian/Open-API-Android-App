@@ -18,7 +18,6 @@ import com.codingwithmitch.openapi.ui.main.account.state.AccountViewState
 import com.codingwithmitch.openapi.viewmodels.ViewModelProviderFactory
 import javax.inject.Inject
 
-//abstract class BaseAccountFragment : DaggerFragment(){
 abstract class BaseAccountFragment : Fragment(), Injectable {
 
     val TAG: String = "AppDebug"
@@ -51,7 +50,9 @@ abstract class BaseAccountFragment : Fragment(), Injectable {
      * Must save ViewState b/c in event of process death the LiveData in ViewModel will be lost
      */
     override fun onSaveInstanceState(outState: Bundle) {
+        Log.d(TAG, "BaseAccountFragment, onSaveInstanceState: ")
         if(isViewModelInitialized()){
+            Log.d(TAG, "BaseAccountFragment, vm is initialized: ${viewModel.viewState.value}")
             outState.putParcelable(
                 ACCOUNT_VIEW_STATE_BUNDLE_KEY,
                 viewModel.viewState.value
@@ -64,9 +65,11 @@ abstract class BaseAccountFragment : Fragment(), Injectable {
      * Restore ViewState after process death
      */
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        Log.d(TAG, "BaseAccountFragment, onViewStateRestored: ")
         super.onViewStateRestored(savedInstanceState)
         savedInstanceState?.let { inState ->
             (inState[ACCOUNT_VIEW_STATE_BUNDLE_KEY] as AccountViewState?)?.let { viewState ->
+                Log.d(TAG, "BaseAccountFragment, onViewStateRestored: $viewState")
                 viewModel.setViewState(viewState)
             }
         }

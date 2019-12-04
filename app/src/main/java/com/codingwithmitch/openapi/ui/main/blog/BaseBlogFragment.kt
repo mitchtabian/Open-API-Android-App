@@ -21,7 +21,6 @@ import com.codingwithmitch.openapi.ui.main.blog.viewmodel.BlogViewModel
 import com.codingwithmitch.openapi.viewmodels.ViewModelProviderFactory
 import javax.inject.Inject
 
-//abstract class BaseBlogFragment : DaggerFragment(){
 abstract class BaseBlogFragment : Fragment(), Injectable
 {
 

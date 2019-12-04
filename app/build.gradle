@@ -100,10 +100,6 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-runtime:$lifecycle_version"
     kapt "androidx.lifecycle:lifecycle-compiler:$lifecycle_version"
 
-    // Saved State
-    def saved_state_version = "1.0.0-alpha01"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$saved_state_version"
-
     // -- Coroutines
     def coroutines_version = "1.2.1"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
