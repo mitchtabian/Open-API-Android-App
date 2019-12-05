@@ -13,17 +13,15 @@ import androidx.navigation.ui.NavigationUI
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.di.Injectable
 import com.codingwithmitch.openapi.ui.DataStateChangeListener
+import com.codingwithmitch.openapi.ui.main.MainDependencyProvider
 import com.codingwithmitch.openapi.ui.main.account.state.ACCOUNT_VIEW_STATE_BUNDLE_KEY
 import com.codingwithmitch.openapi.ui.main.account.state.AccountViewState
-import com.codingwithmitch.openapi.viewmodels.ViewModelProviderFactory
-import javax.inject.Inject
 
 abstract class BaseAccountFragment : Fragment(), Injectable {
 
     val TAG: String = "AppDebug"
 
-    @Inject
-    lateinit var providerFactory: ViewModelProviderFactory
+    lateinit var dependencyProvider: MainDependencyProvider
 
     lateinit var stateChangeListener: DataStateChangeListener
 
@@ -32,15 +30,25 @@ abstract class BaseAccountFragment : Fragment(), Injectable {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupActionBarWithNavController(R.id.accountFragment, activity as AppCompatActivity)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 
         viewModel = activity?.run {
-            ViewModelProvider(this, providerFactory).get(AccountViewModel::class.java)
+            ViewModelProvider(
+                this, dependencyProvider.getVMProviderFactory()
+            ).get(AccountViewModel::class.java)
         }?: throw Exception("Invalid Activity")
 
-        // Cancels jobs when switching between fragments in the same graph
-        // ex: from AccountFragment to UpdateAccountFragment
-        // NOTE: Must call before "subscribeObservers" b/c that will create new jobs for the next fragment
         cancelActiveJobs()
+
+        // Restore state after process death
+        savedInstanceState?.let { inState ->
+            (inState[ACCOUNT_VIEW_STATE_BUNDLE_KEY] as AccountViewState?)?.let { viewState ->
+                viewModel.setViewState(viewState)
+            }
+        }
     }
 
     fun isViewModelInitialized() = ::viewModel.isInitialized
@@ -50,29 +58,13 @@ abstract class BaseAccountFragment : Fragment(), Injectable {
      * Must save ViewState b/c in event of process death the LiveData in ViewModel will be lost
      */
     override fun onSaveInstanceState(outState: Bundle) {
-        Log.d(TAG, "BaseAccountFragment, onSaveInstanceState: ")
         if(isViewModelInitialized()){
-            Log.d(TAG, "BaseAccountFragment, vm is initialized: ${viewModel.viewState.value}")
             outState.putParcelable(
                 ACCOUNT_VIEW_STATE_BUNDLE_KEY,
                 viewModel.viewState.value
             )
         }
         super.onSaveInstanceState(outState)
-    }
-
-    /**
-     * Restore ViewState after process death
-     */
-    override fun onViewStateRestored(savedInstanceState: Bundle?) {
-        Log.d(TAG, "BaseAccountFragment, onViewStateRestored: ")
-        super.onViewStateRestored(savedInstanceState)
-        savedInstanceState?.let { inState ->
-            (inState[ACCOUNT_VIEW_STATE_BUNDLE_KEY] as AccountViewState?)?.let { viewState ->
-                Log.d(TAG, "BaseAccountFragment, onViewStateRestored: $viewState")
-                viewModel.setViewState(viewState)
-            }
-        }
     }
 
     fun cancelActiveJobs(){
@@ -100,6 +92,12 @@ abstract class BaseAccountFragment : Fragment(), Injectable {
             stateChangeListener = context as DataStateChangeListener
         }catch(e: ClassCastException){
             Log.e(TAG, "$context must implement DataStateChangeListener" )
+        }
+
+        try{
+            dependencyProvider = context as MainDependencyProvider
+        }catch(e: ClassCastException){
+            Log.e(TAG, "$context must implement DependencyProvider" )
         }
     }
 }

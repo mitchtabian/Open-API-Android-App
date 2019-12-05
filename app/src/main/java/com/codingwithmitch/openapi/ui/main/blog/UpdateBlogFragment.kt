@@ -140,7 +140,7 @@ class UpdateBlogFragment : BaseBlogFragment(){
     }
 
     fun setBlogProperties(title: String?, body: String?, image: Uri?){
-        requestManager
+        dependencyProvider.getGlideRequestManager()
             .load(image)
             .into(blog_image)
         blog_title.setText(title)

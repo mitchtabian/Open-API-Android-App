@@ -109,7 +109,7 @@ class ViewBlogFragment : BaseBlogFragment(){
     }
 
     fun setBlogProperties(blogPost: BlogPost){
-        requestManager
+        dependencyProvider.getGlideRequestManager()
             .load(blogPost.image)
             .into(blog_image)
         blog_title.setText(blogPost.title)

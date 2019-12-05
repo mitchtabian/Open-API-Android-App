@@ -10,28 +10,19 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
-import com.bumptech.glide.RequestManager
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.di.Injectable
 import com.codingwithmitch.openapi.ui.DataStateChangeListener
+import com.codingwithmitch.openapi.ui.main.MainDependencyProvider
 import com.codingwithmitch.openapi.ui.UICommunicationListener
-import com.codingwithmitch.openapi.ui.main.account.state.ACCOUNT_VIEW_STATE_BUNDLE_KEY
-import com.codingwithmitch.openapi.ui.main.account.state.AccountViewState
 import com.codingwithmitch.openapi.ui.main.create_blog.state.CREATE_BLOG_VIEW_STATE_BUNDLE_KEY
 import com.codingwithmitch.openapi.ui.main.create_blog.state.CreateBlogViewState
-import com.codingwithmitch.openapi.viewmodels.ViewModelProviderFactory
-import dagger.android.support.DaggerFragment
-import javax.inject.Inject
 
 abstract class BaseCreateBlogFragment : Fragment(), Injectable {
 
     val TAG: String = "AppDebug"
 
-    @Inject
-    lateinit var providerFactory: ViewModelProviderFactory
-
-    @Inject
-    lateinit var requestManager: RequestManager
+    lateinit var dependencyProvider: MainDependencyProvider
 
     lateinit var stateChangeListener: DataStateChangeListener
 
@@ -42,12 +33,26 @@ abstract class BaseCreateBlogFragment : Fragment(), Injectable {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupActionBarWithNavController(R.id.createBlogFragment, activity as AppCompatActivity)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 
         viewModel = activity?.run {
-            ViewModelProvider(this, providerFactory).get(CreateBlogViewModel::class.java)
+            ViewModelProvider(
+                this,
+                dependencyProvider.getVMProviderFactory()
+            ).get(CreateBlogViewModel::class.java)
         }?: throw Exception("Invalid Activity")
 
         cancelActiveJobs()
+
+        // Restore state after process death
+        savedInstanceState?.let { inState ->
+            (inState[CREATE_BLOG_VIEW_STATE_BUNDLE_KEY] as CreateBlogViewState?)?.let { viewState ->
+                viewModel.setViewState(viewState)
+            }
+        }
     }
 
     fun isViewModelInitialized() = ::viewModel.isInitialized
@@ -64,18 +69,6 @@ abstract class BaseCreateBlogFragment : Fragment(), Injectable {
             )
         }
         super.onSaveInstanceState(outState)
-    }
-
-    /**
-     * Restore ViewState after process death
-     */
-    override fun onViewStateRestored(savedInstanceState: Bundle?) {
-        super.onViewStateRestored(savedInstanceState)
-        savedInstanceState?.let { inState ->
-            (inState[CREATE_BLOG_VIEW_STATE_BUNDLE_KEY] as CreateBlogViewState?)?.let { viewState ->
-                viewModel.setViewState(viewState)
-            }
-        }
     }
 
     fun cancelActiveJobs(){
@@ -106,6 +99,12 @@ abstract class BaseCreateBlogFragment : Fragment(), Injectable {
             uiCommunicationListener = context as UICommunicationListener
         }catch(e: ClassCastException){
             Log.e(TAG, "$context must implement UICommunicationListener" )
+        }
+
+        try{
+            dependencyProvider = context as MainDependencyProvider
+        }catch(e: ClassCastException){
+            Log.e(TAG, "$context must implement DependencyProvider" )
         }
     }
 }

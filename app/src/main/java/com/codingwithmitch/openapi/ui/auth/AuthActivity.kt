@@ -2,7 +2,6 @@ package com.codingwithmitch.openapi.ui.auth
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.Process
 import android.util.Log
 import android.view.View
 import androidx.lifecycle.Observer
@@ -10,8 +9,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
+import com.bumptech.glide.RequestManager
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.ui.BaseActivity
+import com.codingwithmitch.openapi.ui.main.MainDependencyProvider
 import com.codingwithmitch.openapi.ui.auth.state.AuthStateEvent
 import com.codingwithmitch.openapi.ui.main.MainActivity
 import com.codingwithmitch.openapi.util.SuccessHandling.Companion.RESPONSE_CHECK_PREVIOUS_AUTH_USER_DONE
@@ -121,6 +122,8 @@ class AuthActivity : BaseActivity(),
     override fun expandAppBar() {
         // ignore
     }
+
+
 }
 
 

@@ -1,15 +1,14 @@
 package com.codingwithmitch.openapi.ui.auth
 
+import android.content.Context
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.codingwithmitch.openapi.di.Injectable
+import com.codingwithmitch.openapi.ui.main.MainDependencyProvider
 import com.codingwithmitch.openapi.ui.auth.state.AUTH_VIEW_STATE_BUNDLE_KEY
 import com.codingwithmitch.openapi.ui.auth.state.AuthViewState
-import com.codingwithmitch.openapi.ui.main.create_blog.state.CREATE_BLOG_VIEW_STATE_BUNDLE_KEY
-import com.codingwithmitch.openapi.ui.main.create_blog.state.CreateBlogViewState
-import dagger.android.support.DaggerFragment
 import javax.inject.Inject
 
 abstract class BaseAuthFragment: Fragment(), Injectable{
@@ -25,10 +24,15 @@ abstract class BaseAuthFragment: Fragment(), Injectable{
         super.onViewCreated(view, savedInstanceState)
 
         viewModel = activity?.run {
-            ViewModelProvider(this, providerFactory).get(AuthViewModel::class.java)
+            ViewModelProvider(
+                this,
+                providerFactory
+            ).get(AuthViewModel::class.java)
         } ?: throw Exception("Invalid Activity")
+
         cancelActiveJobs()
     }
+
 
     fun isViewModelInitialized() = ::viewModel.isInitialized
 
@@ -60,6 +64,11 @@ abstract class BaseAuthFragment: Fragment(), Injectable{
 
     private fun cancelActiveJobs(){
         viewModel.cancelActiveJobs()
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
     }
 }
 
