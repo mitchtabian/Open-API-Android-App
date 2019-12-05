@@ -90,12 +90,12 @@ class CreateBlogFragment : BaseCreateBlogFragment(){
 
     fun setBlogProperties(title: String?, body: String?, image: Uri?){
         if(image != null){
-            requestManager
+            dependencyProvider.getGlideRequestManager()
                 .load(image)
                 .into(blog_image)
         }
         else{
-            requestManager
+            dependencyProvider.getGlideRequestManager()
                 .load(R.drawable.default_image)
                 .into(blog_image)
         }

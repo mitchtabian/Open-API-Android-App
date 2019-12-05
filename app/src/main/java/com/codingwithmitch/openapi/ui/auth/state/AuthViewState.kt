@@ -1,21 +1,29 @@
 package com.codingwithmitch.openapi.ui.auth.state
 
+import android.os.Parcelable
 import com.codingwithmitch.openapi.models.AuthToken
+import kotlinx.android.parcel.Parcelize
 
+const val AUTH_VIEW_STATE_BUNDLE_KEY = "com.codingwithmitch.openapi.ui.auth.state.AuthViewState"
 
+@Parcelize
 data class AuthViewState(
     var registrationFields: RegistrationFields? = RegistrationFields(),
+
     var loginFields: LoginFields? = LoginFields(),
+
     var authToken: AuthToken? = null
-)
+
+) : Parcelable
 
 
+@Parcelize
 data class RegistrationFields(
     var registration_email: String? = null,
     var registration_username: String? = null,
     var registration_password: String? = null,
     var registration_confirm_password: String? = null
-){
+) : Parcelable {
 
     class RegistrationError {
         companion object{
@@ -50,10 +58,11 @@ data class RegistrationFields(
     }
 }
 
+@Parcelize
 data class LoginFields(
     var login_email: String? = null,
     var login_password: String? = null
-){
+) : Parcelable {
     class LoginError {
 
         companion object{

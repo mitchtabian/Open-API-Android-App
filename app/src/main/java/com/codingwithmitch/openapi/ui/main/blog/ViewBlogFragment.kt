@@ -11,7 +11,6 @@ import com.codingwithmitch.openapi.models.BlogPost
 import com.codingwithmitch.openapi.ui.AreYouSureCallback
 import com.codingwithmitch.openapi.ui.UIMessage
 import com.codingwithmitch.openapi.ui.UIMessageType
-import com.codingwithmitch.openapi.ui.main.blog.state.BlogStateEvent
 import com.codingwithmitch.openapi.ui.main.blog.state.BlogStateEvent.*
 import com.codingwithmitch.openapi.ui.main.blog.viewmodel.*
 import com.codingwithmitch.openapi.util.DateUtils
@@ -76,16 +75,18 @@ class ViewBlogFragment : BaseBlogFragment(){
         viewModel.dataState.observe(viewLifecycleOwner, Observer{ dataState ->
             stateChangeListener.onDataStateChange(dataState)
 
-            dataState.data?.let { data ->
-                data.data?.getContentIfNotHandled()?.let { viewState ->
-                    viewModel.setIsAuthorOfBlogPost(
-                        viewState.viewBlogFields.isAuthorOfBlogPost
-                    )
-                }
-                data.response?.peekContent()?.let{ response ->
-                    if(response.message.equals(SUCCESS_BLOG_DELETED)){
-                        viewModel.removeDeletedBlogPost()
-                        findNavController().popBackStack()
+            if(dataState != null){
+                dataState.data?.let { data ->
+                    data.data?.getContentIfNotHandled()?.let { viewState ->
+                        viewModel.setIsAuthorOfBlogPost(
+                            viewState.viewBlogFields.isAuthorOfBlogPost
+                        )
+                    }
+                    data.response?.peekContent()?.let{ response ->
+                        if(response.message.equals(SUCCESS_BLOG_DELETED)){
+                            viewModel.removeDeletedBlogPost()
+                            findNavController().popBackStack()
+                        }
                     }
                 }
             }
@@ -108,7 +109,7 @@ class ViewBlogFragment : BaseBlogFragment(){
     }
 
     fun setBlogProperties(blogPost: BlogPost){
-        requestManager
+        dependencyProvider.getGlideRequestManager()
             .load(blogPost.image)
             .into(blog_image)
         blog_title.setText(blogPost.title)

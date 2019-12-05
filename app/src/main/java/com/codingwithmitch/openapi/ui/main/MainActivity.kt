@@ -8,29 +8,46 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.NavController
+import com.bumptech.glide.RequestManager
 import com.codingwithmitch.openapi.R
+import com.codingwithmitch.openapi.models.AUTH_TOKEN_BUNDLE_KEY
+import com.codingwithmitch.openapi.models.AuthToken
 import com.codingwithmitch.openapi.ui.BaseActivity
 import com.codingwithmitch.openapi.ui.auth.AuthActivity
 import com.codingwithmitch.openapi.ui.main.account.BaseAccountFragment
 import com.codingwithmitch.openapi.ui.main.account.ChangePasswordFragment
 import com.codingwithmitch.openapi.ui.main.account.UpdateAccountFragment
-import com.codingwithmitch.openapi.ui.main.blog.BaseBlogFragment
-import com.codingwithmitch.openapi.ui.main.blog.UpdateBlogFragment
-import com.codingwithmitch.openapi.ui.main.blog.ViewBlogFragment
+import com.codingwithmitch.openapi.ui.main.blog.*
 import com.codingwithmitch.openapi.ui.main.create_blog.BaseCreateBlogFragment
 import com.codingwithmitch.openapi.util.BottomNavController
 import com.codingwithmitch.openapi.util.setUpNavigation
+import com.codingwithmitch.openapi.viewmodels.ViewModelProviderFactory
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import kotlinx.android.synthetic.main.activity_auth.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main.progress_bar
+import javax.inject.Inject
 
 class MainActivity : BaseActivity(),
     BottomNavController.NavGraphProvider,
     BottomNavController.OnNavigationGraphChanged,
-    BottomNavController.OnNavigationReselectedListener
+    BottomNavController.OnNavigationReselectedListener,
+    MainDependencyProvider
 {
+
+    @Inject
+    lateinit var providerFactory: ViewModelProviderFactory
+
+    @Inject
+    lateinit var requestManager: RequestManager
+
+    override fun getGlideRequestManager(): RequestManager {
+        return requestManager
+    }
+
+    override fun getVMProviderFactory(): ViewModelProviderFactory {
+        return providerFactory
+    }
 
     private lateinit var bottomNavigationView: BottomNavigationView
 
@@ -132,6 +149,18 @@ class MainActivity : BaseActivity(),
         }
 
         subscribeObservers()
+        restoreSession(savedInstanceState)
+    }
+
+    private fun restoreSession(savedInstanceState: Bundle?){
+        savedInstanceState?.get(AUTH_TOKEN_BUNDLE_KEY)?.let{ authToken ->
+            sessionManager.setValue(authToken as AuthToken)
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putParcelable(AUTH_TOKEN_BUNDLE_KEY, sessionManager.cachedToken.value)
     }
 
     fun subscribeObservers(){

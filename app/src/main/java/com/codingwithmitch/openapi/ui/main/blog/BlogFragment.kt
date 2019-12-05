@@ -1,6 +1,8 @@
 package com.codingwithmitch.openapi.ui.main.blog
 
+import android.app.Activity
 import android.app.SearchManager
+import android.content.Context
 import android.content.Context.SEARCH_SERVICE
 import android.os.Bundle
 import android.util.Log
@@ -63,6 +65,7 @@ class BlogFragment : BaseBlogFragment(),
         if(savedInstanceState == null){
             viewModel.loadFirstPage()
         }
+
     }
 
     private fun subscribeObservers(){
@@ -79,7 +82,7 @@ class BlogFragment : BaseBlogFragment(),
             if(viewState != null){
                 recyclerAdapter.apply {
                     preloadGlideImages(
-                        requestManager = requestManager,
+                        requestManager = dependencyProvider.getGlideRequestManager(),
                         list = viewState.blogFields.blogList
                     )
                     submitList(
@@ -178,7 +181,10 @@ class BlogFragment : BaseBlogFragment(),
             removeItemDecoration(topSpacingDecorator) // does nothing if not applied already
             addItemDecoration(topSpacingDecorator)
 
-            recyclerAdapter = BlogListAdapter(requestManager,  this@BlogFragment)
+            recyclerAdapter = BlogListAdapter(
+                dependencyProvider.getGlideRequestManager(),
+                this@BlogFragment
+            )
             addOnScrollListener(object: RecyclerView.OnScrollListener(){
 
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {

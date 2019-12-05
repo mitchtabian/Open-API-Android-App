@@ -11,9 +11,7 @@ import androidx.navigation.fragment.findNavController
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.ui.*
 import com.codingwithmitch.openapi.ui.main.blog.state.BlogStateEvent
-import com.codingwithmitch.openapi.ui.main.blog.viewmodel.getUpdatedBlogUri
-import com.codingwithmitch.openapi.ui.main.blog.viewmodel.onBlogPostUpdateSuccess
-import com.codingwithmitch.openapi.ui.main.blog.viewmodel.setUpdatedBlogFields
+import com.codingwithmitch.openapi.ui.main.blog.viewmodel.*
 import com.codingwithmitch.openapi.util.Constants.Companion.GALLERY_REQUEST_CODE
 import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView
@@ -142,7 +140,7 @@ class UpdateBlogFragment : BaseBlogFragment(){
     }
 
     fun setBlogProperties(title: String?, body: String?, image: Uri?){
-        requestManager
+        dependencyProvider.getGlideRequestManager()
             .load(image)
             .into(blog_image)
         blog_title.setText(title)

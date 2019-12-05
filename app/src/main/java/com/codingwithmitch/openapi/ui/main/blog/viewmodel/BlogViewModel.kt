@@ -1,10 +1,9 @@
 package com.codingwithmitch.openapi.ui.main.blog.viewmodel
 
 import android.content.SharedPreferences
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
-import com.bumptech.glide.RequestManager
-import com.codingwithmitch.openapi.models.BlogPost
 import com.codingwithmitch.openapi.persistence.BlogQueryUtils
 import com.codingwithmitch.openapi.repository.main.BlogRepository
 import com.codingwithmitch.openapi.session.SessionManager
@@ -29,7 +28,6 @@ constructor(
     private val sharedPreferences: SharedPreferences,
     private val editor: SharedPreferences.Editor
 ): BaseViewModel<BlogStateEvent, BlogViewState>(){
-
 
     init {
         setBlogFilter(
@@ -139,7 +137,10 @@ constructor(
     override fun onCleared() {
         super.onCleared()
         cancelActiveJobs()
+        Log.d(TAG, "CLEARED...")
     }
+
+
 
 }
 

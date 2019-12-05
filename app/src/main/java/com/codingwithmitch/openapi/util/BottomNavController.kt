@@ -2,7 +2,6 @@ package com.codingwithmitch.openapi.util
 
 import android.app.Activity
 import android.content.Context
-import android.content.ContextWrapper
 import androidx.annotation.IdRes
 import androidx.annotation.NavigationRes
 import androidx.fragment.app.Fragment
@@ -21,6 +20,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
  * https://stackoverflow.com/questions/50577356/android-jetpack-navigation-bottomnavigationview-with-youtube-or-instagram-like#_=_
  * @property navigationBackStack: Backstack for the bottom navigation
  */
+
 class BottomNavController(
     val context: Context,
     @IdRes val containerId: Int,
