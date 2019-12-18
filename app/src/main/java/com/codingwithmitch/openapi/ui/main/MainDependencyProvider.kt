@@ -1,6 +1,7 @@
 package com.codingwithmitch.openapi.ui.main
 
 import com.bumptech.glide.RequestManager
+import com.codingwithmitch.openapi.session.SessionManager
 import com.codingwithmitch.openapi.viewmodels.ViewModelProviderFactory
 
 /**

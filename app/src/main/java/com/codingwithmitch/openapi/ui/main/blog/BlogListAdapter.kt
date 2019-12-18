@@ -31,6 +31,7 @@ class BlogListAdapter(
         0,
         ""
     )
+    var listPosition: Int = 0
 
     val DIFF_CALLBACK = object : DiffUtil.ItemCallback<BlogPost>() {
 
@@ -112,6 +113,7 @@ class BlogListAdapter(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        listPosition = position
         when (holder) {
             is BlogViewHolder -> {
                 holder.bind(differ.currentList.get(position))

@@ -1,8 +1,6 @@
 package com.codingwithmitch.openapi.ui.main.blog
 
-import android.app.Activity
 import android.app.SearchManager
-import android.content.Context
 import android.content.Context.SEARCH_SERVICE
 import android.os.Bundle
 import android.util.Log
@@ -36,6 +34,7 @@ import handleIncomingBlogListData
 import kotlinx.android.synthetic.main.fragment_blog.*
 import loadFirstPage
 import nextPage
+import refreshFromCache
 
 class BlogFragment : BaseBlogFragment(),
     BlogListAdapter.Interaction,
@@ -61,11 +60,16 @@ class BlogFragment : BaseBlogFragment(),
 
         initRecyclerView()
         subscribeObservers()
+    }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         if(savedInstanceState == null){
             viewModel.loadFirstPage()
         }
-
+        else{
+            viewModel.refreshFromCache()
+        }
     }
 
     private fun subscribeObservers(){
@@ -90,9 +94,12 @@ class BlogFragment : BaseBlogFragment(),
                         isQueryExhausted = viewState.blogFields.isQueryExhausted
                     )
                 }
-
             }
         })
+    }
+
+    private fun restoreListPosition(position: Int){
+        blog_post_recyclerview.scrollToPosition(position)
     }
 
     private fun initSearchView(menu: Menu){
@@ -225,6 +232,7 @@ class BlogFragment : BaseBlogFragment(),
 
     override fun onDestroyView() {
         super.onDestroyView()
+        viewModel.setListPosition(recyclerAdapter.listPosition)
         // clear references (can leak memory)
         blog_post_recyclerview.adapter = null
     }

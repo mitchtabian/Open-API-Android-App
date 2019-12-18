@@ -19,5 +19,4 @@ class BaseApplication : Application(), HasActivityInjector {
 
     override fun activityInjector() = dispatchingAndroidInjector
 
-
 }

@@ -12,6 +12,7 @@ import com.bumptech.glide.RequestManager
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.models.AUTH_TOKEN_BUNDLE_KEY
 import com.codingwithmitch.openapi.models.AuthToken
+import com.codingwithmitch.openapi.session.SessionManager
 import com.codingwithmitch.openapi.ui.BaseActivity
 import com.codingwithmitch.openapi.ui.auth.AuthActivity
 import com.codingwithmitch.openapi.ui.main.account.BaseAccountFragment
@@ -141,19 +142,20 @@ class MainActivity : BaseActivity(),
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        restoreSession(savedInstanceState)
+        subscribeObservers()
+
         setupActionBar()
         bottomNavigationView = findViewById(R.id.bottom_navigation_view)
         bottomNavigationView.setUpNavigation(bottomNavController, this)
         if (savedInstanceState == null) {
             bottomNavController.onNavigationItemSelected()
         }
-
-        subscribeObservers()
-        restoreSession(savedInstanceState)
     }
 
     private fun restoreSession(savedInstanceState: Bundle?){
         savedInstanceState?.get(AUTH_TOKEN_BUNDLE_KEY)?.let{ authToken ->
+            Log.d(TAG, "MainActivity: restoreSession.")
             sessionManager.setValue(authToken as AuthToken)
         }
     }
