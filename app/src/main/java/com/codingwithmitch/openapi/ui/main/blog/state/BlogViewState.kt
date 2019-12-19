@@ -31,7 +31,8 @@ data class BlogViewState (
         var isQueryInProgress: Boolean = false,
         var isQueryExhausted: Boolean = false,
         var filter: String = ORDER_BY_ASC_DATE_UPDATED,
-        var order: String = BLOG_ORDER_ASC
+        var order: String = BLOG_ORDER_ASC,
+        var layoutManagerState: Parcelable? = null
     ) : Parcelable
 
     @Parcelize
