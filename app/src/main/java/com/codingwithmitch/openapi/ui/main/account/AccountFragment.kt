@@ -38,8 +38,8 @@ class AccountFragment : BaseAccountFragment(){
     private fun subscribeObservers(){
         viewModel.dataState.observe(viewLifecycleOwner, Observer{ dataState ->
             Log.d(TAG, "AccountFragment: DataState: $dataState")
-            stateChangeListener.onDataStateChange(dataState)
             if(dataState != null){
+                stateChangeListener.onDataStateChange(dataState)
                 dataState.data?.let { data ->
                     data.data?.let{ event ->
                         event.getContentIfNotHandled()?.let{ viewState ->
