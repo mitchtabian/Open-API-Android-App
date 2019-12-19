@@ -62,13 +62,15 @@ class BlogFragment : BaseBlogFragment(),
         subscribeObservers()
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        if(savedInstanceState == null){
-            viewModel.loadFirstPage()
-        }
-        else{
-            viewModel.refreshFromCache()
+    override fun onResume() {
+        super.onResume()
+        viewModel.refreshFromCache()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        blog_post_recyclerview.layoutManager?.onSaveInstanceState()?.let { lmState ->
+            viewModel.setLayoutManagerState(lmState)
         }
     }
 
@@ -96,10 +98,6 @@ class BlogFragment : BaseBlogFragment(),
                 }
             }
         })
-    }
-
-    private fun restoreListPosition(position: Int){
-        blog_post_recyclerview.scrollToPosition(position)
     }
 
     private fun initSearchView(menu: Menu){
@@ -181,7 +179,6 @@ class BlogFragment : BaseBlogFragment(),
     }
 
     private fun initRecyclerView(){
-
         blog_post_recyclerview.apply {
             layoutManager = LinearLayoutManager(this@BlogFragment.context)
             val topSpacingDecorator = TopSpacingItemDecoration(30)
@@ -230,9 +227,14 @@ class BlogFragment : BaseBlogFragment(),
         findNavController().navigate(R.id.action_blogFragment_to_viewBlogFragment)
     }
 
+    override fun restoreListPosition() {
+        viewModel.viewState.value?.blogFields?.layoutManagerState?.let { lmState ->
+            blog_post_recyclerview?.layoutManager?.onRestoreInstanceState(lmState)
+        }
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
-        viewModel.setListPosition(recyclerAdapter.listPosition)
         // clear references (can leak memory)
         blog_post_recyclerview.adapter = null
     }

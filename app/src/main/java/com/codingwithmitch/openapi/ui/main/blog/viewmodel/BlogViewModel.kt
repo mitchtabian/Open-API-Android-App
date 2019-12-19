@@ -45,10 +45,12 @@ constructor(
     }
 
     override fun handleStateEvent(stateEvent: BlogStateEvent): LiveData<DataState<BlogViewState>> {
+
         when(stateEvent){
 
             is BlogSearchEvent -> {
                 Log.d(TAG, "Blog Search Event...")
+                clearLayoutManagerState()
                 return sessionManager.cachedToken.value?.let { authToken ->
                     Log.d(TAG, "Blog Search Event: got auth token.")
                     blogRepository.searchBlogPosts(

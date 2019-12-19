@@ -180,7 +180,10 @@ constructor(
                         if(page * PAGINATION_PAGE_SIZE > viewState.blogFields.blogList.size){
                             viewState.blogFields.isQueryExhausted = true
                         }
-                        onCompleteJob(DataState.data(viewState, null))
+                        onCompleteJob(DataState.data(
+                            viewState,
+                            null
+                        ))
                     }
                 }
             }

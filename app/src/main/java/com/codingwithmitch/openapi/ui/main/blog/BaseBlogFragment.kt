@@ -21,6 +21,7 @@ import com.codingwithmitch.openapi.ui.main.blog.state.BLOG_VIEW_STATE_BUNDLE_KEY
 import com.codingwithmitch.openapi.ui.main.blog.state.BlogViewState
 import com.codingwithmitch.openapi.ui.main.blog.viewmodel.BlogViewModel
 import dagger.android.AndroidInjection
+import refreshFromCache
 import javax.inject.Inject
 
 abstract class BaseBlogFragment : Fragment(), Injectable
@@ -75,7 +76,7 @@ abstract class BaseBlogFragment : Fragment(), Injectable
         if(isViewModelInitialized()){
             val viewState = viewModel.viewState.value
 
-//             clear the list. Don't want to save a large list to bundle.
+             //clear the list. Don't want to save a large list to bundle.
             viewState?.blogFields?.blogList = ArrayList()
 
             outState.putParcelable(

@@ -9,6 +9,7 @@ import com.codingwithmitch.openapi.ui.Event
 import kotlinx.android.parcel.Parcelize
 
 const val BLOG_VIEW_STATE_BUNDLE_KEY = "com.codingwithmitch.openapi.ui.main.blog.state.BlogViewState"
+const val BLOG_LAYOUT_MANAGER_BUNDLE_KEY = "com.codingwithmitch.openapi.ui.main.blog.state.lm"
 
 @Parcelize
 data class BlogViewState (
@@ -33,7 +34,7 @@ data class BlogViewState (
         var isQueryExhausted: Boolean = false,
         var filter: String = ORDER_BY_ASC_DATE_UPDATED,
         var order: String = BLOG_ORDER_ASC,
-        var listPosition: Int = 0
+        var layoutManagerState: Parcelable? = null
     ) : Parcelable
 
     @Parcelize
