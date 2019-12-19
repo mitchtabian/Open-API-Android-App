@@ -98,7 +98,6 @@ class BlogFragment : BaseBlogFragment(),
                         requestManager = dependencyProvider.getGlideRequestManager(),
                         list = viewState.blogFields.blogList
                     )
-                    Log.d(TAG, "BlogFragment: #list items: ${viewState.blogFields.blogList.size}")
                     submitList(
                         blogList = viewState.blogFields.blogList,
                         isQueryExhausted = viewState.blogFields.isQueryExhausted
