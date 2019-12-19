@@ -48,7 +48,9 @@ constructor(
         when(stateEvent){
 
             is BlogSearchEvent -> {
+                clearLayoutManagerState()
                 return sessionManager.cachedToken.value?.let { authToken ->
+                    Log.d(TAG, "Blog Search Event: got auth token.")
                     blogRepository.searchBlogPosts(
                         authToken = authToken,
                         query = getSearchQuery(),
@@ -56,6 +58,14 @@ constructor(
                         page = getPage()
                     )
                 }?: AbsentLiveData.create()
+            }
+
+            is RestoreBlogListFromCache -> {
+                return blogRepository.restoreBlogListFromCache(
+                    query = getSearchQuery(),
+                    filterAndOrder = getOrder() + getFilter(),
+                    page = getPage()
+                )
             }
 
             is CheckAuthorOfBlogPost -> {

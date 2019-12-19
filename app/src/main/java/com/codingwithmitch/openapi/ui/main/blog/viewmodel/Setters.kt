@@ -1,6 +1,7 @@
 package com.codingwithmitch.openapi.ui.main.blog.viewmodel
 
 import android.net.Uri
+import android.os.Parcelable
 import com.codingwithmitch.openapi.models.BlogPost
 
 fun BlogViewModel.setQuery(query: String){
@@ -54,6 +55,18 @@ fun BlogViewModel.setBlogFilter(filter: String?){
 fun BlogViewModel.setBlogOrder(order: String){
     val update = getCurrentViewStateOrNew()
     update.blogFields.order = order
+    setViewState(update)
+}
+
+fun BlogViewModel.setLayoutManagerState(layoutManagerState: Parcelable){
+    val update = getCurrentViewStateOrNew()
+    update.blogFields.layoutManagerState = layoutManagerState
+    setViewState(update)
+}
+
+fun BlogViewModel.clearLayoutManagerState(){
+    val update = getCurrentViewStateOrNew()
+    update.blogFields.layoutManagerState = null
     setViewState(update)
 }
 
