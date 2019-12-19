@@ -2,6 +2,8 @@ package com.codingwithmitch.openapi.util
 
 import android.app.Activity
 import android.content.Context
+import android.os.Parcelable
+import android.util.Log
 import androidx.annotation.IdRes
 import androidx.annotation.NavigationRes
 import androidx.fragment.app.Fragment
@@ -13,6 +15,7 @@ import androidx.navigation.fragment.NavHostFragment
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.util.BottomNavController.*
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import kotlinx.android.parcel.Parcelize
 
 /**
  * Class credit: Allan Veloso
@@ -20,6 +23,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
  * https://stackoverflow.com/questions/50577356/android-jetpack-navigation-bottomnavigationview-with-youtube-or-instagram-like#_=_
  * @property navigationBackStack: Backstack for the bottom navigation
  */
+
+const val BOTTOM_NAV_BACKSTACK_KEY = "com.codingwithmitch.openapi.util.BottomNavController.bottom_nav_backstack"
 
 class BottomNavController(
     val context: Context,
@@ -29,17 +34,22 @@ class BottomNavController(
     val navGraphProvider: NavGraphProvider
 ) {
     private val TAG: String = "AppDebug"
-    private val navigationBackStack = BackStack.of(appStartDestinationId)
+    lateinit var navigationBackStack: BackStack
     lateinit var activity: Activity
     lateinit var fragmentManager: FragmentManager
     lateinit var navItemChangeListener: OnNavigationItemChanged
-
 
     init {
         if (context is Activity) {
             activity = context
             fragmentManager = (activity as FragmentActivity).supportFragmentManager
         }
+    }
+
+    fun setupBottomNavigationBackStack(previousBackStack: BackStack?){
+        navigationBackStack = previousBackStack?.let{
+            it
+        }?: BackStack.of(appStartDestinationId)
     }
 
     fun onNavigationItemSelected(itemId: Int = navigationBackStack.last()): Boolean {
@@ -73,6 +83,10 @@ class BottomNavController(
     fun onBackPressed() {
         val childFragmentManager = fragmentManager.findFragmentById(containerId)!!
             .childFragmentManager
+        Log.d(TAG, "bnc: startId: ${appStartDestinationId}, last: ${navigationBackStack.last()}")
+        for(id in navigationBackStack){
+            Log.d(TAG, "bnc: id: $id")
+        }
         when {
             // We should always try to go back on the child fragment manager stack before going to
             // the navigation stack. It's important to use the child fragment manager instead of the
@@ -81,9 +95,11 @@ class BottomNavController(
             // stack
 
             childFragmentManager.popBackStackImmediate() -> {
+                Log.d(TAG, "BNC: popping child")
             }
             // Fragment back stack is empty so try to go back on the navigation stack
             navigationBackStack.size > 1 -> {
+                Log.d(TAG, "BNC: backstack size > 1")
                 // Remove last item from back stack
                 navigationBackStack.removeLast()
 
@@ -94,17 +110,24 @@ class BottomNavController(
             // If the stack has only one and it's not the navigation home we should
             // ensure that the application always leave from startDestination
             navigationBackStack.last() != appStartDestinationId -> {
+                Log.d(TAG, "BNC: start != current")
                 navigationBackStack.removeLast()
                 navigationBackStack.add(0, appStartDestinationId)
                 onNavigationItemSelected()
             }
             // Navigation stack is empty, so finish the activity
-            else -> activity.finish()
+            else -> {
+                Log.d(TAG, "BNC: FINISH")
+                activity.finish()
+            }
         }
     }
 
-    private class BackStack : ArrayList<Int>() {
+    @Parcelize
+    class BackStack : ArrayList<Int>(), Parcelable {
+
         companion object {
+
             fun of(vararg elements: Int): BackStack {
                 val b = BackStack()
                 b.addAll(elements.toTypedArray())

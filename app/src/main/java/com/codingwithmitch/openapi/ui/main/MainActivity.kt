@@ -19,7 +19,9 @@ import com.codingwithmitch.openapi.ui.main.account.ChangePasswordFragment
 import com.codingwithmitch.openapi.ui.main.account.UpdateAccountFragment
 import com.codingwithmitch.openapi.ui.main.blog.*
 import com.codingwithmitch.openapi.ui.main.create_blog.BaseCreateBlogFragment
+import com.codingwithmitch.openapi.util.BOTTOM_NAV_BACKSTACK_KEY
 import com.codingwithmitch.openapi.util.BottomNavController
+import com.codingwithmitch.openapi.util.BottomNavController.*
 import com.codingwithmitch.openapi.util.setUpNavigation
 import com.codingwithmitch.openapi.viewmodels.ViewModelProviderFactory
 import com.google.android.material.appbar.AppBarLayout
@@ -29,9 +31,9 @@ import kotlinx.android.synthetic.main.activity_main.progress_bar
 import javax.inject.Inject
 
 class MainActivity : BaseActivity(),
-    BottomNavController.NavGraphProvider,
-    BottomNavController.OnNavigationGraphChanged,
-    BottomNavController.OnNavigationReselectedListener,
+    NavGraphProvider,
+    OnNavigationGraphChanged,
+    OnNavigationReselectedListener,
     MainDependencyProvider
 {
 
@@ -142,14 +144,26 @@ class MainActivity : BaseActivity(),
         setContentView(R.layout.activity_main)
 
         setupActionBar()
-        bottomNavigationView = findViewById(R.id.bottom_navigation_view)
-        bottomNavigationView.setUpNavigation(bottomNavController, this)
-        if (savedInstanceState == null) {
-            bottomNavController.onNavigationItemSelected()
-        }
+        setupBottomNavigationView(savedInstanceState)
 
         subscribeObservers()
         restoreSession(savedInstanceState)
+    }
+
+    private fun setupBottomNavigationView(savedInstanceState: Bundle?){
+        bottomNavigationView = findViewById(R.id.bottom_navigation_view)
+        bottomNavigationView.setUpNavigation(bottomNavController, this)
+        if (savedInstanceState == null) {
+            bottomNavController.setupBottomNavigationBackStack(null)
+            bottomNavController.onNavigationItemSelected()
+        }
+        else{
+            (savedInstanceState[BOTTOM_NAV_BACKSTACK_KEY] as IntArray?)?.let { items ->
+                val backstack = BackStack()
+                backstack.addAll(items.toTypedArray())
+                bottomNavController.setupBottomNavigationBackStack(backstack)
+            }
+        }
     }
 
     private fun restoreSession(savedInstanceState: Bundle?){
@@ -160,7 +174,12 @@ class MainActivity : BaseActivity(),
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
+
+        // save auth token
         outState.putParcelable(AUTH_TOKEN_BUNDLE_KEY, sessionManager.cachedToken.value)
+
+        // save backstack for bottom nav
+        outState.putIntArray(BOTTOM_NAV_BACKSTACK_KEY, bottomNavController.navigationBackStack.toIntArray())
     }
 
     fun subscribeObservers(){
