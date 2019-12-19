@@ -69,6 +69,10 @@ class BlogFragment : BaseBlogFragment(),
 
     override fun onPause() {
         super.onPause()
+        saveLayoutManagerState()
+    }
+
+    private fun saveLayoutManagerState(){
         blog_post_recyclerview.layoutManager?.onSaveInstanceState()?.let { lmState ->
             viewModel.setLayoutManagerState(lmState)
         }
