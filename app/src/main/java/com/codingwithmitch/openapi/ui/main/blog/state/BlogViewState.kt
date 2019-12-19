@@ -5,11 +5,9 @@ import android.os.Parcelable
 import com.codingwithmitch.openapi.models.BlogPost
 import com.codingwithmitch.openapi.persistence.BlogQueryUtils.Companion.BLOG_ORDER_ASC
 import com.codingwithmitch.openapi.persistence.BlogQueryUtils.Companion.ORDER_BY_ASC_DATE_UPDATED
-import com.codingwithmitch.openapi.ui.Event
 import kotlinx.android.parcel.Parcelize
 
 const val BLOG_VIEW_STATE_BUNDLE_KEY = "com.codingwithmitch.openapi.ui.main.blog.state.BlogViewState"
-const val BLOG_LAYOUT_MANAGER_BUNDLE_KEY = "com.codingwithmitch.openapi.ui.main.blog.state.lm"
 
 @Parcelize
 data class BlogViewState (
