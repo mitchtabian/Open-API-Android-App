@@ -57,38 +57,24 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     testImplementation 'junit:junit:4.12'
 
-    // Core library
+    // Espresso
     def androidx_test_espresso = "3.1.0"
     androidTestImplementation "androidx.test.espresso:espresso-core:$androidx_test_espresso"
-    androidTestImplementation "androidx.test.espresso:espresso-intents:$androidx_test_espresso"
+    androidTestImplementation "androidx.test.espresso:espresso-contrib:$androidx_test_espresso"
+    implementation "androidx.test.espresso:espresso-idling-resource:$androidx_test_espresso"
 
-    // AndroidJUnitRunner and JUnit Rules
-    def androidx_test = "1.1.1"
+    // Mockk.io
+    def mockk_version = "1.9.3"
+    androidTestImplementation "io.mockk:mockk-android:$mockk_version"
+
+    // androidx.test
+    def androidx_test = "1.1.0"
     androidTestImplementation "androidx.test:runner:$androidx_test"
-    androidTestImplementation "androidx.test:rules:$androidx_test"
-    androidTestImplementation "androidx.test:monitor:$androidx_test"
-
-    // arch testing
-    def arch_testing = "2.0.1"
-    androidTestImplementation "androidx.arch.core:core-testing:$arch_testing"
-
-
-    // Assertions
-    def truth_version = "0.46"
-    androidTestImplementation "com.google.truth:truth:$truth_version"
-    def truth_ext_version = "1.0.0"
-    androidTestImplementation "androidx.test.ext:truth:$truth_ext_version"
-    def ext_junit_version = "1.1.0"
-    androidTestImplementation "androidx.test.ext:junit-ktx:$ext_junit_version"
-
+    androidTestImplementation "androidx.test:core:$androidx_test"
+    androidTestImplementation "androidx.test.ext:junit-ktx:$androidx_test"
     def fragment = "1.2.0-alpha02"
     implementation "androidx.fragment:fragment-ktx:$fragment"
 
-    // Mockito
-    def mockito_core = "2.25.0"
-    androidTestImplementation "org.mockito:mockito-core:$mockito_core"
-    def mockito_android = "2.25.0"
-    androidTestImplementation "org.mockito:mockito-android:$mockito_android"
 
     // -- Retrofit2
     def retrofit2_version = "2.6.0"
