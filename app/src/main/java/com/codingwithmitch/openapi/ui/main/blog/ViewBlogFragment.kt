@@ -1,5 +1,6 @@
 package com.codingwithmitch.openapi.ui.main.blog
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.*

@@ -1,13 +1,20 @@
 package com.codingwithmitch.openapi.ui.main
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.NavController
+import androidx.navigation.NavDestination
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.FragmentNavigator
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.RequestManager
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.models.AUTH_TOKEN_BUNDLE_KEY
@@ -57,19 +64,19 @@ class MainActivity : BaseActivity(),
         BottomNavController(
             this,
             R.id.main_nav_host_fragment,
-            R.id.nav_blog,
+            R.id.menu_nav_blog,
             this,
             this)
     }
 
     override fun getNavGraphId(itemId: Int) = when(itemId){
-        R.id.nav_blog -> {
+        R.id.menu_nav_blog -> {
             R.navigation.nav_blog
         }
-        R.id.nav_create_blog -> {
+        R.id.menu_nav_create_blog -> {
             R.navigation.nav_create_blog
         }
-        R.id.nav_account -> {
+        R.id.menu_nav_account -> {
             R.navigation.nav_account
         }
         else -> {
@@ -106,30 +113,31 @@ class MainActivity : BaseActivity(),
     override fun onReselectNavItem(
         navController: NavController,
         fragment: Fragment
-    ) = when(fragment){
+    ){
+        Log.d(TAG, "logInfo: onReSelectItem")
+        when(fragment){
 
-        is ViewBlogFragment -> {
-            navController.navigate(R.id.action_viewBlogFragment_to_home)
-        }
+            is ViewBlogFragment -> {
+                navController.navigate(R.id.action_viewBlogFragment_to_home)
+            }
 
-        is UpdateBlogFragment -> {
-            navController.navigate(R.id.action_updateBlogFragment_to_home)
-        }
+            is UpdateBlogFragment -> {
+                navController.navigate(R.id.action_updateBlogFragment_to_home)
+            }
 
-        is UpdateAccountFragment -> {
-            navController.navigate(R.id.action_updateAccountFragment_to_home)
-        }
+            is UpdateAccountFragment -> {
+                navController.navigate(R.id.action_updateAccountFragment_to_home)
+            }
 
-        is ChangePasswordFragment -> {
-            navController.navigate(R.id.action_changePasswordFragment_to_home)
-        }
+            is ChangePasswordFragment -> {
+                navController.navigate(R.id.action_changePasswordFragment_to_home)
+            }
 
-        else -> {
-            // do nothing
+            else -> {
+                // do nothing
+            }
         }
     }
-
-    override fun onBackPressed() = bottomNavController.onBackPressed()
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
 
@@ -195,6 +203,8 @@ class MainActivity : BaseActivity(),
     override fun expandAppBar() {
         findViewById<AppBarLayout>(R.id.app_bar).setExpanded(true)
     }
+
+    override fun onBackPressed() = bottomNavController.onBackPressed()
 
     private fun setupActionBar(){
         setSupportActionBar(tool_bar)
