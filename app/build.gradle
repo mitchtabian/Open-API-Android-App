@@ -51,7 +51,7 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'androidx.appcompat:appcompat:1.0.2'
+    implementation 'androidx.appcompat:appcompat:1.1.0-rc01'
     implementation 'androidx.core:core-ktx:1.0.2'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
@@ -130,7 +130,9 @@ dependencies {
 
     // jetpack navigation components
 //    def nav_version = "2.1.0-alpha06" // NEWEST VERSION DOESN'T HANDLE BACK NAV PROPERLY!!!
-    def nav_version = "2.1.0-alpha02"
+    def nav_version = "2.3.0-alpha03"
+//    def nav_version = "2.1.0-alpha02"
+//    def nav_version = "2.1.0-alpha03"
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
     implementation "androidx.navigation:navigation-runtime:$nav_version"

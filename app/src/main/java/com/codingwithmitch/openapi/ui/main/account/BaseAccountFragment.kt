@@ -99,6 +99,7 @@ abstract class BaseAccountFragment : Fragment(), Injectable {
         }catch(e: ClassCastException){
             Log.e(TAG, "$context must implement DependencyProvider" )
         }
+
     }
 }
 
