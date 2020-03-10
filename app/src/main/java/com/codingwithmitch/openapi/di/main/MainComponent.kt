@@ -1,9 +1,6 @@
 package com.codingwithmitch.openapi.di.main
 
 import com.codingwithmitch.openapi.ui.main.MainActivity
-import com.codingwithmitch.openapi.ui.main.account.BaseAccountFragment
-import com.codingwithmitch.openapi.ui.main.blog.BaseBlogFragment
-import com.codingwithmitch.openapi.ui.main.create_blog.BaseCreateBlogFragment
 import dagger.Subcomponent
 
 
@@ -11,7 +8,8 @@ import dagger.Subcomponent
 @Subcomponent(
     modules = [
         MainModule::class,
-        MainViewModelModule::class
+        MainViewModelModule::class,
+        MainFragmentsModule::class
     ])
 interface MainComponent {
 
@@ -23,10 +21,11 @@ interface MainComponent {
 
     fun inject(mainActivity: MainActivity)
 
-    fun inject(baseBlogFragment: BaseBlogFragment)
-
-    fun inject(baseAccountFragment: BaseAccountFragment)
-
-    fun inject(baseCreateBlogFragment: BaseCreateBlogFragment)
-
 }
+
+
+
+
+
+
+

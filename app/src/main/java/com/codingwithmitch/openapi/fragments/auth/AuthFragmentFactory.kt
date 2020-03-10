@@ -1,4 +1,4 @@
-package com.codingwithmitch.openapi.fragments
+package com.codingwithmitch.openapi.fragments.auth
 
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProvider

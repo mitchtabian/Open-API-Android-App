@@ -1,16 +1,16 @@
-package com.codingwithmitch.openapi.fragments
+package com.codingwithmitch.openapi.fragments.main.account
 
 import android.content.Context
 import android.os.Bundle
 import androidx.annotation.NavigationRes
 import androidx.navigation.fragment.NavHostFragment
-import com.codingwithmitch.openapi.ui.auth.AuthActivity
+import com.codingwithmitch.openapi.ui.main.MainActivity
 
-class AuthNavHostFragment : NavHostFragment(){
+class AccountNavHostFragment : NavHostFragment(){
 
     override fun onAttach(context: Context) {
         childFragmentManager.fragmentFactory =
-            (activity as AuthActivity).fragmentFactory
+            (activity as MainActivity).accountFragmentFactory
         super.onAttach(context)
     }
 
@@ -21,13 +21,14 @@ class AuthNavHostFragment : NavHostFragment(){
         @JvmStatic
         fun create(
             @NavigationRes graphId: Int = 0
-        ): AuthNavHostFragment {
+        ): AccountNavHostFragment {
             var bundle: Bundle? = null
             if(graphId != 0){
                 bundle = Bundle()
                 bundle.putInt(KEY_GRAPH_ID, graphId)
             }
-            val result = AuthNavHostFragment()
+            val result =
+                AccountNavHostFragment()
             if(bundle != null){
                 result.arguments = bundle
             }

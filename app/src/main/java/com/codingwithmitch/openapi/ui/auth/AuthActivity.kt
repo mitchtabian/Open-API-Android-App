@@ -10,7 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.codingwithmitch.openapi.BaseApplication
 import com.codingwithmitch.openapi.R
-import com.codingwithmitch.openapi.fragments.AuthNavHostFragment
+import com.codingwithmitch.openapi.fragments.auth.AuthNavHostFragment
 import com.codingwithmitch.openapi.ui.BaseActivity
 import com.codingwithmitch.openapi.ui.auth.state.AuthStateEvent
 import com.codingwithmitch.openapi.ui.main.MainActivity

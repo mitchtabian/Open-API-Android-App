@@ -2,7 +2,7 @@ package com.codingwithmitch.openapi.di.auth
 
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProvider
-import com.codingwithmitch.openapi.fragments.AuthFragmentFactory
+import com.codingwithmitch.openapi.fragments.auth.AuthFragmentFactory
 import dagger.Module
 import dagger.Provides
 
@@ -15,7 +15,9 @@ object AuthFragmentsModule {
     fun provideFragmentFactory(
         viewModelFactory: ViewModelProvider.Factory
     ): FragmentFactory {
-        return AuthFragmentFactory(viewModelFactory)
+        return AuthFragmentFactory(
+            viewModelFactory
+        )
     }
 
 }

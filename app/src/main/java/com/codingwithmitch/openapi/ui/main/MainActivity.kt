@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -31,52 +32,34 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main.progress_bar
 import javax.inject.Inject
+import javax.inject.Named
 
 class MainActivity : BaseActivity(),
-    NavGraphProvider,
     OnNavigationGraphChanged,
-    OnNavigationReselectedListener,
-    MainDependencyProvider
+    OnNavigationReselectedListener
 {
 
     @Inject
-    lateinit var providerFactory: ViewModelProvider.Factory
+    @Named("AccountFragmentFactory")
+    lateinit var accountFragmentFactory: FragmentFactory
 
     @Inject
-    lateinit var requestManager: RequestManager
+    @Named("BlogFragmentFactory")
+    lateinit var blogFragmentFactory: FragmentFactory
 
-    override fun getGlideRequestManager(): RequestManager {
-        return requestManager
-    }
+    @Inject
+    @Named("CreateBlogFragmentFactory")
+    lateinit var createBlogFragmentFactory: FragmentFactory
 
-    override fun getVMProviderFactory(): ViewModelProvider.Factory {
-        return providerFactory
-    }
 
     private lateinit var bottomNavigationView: BottomNavigationView
 
     private val bottomNavController by lazy(LazyThreadSafetyMode.NONE) {
         BottomNavController(
             this,
-            R.id.main_nav_host_fragment,
+            R.id.main_fragments_container,
             R.id.menu_nav_blog,
-            this,
             this)
-    }
-
-    override fun getNavGraphId(itemId: Int) = when(itemId){
-        R.id.menu_nav_blog -> {
-            R.navigation.nav_blog
-        }
-        R.id.menu_nav_create_blog -> {
-            R.navigation.nav_create_blog
-        }
-        R.id.menu_nav_account -> {
-            R.navigation.nav_account
-        }
-        else -> {
-            R.navigation.nav_blog
-        }
     }
 
     override fun onGraphChange() {
@@ -143,9 +126,7 @@ class MainActivity : BaseActivity(),
     }
 
     override fun inject() {
-        (application as BaseApplication).appComponent
-            .mainComponent()
-            .create()
+        (application as BaseApplication).mainComponent()
             .inject(this)
     }
 
@@ -217,6 +198,7 @@ class MainActivity : BaseActivity(),
         val intent = Intent(this, AuthActivity::class.java)
         startActivity(intent)
         finish()
+        (application as BaseApplication).releaseMainComponent()
     }
 
     override fun displayProgressBar(bool: Boolean){
