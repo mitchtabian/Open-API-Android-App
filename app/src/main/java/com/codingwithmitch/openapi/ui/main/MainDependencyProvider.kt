@@ -1,7 +1,7 @@
 package com.codingwithmitch.openapi.ui.main
 
+import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.RequestManager
-import com.codingwithmitch.openapi.viewmodels.ViewModelProviderFactory
 
 /**
  * Provides app-level dependencies to various BaseFragments:
@@ -16,7 +16,7 @@ import com.codingwithmitch.openapi.viewmodels.ViewModelProviderFactory
  */
 interface MainDependencyProvider{
 
-    fun getVMProviderFactory(): ViewModelProviderFactory
+    fun getVMProviderFactory(): ViewModelProvider.Factory
 
     fun getGlideRequestManager(): RequestManager
 }

@@ -5,12 +5,33 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 
 import com.codingwithmitch.openapi.R
+import com.codingwithmitch.openapi.di.auth.AuthScope
 import kotlinx.android.synthetic.main.fragment_launcher.*
+import javax.inject.Inject
 
-class LauncherFragment : BaseAuthFragment() {
+@AuthScope
+class LauncherFragment
+@Inject
+constructor(
+    private val viewModelFactory: ViewModelProvider.Factory
+): Fragment() {
+
+    private val TAG: String = "AppDebug"
+
+    val viewModel: AuthViewModel by viewModels{
+        viewModelFactory
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel.cancelActiveJobs()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

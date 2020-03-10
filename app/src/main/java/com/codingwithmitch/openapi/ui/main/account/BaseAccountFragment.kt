@@ -6,18 +6,18 @@ import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import com.codingwithmitch.openapi.R
-import com.codingwithmitch.openapi.di.Injectable
 import com.codingwithmitch.openapi.ui.DataStateChangeListener
 import com.codingwithmitch.openapi.ui.main.MainDependencyProvider
 import com.codingwithmitch.openapi.ui.main.account.state.ACCOUNT_VIEW_STATE_BUNDLE_KEY
 import com.codingwithmitch.openapi.ui.main.account.state.AccountViewState
 
-abstract class BaseAccountFragment : Fragment(), Injectable {
+abstract class BaseAccountFragment : Fragment(){
 
     val TAG: String = "AppDebug"
 
@@ -25,7 +25,11 @@ abstract class BaseAccountFragment : Fragment(), Injectable {
 
     lateinit var stateChangeListener: DataStateChangeListener
 
-    lateinit var viewModel: AccountViewModel
+//    lateinit var viewModel: AccountViewModel
+
+    val viewModel: AccountViewModel by viewModels {
+        dependencyProvider.getVMProviderFactory()
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -35,11 +39,11 @@ abstract class BaseAccountFragment : Fragment(), Injectable {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel = activity?.run {
-            ViewModelProvider(
-                this, dependencyProvider.getVMProviderFactory()
-            ).get(AccountViewModel::class.java)
-        }?: throw Exception("Invalid Activity")
+//        viewModel = activity?.run {
+//            ViewModelProvider(
+//                this, dependencyProvider.getVMProviderFactory()
+//            ).get(AccountViewModel::class.java)
+//        }?: throw Exception("Invalid Activity")
 
         cancelActiveJobs()
 
@@ -51,19 +55,19 @@ abstract class BaseAccountFragment : Fragment(), Injectable {
         }
     }
 
-    fun isViewModelInitialized() = ::viewModel.isInitialized
+//    fun isViewModelInitialized() = ::viewModel.isInitialized
 
     /**
      * !IMPORTANT!
      * Must save ViewState b/c in event of process death the LiveData in ViewModel will be lost
      */
     override fun onSaveInstanceState(outState: Bundle) {
-        if(isViewModelInitialized()){
+//        if(isViewModelInitialized()){
             outState.putParcelable(
                 ACCOUNT_VIEW_STATE_BUNDLE_KEY,
                 viewModel.viewState.value
             )
-        }
+//        }
         super.onSaveInstanceState(outState)
     }
 

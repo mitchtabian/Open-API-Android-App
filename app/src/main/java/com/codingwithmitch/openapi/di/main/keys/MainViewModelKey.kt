@@ -1,4 +1,4 @@
-package com.codingwithmitch.openapi.di
+package com.codingwithmitch.openapi.di.auth.keys
 
 import androidx.lifecycle.ViewModel
 import dagger.MapKey
@@ -12,4 +12,4 @@ import kotlin.reflect.KClass
 )
 @Retention(AnnotationRetention.RUNTIME)
 @MapKey
-annotation class ViewModelKey(val value: KClass<out ViewModel>)
+annotation class MainViewModelKey(val value: KClass<out ViewModel>)

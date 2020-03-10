@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import com.codingwithmitch.openapi.api.auth.OpenApiAuthService
 import com.codingwithmitch.openapi.api.auth.network_responses.LoginResponse
 import com.codingwithmitch.openapi.api.auth.network_responses.RegistrationResponse
+import com.codingwithmitch.openapi.di.auth.AuthScope
 import com.codingwithmitch.openapi.models.AccountProperties
 import com.codingwithmitch.openapi.models.AuthToken
 import com.codingwithmitch.openapi.persistence.AccountPropertiesDao
@@ -30,6 +31,7 @@ import com.codingwithmitch.openapi.util.SuccessHandling.Companion.RESPONSE_CHECK
 import kotlinx.coroutines.Job
 import javax.inject.Inject
 
+@AuthScope
 class AuthRepository
 @Inject
 constructor(

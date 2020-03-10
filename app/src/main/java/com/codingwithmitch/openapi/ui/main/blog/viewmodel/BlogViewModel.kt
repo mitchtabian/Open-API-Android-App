@@ -4,6 +4,7 @@ import android.content.SharedPreferences
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
+import com.codingwithmitch.openapi.di.main.MainScope
 import com.codingwithmitch.openapi.persistence.BlogQueryUtils
 import com.codingwithmitch.openapi.repository.main.BlogRepository
 import com.codingwithmitch.openapi.session.SessionManager
@@ -20,6 +21,7 @@ import okhttp3.MediaType
 import okhttp3.RequestBody
 import javax.inject.Inject
 
+@MainScope
 class BlogViewModel
 @Inject
 constructor(

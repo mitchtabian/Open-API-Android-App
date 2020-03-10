@@ -3,6 +3,7 @@ package com.codingwithmitch.openapi.ui.main.create_blog
 import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
+import com.codingwithmitch.openapi.di.main.MainScope
 import com.codingwithmitch.openapi.repository.main.CreateBlogRepository
 import com.codingwithmitch.openapi.session.SessionManager
 import com.codingwithmitch.openapi.ui.BaseViewModel
@@ -17,6 +18,7 @@ import okhttp3.MediaType
 import okhttp3.RequestBody
 import javax.inject.Inject
 
+@MainScope
 class CreateBlogViewModel
 @Inject
 constructor(

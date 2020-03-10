@@ -2,6 +2,7 @@ package com.codingwithmitch.openapi.ui.main.account
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
+import com.codingwithmitch.openapi.di.main.MainScope
 import com.codingwithmitch.openapi.models.AccountProperties
 import com.codingwithmitch.openapi.repository.main.AccountRepository
 import com.codingwithmitch.openapi.session.SessionManager
@@ -14,6 +15,7 @@ import com.codingwithmitch.openapi.ui.main.account.state.AccountViewState
 import com.codingwithmitch.openapi.util.AbsentLiveData
 import javax.inject.Inject
 
+@MainScope
 class AccountViewModel
 @Inject
 constructor(

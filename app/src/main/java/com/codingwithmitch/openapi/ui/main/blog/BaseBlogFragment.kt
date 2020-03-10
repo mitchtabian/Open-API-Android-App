@@ -4,16 +4,14 @@ import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import androidx.activity.OnBackPressedCallback
-import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import com.codingwithmitch.openapi.R
-import com.codingwithmitch.openapi.di.Injectable
 import com.codingwithmitch.openapi.ui.DataStateChangeListener
 import com.codingwithmitch.openapi.ui.main.MainDependencyProvider
 import com.codingwithmitch.openapi.ui.UICommunicationListener
@@ -21,7 +19,7 @@ import com.codingwithmitch.openapi.ui.main.blog.state.BLOG_VIEW_STATE_BUNDLE_KEY
 import com.codingwithmitch.openapi.ui.main.blog.state.BlogViewState
 import com.codingwithmitch.openapi.ui.main.blog.viewmodel.BlogViewModel
 
-abstract class BaseBlogFragment : Fragment(), Injectable
+abstract class BaseBlogFragment : Fragment()
 {
 
     val TAG: String = "AppDebug"
@@ -32,7 +30,11 @@ abstract class BaseBlogFragment : Fragment(), Injectable
 
     lateinit var stateChangeListener: DataStateChangeListener
 
-    lateinit var viewModel: BlogViewModel
+//    lateinit var viewModel: BlogViewModel
+
+    val viewModel: BlogViewModel by viewModels {
+        dependencyProvider.getVMProviderFactory()
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -43,12 +45,12 @@ abstract class BaseBlogFragment : Fragment(), Injectable
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel = activity?.run {
-            ViewModelProvider(
-                this,
-                dependencyProvider.getVMProviderFactory()
-            ).get(BlogViewModel::class.java)
-        }?: throw Exception("Invalid Activity")
+//        viewModel = activity?.run {
+//            ViewModelProvider(
+//                this,
+//                dependencyProvider.getVMProviderFactory()
+//            ).get(BlogViewModel::class.java)
+//        }?: throw Exception("Invalid Activity")
 
         cancelActiveJobs()
 
@@ -64,14 +66,14 @@ abstract class BaseBlogFragment : Fragment(), Injectable
         viewModel.cancelActiveJobs()
     }
 
-    fun isViewModelInitialized() = ::viewModel.isInitialized
+//    fun isViewModelInitialized() = ::viewModel.isInitialized
 
     /**
      * !IMPORTANT!
      * Must save ViewState b/c in event of process death the LiveData in ViewModel will be lost
      */
     override fun onSaveInstanceState(outState: Bundle) {
-        if(isViewModelInitialized()){
+//        if(isViewModelInitialized()){
             val viewState = viewModel.viewState.value
 
             //clear the list. Don't want to save a large list to bundle.
@@ -81,7 +83,7 @@ abstract class BaseBlogFragment : Fragment(), Injectable
                 BLOG_VIEW_STATE_BUNDLE_KEY,
                 viewState
             )
-        }
+//        }
         super.onSaveInstanceState(outState)
     }
 

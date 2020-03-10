@@ -9,6 +9,7 @@ import androidx.annotation.IdRes
 import androidx.annotation.NavigationRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentFactory
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavController
 import androidx.navigation.findNavController

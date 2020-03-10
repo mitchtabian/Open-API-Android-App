@@ -1,23 +1,37 @@
 package com.codingwithmitch.openapi
 
-import android.app.Activity
 import android.app.Application
-import com.codingwithmitch.openapi.di.AppInjector
-import dagger.android.DispatchingAndroidInjector
-import dagger.android.HasActivityInjector
-import javax.inject.Inject
+import com.codingwithmitch.openapi.di.AppComponent
+import com.codingwithmitch.openapi.di.DaggerAppComponent
+import com.codingwithmitch.openapi.di.auth.AuthComponent
 
-class BaseApplication : Application(), HasActivityInjector {
+class BaseApplication : Application(){
 
-    @Inject
-    lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Activity>
+    lateinit var appComponent: AppComponent
+
+    private var authComponent: AuthComponent? = null
 
     override fun onCreate() {
         super.onCreate()
-        AppInjector.init(this)
+        initAppComponent()
     }
 
-    override fun activityInjector() = dispatchingAndroidInjector
+    fun releaseAuthComponent(){
+        authComponent = null
+    }
+
+    fun authComponent(): AuthComponent {
+        if(authComponent == null){
+            authComponent = appComponent.authComponent().create()
+        }
+        return authComponent as AuthComponent
+    }
+
+    fun initAppComponent(){
+        appComponent = DaggerAppComponent.builder()
+            .application(this)
+            .build()
+    }
 
 
 }

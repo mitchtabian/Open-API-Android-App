@@ -1,21 +1,17 @@
 package com.codingwithmitch.openapi.ui.main
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
-import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
-import androidx.navigation.NavDestination
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.FragmentNavigator
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.RequestManager
+import com.codingwithmitch.openapi.BaseApplication
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.models.AUTH_TOKEN_BUNDLE_KEY
 import com.codingwithmitch.openapi.models.AuthToken
@@ -30,7 +26,6 @@ import com.codingwithmitch.openapi.util.BOTTOM_NAV_BACKSTACK_KEY
 import com.codingwithmitch.openapi.util.BottomNavController
 import com.codingwithmitch.openapi.util.BottomNavController.*
 import com.codingwithmitch.openapi.util.setUpNavigation
-import com.codingwithmitch.openapi.viewmodels.ViewModelProviderFactory
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_main.*
@@ -45,7 +40,7 @@ class MainActivity : BaseActivity(),
 {
 
     @Inject
-    lateinit var providerFactory: ViewModelProviderFactory
+    lateinit var providerFactory: ViewModelProvider.Factory
 
     @Inject
     lateinit var requestManager: RequestManager
@@ -54,7 +49,7 @@ class MainActivity : BaseActivity(),
         return requestManager
     }
 
-    override fun getVMProviderFactory(): ViewModelProviderFactory {
+    override fun getVMProviderFactory(): ViewModelProvider.Factory {
         return providerFactory
     }
 
@@ -147,7 +142,15 @@ class MainActivity : BaseActivity(),
         return super.onOptionsItemSelected(item)
     }
 
+    override fun inject() {
+        (application as BaseApplication).appComponent
+            .mainComponent()
+            .create()
+            .inject(this)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        inject()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
