@@ -24,7 +24,7 @@ class LoginFragment
 @Inject
 constructor(
     private val viewModelFactory: ViewModelProvider.Factory
-): Fragment() {
+): Fragment(R.layout.fragment_login) {
 
     private val TAG: String = "AppDebug"
 
@@ -37,14 +37,6 @@ constructor(
         viewModel.cancelActiveJobs()
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_login, container, false)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -53,8 +45,6 @@ constructor(
         login_button.setOnClickListener {
             login()
         }
-
-        Log.d(TAG, "Auth: vm: ${viewModel}")
     }
 
     fun subscribeObservers(){

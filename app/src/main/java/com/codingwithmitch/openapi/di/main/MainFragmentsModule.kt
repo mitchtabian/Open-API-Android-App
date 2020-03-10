@@ -3,7 +3,6 @@ package com.codingwithmitch.openapi.di.main
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.RequestManager
-import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.fragments.main.account.AccountFragmentFactory
 import com.codingwithmitch.openapi.fragments.main.blog.BlogFragmentFactory
 import com.codingwithmitch.openapi.fragments.main.create_blog.CreateBlogFragmentFactory

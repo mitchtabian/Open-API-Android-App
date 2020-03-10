@@ -21,7 +21,7 @@ class ChangePasswordFragment
 @Inject
 constructor(
     private val viewModelFactory: ViewModelProvider.Factory
-): BaseAccountFragment() {
+): BaseAccountFragment(R.layout.fragment_change_password) {
 
     val viewModel: AccountViewModel by viewModels{
         viewModelFactory
@@ -40,14 +40,6 @@ constructor(
 
     override fun cancelActiveJobs(){
         viewModel.cancelActiveJobs()
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_change_password, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

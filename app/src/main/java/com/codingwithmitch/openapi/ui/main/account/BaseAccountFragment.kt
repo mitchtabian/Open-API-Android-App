@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -12,7 +13,11 @@ import androidx.navigation.ui.NavigationUI
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.ui.DataStateChangeListener
 
-abstract class BaseAccountFragment : Fragment(){
+abstract class BaseAccountFragment
+constructor(
+    @LayoutRes
+    private val layoutRes: Int
+): Fragment(layoutRes){
 
     val TAG: String = "AppDebug"
 
