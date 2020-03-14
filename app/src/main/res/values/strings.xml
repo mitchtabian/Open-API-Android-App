@@ -77,6 +77,7 @@
     <string name="text_register">Register</string>
     <string name="text_forgot_password">Forgot password</string>
     <string name="process_death_state">process_death_state</string>
+    <string name="invalid_login_credentials">Invalid login</string>
 
 </resources>
 

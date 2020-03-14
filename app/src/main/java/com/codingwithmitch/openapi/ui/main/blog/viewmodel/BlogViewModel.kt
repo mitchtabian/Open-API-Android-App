@@ -9,7 +9,7 @@ import com.codingwithmitch.openapi.persistence.BlogQueryUtils
 import com.codingwithmitch.openapi.repository.main.BlogRepository
 import com.codingwithmitch.openapi.session.SessionManager
 import com.codingwithmitch.openapi.ui.BaseViewModel
-import com.codingwithmitch.openapi.ui.DataState
+import com.codingwithmitch.openapi.util.DataState
 import com.codingwithmitch.openapi.ui.Loading
 import com.codingwithmitch.openapi.ui.main.blog.state.BlogStateEvent
 import com.codingwithmitch.openapi.ui.main.blog.state.BlogStateEvent.*

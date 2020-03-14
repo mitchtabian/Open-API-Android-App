@@ -1,7 +1,6 @@
 package com.codingwithmitch.openapi.repository.main
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.switchMap
 import com.codingwithmitch.openapi.api.GenericResponse
 import com.codingwithmitch.openapi.api.main.OpenApiMainService
 import com.codingwithmitch.openapi.di.main.MainScope
@@ -11,8 +10,8 @@ import com.codingwithmitch.openapi.persistence.AccountPropertiesDao
 import com.codingwithmitch.openapi.repository.JobManager
 import com.codingwithmitch.openapi.repository.NetworkBoundResource
 import com.codingwithmitch.openapi.session.SessionManager
-import com.codingwithmitch.openapi.ui.DataState
-import com.codingwithmitch.openapi.ui.Response
+import com.codingwithmitch.openapi.util.DataState
+import com.codingwithmitch.openapi.util.Response
 import com.codingwithmitch.openapi.ui.ResponseType
 import com.codingwithmitch.openapi.ui.main.account.state.AccountViewState
 import com.codingwithmitch.openapi.util.AbsentLiveData
@@ -119,7 +118,10 @@ constructor(
                     onCompleteJob(
                         DataState.data(
                             data = null,
-                            response = Response(response.body.response, ResponseType.Toast())
+                            response = Response(
+                                response.body.response,
+                                ResponseType.Toast()
+                            )
                         ))
                 }
             }
@@ -170,7 +172,10 @@ constructor(
                     // finish with success response
                     onCompleteJob(
                         DataState.data(null,
-                            Response(response.body.response, ResponseType.Toast())
+                            Response(
+                                response.body.response,
+                                ResponseType.Toast()
+                            )
                         ))
                 }
             }

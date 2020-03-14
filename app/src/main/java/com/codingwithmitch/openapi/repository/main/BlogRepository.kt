@@ -2,7 +2,6 @@ package com.codingwithmitch.openapi.repository.main
 
 import android.util.Log
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.switchMap
 import com.codingwithmitch.openapi.api.GenericResponse
 import com.codingwithmitch.openapi.api.main.OpenApiMainService
 import com.codingwithmitch.openapi.api.main.responses.BlogCreateUpdateResponse
@@ -15,8 +14,8 @@ import com.codingwithmitch.openapi.persistence.returnOrderedBlogQuery
 import com.codingwithmitch.openapi.repository.JobManager
 import com.codingwithmitch.openapi.repository.NetworkBoundResource
 import com.codingwithmitch.openapi.session.SessionManager
-import com.codingwithmitch.openapi.ui.DataState
-import com.codingwithmitch.openapi.ui.Response
+import com.codingwithmitch.openapi.util.DataState
+import com.codingwithmitch.openapi.util.Response
 import com.codingwithmitch.openapi.ui.ResponseType
 import com.codingwithmitch.openapi.ui.main.blog.state.BlogViewState
 import com.codingwithmitch.openapi.ui.main.blog.state.BlogViewState.*
@@ -178,7 +177,8 @@ constructor(
                         if(page * PAGINATION_PAGE_SIZE > viewState.blogFields.blogList.size){
                             viewState.blogFields.isQueryExhausted = true
                         }
-                        onCompleteJob(DataState.data(
+                        onCompleteJob(
+                            DataState.data(
                             viewState,
                             null
                         ))
@@ -356,7 +356,10 @@ constructor(
                     onCompleteJob(
                         DataState.data(
                             null,
-                            Response(SUCCESS_BLOG_DELETED, ResponseType.Toast())
+                            Response(
+                                SUCCESS_BLOG_DELETED,
+                                ResponseType.Toast()
+                            )
                         )
                     )
                 }
@@ -413,7 +416,10 @@ constructor(
                                     blogPost = updatedBlogPost
                                 )
                             ),
-                            Response(response.body.response, ResponseType.Toast())
+                            Response(
+                                response.body.response,
+                                ResponseType.Toast()
+                            )
                         ))
                 }
             }

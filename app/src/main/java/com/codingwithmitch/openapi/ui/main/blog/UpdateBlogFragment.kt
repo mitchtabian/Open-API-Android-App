@@ -10,15 +10,15 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.bumptech.glide.RequestManager
 import com.codingwithmitch.openapi.R
-import com.codingwithmitch.openapi.ui.*
 import com.codingwithmitch.openapi.ui.main.blog.state.BLOG_VIEW_STATE_BUNDLE_KEY
 import com.codingwithmitch.openapi.ui.main.blog.state.BlogStateEvent
 import com.codingwithmitch.openapi.ui.main.blog.state.BlogViewState
 import com.codingwithmitch.openapi.ui.main.blog.viewmodel.*
 import com.codingwithmitch.openapi.util.Constants.Companion.GALLERY_REQUEST_CODE
+import com.codingwithmitch.openapi.util.DataState
+import com.codingwithmitch.openapi.util.Response
 import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView
 import kotlinx.android.synthetic.main.fragment_update_blog.*
@@ -107,12 +107,14 @@ constructor(
     private fun showImageSelectionError(){
         stateChangeListener.onDataStateChange(
             DataState(
-                Event(StateError(
-                    Response(
-                        "Something went wrong with the image.",
-                        ResponseType.Dialog()
+                Event(
+                    StateError(
+                        Response(
+                            "Something went wrong with the image.",
+                            ResponseType.Dialog()
+                        )
                     )
-                )),
+                ),
                 Loading(isLoading = false),
                 Data(Event.dataEvent(null), null)
             )

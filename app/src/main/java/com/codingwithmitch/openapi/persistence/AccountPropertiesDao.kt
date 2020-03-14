@@ -1,6 +1,5 @@
 package com.codingwithmitch.openapi.persistence
 
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -14,16 +13,16 @@ interface AccountPropertiesDao {
     suspend fun searchByEmail(email: String): AccountProperties?
 
     @Query("SELECT * FROM account_properties WHERE pk = :pk")
-    fun searchByPk(pk: Int): LiveData<AccountProperties>
+    suspend fun searchByPk(pk: Int): AccountProperties
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAndReplace(accountProperties: AccountProperties): Long
+    suspend fun insertAndReplace(accountProperties: AccountProperties): Long
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insertOrIgnore(accountProperties: AccountProperties): Long
+    suspend fun insertOrIgnore(accountProperties: AccountProperties): Long
 
     @Query("UPDATE account_properties SET email = :email, username = :username WHERE pk = :pk")
-    fun updateAccountProperties(pk: Int, email: String, username: String)
+    suspend fun updateAccountProperties(pk: Int, email: String, username: String)
 }
 
 

@@ -7,7 +7,7 @@ import com.codingwithmitch.openapi.models.AccountProperties
 import com.codingwithmitch.openapi.repository.main.AccountRepository
 import com.codingwithmitch.openapi.session.SessionManager
 import com.codingwithmitch.openapi.ui.BaseViewModel
-import com.codingwithmitch.openapi.ui.DataState
+import com.codingwithmitch.openapi.util.DataState
 import com.codingwithmitch.openapi.ui.Loading
 import com.codingwithmitch.openapi.ui.main.account.state.AccountStateEvent
 import com.codingwithmitch.openapi.ui.main.account.state.AccountStateEvent.*

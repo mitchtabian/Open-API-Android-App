@@ -22,6 +22,7 @@ class ErrorHandling{
         const val PAGINATION_DONE_ERROR = "Invalid page."
         const val ERROR_CHECK_NETWORK_CONNECTION = "Check network connection."
         const val ERROR_UNKNOWN = "Unknown error"
+        const val INVALID_CREDENTIALS = "Invalid credentials"
 
 
         fun isNetworkError(msg: String): Boolean{

@@ -20,6 +20,8 @@ import com.codingwithmitch.openapi.di.auth.AuthScope
 import com.codingwithmitch.openapi.ui.*
 import com.codingwithmitch.openapi.ui.auth.ForgotPasswordFragment.WebAppInterface.*
 import com.codingwithmitch.openapi.util.Constants
+import com.codingwithmitch.openapi.util.DataState
+import com.codingwithmitch.openapi.util.Response
 import kotlinx.android.synthetic.main.fragment_forgot_password.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.Main
@@ -49,7 +51,10 @@ constructor(
             Log.e(TAG, "onError: $errorMessage")
 
             val dataState = DataState.error<Any>(
-                response = Response(errorMessage, ResponseType.Dialog())
+                response = Response(
+                    errorMessage,
+                    ResponseType.Dialog()
+                )
             )
             stateChangeListener.onDataStateChange(
                 dataState = dataState

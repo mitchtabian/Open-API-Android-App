@@ -10,8 +10,8 @@ import com.codingwithmitch.openapi.persistence.BlogPostDao
 import com.codingwithmitch.openapi.repository.JobManager
 import com.codingwithmitch.openapi.repository.NetworkBoundResource
 import com.codingwithmitch.openapi.session.SessionManager
-import com.codingwithmitch.openapi.ui.DataState
-import com.codingwithmitch.openapi.ui.Response
+import com.codingwithmitch.openapi.util.DataState
+import com.codingwithmitch.openapi.util.Response
 import com.codingwithmitch.openapi.ui.ResponseType
 import com.codingwithmitch.openapi.ui.main.create_blog.state.CreateBlogViewState
 import com.codingwithmitch.openapi.util.AbsentLiveData
@@ -78,7 +78,10 @@ constructor(
                     onCompleteJob(
                         DataState.data(
                             null,
-                            Response(response.body.response, ResponseType.Dialog())
+                            Response(
+                                response.body.response,
+                                ResponseType.Dialog()
+                            )
                         )
                     )
                 }

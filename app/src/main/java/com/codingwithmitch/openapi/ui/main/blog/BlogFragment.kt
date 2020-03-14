@@ -28,7 +28,7 @@ import com.codingwithmitch.openapi.persistence.BlogQueryUtils.Companion.BLOG_FIL
 import com.codingwithmitch.openapi.persistence.BlogQueryUtils.Companion.BLOG_FILTER_USERNAME
 import com.codingwithmitch.openapi.persistence.BlogQueryUtils.Companion.BLOG_ORDER_ASC
 import com.codingwithmitch.openapi.persistence.BlogQueryUtils.Companion.BLOG_ORDER_DESC
-import com.codingwithmitch.openapi.ui.DataState
+import com.codingwithmitch.openapi.util.DataState
 import com.codingwithmitch.openapi.ui.main.blog.state.BLOG_VIEW_STATE_BUNDLE_KEY
 import com.codingwithmitch.openapi.ui.main.blog.state.BlogViewState
 import com.codingwithmitch.openapi.ui.main.blog.viewmodel.*

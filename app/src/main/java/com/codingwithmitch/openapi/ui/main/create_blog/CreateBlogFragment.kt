@@ -18,8 +18,10 @@ import com.codingwithmitch.openapi.ui.main.create_blog.state.CREATE_BLOG_VIEW_ST
 import com.codingwithmitch.openapi.ui.main.create_blog.state.CreateBlogStateEvent
 import com.codingwithmitch.openapi.ui.main.create_blog.state.CreateBlogViewState
 import com.codingwithmitch.openapi.util.Constants.Companion.GALLERY_REQUEST_CODE
+import com.codingwithmitch.openapi.util.DataState
 import com.codingwithmitch.openapi.util.ErrorHandling.Companion.ERROR_MUST_SELECT_IMAGE
 import com.codingwithmitch.openapi.util.ErrorHandling.Companion.ERROR_SOMETHING_WRONG_WITH_IMAGE
+import com.codingwithmitch.openapi.util.Response
 import com.codingwithmitch.openapi.util.SuccessHandling.Companion.SUCCESS_BLOG_CREATED
 import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView
@@ -222,7 +224,12 @@ constructor(
     fun showErrorDialog(errorMessage: String){
         stateChangeListener.onDataStateChange(
             DataState(
-                Event(StateError(Response(errorMessage, ResponseType.Dialog()))),
+                Event(StateError(
+                    Response(
+                        errorMessage,
+                        ResponseType.Dialog()
+                    )
+                )),
                 Loading(isLoading = false),
                 Data(Event.dataEvent(null), null)
             )

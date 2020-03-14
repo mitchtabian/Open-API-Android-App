@@ -27,11 +27,11 @@ class BlogQueryUtils {
 }
 
 
-fun BlogPostDao.returnOrderedBlogQuery(
+suspend fun BlogPostDao.returnOrderedBlogQuery(
     query: String,
     filterAndOrder: String,
     page: Int
-): LiveData<List<BlogPost>> {
+): List<BlogPost> {
 
     when{
 
