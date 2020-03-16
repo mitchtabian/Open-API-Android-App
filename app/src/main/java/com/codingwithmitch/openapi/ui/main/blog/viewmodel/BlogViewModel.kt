@@ -87,6 +87,8 @@ constructor(
                 setUpdatedBody(body)
             }
         }
+
+        removeJobFromCounter(stateEvent)
     }
 
     override fun setStateEvent(stateEvent: StateEvent) {

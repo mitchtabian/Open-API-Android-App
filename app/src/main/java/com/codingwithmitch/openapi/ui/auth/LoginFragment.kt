@@ -1,6 +1,7 @@
 package com.codingwithmitch.openapi.ui.auth
 
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -13,12 +14,17 @@ import androidx.lifecycle.ViewModelProvider
 
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.di.auth.AuthScope
+import com.codingwithmitch.openapi.ui.UICommunicationListener
 import com.codingwithmitch.openapi.ui.auth.state.AuthStateEvent.*
 import com.codingwithmitch.openapi.ui.auth.state.LoginFields
 import kotlinx.android.synthetic.main.fragment_login.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import javax.inject.Inject
 
 
+@FlowPreview
+@ExperimentalCoroutinesApi
 @AuthScope
 class LoginFragment
 @Inject
@@ -27,6 +33,8 @@ constructor(
 ): Fragment(R.layout.fragment_login) {
 
     private val TAG: String = "AppDebug"
+
+    lateinit var uiCommunicationListener: UICommunicationListener
 
     val viewModel: AuthViewModel by viewModels{
         viewModelFactory
@@ -53,6 +61,7 @@ constructor(
                 it.login_email?.let{input_email.setText(it)}
                 it.login_password?.let{input_password.setText(it)}
             }
+            uiCommunicationListener.displayProgressBar(viewModel.areAnyJobsActive())
         })
     }
 
@@ -73,6 +82,15 @@ constructor(
                 input_password.text.toString()
             )
         )
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        try{
+            uiCommunicationListener = context as UICommunicationListener
+        }catch(e: ClassCastException){
+            Log.e(TAG, "$context must implement UICommunicationListener" )
+        }
     }
 
 }

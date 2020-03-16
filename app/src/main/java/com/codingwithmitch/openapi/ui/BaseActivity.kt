@@ -79,7 +79,7 @@ abstract class BaseActivity: AppCompatActivity(),
         }
     }
 
-    abstract fun displayProgressBar(bool: Boolean)
+    abstract override fun displayProgressBar(isLoading: Boolean)
 
     private fun handleStateResponse(event: Event<Response>){
         event.getContentIfNotHandled()?.let{
