@@ -56,7 +56,7 @@ abstract class BaseViewModel<ViewState> : ViewModel()
 
     abstract fun handleNewData(stateEvent: StateEvent?, data: ViewState)
 
-    abstract fun setStateEvent(stateEvent: StateEvent, error: StateMessage)
+    abstract fun setStateEvent(stateEvent: StateEvent)
 
     fun handleNewError(stateEvent: StateEvent?, error: StateMessage){
         appendStateError(error)
@@ -123,8 +123,6 @@ abstract class BaseViewModel<ViewState> : ViewModel()
     private fun appendStateError(error: StateMessage) {
         errorStack.add(error)
     }
-
-    abstract fun handleStateEvent(stateEvent: StateEvent): LiveData<DataState<ViewState>>
 
     abstract fun initNewViewState(): ViewState
 

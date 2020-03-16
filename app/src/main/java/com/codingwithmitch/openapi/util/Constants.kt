@@ -15,6 +15,7 @@ class Constants {
         const val CACHE_ERROR_TIMEOUT = "Cache timeout"
         const val TESTING_NETWORK_DELAY = 0L // fake network delay for testing
         const val TESTING_CACHE_DELAY = 0L // fake cache delay for testing
+        const val INVALID_STATE_EVENT = "Invalid state event"
 
         const val PAGINATION_PAGE_SIZE = 10
 
