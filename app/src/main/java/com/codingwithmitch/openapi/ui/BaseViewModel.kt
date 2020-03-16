@@ -1,32 +1,112 @@
 package com.codingwithmitch.openapi.ui
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
 import com.codingwithmitch.openapi.util.DataState
+import com.codingwithmitch.openapi.util.ErrorStack
+import com.codingwithmitch.openapi.util.StateEvent
+import com.codingwithmitch.openapi.util.StateMessage
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.channels.ConflatedBroadcastChannel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 
-abstract class BaseViewModel<StateEvent, ViewState> : ViewModel()
+@FlowPreview
+@ExperimentalCoroutinesApi
+abstract class BaseViewModel<ViewState> : ViewModel()
 {
-
     val TAG: String = "AppDebug"
 
-    protected val _stateEvent: MutableLiveData<StateEvent> = MutableLiveData()
+    protected val dataChannel = ConflatedBroadcastChannel<DataState<ViewState>>()
+
+    protected val _activeJobCounter: MutableLiveData<HashSet<StateEvent>> = MutableLiveData()
     protected val _viewState: MutableLiveData<ViewState> = MutableLiveData()
+    private val errorStack = ErrorStack()
+
+    val activeJobCounter: LiveData<HashSet<StateEvent>>
+        get() = _activeJobCounter
 
     val viewState: LiveData<ViewState>
         get() = _viewState
 
-    val dataState: LiveData<DataState<ViewState>> = Transformations
-        .switchMap(_stateEvent){stateEvent ->
-            stateEvent?.let {
-                handleStateEvent(stateEvent)
-            }
-        }
+    val errorState: LiveData<StateMessage>
+            = errorStack.stateError
 
-    fun setStateEvent(event: StateEvent){
-        _stateEvent.value = event
+    init {
+        setupChannel()
+    }
+
+    private fun setupChannel(){
+        dataChannel
+            .asFlow()
+            .onEach{ dataState ->
+                dataState.data?.let { data ->
+                    handleNewData(dataState.stateEvent, data)
+                }
+                dataState.stateMessage?.let { error ->
+                    handleNewError(dataState.stateEvent, error)
+                }
+            }
+            .launchIn(viewModelScope)
+    }
+
+    abstract fun handleNewData(stateEvent: StateEvent?, data: ViewState)
+
+    abstract fun setStateEvent(stateEvent: StateEvent, error: StateMessage)
+
+    fun handleNewError(stateEvent: StateEvent?, error: StateMessage){
+        appendStateError(error)
+        removeJobFromCounter(stateEvent)
+    }
+
+    fun launchJob(
+        stateEvent: StateEvent,
+        jobFunction: Flow<DataState<ViewState>>
+    ){
+        if(!isJobAlreadyActive(stateEvent)){
+            addJobToCounter(stateEvent)
+            jobFunction
+                .onEach { dataState ->
+                    offerToDataChannel(dataState)
+                }
+                .launchIn(viewModelScope)
+        }
+    }
+
+    fun clearActiveJobCounter(){
+        _activeJobCounter.value?.clear()
+    }
+
+    fun addJobToCounter(stateEvent: StateEvent){
+        _activeJobCounter.value?.add(stateEvent)
+    }
+
+    fun removeJobFromCounter(stateEvent: StateEvent?){
+        _activeJobCounter.value?.remove(stateEvent)
+    }
+
+    fun areAnyJobsActive(): Boolean{
+        return _activeJobCounter.value?.let{
+            it.size > 0
+        }?: false
+    }
+
+    fun getNumActiveJobs(): Int {
+        return _activeJobCounter.value?.size ?: 0
+    }
+
+    fun isJobAlreadyActive(stateEvent: StateEvent): Boolean {
+        return _activeJobCounter.value?.contains(stateEvent) ?: false
+    }
+
+    private fun offerToDataChannel(dataState: DataState<ViewState>){
+        if(!dataChannel.isClosedForSend){
+            dataChannel.offer(dataState)
+        }
     }
 
     fun getCurrentViewStateOrNew(): ViewState{
@@ -38,6 +118,10 @@ abstract class BaseViewModel<StateEvent, ViewState> : ViewModel()
 
     fun setViewState(viewState: ViewState){
         _viewState.value = viewState
+    }
+
+    private fun appendStateError(error: StateMessage) {
+        errorStack.add(error)
     }
 
     abstract fun handleStateEvent(stateEvent: StateEvent): LiveData<DataState<ViewState>>

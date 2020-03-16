@@ -71,7 +71,10 @@ object MainModule {
         blogPostDao: BlogPostDao,
         sessionManager: SessionManager
     ): CreateBlogRepositoryImpl {
-        return CreateBlogRepositoryImpl(openApiMainService, blogPostDao, sessionManager)
+        return CreateBlogRepositoryImpl(
+            openApiMainService, blogPostDao,
+            sessionManager
+        )
     }
 }
 

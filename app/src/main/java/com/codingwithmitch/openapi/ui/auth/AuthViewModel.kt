@@ -16,7 +16,7 @@ class AuthViewModel
 @Inject
 constructor(
     val authRepository: AuthRepository
-): BaseViewModel<AuthStateEvent, AuthViewState>()
+): BaseViewModel<AuthViewState>()
 {
     override fun handleStateEvent(stateEvent: AuthStateEvent): LiveData<DataState<AuthViewState>> {
         when(stateEvent){
