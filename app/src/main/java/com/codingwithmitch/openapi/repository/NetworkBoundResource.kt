@@ -4,10 +4,12 @@ import com.codingwithmitch.openapi.util.*
 import com.codingwithmitch.openapi.util.Constants.Companion.NETWORK_ERROR
 import com.codingwithmitch.openapi.util.Constants.Companion.UNKNOWN_ERROR
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 
+@FlowPreview
 abstract class NetworkBoundResource<NetworkObj, CacheObj, ViewState>
 constructor(
     private val dispatcher: CoroutineDispatcher,
@@ -72,16 +74,16 @@ constructor(
                 response = cacheResult,
                 stateEvent = jobCompleteMarker
             ) {
-                override fun handleSuccess(resultObj: CacheObj): DataState<ViewState> {
-                    return handleCacheSuccess()
+                override suspend fun handleSuccess(resultObj: CacheObj): DataState<ViewState> {
+                    return handleCacheSuccess(resultObj)
                 }
-            }.result
+            }.getResult()
         )
     }
 
-    abstract fun updateCache(networkObject: NetworkObj)
+    abstract suspend fun updateCache(networkObject: NetworkObj)
 
-    abstract fun handleCacheSuccess(): DataState<ViewState> // make sure to return null for stateEvent
+    abstract fun handleCacheSuccess(resultObj: CacheObj): DataState<ViewState> // make sure to return null for stateEvent
 
 
 }

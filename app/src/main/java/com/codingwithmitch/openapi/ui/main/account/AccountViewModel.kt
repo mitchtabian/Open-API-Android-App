@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import com.codingwithmitch.openapi.di.main.MainScope
 import com.codingwithmitch.openapi.models.AccountProperties
-import com.codingwithmitch.openapi.repository.main.AccountRepository
+import com.codingwithmitch.openapi.repository.main.AccountRepositoryImpl
 import com.codingwithmitch.openapi.session.SessionManager
 import com.codingwithmitch.openapi.ui.BaseViewModel
 import com.codingwithmitch.openapi.util.DataState
@@ -20,7 +20,7 @@ class AccountViewModel
 @Inject
 constructor(
     val sessionManager: SessionManager,
-    val accountRepository: AccountRepository
+    val accountRepository: AccountRepositoryImpl
 )
     : BaseViewModel<AccountStateEvent, AccountViewState>()
 {

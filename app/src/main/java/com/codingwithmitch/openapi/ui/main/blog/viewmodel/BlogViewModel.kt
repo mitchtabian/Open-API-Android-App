@@ -6,7 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import com.codingwithmitch.openapi.di.main.MainScope
 import com.codingwithmitch.openapi.persistence.BlogQueryUtils
-import com.codingwithmitch.openapi.repository.main.BlogRepository
+import com.codingwithmitch.openapi.repository.main.BlogRepositoryImpl
 import com.codingwithmitch.openapi.session.SessionManager
 import com.codingwithmitch.openapi.ui.BaseViewModel
 import com.codingwithmitch.openapi.util.DataState
@@ -26,7 +26,7 @@ class BlogViewModel
 @Inject
 constructor(
     private val sessionManager: SessionManager,
-    private val blogRepository: BlogRepository,
+    private val blogRepository: BlogRepositoryImpl,
     private val sharedPreferences: SharedPreferences,
     private val editor: SharedPreferences.Editor
 ): BaseViewModel<BlogStateEvent, BlogViewState>(){

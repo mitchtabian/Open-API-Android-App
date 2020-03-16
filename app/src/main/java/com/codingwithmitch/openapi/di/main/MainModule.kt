@@ -4,14 +4,16 @@ import com.codingwithmitch.openapi.api.main.OpenApiMainService
 import com.codingwithmitch.openapi.persistence.AccountPropertiesDao
 import com.codingwithmitch.openapi.persistence.AppDatabase
 import com.codingwithmitch.openapi.persistence.BlogPostDao
-import com.codingwithmitch.openapi.repository.main.AccountRepository
-import com.codingwithmitch.openapi.repository.main.BlogRepository
+import com.codingwithmitch.openapi.repository.main.AccountRepositoryImpl
+import com.codingwithmitch.openapi.repository.main.BlogRepositoryImpl
 import com.codingwithmitch.openapi.repository.main.CreateBlogRepository
 import com.codingwithmitch.openapi.session.SessionManager
 import dagger.Module
 import dagger.Provides
+import kotlinx.coroutines.FlowPreview
 import retrofit2.Retrofit
 
+@FlowPreview
 @Module
 object MainModule {
 
@@ -31,8 +33,12 @@ object MainModule {
         openApiMainService: OpenApiMainService,
         accountPropertiesDao: AccountPropertiesDao,
         sessionManager: SessionManager
-    ): AccountRepository {
-        return AccountRepository(openApiMainService, accountPropertiesDao, sessionManager)
+    ): AccountRepositoryImpl {
+        return AccountRepositoryImpl(
+            openApiMainService,
+            accountPropertiesDao,
+            sessionManager
+        )
     }
 
     @JvmStatic
@@ -49,8 +55,12 @@ object MainModule {
         openApiMainService: OpenApiMainService,
         blogPostDao: BlogPostDao,
         sessionManager: SessionManager
-    ): BlogRepository {
-        return BlogRepository(openApiMainService, blogPostDao, sessionManager)
+    ): BlogRepositoryImpl {
+        return BlogRepositoryImpl(
+            openApiMainService,
+            blogPostDao,
+            sessionManager
+        )
     }
 
     @JvmStatic
