@@ -2,17 +2,14 @@ package com.codingwithmitch.openapi.repository.auth
 
 import android.content.SharedPreferences
 import android.util.Log
-import androidx.lifecycle.LiveData
 import com.codingwithmitch.openapi.api.auth.OpenApiAuthService
 import com.codingwithmitch.openapi.api.auth.network_responses.LoginResponse
 import com.codingwithmitch.openapi.api.auth.network_responses.RegistrationResponse
 import com.codingwithmitch.openapi.di.auth.AuthScope
 import com.codingwithmitch.openapi.models.AccountProperties
 import com.codingwithmitch.openapi.models.AuthToken
-import com.codingwithmitch.openapi.models.BlogPost
 import com.codingwithmitch.openapi.persistence.AccountPropertiesDao
 import com.codingwithmitch.openapi.persistence.AuthTokenDao
-import com.codingwithmitch.openapi.repository.NetworkBoundResource
 import com.codingwithmitch.openapi.repository.emitError
 import com.codingwithmitch.openapi.repository.safeApiCall
 import com.codingwithmitch.openapi.repository.safeCacheCall

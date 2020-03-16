@@ -6,7 +6,7 @@ import com.codingwithmitch.openapi.persistence.AppDatabase
 import com.codingwithmitch.openapi.persistence.BlogPostDao
 import com.codingwithmitch.openapi.repository.main.AccountRepositoryImpl
 import com.codingwithmitch.openapi.repository.main.BlogRepositoryImpl
-import com.codingwithmitch.openapi.repository.main.CreateBlogRepository
+import com.codingwithmitch.openapi.repository.main.CreateBlogRepositoryImpl
 import com.codingwithmitch.openapi.session.SessionManager
 import dagger.Module
 import dagger.Provides
@@ -70,8 +70,8 @@ object MainModule {
         openApiMainService: OpenApiMainService,
         blogPostDao: BlogPostDao,
         sessionManager: SessionManager
-    ): CreateBlogRepository {
-        return CreateBlogRepository(openApiMainService, blogPostDao, sessionManager)
+    ): CreateBlogRepositoryImpl {
+        return CreateBlogRepositoryImpl(openApiMainService, blogPostDao, sessionManager)
     }
 }
 

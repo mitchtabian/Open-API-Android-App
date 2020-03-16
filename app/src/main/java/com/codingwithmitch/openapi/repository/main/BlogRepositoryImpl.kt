@@ -1,7 +1,6 @@
 package com.codingwithmitch.openapi.repository.main
 
 import android.util.Log
-import androidx.lifecycle.LiveData
 import com.codingwithmitch.openapi.api.GenericResponse
 import com.codingwithmitch.openapi.api.main.OpenApiMainService
 import com.codingwithmitch.openapi.api.main.responses.BlogCreateUpdateResponse
@@ -12,14 +11,12 @@ import com.codingwithmitch.openapi.models.BlogPost
 import com.codingwithmitch.openapi.persistence.BlogPostDao
 import com.codingwithmitch.openapi.persistence.returnOrderedBlogQuery
 import com.codingwithmitch.openapi.repository.NetworkBoundResource
-import com.codingwithmitch.openapi.repository.emitError
 import com.codingwithmitch.openapi.repository.safeApiCall
 import com.codingwithmitch.openapi.repository.safeCacheCall
 import com.codingwithmitch.openapi.session.SessionManager
 import com.codingwithmitch.openapi.ui.main.blog.state.BlogViewState
 import com.codingwithmitch.openapi.ui.main.blog.state.BlogViewState.*
 import com.codingwithmitch.openapi.util.*
-import com.codingwithmitch.openapi.util.Constants.Companion.PAGINATION_PAGE_SIZE
 import com.codingwithmitch.openapi.util.ErrorHandling.Companion.ERROR_UNKNOWN
 import com.codingwithmitch.openapi.util.SuccessHandling.Companion.RESPONSE_HAS_PERMISSION_TO_EDIT
 import com.codingwithmitch.openapi.util.SuccessHandling.Companion.RESPONSE_NO_PERMISSION_TO_EDIT

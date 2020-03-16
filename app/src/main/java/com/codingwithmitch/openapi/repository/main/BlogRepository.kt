@@ -1,5 +1,6 @@
 package com.codingwithmitch.openapi.repository.main
 
+import com.codingwithmitch.openapi.di.main.MainScope
 import com.codingwithmitch.openapi.models.AuthToken
 import com.codingwithmitch.openapi.models.BlogPost
 import com.codingwithmitch.openapi.ui.main.blog.state.BlogViewState
@@ -11,6 +12,7 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 
 @FlowPreview
+@MainScope
 interface BlogRepository {
 
     fun searchBlogPosts(

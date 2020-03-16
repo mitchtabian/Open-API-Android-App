@@ -4,7 +4,7 @@ import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import com.codingwithmitch.openapi.di.main.MainScope
-import com.codingwithmitch.openapi.repository.main.CreateBlogRepository
+import com.codingwithmitch.openapi.repository.main.CreateBlogRepositoryImpl
 import com.codingwithmitch.openapi.session.SessionManager
 import com.codingwithmitch.openapi.ui.BaseViewModel
 import com.codingwithmitch.openapi.util.DataState
@@ -22,7 +22,7 @@ import javax.inject.Inject
 class CreateBlogViewModel
 @Inject
 constructor(
-    val createBlogRepository: CreateBlogRepository,
+    val createBlogRepository: CreateBlogRepositoryImpl,
     val sessionManager: SessionManager
 ): BaseViewModel<CreateBlogStateEvent, CreateBlogViewState>() {
 
