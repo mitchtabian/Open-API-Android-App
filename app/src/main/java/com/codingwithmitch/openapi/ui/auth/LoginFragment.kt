@@ -61,7 +61,6 @@ constructor(
                 it.login_email?.let{input_email.setText(it)}
                 it.login_password?.let{input_password.setText(it)}
             }
-            uiCommunicationListener.displayProgressBar(viewModel.areAnyJobsActive())
         })
     }
 

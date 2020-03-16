@@ -59,8 +59,6 @@ constructor(
                 it.registration_password?.let{input_password.setText(it)}
                 it.registration_confirm_password?.let{input_password_confirm.setText(it)}
             }
-
-            uiCommunicationListener.displayProgressBar(viewModel.areAnyJobsActive())
         })
     }
 
