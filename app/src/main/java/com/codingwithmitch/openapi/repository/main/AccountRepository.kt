@@ -20,7 +20,8 @@ interface AccountRepository {
 
     fun saveAccountProperties(
         authToken: AuthToken,
-        accountProperties: AccountProperties,
+        email: String,
+        username: String,
         stateEvent: StateEvent
     ): Flow<DataState<AccountViewState>>
 

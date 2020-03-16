@@ -71,14 +71,15 @@ constructor(
 
     override fun saveAccountProperties(
         authToken: AuthToken,
-        accountProperties: AccountProperties,
+        email: String,
+        username: String,
         stateEvent: StateEvent
     ) = flow{
         val apiResult = safeApiCall(IO){
             openApiMainService.saveAccountProperties(
                 "Token ${authToken.token!!}",
-                accountProperties.email,
-                accountProperties.username
+                email,
+                username
             )
         }
         emit(
@@ -90,10 +91,13 @@ constructor(
                     resultObj: GenericResponse
                 ): DataState<AccountViewState> {
 
+                    val updatedAccountProperties = openApiMainService
+                        .getAccountProperties("Token ${authToken.token!!}")
+
                     accountPropertiesDao.updateAccountProperties(
-                        pk = accountProperties.pk,
-                        email = accountProperties.email,
-                        username = accountProperties.username
+                        pk = updatedAccountProperties.pk,
+                        email = updatedAccountProperties.email,
+                        username = updatedAccountProperties.username
                     )
 
                     return DataState.data(
