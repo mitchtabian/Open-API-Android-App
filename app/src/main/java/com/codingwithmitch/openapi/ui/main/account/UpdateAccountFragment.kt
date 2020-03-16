@@ -12,8 +12,12 @@ import com.codingwithmitch.openapi.ui.main.account.state.ACCOUNT_VIEW_STATE_BUND
 import com.codingwithmitch.openapi.ui.main.account.state.AccountStateEvent
 import com.codingwithmitch.openapi.ui.main.account.state.AccountViewState
 import kotlinx.android.synthetic.main.fragment_update_account.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import javax.inject.Inject
 
+@FlowPreview
+@ExperimentalCoroutinesApi
 class UpdateAccountFragment
 @Inject
 constructor(
@@ -46,10 +50,6 @@ constructor(
     }
 
     private fun subscribeObservers(){
-        viewModel.dataState.observe(viewLifecycleOwner, Observer{ dataState ->
-            stateChangeListener.onDataStateChange(dataState)
-            Log.d(TAG, "UpdateAccountFragment, DataState: ${dataState}")
-        })
 
         viewModel.viewState.observe(viewLifecycleOwner, Observer{ viewState ->
             if(viewState != null){
@@ -57,6 +57,17 @@ constructor(
                     Log.d(TAG, "UpdateAccountFragment, ViewState: ${it}")
                     setAccountDataFields(it)
                 }
+            }
+        })
+
+        viewModel.activeJobCounter.observe(viewLifecycleOwner, Observer { jobCounter ->
+            uiCommunicationListener.displayProgressBar(viewModel.areAnyJobsActive())
+        })
+
+        viewModel.errorState.observe(viewLifecycleOwner, Observer { stateMessage ->
+
+            stateMessage?.let {
+                uiCommunicationListener.onResponseReceived(it.response)
             }
         })
     }
@@ -77,7 +88,7 @@ constructor(
                 input_username.text.toString()
             )
         )
-        stateChangeListener.hideSoftKeyboard()
+        uiCommunicationListener.hideSoftKeyboard()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

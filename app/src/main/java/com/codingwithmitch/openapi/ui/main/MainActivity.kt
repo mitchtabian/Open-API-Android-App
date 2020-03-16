@@ -51,7 +51,6 @@ class MainActivity : BaseActivity(),
     @Named("CreateBlogFragmentFactory")
     lateinit var createBlogFragmentFactory: FragmentFactory
 
-
     private lateinit var bottomNavigationView: BottomNavigationView
 
     private val bottomNavController by lazy(LazyThreadSafetyMode.NONE) {
@@ -175,6 +174,8 @@ class MainActivity : BaseActivity(),
     }
 
     fun subscribeObservers(){
+
+
         sessionManager.cachedToken.observe(this, Observer{ authToken ->
             Log.d(TAG, "MainActivity, subscribeObservers: ViewState: ${authToken}")
             if(authToken == null || authToken.account_pk == -1 || authToken.token == null){

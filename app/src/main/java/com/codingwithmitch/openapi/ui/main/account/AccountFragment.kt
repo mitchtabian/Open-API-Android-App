@@ -13,8 +13,12 @@ import com.codingwithmitch.openapi.ui.main.account.state.ACCOUNT_VIEW_STATE_BUND
 import com.codingwithmitch.openapi.ui.main.account.state.AccountStateEvent
 import com.codingwithmitch.openapi.ui.main.account.state.AccountViewState
 import kotlinx.android.synthetic.main.fragment_account.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import javax.inject.Inject
 
+@FlowPreview
+@ExperimentalCoroutinesApi
 class AccountFragment
 @Inject
 constructor(
@@ -56,22 +60,6 @@ constructor(
     }
 
     private fun subscribeObservers(){
-        viewModel.dataState.observe(viewLifecycleOwner, Observer{ dataState ->
-            Log.d(TAG, "AccountFragment: DataState: $dataState")
-            stateChangeListener.onDataStateChange(dataState)
-            if(dataState != null){
-                dataState.data?.let { data ->
-                    data.data?.let{ event ->
-                        event.getContentIfNotHandled()?.let{ viewState ->
-                            viewState.accountProperties?.let{ accountProperties ->
-                                Log.d(TAG, "AccountFragment, DataState: ${accountProperties}")
-                                viewModel.setAccountPropertiesData(accountProperties)
-                            }
-                        }
-                    }
-                }
-            }
-        })
 
         viewModel.viewState.observe(viewLifecycleOwner, Observer{ viewState->
             Log.d(TAG, "AccountFragment, ViewState: ${viewState}")
@@ -79,6 +67,17 @@ constructor(
                 viewState.accountProperties?.let{
                     setAccountDataFields(it)
                 }
+            }
+        })
+
+        viewModel.activeJobCounter.observe(viewLifecycleOwner, Observer { jobCounter ->
+            uiCommunicationListener.displayProgressBar(viewModel.areAnyJobsActive())
+        })
+
+        viewModel.errorState.observe(viewLifecycleOwner, Observer { stateMessage ->
+
+            stateMessage?.let {
+                uiCommunicationListener.onResponseReceived(it.response)
             }
         })
     }
