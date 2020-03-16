@@ -5,20 +5,28 @@ import com.codingwithmitch.openapi.ui.main.blog.viewmodel.BlogViewModel
 import com.codingwithmitch.openapi.ui.main.blog.viewmodel.setBlogListData
 import com.codingwithmitch.openapi.ui.main.blog.viewmodel.setQueryExhausted
 import com.codingwithmitch.openapi.ui.main.blog.viewmodel.setQueryInProgress
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 
 
+@FlowPreview
+@UseExperimental(ExperimentalCoroutinesApi::class)
 fun BlogViewModel.resetPage(){
     val update = getCurrentViewStateOrNew()
     update.blogFields.page = 1
     setViewState(update)
 }
 
+@FlowPreview
+@UseExperimental(ExperimentalCoroutinesApi::class)
 fun BlogViewModel.refreshFromCache(){
     setQueryInProgress(true)
     setQueryExhausted(false)
     setStateEvent(RestoreBlogListFromCache())
 }
 
+@FlowPreview
+@UseExperimental(ExperimentalCoroutinesApi::class)
 fun BlogViewModel.loadFirstPage() {
     setQueryInProgress(true)
     setQueryExhausted(false)
@@ -27,6 +35,8 @@ fun BlogViewModel.loadFirstPage() {
     Log.e(TAG, "BlogViewModel: loadFirstPage: ${viewState.value!!.blogFields.searchQuery}")
 }
 
+@FlowPreview
+@UseExperimental(ExperimentalCoroutinesApi::class)
 private fun BlogViewModel.incrementPageNumber(){
     val update = getCurrentViewStateOrNew()
     val page = update.copy().blogFields.page // get current page
@@ -34,6 +44,8 @@ private fun BlogViewModel.incrementPageNumber(){
     setViewState(update)
 }
 
+@FlowPreview
+@UseExperimental(ExperimentalCoroutinesApi::class)
 fun BlogViewModel.nextPage(){
     if(!viewState.value!!.blogFields.isQueryInProgress
         && !viewState.value!!.blogFields.isQueryExhausted){
@@ -44,6 +56,8 @@ fun BlogViewModel.nextPage(){
     }
 }
 
+@FlowPreview
+@UseExperimental(ExperimentalCoroutinesApi::class)
 fun BlogViewModel.handleIncomingBlogListData(viewState: BlogViewState){
     Log.d(TAG, "BlogViewModel, DataState: ${viewState}")
     Log.d(TAG, "BlogViewModel, DataState: isQueryInProgress?: " +
