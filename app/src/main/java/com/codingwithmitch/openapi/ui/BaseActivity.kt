@@ -11,16 +11,18 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.codingwithmitch.openapi.BaseApplication
 import com.codingwithmitch.openapi.session.SessionManager
+import com.codingwithmitch.openapi.util.Constants.Companion.CANNOT_BE_UNDONE
 import com.codingwithmitch.openapi.util.Constants.Companion.PERMISSIONS_REQUEST_READ_STORAGE
 import com.codingwithmitch.openapi.util.DataState
+import com.codingwithmitch.openapi.util.MessageType
 import com.codingwithmitch.openapi.util.Response
+import com.codingwithmitch.openapi.util.UIComponentType
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 abstract class BaseActivity: AppCompatActivity(),
-    DataStateChangeListener,
     UICommunicationListener
 {
 
@@ -37,95 +39,60 @@ abstract class BaseActivity: AppCompatActivity(),
         super.onCreate(savedInstanceState)
     }
 
-    override fun onUIMessageReceived(uiMessage: UIMessage) {
-        when(uiMessage.uiMessageType){
+    override fun onResponseReceived(response: Response) {
 
-            is UIMessageType.AreYouSureDialog -> {
-                areYouSureDialog(
-                    uiMessage.message,
-                    uiMessage.uiMessageType.callback
-                )
-            }
+            when(response.uiComponentType){
 
-            is UIMessageType.Toast -> {
-                displayToast(uiMessage.message)
-            }
-
-            is UIMessageType.Dialog -> {
-                displayInfoDialog(uiMessage.message)
-            }
-
-            is UIMessageType.None -> {
-                Log.i(TAG, "onUIMessageReceived: ${uiMessage.message}")
-            }
-        }
-    }
-
-    override fun onDataStateChange(dataState: DataState<*>?) {
-        dataState?.let{
-            GlobalScope.launch(Main){
-                displayProgressBar(it.loading.isLoading)
-
-                it.error?.let { errorEvent ->
-                    handleStateError(errorEvent)
+                is UIComponentType.AreYouSureDialog -> {
+                    response.message?.let {
+                        areYouSureDialog(
+                            message = it,
+                            callback = response.uiComponentType.callback
+                        )
+                    }
                 }
 
-                it.data?.let {
-                    it.response?.let { responseEvent ->
-                        handleStateResponse(responseEvent)
-                    }
+                is UIComponentType.Toast -> {
+                    response.message?.let { displayToast(it) }
+                }
+
+                is UIComponentType.Dialog -> {
+                    displayDialog(response)
+                }
+
+                is UIComponentType.None -> {
+                    // This would be a good place to send to your Error Reporting
+                    // software of choice (ex: Firebase crash reporting)
+                    Log.i(TAG, "onUIMessageReceived: ${response.message}")
+                }
+            }
+    }
+
+    private fun displayDialog(response: Response){
+        response.message?.let { message ->
+
+            when (response.messageType) {
+
+                is MessageType.Error -> {
+                    displayErrorDialog(message)
+                }
+
+                is MessageType.Success -> {
+                    displaySuccessDialog(message)
+                }
+
+                is MessageType.Info -> {
+                    displayInfoDialog(message)
+                }
+
+                else -> {
+                    // do nothing
                 }
             }
         }
     }
 
     abstract override fun displayProgressBar(isLoading: Boolean)
-
-    private fun handleStateResponse(event: Event<Response>){
-        event.getContentIfNotHandled()?.let{
-
-            when(it.responseType){
-                is ResponseType.Toast ->{
-                    it.message?.let{message ->
-                        displayToast(message)
-                    }
-                }
-
-                is ResponseType.Dialog ->{
-                    it.message?.let{ message ->
-                        displaySuccessDialog(message)
-                    }
-                }
-
-                is ResponseType.None -> {
-                    Log.i(TAG, "handleStateResponse: ${it.message}")
-                }
-            }
-
-        }
-    }
-
-    private fun handleStateError(event: Event<StateError>){
-        event.getContentIfNotHandled()?.let{
-            when(it.response.responseType){
-                is ResponseType.Toast ->{
-                    it.response.message?.let{message ->
-                        displayToast(message)
-                    }
-                }
-
-                is ResponseType.Dialog ->{
-                    it.response.message?.let{ message ->
-                        displayErrorDialog(message)
-                    }
-                }
-
-                is ResponseType.None -> {
-                    Log.i(TAG, "handleStateError: ${it.response.message}")
-                }
-            }
-        }
-    }
 
     override fun hideSoftKeyboard() {
         if (currentFocus != null) {

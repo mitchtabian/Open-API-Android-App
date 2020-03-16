@@ -23,15 +23,15 @@ abstract class BaseViewModel<ViewState> : ViewModel()
 
     protected val dataChannel = ConflatedBroadcastChannel<DataState<ViewState>>()
 
-    protected val _activeJobCounter: MutableLiveData<HashSet<StateEvent>> = MutableLiveData()
     protected val _viewState: MutableLiveData<ViewState> = MutableLiveData()
+    protected val _activeJobCounter: MutableLiveData<HashSet<StateEvent>> = MutableLiveData()
     private val errorStack = ErrorStack()
-
-    val activeJobCounter: LiveData<HashSet<StateEvent>>
-        get() = _activeJobCounter
 
     val viewState: LiveData<ViewState>
         get() = _viewState
+
+    val activeJobCounter: LiveData<HashSet<StateEvent>>
+        get() = _activeJobCounter
 
     val errorState: LiveData<StateMessage>
             = errorStack.stateError

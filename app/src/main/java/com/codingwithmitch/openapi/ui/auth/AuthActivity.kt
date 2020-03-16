@@ -13,6 +13,7 @@ import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.fragments.auth.AuthNavHostFragment
 import com.codingwithmitch.openapi.ui.BaseActivity
 import com.codingwithmitch.openapi.ui.auth.state.AuthStateEvent
+import com.codingwithmitch.openapi.ui.displayErrorDialog
 import com.codingwithmitch.openapi.ui.main.MainActivity
 import kotlinx.android.synthetic.main.activity_auth.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -75,8 +76,17 @@ class AuthActivity : BaseActivity()
             viewState.authToken?.let{
                 sessionManager.login(it)
             }
+        })
 
+        viewModel.activeJobCounter.observe(this, Observer { jobCounter ->
             displayProgressBar(viewModel.areAnyJobsActive())
+        })
+
+        viewModel.errorState.observe(this, Observer { stateMessage ->
+
+            stateMessage?.let {
+                onResponseReceived(it.response)
+            }
         })
 
         sessionManager.cachedToken.observe(this, Observer{ dataState ->

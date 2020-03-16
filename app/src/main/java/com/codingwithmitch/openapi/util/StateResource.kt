@@ -1,5 +1,7 @@
 package com.codingwithmitch.openapi.util
 
+import com.codingwithmitch.openapi.ui.AreYouSureCallback
+
 
 data class StateMessage(val response: Response)
 
@@ -14,6 +16,10 @@ sealed class UIComponentType{
     class Toast: UIComponentType()
 
     class Dialog: UIComponentType()
+
+    class AreYouSureDialog(
+        val callback: AreYouSureCallback
+    ): UIComponentType()
 
     class None: UIComponentType()
 }
