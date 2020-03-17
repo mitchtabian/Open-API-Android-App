@@ -23,6 +23,13 @@ class ErrorHandling{
         const val ERROR_CHECK_NETWORK_CONNECTION = "Check network connection."
         const val ERROR_UNKNOWN = "Unknown error"
         const val INVALID_CREDENTIALS = "Invalid credentials"
+        const val SOMETHING_WRONG_WITH_IMAGE = "Something went wrong with the image."
+        const val INVALID_STATE_EVENT = "Invalid state event"
+        const val CANNOT_BE_UNDONE = "This can't be undone."
+        const val NETWORK_ERROR = "Network error"
+        const val NETWORK_ERROR_TIMEOUT = "Network timeout"
+        const val CACHE_ERROR_TIMEOUT = "Cache timeout"
+        const val UNKNOWN_ERROR = "Unknown error"
 
 
         fun isNetworkError(msg: String): Boolean{

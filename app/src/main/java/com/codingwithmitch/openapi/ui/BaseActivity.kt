@@ -9,17 +9,11 @@ import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.afollestad.materialdialogs.MaterialDialog
 import com.codingwithmitch.openapi.BaseApplication
 import com.codingwithmitch.openapi.session.SessionManager
-import com.codingwithmitch.openapi.util.Constants.Companion.CANNOT_BE_UNDONE
+import com.codingwithmitch.openapi.util.*
 import com.codingwithmitch.openapi.util.Constants.Companion.PERMISSIONS_REQUEST_READ_STORAGE
-import com.codingwithmitch.openapi.util.DataState
-import com.codingwithmitch.openapi.util.MessageType
-import com.codingwithmitch.openapi.util.Response
-import com.codingwithmitch.openapi.util.UIComponentType
-import kotlinx.coroutines.Dispatchers.Main
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 abstract class BaseActivity: AppCompatActivity(),
@@ -28,10 +22,12 @@ abstract class BaseActivity: AppCompatActivity(),
 
     val TAG: String = "AppDebug"
 
-    abstract fun inject()
+    private val dialogs: HashMap<String, MaterialDialog> = HashMap()
 
     @Inject
     lateinit var sessionManager: SessionManager
+
+    abstract fun inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         (application as BaseApplication).appComponent
@@ -39,57 +35,89 @@ abstract class BaseActivity: AppCompatActivity(),
         super.onCreate(savedInstanceState)
     }
 
-    override fun onResponseReceived(response: Response) {
+    override fun onResponseReceived(
+        response: Response,
+        stateMessageCallback: StateMessageCallback
+    ) {
 
             when(response.uiComponentType){
 
                 is UIComponentType.AreYouSureDialog -> {
+
                     response.message?.let {
                         areYouSureDialog(
                             message = it,
-                            callback = response.uiComponentType.callback
+                            callback = response.uiComponentType.callback,
+                            stateMessageCallback = stateMessageCallback
                         )
                     }
                 }
 
                 is UIComponentType.Toast -> {
-                    response.message?.let { displayToast(it) }
+                    response.message?.let {
+                        displayToast(
+                            message = it,
+                            stateMessageCallback = stateMessageCallback
+                        )
+                    }
                 }
 
                 is UIComponentType.Dialog -> {
-                    displayDialog(response)
+                    displayDialog(
+                        response = response,
+                        stateMessageCallback = stateMessageCallback
+                    )
                 }
 
                 is UIComponentType.None -> {
                     // This would be a good place to send to your Error Reporting
                     // software of choice (ex: Firebase crash reporting)
                     Log.i(TAG, "onUIMessageReceived: ${response.message}")
+                    stateMessageCallback.removeMessageFromStack()
                 }
             }
     }
 
-    private fun displayDialog(response: Response){
+    private fun displayDialog(
+        response: Response,
+        stateMessageCallback: StateMessageCallback
+    ){
         response.message?.let { message ->
 
-            when (response.messageType) {
+            if(!dialogs.containsKey(message)){
+                when (response.messageType) {
 
-                is MessageType.Error -> {
-                    displayErrorDialog(message)
-                }
+                    is MessageType.Error -> {
+                        displayErrorDialog(
+                            message = message,
+                            stateMessageCallback = stateMessageCallback
+                        )
+                    }
 
-                is MessageType.Success -> {
-                    displaySuccessDialog(message)
-                }
+                    is MessageType.Success -> {
+                        displaySuccessDialog(
+                            message = message,
+                            stateMessageCallback = stateMessageCallback
+                        )
+                    }
 
-                is MessageType.Info -> {
-                    displayInfoDialog(message)
-                }
+                    is MessageType.Info -> {
+                        displayInfoDialog(
+                            message = message,
+                            stateMessageCallback = stateMessageCallback
+                        )
+                    }
 
-                else -> {
-                    // do nothing
+                    else -> {
+                        // do nothing
+                        stateMessageCallback.removeMessageFromStack()
+                    }
                 }
             }
-        }
+            else{
+                stateMessageCallback.removeMessageFromStack()
+            }
+        }?: stateMessageCallback.removeMessageFromStack()
     }
 
     abstract override fun displayProgressBar(isLoading: Boolean)

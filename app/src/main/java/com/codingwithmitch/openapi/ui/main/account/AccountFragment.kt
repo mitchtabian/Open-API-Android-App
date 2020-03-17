@@ -12,6 +12,7 @@ import com.codingwithmitch.openapi.models.AccountProperties
 import com.codingwithmitch.openapi.ui.main.account.state.ACCOUNT_VIEW_STATE_BUNDLE_KEY
 import com.codingwithmitch.openapi.ui.main.account.state.AccountStateEvent
 import com.codingwithmitch.openapi.ui.main.account.state.AccountViewState
+import com.codingwithmitch.openapi.util.StateMessageCallback
 import kotlinx.android.synthetic.main.fragment_account.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -74,10 +75,17 @@ constructor(
             uiCommunicationListener.displayProgressBar(viewModel.areAnyJobsActive())
         })
 
-        viewModel.errorState.observe(viewLifecycleOwner, Observer { stateMessage ->
+        viewModel.stateMessage.observe(viewLifecycleOwner, Observer { stateMessage ->
 
             stateMessage?.let {
-                uiCommunicationListener.onResponseReceived(it.response)
+                uiCommunicationListener.onResponseReceived(
+                    response = it.response,
+                    stateMessageCallback = object: StateMessageCallback {
+                        override fun removeMessageFromStack() {
+                            viewModel.clearStateMessage()
+                        }
+                    }
+                )
             }
         })
     }

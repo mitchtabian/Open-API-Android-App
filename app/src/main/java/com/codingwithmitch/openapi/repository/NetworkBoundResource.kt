@@ -1,8 +1,8 @@
 package com.codingwithmitch.openapi.repository
 
 import com.codingwithmitch.openapi.util.*
-import com.codingwithmitch.openapi.util.Constants.Companion.NETWORK_ERROR
-import com.codingwithmitch.openapi.util.Constants.Companion.UNKNOWN_ERROR
+import com.codingwithmitch.openapi.util.ErrorHandling.Companion.NETWORK_ERROR
+import com.codingwithmitch.openapi.util.ErrorHandling.Companion.UNKNOWN_ERROR
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow

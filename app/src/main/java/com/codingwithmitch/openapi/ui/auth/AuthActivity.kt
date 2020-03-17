@@ -15,6 +15,7 @@ import com.codingwithmitch.openapi.ui.BaseActivity
 import com.codingwithmitch.openapi.ui.auth.state.AuthStateEvent
 import com.codingwithmitch.openapi.ui.displayErrorDialog
 import com.codingwithmitch.openapi.ui.main.MainActivity
+import com.codingwithmitch.openapi.util.StateMessageCallback
 import kotlinx.android.synthetic.main.activity_auth.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -82,10 +83,17 @@ class AuthActivity : BaseActivity()
             displayProgressBar(viewModel.areAnyJobsActive())
         })
 
-        viewModel.errorState.observe(this, Observer { stateMessage ->
+        viewModel.stateMessage.observe(this, Observer { stateMessage ->
 
             stateMessage?.let {
-                onResponseReceived(it.response)
+                onResponseReceived(
+                    response = it.response,
+                    stateMessageCallback = object: StateMessageCallback{
+                        override fun removeMessageFromStack() {
+                            viewModel.clearStateMessage()
+                        }
+                    }
+                )
             }
         })
 

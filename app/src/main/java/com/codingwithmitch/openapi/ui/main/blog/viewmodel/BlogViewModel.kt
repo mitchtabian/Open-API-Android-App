@@ -10,7 +10,7 @@ import com.codingwithmitch.openapi.ui.BaseViewModel
 import com.codingwithmitch.openapi.ui.main.blog.state.BlogStateEvent.*
 import com.codingwithmitch.openapi.ui.main.blog.state.BlogViewState
 import com.codingwithmitch.openapi.util.*
-import com.codingwithmitch.openapi.util.Constants.Companion.INVALID_STATE_EVENT
+import com.codingwithmitch.openapi.util.ErrorHandling.Companion.INVALID_STATE_EVENT
 import com.codingwithmitch.openapi.util.PreferenceKeys.Companion.BLOG_FILTER
 import com.codingwithmitch.openapi.util.PreferenceKeys.Companion.BLOG_ORDER
 import handleIncomingBlogListData

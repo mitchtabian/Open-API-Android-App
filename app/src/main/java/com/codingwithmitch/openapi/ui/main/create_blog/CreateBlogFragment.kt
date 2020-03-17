@@ -17,21 +17,22 @@ import com.codingwithmitch.openapi.ui.main.blog.BaseBlogFragment
 import com.codingwithmitch.openapi.ui.main.create_blog.state.CREATE_BLOG_VIEW_STATE_BUNDLE_KEY
 import com.codingwithmitch.openapi.ui.main.create_blog.state.CreateBlogStateEvent
 import com.codingwithmitch.openapi.ui.main.create_blog.state.CreateBlogViewState
+import com.codingwithmitch.openapi.util.*
 import com.codingwithmitch.openapi.util.Constants.Companion.GALLERY_REQUEST_CODE
-import com.codingwithmitch.openapi.util.DataState
 import com.codingwithmitch.openapi.util.ErrorHandling.Companion.ERROR_MUST_SELECT_IMAGE
 import com.codingwithmitch.openapi.util.ErrorHandling.Companion.ERROR_SOMETHING_WRONG_WITH_IMAGE
-import com.codingwithmitch.openapi.util.Response
 import com.codingwithmitch.openapi.util.SuccessHandling.Companion.SUCCESS_BLOG_CREATED
 import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView
 import kotlinx.android.synthetic.main.fragment_create_blog.*
+import kotlinx.coroutines.FlowPreview
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import java.io.File
 import javax.inject.Inject
 
+@FlowPreview
 class CreateBlogFragment
 @Inject
 constructor(
@@ -76,13 +77,13 @@ constructor(
         setHasOptionsMenu(true)
 
         blog_image.setOnClickListener {
-            if(stateChangeListener.isStoragePermissionGranted()){
+            if(uiCommunicationListener.isStoragePermissionGranted()){
                 pickFromGallery()
             }
         }
 
         update_textview.setOnClickListener {
-            if(stateChangeListener.isStoragePermissionGranted()){
+            if(uiCommunicationListener.isStoragePermissionGranted()){
                 pickFromGallery()
             }
         }
@@ -100,27 +101,33 @@ constructor(
     }
 
     fun subscribeObservers(){
-        viewModel.dataState.observe(viewLifecycleOwner, Observer { dataState ->
-            stateChangeListener.onDataStateChange(dataState)
-            dataState.data?.let { data ->
-                data.response?.let { event ->
-                    event.peekContent().let { response ->
-                        response.message?.let { message ->
-                            if (message.equals(SUCCESS_BLOG_CREATED)) {
-                                viewModel.clearNewBlogFields()
-                            }
-                        }
-                    }
-                }
-            }
-        })
-
         viewModel.viewState.observe(viewLifecycleOwner, Observer { viewState ->
             viewState.blogFields.let{ newBlogFields ->
                 setBlogProperties(
                     newBlogFields.newBlogTitle,
                     newBlogFields.newBlogBody,
                     newBlogFields.newImageUri
+                )
+            }
+        })
+
+        viewModel.activeJobCounter.observe(viewLifecycleOwner, Observer { jobCounter ->
+            uiCommunicationListener.displayProgressBar(viewModel.areAnyJobsActive())
+        })
+
+        viewModel.stateMessage.observe(viewLifecycleOwner, Observer { stateMessage ->
+
+            stateMessage?.let {
+                if (it.equals(SUCCESS_BLOG_CREATED)) {
+                    viewModel.clearNewBlogFields()
+                }
+                uiCommunicationListener.onResponseReceived(
+                    response = it.response,
+                    stateMessageCallback = object: StateMessageCallback {
+                        override fun removeMessageFromStack() {
+                            viewModel.clearStateMessage()
+                        }
+                    }
                 )
             }
         })
@@ -216,23 +223,23 @@ constructor(
                     it
                 )
             )
-            stateChangeListener.hideSoftKeyboard()
+            uiCommunicationListener.hideSoftKeyboard()
         }?: showErrorDialog(ERROR_MUST_SELECT_IMAGE)
 
     }
 
     fun showErrorDialog(errorMessage: String){
-        stateChangeListener.onDataStateChange(
-            DataState(
-                Event(StateError(
-                    Response(
-                        errorMessage,
-                        ResponseType.Dialog()
-                    )
-                )),
-                Loading(isLoading = false),
-                Data(Event.dataEvent(null), null)
-            )
+        uiCommunicationListener.onResponseReceived(
+            response = Response(
+                message = errorMessage,
+                uiComponentType = UIComponentType.Dialog(),
+                messageType = MessageType.Error()
+            ),
+            stateMessageCallback = object: StateMessageCallback{
+                override fun removeMessageFromStack() {
+                    viewModel.clearStateMessage()
+                }
+            }
         )
     }
 
@@ -263,11 +270,17 @@ constructor(
                     }
 
                 }
-                uiCommunicationListener.onUIMessageReceived(
-                    UIMessage(
-                        getString(R.string.are_you_sure_publish),
-                        UIMessageType.AreYouSureDialog(callback)
-                    )
+                uiCommunicationListener.onResponseReceived(
+                    response = Response(
+                        message = getString(R.string.are_you_sure_publish),
+                        uiComponentType = UIComponentType.AreYouSureDialog(callback),
+                        messageType = MessageType.Info()
+                    ),
+                    stateMessageCallback = object: StateMessageCallback{
+                        override fun removeMessageFromStack() {
+                            viewModel.clearStateMessage()
+                        }
+                    }
                 )
                 return true
             }

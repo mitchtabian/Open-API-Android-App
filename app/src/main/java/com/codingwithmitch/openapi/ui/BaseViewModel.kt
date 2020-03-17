@@ -1,10 +1,7 @@
 package com.codingwithmitch.openapi.ui
 
 import androidx.lifecycle.*
-import com.codingwithmitch.openapi.util.DataState
-import com.codingwithmitch.openapi.util.ErrorStack
-import com.codingwithmitch.openapi.util.StateEvent
-import com.codingwithmitch.openapi.util.StateMessage
+import com.codingwithmitch.openapi.util.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.InternalCoroutinesApi
@@ -25,7 +22,7 @@ abstract class BaseViewModel<ViewState> : ViewModel()
 
     protected val _viewState: MutableLiveData<ViewState> = MutableLiveData()
     protected val _activeJobCounter: MutableLiveData<HashSet<StateEvent>> = MutableLiveData()
-    val errorStack = ErrorStack()
+    val messageStack = MessageStack()
 
     val viewState: LiveData<ViewState>
         get() = _viewState
@@ -33,8 +30,8 @@ abstract class BaseViewModel<ViewState> : ViewModel()
     val activeJobCounter: LiveData<HashSet<StateEvent>>
         get() = _activeJobCounter
 
-    val errorState: LiveData<StateMessage>
-            = errorStack.stateError
+    val stateMessage: LiveData<StateMessage>
+            = messageStack.stateMessage
 
     init {
         setupChannel()
@@ -58,8 +55,8 @@ abstract class BaseViewModel<ViewState> : ViewModel()
 
     abstract fun setStateEvent(stateEvent: StateEvent)
 
-    fun handleNewError(stateEvent: StateEvent?, error: StateMessage){
-        appendStateError(error)
+    fun handleNewError(stateEvent: StateEvent?, stateMessage: StateMessage){
+        appendStateMessage(stateMessage)
         removeJobFromCounter(stateEvent)
     }
 
@@ -120,10 +117,33 @@ abstract class BaseViewModel<ViewState> : ViewModel()
         _viewState.value = viewState
     }
 
-    private fun appendStateError(error: StateMessage) {
-        errorStack.add(error)
+    private fun appendStateMessage(stateMessage: StateMessage) {
+        messageStack.add(stateMessage)
+    }
+
+    fun clearStateMessage(index: Int = 0){
+        messageStack.removeAt(index)
     }
 
     abstract fun initNewViewState(): ViewState
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

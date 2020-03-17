@@ -5,44 +5,75 @@ import android.widget.Toast
 import androidx.annotation.StringRes
 import com.afollestad.materialdialogs.MaterialDialog
 import com.codingwithmitch.openapi.R
+import com.codingwithmitch.openapi.util.StateMessageCallback
 
 
-fun Activity.displayToast(@StringRes message:Int){
+fun Activity.displayToast(
+    @StringRes message:Int,
+    stateMessageCallback: StateMessageCallback
+){
     Toast.makeText(this, message,Toast.LENGTH_LONG).show()
+    stateMessageCallback.removeMessageFromStack()
 }
 
-fun Activity.displayToast(message:String){
+fun Activity.displayToast(
+    message:String,
+    stateMessageCallback: StateMessageCallback
+){
     Toast.makeText(this,message,Toast.LENGTH_LONG).show()
+    stateMessageCallback.removeMessageFromStack()
 }
 
-fun Activity.displaySuccessDialog(message: String?){
+fun Activity.displaySuccessDialog(
+    message: String?,
+    stateMessageCallback: StateMessageCallback
+){
     MaterialDialog(this)
         .show{
             title(R.string.text_success)
             message(text = message)
             positiveButton(R.string.text_ok)
+            setOnDismissListener {
+                stateMessageCallback.removeMessageFromStack()
+            }
         }
 }
 
-fun Activity.displayErrorDialog(errorMessage: String?){
+fun Activity.displayErrorDialog(
+    message: String?,
+    stateMessageCallback: StateMessageCallback
+){
     MaterialDialog(this)
         .show{
             title(R.string.text_error)
-            message(text = errorMessage)
+            message(text = message)
             positiveButton(R.string.text_ok)
+            setOnDismissListener {
+                stateMessageCallback.removeMessageFromStack()
+            }
         }
 }
 
-fun Activity.displayInfoDialog(message: String?){
+fun Activity.displayInfoDialog(
+    message: String?,
+    stateMessageCallback: StateMessageCallback
+){
     MaterialDialog(this)
         .show{
             title(R.string.text_info)
             message(text = message)
             positiveButton(R.string.text_ok)
+            setOnDismissListener {
+                stateMessageCallback.removeMessageFromStack()
+            }
         }
 }
 
-fun Activity.areYouSureDialog(message: String, callback: AreYouSureCallback){
+fun Activity.areYouSureDialog(
+    message: String,
+    callback: AreYouSureCallback,
+    stateMessageCallback: StateMessageCallback
+){
     MaterialDialog(this)
         .show{
             title(R.string.are_you_sure)
@@ -52,6 +83,9 @@ fun Activity.areYouSureDialog(message: String, callback: AreYouSureCallback){
             }
             positiveButton(R.string.text_yes){
                 callback.proceed()
+            }
+            setOnDismissListener {
+                stateMessageCallback.removeMessageFromStack()
             }
         }
 }
@@ -63,7 +97,6 @@ interface AreYouSureCallback {
 
     fun cancel()
 }
-
 
 
 

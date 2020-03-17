@@ -2,11 +2,11 @@ package com.codingwithmitch.openapi.repository
 
 import com.codingwithmitch.openapi.util.*
 import com.codingwithmitch.openapi.util.ApiResult.*
-import com.codingwithmitch.openapi.util.Constants.Companion.CACHE_ERROR_TIMEOUT
 import com.codingwithmitch.openapi.util.Constants.Companion.CACHE_TIMEOUT
-import com.codingwithmitch.openapi.util.Constants.Companion.NETWORK_ERROR_TIMEOUT
 import com.codingwithmitch.openapi.util.Constants.Companion.NETWORK_TIMEOUT
-import com.codingwithmitch.openapi.util.Constants.Companion.UNKNOWN_ERROR
+import com.codingwithmitch.openapi.util.ErrorHandling.Companion.CACHE_ERROR_TIMEOUT
+import com.codingwithmitch.openapi.util.ErrorHandling.Companion.NETWORK_ERROR_TIMEOUT
+import com.codingwithmitch.openapi.util.ErrorHandling.Companion.UNKNOWN_ERROR
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow

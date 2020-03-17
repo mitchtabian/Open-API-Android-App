@@ -16,18 +16,22 @@ import com.codingwithmitch.openapi.ui.main.blog.state.BLOG_VIEW_STATE_BUNDLE_KEY
 import com.codingwithmitch.openapi.ui.main.blog.state.BlogStateEvent
 import com.codingwithmitch.openapi.ui.main.blog.state.BlogViewState
 import com.codingwithmitch.openapi.ui.main.blog.viewmodel.*
+import com.codingwithmitch.openapi.util.*
 import com.codingwithmitch.openapi.util.Constants.Companion.GALLERY_REQUEST_CODE
-import com.codingwithmitch.openapi.util.DataState
-import com.codingwithmitch.openapi.util.Response
+import com.codingwithmitch.openapi.util.ErrorHandling.Companion.SOMETHING_WRONG_WITH_IMAGE
 import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView
 import kotlinx.android.synthetic.main.fragment_update_blog.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import java.io.File
 import javax.inject.Inject
 
+@FlowPreview
+@ExperimentalCoroutinesApi
 class UpdateBlogFragment
 @Inject
 constructor(
@@ -78,7 +82,7 @@ constructor(
         subscribeObservers()
 
         image_container.setOnClickListener {
-            if(stateChangeListener.isStoragePermissionGranted()){
+            if(uiCommunicationListener.isStoragePermissionGranted()){
                 pickFromGallery()
             }
         }
@@ -105,19 +109,17 @@ constructor(
     }
 
     private fun showImageSelectionError(){
-        stateChangeListener.onDataStateChange(
-            DataState(
-                Event(
-                    StateError(
-                        Response(
-                            "Something went wrong with the image.",
-                            ResponseType.Dialog()
-                        )
-                    )
-                ),
-                Loading(isLoading = false),
-                Data(Event.dataEvent(null), null)
-            )
+        uiCommunicationListener.onResponseReceived(
+            response = Response(
+                message = SOMETHING_WRONG_WITH_IMAGE,
+                uiComponentType = UIComponentType.Dialog(),
+                messageType = MessageType.Error()
+            ),
+            stateMessageCallback = object: StateMessageCallback{
+                override fun removeMessageFromStack() {
+                    viewModel.clearStateMessage()
+                }
+            }
         )
     }
 
@@ -139,11 +141,7 @@ constructor(
                     val result = CropImage.getActivityResult(data)
                     val resultUri = result.uri
                     Log.d(TAG, "CROP: CROP_IMAGE_ACTIVITY_REQUEST_CODE: uri: ${resultUri}")
-                    viewModel.setUpdatedBlogFields(
-                        title = null,
-                        body = null,
-                        uri = resultUri
-                    )
+                    viewModel.setUpdatedUri(resultUri)
                 }
 
                 CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE -> {
@@ -155,20 +153,6 @@ constructor(
     }
 
     fun subscribeObservers(){
-        viewModel.dataState.observe(viewLifecycleOwner, Observer { dataState ->
-            stateChangeListener.onDataStateChange(dataState)
-            dataState.data?.let{ data ->
-                data.data?.getContentIfNotHandled()?.let{ viewState ->
-
-                    // if this is not null, the blogpost was updated
-                    viewState.viewBlogFields.blogPost?.let{ blogPost ->
-                        viewModel.onBlogPostUpdateSuccess(blogPost).let {
-                            findNavController().popBackStack()
-                        }
-                    }
-                }
-            }
-        })
 
         viewModel.viewState.observe(viewLifecycleOwner, Observer { viewState ->
             viewState.updatedBlogFields.let{ updatedBlogFields ->
@@ -176,6 +160,24 @@ constructor(
                     updatedBlogFields.updatedBlogTitle,
                     updatedBlogFields.updatedBlogBody,
                     updatedBlogFields.updatedImageUri
+                )
+            }
+        })
+
+        viewModel.activeJobCounter.observe(viewLifecycleOwner, Observer { jobCounter ->
+            uiCommunicationListener.displayProgressBar(viewModel.areAnyJobsActive())
+        })
+
+        viewModel.stateMessage.observe(viewLifecycleOwner, Observer { stateMessage ->
+
+            stateMessage?.let {
+                uiCommunicationListener.onResponseReceived(
+                    response = it.response,
+                    stateMessageCallback = object: StateMessageCallback {
+                        override fun removeMessageFromStack() {
+                            viewModel.clearStateMessage()
+                        }
+                    }
                 )
             }
         })
@@ -219,7 +221,7 @@ constructor(
                 multipartBody
             )
         )
-        stateChangeListener.hideSoftKeyboard()
+        uiCommunicationListener.hideSoftKeyboard()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -238,11 +240,8 @@ constructor(
 
     override fun onPause() {
         super.onPause()
-        viewModel.setUpdatedBlogFields(
-            uri = null,
-            title = blog_title.text.toString(),
-            body = blog_body.text.toString()
-        )
+        viewModel.setUpdatedTitle(blog_title.text.toString())
+        viewModel.setUpdatedBody(blog_body.text.toString())
     }
 }
 

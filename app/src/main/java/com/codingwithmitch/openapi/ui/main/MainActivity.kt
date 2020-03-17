@@ -31,9 +31,13 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main.progress_bar
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import javax.inject.Inject
 import javax.inject.Named
 
+@ExperimentalCoroutinesApi
+@FlowPreview
 class MainActivity : BaseActivity(),
     OnNavigationGraphChanged,
     OnNavigationReselectedListener

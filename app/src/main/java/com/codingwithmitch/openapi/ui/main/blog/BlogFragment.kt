@@ -33,6 +33,7 @@ import com.codingwithmitch.openapi.ui.main.blog.state.BLOG_VIEW_STATE_BUNDLE_KEY
 import com.codingwithmitch.openapi.ui.main.blog.state.BlogViewState
 import com.codingwithmitch.openapi.ui.main.blog.viewmodel.*
 import com.codingwithmitch.openapi.util.ErrorHandling
+import com.codingwithmitch.openapi.util.StateMessageCallback
 import com.codingwithmitch.openapi.util.TopSpacingItemDecoration
 import handleIncomingBlogListData
 import kotlinx.android.synthetic.main.fragment_blog.*
@@ -146,14 +147,17 @@ constructor(
             uiCommunicationListener.displayProgressBar(viewModel.areAnyJobsActive())
         })
 
-        viewModel.errorState.observe(viewLifecycleOwner, Observer { stateMessage ->
+        viewModel.stateMessage.observe(viewLifecycleOwner, Observer { stateMessage ->
 
             stateMessage?.let {
-                if(ErrorHandling.isPaginationDone(it.response.message)){
-                    viewModel.setQueryExhausted(true)
-                    viewModel.errorStack.remove(it)
-                }
-                uiCommunicationListener.onResponseReceived(it.response)
+                uiCommunicationListener.onResponseReceived(
+                    response = it.response,
+                    stateMessageCallback = object: StateMessageCallback {
+                        override fun removeMessageFromStack() {
+                            viewModel.clearStateMessage()
+                        }
+                    }
+                )
             }
         })
     }

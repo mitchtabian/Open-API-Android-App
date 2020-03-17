@@ -52,11 +52,16 @@ constructor(
         override fun onError(errorMessage: String) {
             Log.e(TAG, "onError: $errorMessage")
             uiCommunicationListener.onResponseReceived(
-                Response(
+                response = Response(
                     message = errorMessage,
                     uiComponentType = UIComponentType.Dialog(),
                     messageType = MessageType.Error()
-                )
+                ),
+                stateMessageCallback = object: StateMessageCallback{
+                    override fun removeMessageFromStack() {
+                        viewModel.clearStateMessage()
+                    }
+                }
             )
         }
 

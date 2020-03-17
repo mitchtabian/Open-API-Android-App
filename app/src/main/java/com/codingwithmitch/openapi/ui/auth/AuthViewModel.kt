@@ -8,7 +8,7 @@ import com.codingwithmitch.openapi.ui.BaseViewModel
 import com.codingwithmitch.openapi.ui.auth.state.*
 import com.codingwithmitch.openapi.ui.auth.state.AuthStateEvent.*
 import com.codingwithmitch.openapi.util.*
-import com.codingwithmitch.openapi.util.Constants.Companion.INVALID_STATE_EVENT
+import com.codingwithmitch.openapi.util.ErrorHandling.Companion.INVALID_STATE_EVENT
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.cancel
