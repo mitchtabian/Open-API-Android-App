@@ -13,6 +13,7 @@ import com.codingwithmitch.openapi.util.*
 import com.codingwithmitch.openapi.util.Constants.Companion.INVALID_STATE_EVENT
 import com.codingwithmitch.openapi.util.PreferenceKeys.Companion.BLOG_FILTER
 import com.codingwithmitch.openapi.util.PreferenceKeys.Companion.BLOG_ORDER
+import handleIncomingBlogListData
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.cancel
@@ -54,12 +55,12 @@ constructor(
         data.blogFields.let { blogFields ->
 
             blogFields.blogList?.let { blogList ->
-                setBlogListData(blogList)
+                handleIncomingBlogListData(data)
             }
 
-//            blogFields.isQueryExhausted?.let { isQueryExhausted ->
-//                setQueryExhausted(isQueryExhausted)
-//            }
+            blogFields.isQueryExhausted?.let { isQueryExhausted ->
+                setQueryExhausted(isQueryExhausted)
+            }
         }
 
         data.viewBlogFields.let { viewBlogFields ->

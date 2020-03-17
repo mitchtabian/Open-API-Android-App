@@ -24,8 +24,6 @@ constructor(
 
     lateinit var uiCommunicationListener: UICommunicationListener
 
-    lateinit var stateChangeListener: DataStateChangeListener
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupActionBarWithNavController(R.id.blogFragment, activity as AppCompatActivity)
@@ -44,12 +42,6 @@ constructor(
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        try{
-            stateChangeListener = context as DataStateChangeListener
-        }catch(e: ClassCastException){
-            Log.e(TAG, "$context must implement DataStateChangeListener" )
-        }
-
         try{
             uiCommunicationListener = context as UICommunicationListener
         }catch(e: ClassCastException){

@@ -25,7 +25,7 @@ abstract class BaseViewModel<ViewState> : ViewModel()
 
     protected val _viewState: MutableLiveData<ViewState> = MutableLiveData()
     protected val _activeJobCounter: MutableLiveData<HashSet<StateEvent>> = MutableLiveData()
-    private val errorStack = ErrorStack()
+    val errorStack = ErrorStack()
 
     val viewState: LiveData<ViewState>
         get() = _viewState

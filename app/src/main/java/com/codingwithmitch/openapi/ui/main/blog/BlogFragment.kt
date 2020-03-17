@@ -36,11 +36,15 @@ import com.codingwithmitch.openapi.util.ErrorHandling
 import com.codingwithmitch.openapi.util.TopSpacingItemDecoration
 import handleIncomingBlogListData
 import kotlinx.android.synthetic.main.fragment_blog.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import loadFirstPage
 import nextPage
 import refreshFromCache
 import javax.inject.Inject
 
+@FlowPreview
+@ExperimentalCoroutinesApi
 class BlogFragment
 @Inject
 constructor(
@@ -117,28 +121,39 @@ constructor(
     }
 
     private fun subscribeObservers(){
-        viewModel.dataState.observe(viewLifecycleOwner, Observer{ dataState ->
-            if(dataState != null) {
-                // call before onDataStateChange to consume error if there is one
-                handlePagination(dataState)
-                stateChangeListener.onDataStateChange(dataState)
-            }
-        })
 
         viewModel.viewState.observe(viewLifecycleOwner, Observer{ viewState ->
             Log.d(TAG, "BlogFragment, ViewState: ${viewState}")
             if(viewState != null){
                 recyclerAdapter.apply {
-                    preloadGlideImages(
-                        requestManager = requestManager,
-                        list = viewState.blogFields.blogList
-                    )
+                    viewState.blogFields.blogList?.let {
+                        preloadGlideImages(
+                            requestManager = requestManager,
+                            list = it
+                        )
+                    }
+
                     submitList(
                         blogList = viewState.blogFields.blogList,
-                        isQueryExhausted = viewState.blogFields.isQueryExhausted
+                        isQueryExhausted = viewState.blogFields.isQueryExhausted?: true
                     )
                 }
 
+            }
+        })
+
+        viewModel.activeJobCounter.observe(viewLifecycleOwner, Observer { jobCounter ->
+            uiCommunicationListener.displayProgressBar(viewModel.areAnyJobsActive())
+        })
+
+        viewModel.errorState.observe(viewLifecycleOwner, Observer { stateMessage ->
+
+            stateMessage?.let {
+                if(ErrorHandling.isPaginationDone(it.response.message)){
+                    viewModel.setQueryExhausted(true)
+                    viewModel.errorStack.remove(it)
+                }
+                uiCommunicationListener.onResponseReceived(it.response)
             }
         })
     }
@@ -188,37 +203,8 @@ constructor(
 
     private  fun resetUI(){
         blog_post_recyclerview.smoothScrollToPosition(0)
-        stateChangeListener.hideSoftKeyboard()
+        uiCommunicationListener.hideSoftKeyboard()
         focusable_view.requestFocus()
-    }
-
-    private fun handlePagination(dataState: DataState<BlogViewState>){
-
-        // Handle incoming data from DataState
-        dataState.data?.let {
-            it.data?.let{
-                it.getContentIfNotHandled()?.let{
-                    viewModel.handleIncomingBlogListData(it)
-                }
-            }
-        }
-
-        // Check for pagination end (no more results)
-        // must do this b/c server will return an ApiErrorResponse if page is not valid,
-        // -> meaning there is no more data.
-        dataState.error?.let{ event ->
-            event.peekContent().response.message?.let{
-                if(ErrorHandling.isPaginationDone(it)){
-
-                    // handle the error message event so it doesn't display in UI
-                    event.getContentIfNotHandled()
-
-                    // set query exhausted to update RecyclerView with
-                    // "No more results..." list item
-                    viewModel.setQueryExhausted(true)
-                }
-            }
-        }
     }
 
     private fun initRecyclerView(){
