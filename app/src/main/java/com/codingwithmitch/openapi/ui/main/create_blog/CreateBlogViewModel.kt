@@ -11,6 +11,7 @@ import com.codingwithmitch.openapi.ui.main.create_blog.state.CreateBlogViewState
 import com.codingwithmitch.openapi.ui.main.create_blog.state.CreateBlogViewState.*
 import com.codingwithmitch.openapi.util.*
 import com.codingwithmitch.openapi.util.ErrorHandling.Companion.INVALID_STATE_EVENT
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.cancel
@@ -99,10 +100,6 @@ constructor(
         val update = getCurrentViewStateOrNew()
         update.blogFields = NewBlogFields()
         setViewState(update)
-    }
-
-    fun cancelActiveJobs(){
-        viewModelScope.cancel()
     }
 
     override fun onCleared() {

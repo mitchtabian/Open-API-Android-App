@@ -143,7 +143,7 @@ constructor(
             }
         })
 
-        viewModel.activeJobCounter.observe(viewLifecycleOwner, Observer { jobCounter ->
+        viewModel.numActiveJobs.observe(viewLifecycleOwner, Observer { jobCounter ->
             uiCommunicationListener.displayProgressBar(viewModel.areAnyJobsActive())
         })
 

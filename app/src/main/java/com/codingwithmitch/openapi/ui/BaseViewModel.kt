@@ -1,10 +1,10 @@
 package com.codingwithmitch.openapi.ui
 
+import android.util.Log
 import androidx.lifecycle.*
 import com.codingwithmitch.openapi.util.*
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
@@ -21,14 +21,13 @@ abstract class BaseViewModel<ViewState> : ViewModel()
     protected val dataChannel = ConflatedBroadcastChannel<DataState<ViewState>>()
 
     protected val _viewState: MutableLiveData<ViewState> = MutableLiveData()
-    protected val _activeJobCounter: MutableLiveData<HashSet<StateEvent>> = MutableLiveData()
+    protected val _activeJobCounter: ActiveJobCounter = ActiveJobCounter()
     val messageStack = MessageStack()
 
     val viewState: LiveData<ViewState>
         get() = _viewState
 
-    val activeJobCounter: LiveData<HashSet<StateEvent>>
-        get() = _activeJobCounter
+    val numActiveJobs = _activeJobCounter.numActiveJobs
 
     val stateMessage: LiveData<StateMessage>
             = messageStack.stateMessage
@@ -44,8 +43,8 @@ abstract class BaseViewModel<ViewState> : ViewModel()
                 dataState.data?.let { data ->
                     handleNewData(dataState.stateEvent, data)
                 }
-                dataState.stateMessage?.let { error ->
-                    handleNewError(dataState.stateEvent, error)
+                dataState.stateMessage?.let { stateMessage ->
+                    handleNewStateMessage(dataState.stateEvent, stateMessage)
                 }
             }
             .launchIn(viewModelScope)
@@ -55,9 +54,9 @@ abstract class BaseViewModel<ViewState> : ViewModel()
 
     abstract fun setStateEvent(stateEvent: StateEvent)
 
-    fun handleNewError(stateEvent: StateEvent?, stateMessage: StateMessage){
+    fun handleNewStateMessage(stateEvent: StateEvent?, stateMessage: StateMessage){
         appendStateMessage(stateMessage)
-        removeJobFromCounter(stateEvent)
+        _activeJobCounter.removeJobFromCounter(stateEvent)
     }
 
     fun launchJob(
@@ -65,7 +64,7 @@ abstract class BaseViewModel<ViewState> : ViewModel()
         jobFunction: Flow<DataState<ViewState>>
     ){
         if(!isJobAlreadyActive(stateEvent)){
-            addJobToCounter(stateEvent)
+            _activeJobCounter.addJobToCounter(stateEvent)
             jobFunction
                 .onEach { dataState ->
                     offerToDataChannel(dataState)
@@ -74,30 +73,18 @@ abstract class BaseViewModel<ViewState> : ViewModel()
         }
     }
 
-    fun clearActiveJobCounter(){
-        _activeJobCounter.value?.clear()
-    }
-
-    fun addJobToCounter(stateEvent: StateEvent){
-        _activeJobCounter.value?.add(stateEvent)
-    }
-
-    fun removeJobFromCounter(stateEvent: StateEvent?){
-        _activeJobCounter.value?.remove(stateEvent)
-    }
-
     fun areAnyJobsActive(): Boolean{
-        return _activeJobCounter.value?.let{
-            it.size > 0
+        return _activeJobCounter.numActiveJobs.value?.let {
+            it > 0
         }?: false
     }
 
     fun getNumActiveJobs(): Int {
-        return _activeJobCounter.value?.size ?: 0
+        return _activeJobCounter.numActiveJobs.value ?: 0
     }
 
     fun isJobAlreadyActive(stateEvent: StateEvent): Boolean {
-        return _activeJobCounter.value?.contains(stateEvent) ?: false
+        return _activeJobCounter.isJobActive(stateEvent)
     }
 
     private fun offerToDataChannel(dataState: DataState<ViewState>){
@@ -123,6 +110,14 @@ abstract class BaseViewModel<ViewState> : ViewModel()
 
     fun clearStateMessage(index: Int = 0){
         messageStack.removeAt(index)
+    }
+
+    fun cancelActiveJobs(){
+        Log.d(TAG, "cancel active jobs: ")
+        if(areAnyJobsActive()){
+            _activeJobCounter.clearActiveJobCounter()
+            viewModelScope.cancel()
+        }
     }
 
     abstract fun initNewViewState(): ViewState

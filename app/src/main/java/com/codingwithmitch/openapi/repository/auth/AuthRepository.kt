@@ -34,7 +34,7 @@ interface AuthRepository {
 
     fun returnNoTokenFound(
         stateEvent: StateEvent
-    ): Flow<DataState<AuthViewState>>
+    ): DataState<AuthViewState>
 
 }
 

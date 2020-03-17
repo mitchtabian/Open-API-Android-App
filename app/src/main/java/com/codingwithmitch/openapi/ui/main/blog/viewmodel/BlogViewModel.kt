@@ -14,6 +14,7 @@ import com.codingwithmitch.openapi.util.ErrorHandling.Companion.INVALID_STATE_EV
 import com.codingwithmitch.openapi.util.PreferenceKeys.Companion.BLOG_FILTER
 import com.codingwithmitch.openapi.util.PreferenceKeys.Companion.BLOG_ORDER
 import handleIncomingBlogListData
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.cancel
@@ -89,7 +90,7 @@ constructor(
             }
         }
 
-        removeJobFromCounter(stateEvent)
+        _activeJobCounter.removeJobFromCounter(stateEvent)
     }
 
     override fun setStateEvent(stateEvent: StateEvent) {
@@ -182,10 +183,6 @@ constructor(
 
         editor.putString(BLOG_ORDER, order)
         editor.apply()
-    }
-
-    fun cancelActiveJobs(){
-        viewModelScope.cancel()
     }
 
     override fun onCleared() {

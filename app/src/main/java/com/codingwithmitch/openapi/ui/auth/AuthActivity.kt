@@ -16,6 +16,7 @@ import com.codingwithmitch.openapi.ui.auth.state.AuthStateEvent
 import com.codingwithmitch.openapi.ui.displayErrorDialog
 import com.codingwithmitch.openapi.ui.main.MainActivity
 import com.codingwithmitch.openapi.util.StateMessageCallback
+import com.codingwithmitch.openapi.util.SuccessHandling.Companion.RESPONSE_CHECK_PREVIOUS_AUTH_USER_DONE
 import kotlinx.android.synthetic.main.activity_auth.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -79,13 +80,17 @@ class AuthActivity : BaseActivity()
             }
         })
 
-        viewModel.activeJobCounter.observe(this, Observer { jobCounter ->
+        viewModel.numActiveJobs.observe(this, Observer { jobCounter ->
+            Log.d(TAG, "active jobs: ${jobCounter}")
             displayProgressBar(viewModel.areAnyJobsActive())
         })
 
         viewModel.stateMessage.observe(this, Observer { stateMessage ->
 
             stateMessage?.let {
+                if(it.response.message.equals(RESPONSE_CHECK_PREVIOUS_AUTH_USER_DONE)){
+                    onFinishCheckPreviousAuthUser()
+                }
                 onResponseReceived(
                     response = it.response,
                     stateMessageCallback = object: StateMessageCallback{

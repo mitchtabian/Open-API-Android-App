@@ -218,12 +218,12 @@ constructor(
     override fun checkPreviousAuthUser(
         stateEvent: StateEvent
     ): Flow<DataState<AuthViewState>> = flow{
-
+        Log.d(TAG, "checkPreviousAuthUser: ")
         val previousAuthUserEmail: String? = sharedPreferences.getString(PreferenceKeys.PREVIOUS_AUTH_USER, null)
 
         if(previousAuthUserEmail.isNullOrBlank()){
             Log.d(TAG, "checkPreviousAuthUser: No previously authenticated user found.")
-            returnNoTokenFound(stateEvent)
+            emit(returnNoTokenFound(stateEvent))
         }
         else{
             val apiResult = safeCacheCall(IO){
@@ -273,12 +273,15 @@ constructor(
 
     override fun returnNoTokenFound(
         stateEvent: StateEvent
-    ): Flow<DataState<AuthViewState>> = flow{
+    ): DataState<AuthViewState> {
 
-        emitError<AuthViewState>(
-            RESPONSE_CHECK_PREVIOUS_AUTH_USER_DONE,
-            UIComponentType.Dialog(),
-            stateEvent
+        return DataState.error(
+            response = Response(
+                RESPONSE_CHECK_PREVIOUS_AUTH_USER_DONE,
+                UIComponentType.None(),
+                MessageType.Error()
+            ),
+            stateEvent = stateEvent
         )
     }
 

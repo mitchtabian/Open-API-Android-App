@@ -1,5 +1,6 @@
 package com.codingwithmitch.openapi.ui.auth
 
+import android.util.Log
 import androidx.lifecycle.*
 import com.codingwithmitch.openapi.di.auth.AuthScope
 import com.codingwithmitch.openapi.models.AuthToken
@@ -9,6 +10,7 @@ import com.codingwithmitch.openapi.ui.auth.state.*
 import com.codingwithmitch.openapi.ui.auth.state.AuthStateEvent.*
 import com.codingwithmitch.openapi.util.*
 import com.codingwithmitch.openapi.util.ErrorHandling.Companion.INVALID_STATE_EVENT
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.cancel
@@ -32,7 +34,7 @@ constructor(
             setAuthToken(authToken)
         }
 
-        removeJobFromCounter(stateEvent)
+        _activeJobCounter.removeJobFromCounter(stateEvent)
     }
 
     override fun setStateEvent(stateEvent: StateEvent) {
@@ -108,10 +110,6 @@ constructor(
         }
         update.authToken = authToken
         setViewState(update)
-    }
-
-    fun cancelActiveJobs(){
-        viewModelScope.cancel()
     }
 
     override fun onCleared() {

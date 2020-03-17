@@ -72,7 +72,7 @@ abstract class BaseActivity: AppCompatActivity(),
                 is UIComponentType.None -> {
                     // This would be a good place to send to your Error Reporting
                     // software of choice (ex: Firebase crash reporting)
-                    Log.i(TAG, "onUIMessageReceived: ${response.message}")
+                    Log.i(TAG, "onResponseReceived: ${response.message}")
                     stateMessageCallback.removeMessageFromStack()
                 }
             }
