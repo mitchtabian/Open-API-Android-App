@@ -1,6 +1,6 @@
 package com.codingwithmitch.openapi.ui.main.account
 
-import androidx.lifecycle.viewModelScope
+import android.util.Log
 import com.codingwithmitch.openapi.di.main.MainScope
 import com.codingwithmitch.openapi.models.AccountProperties
 import com.codingwithmitch.openapi.repository.main.AccountRepositoryImpl
@@ -10,10 +10,7 @@ import com.codingwithmitch.openapi.ui.main.account.state.AccountStateEvent.*
 import com.codingwithmitch.openapi.ui.main.account.state.AccountViewState
 import com.codingwithmitch.openapi.util.*
 import com.codingwithmitch.openapi.util.ErrorHandling.Companion.INVALID_STATE_EVENT
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.cancel
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
@@ -32,11 +29,13 @@ constructor(
 
     override fun handleNewData(stateEvent: StateEvent?, data: AccountViewState) {
 
+        Log.d(TAG, "handleNewData: ${data}")
+
         data.accountProperties?.let { accountProperties ->
             setAccountPropertiesData(accountProperties)
         }
 
-        _activeJobCounter.removeJobFromCounter(stateEvent)
+        _activeStateEventTracker.removeStateEvent(stateEvent)
     }
 
     override fun setStateEvent(stateEvent: StateEvent) {

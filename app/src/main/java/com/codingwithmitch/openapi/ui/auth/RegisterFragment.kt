@@ -9,6 +9,7 @@ import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.di.auth.AuthScope

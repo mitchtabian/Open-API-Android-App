@@ -1,7 +1,6 @@
 package com.codingwithmitch.openapi.ui.main.create_blog
 
 import android.net.Uri
-import androidx.lifecycle.viewModelScope
 import com.codingwithmitch.openapi.di.main.MainScope
 import com.codingwithmitch.openapi.repository.main.CreateBlogRepositoryImpl
 import com.codingwithmitch.openapi.session.SessionManager
@@ -11,10 +10,7 @@ import com.codingwithmitch.openapi.ui.main.create_blog.state.CreateBlogViewState
 import com.codingwithmitch.openapi.ui.main.create_blog.state.CreateBlogViewState.*
 import com.codingwithmitch.openapi.util.*
 import com.codingwithmitch.openapi.util.ErrorHandling.Companion.INVALID_STATE_EVENT
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.cancel
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import okhttp3.MediaType
@@ -30,6 +26,7 @@ constructor(
     val createBlogRepository: CreateBlogRepositoryImpl,
     val sessionManager: SessionManager
 ): BaseViewModel<CreateBlogViewState>() {
+
 
     override fun handleNewData(stateEvent: StateEvent?, data: CreateBlogViewState) {
 

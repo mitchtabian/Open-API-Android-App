@@ -10,7 +10,7 @@ import com.codingwithmitch.openapi.models.AccountProperties
 import com.codingwithmitch.openapi.models.AuthToken
 import com.codingwithmitch.openapi.persistence.AccountPropertiesDao
 import com.codingwithmitch.openapi.persistence.AuthTokenDao
-import com.codingwithmitch.openapi.repository.emitError
+import com.codingwithmitch.openapi.repository.buildError
 import com.codingwithmitch.openapi.repository.safeApiCall
 import com.codingwithmitch.openapi.repository.safeCacheCall
 import com.codingwithmitch.openapi.session.SessionManager
@@ -53,7 +53,6 @@ constructor(
 
         val loginFieldErrors = LoginFields(email, password).isValidForLogin()
         if(loginFieldErrors.equals(LoginFields.LoginError.none())){
-
             val apiResult = safeApiCall(IO){
                 openApiAuthService.login(email, password)
             }
@@ -113,10 +112,13 @@ constructor(
             )
         }
         else{
-            emitError<AuthViewState>(
-                loginFieldErrors,
-                UIComponentType.Dialog(),
-                stateEvent
+            Log.d(TAG, "emitting error: ${loginFieldErrors}")
+            emit(
+                buildError(
+                    loginFieldErrors,
+                    UIComponentType.Dialog(),
+                    stateEvent
+                )
             )
         }
     }
@@ -128,7 +130,6 @@ constructor(
         password: String,
         confirmPassword: String
     ): Flow<DataState<AuthViewState>> = flow {
-
         val registrationFieldErrors = RegistrationFields(email, username, password, confirmPassword).isValidForRegistration()
         if(registrationFieldErrors.equals(RegistrationFields.RegistrationError.none())){
 
@@ -205,10 +206,12 @@ constructor(
 
         }
         else{
-            emitError<AuthViewState>(
-                registrationFieldErrors,
-                UIComponentType.Dialog(),
-                stateEvent
+            emit(
+                buildError(
+                    registrationFieldErrors,
+                    UIComponentType.Dialog(),
+                    stateEvent
+                )
             )
         }
 

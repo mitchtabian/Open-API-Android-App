@@ -5,6 +5,7 @@ import com.codingwithmitch.openapi.ui.main.blog.state.BlogViewState
 import com.codingwithmitch.openapi.ui.main.blog.viewmodel.BlogViewModel
 import com.codingwithmitch.openapi.ui.main.blog.viewmodel.setBlogListData
 import com.codingwithmitch.openapi.ui.main.blog.viewmodel.setQueryExhausted
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 
@@ -57,9 +58,6 @@ fun BlogViewModel.nextPage(){
 @FlowPreview
 @UseExperimental(ExperimentalCoroutinesApi::class)
 fun BlogViewModel.handleIncomingBlogListData(viewState: BlogViewState){
-    Log.d(TAG, "BlogViewModel, DataState: ${viewState}")
-    Log.d(TAG, "BlogViewModel, DataState: isQueryExhausted?: " +
-            "${viewState.blogFields.isQueryExhausted}")
     viewState.blogFields.let { blogFields ->
         blogFields.blogList?.let { setBlogListData(it) }
         blogFields.isQueryExhausted?.let {  setQueryExhausted(it) }

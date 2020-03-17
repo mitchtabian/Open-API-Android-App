@@ -6,11 +6,13 @@ import android.view.*
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.models.AccountProperties
 import com.codingwithmitch.openapi.ui.main.account.state.ACCOUNT_VIEW_STATE_BUNDLE_KEY
 import com.codingwithmitch.openapi.ui.main.account.state.AccountStateEvent
+import com.codingwithmitch.openapi.ui.main.account.state.AccountStateEvent.*
 import com.codingwithmitch.openapi.ui.main.account.state.AccountViewState
 import com.codingwithmitch.openapi.util.StateMessageCallback
 import kotlinx.android.synthetic.main.fragment_account.*
@@ -32,17 +34,12 @@ constructor(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        cancelActiveJobs()
         // Restore state after process death
         savedInstanceState?.let { inState ->
             (inState[ACCOUNT_VIEW_STATE_BUNDLE_KEY] as AccountViewState?)?.let { viewState ->
                 viewModel.setViewState(viewState)
             }
         }
-    }
-
-    override fun cancelActiveJobs(){
-        viewModel.cancelActiveJobs()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -58,6 +55,10 @@ constructor(
         }
 
         subscribeObservers()
+    }
+
+    override fun setupChannel() {
+        viewModel.setupChannel()
     }
 
     private fun subscribeObservers(){
@@ -77,6 +78,7 @@ constructor(
 
         viewModel.stateMessage.observe(viewLifecycleOwner, Observer { stateMessage ->
 
+
             stateMessage?.let {
                 uiCommunicationListener.onResponseReceived(
                     response = it.response,
@@ -92,7 +94,7 @@ constructor(
 
     override fun onResume() {
         super.onResume()
-        viewModel.setStateEvent(AccountStateEvent.GetAccountPropertiesEvent())
+        viewModel.setStateEvent(GetAccountPropertiesEvent())
     }
 
     private fun setAccountDataFields(accountProperties: AccountProperties){

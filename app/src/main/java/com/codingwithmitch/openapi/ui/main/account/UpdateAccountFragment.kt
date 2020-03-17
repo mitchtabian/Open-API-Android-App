@@ -6,6 +6,7 @@ import android.view.*
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.models.AccountProperties
 import com.codingwithmitch.openapi.ui.main.account.state.ACCOUNT_VIEW_STATE_BUNDLE_KEY
@@ -31,7 +32,6 @@ constructor(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        cancelActiveJobs()
         // Restore state after process death
         savedInstanceState?.let { inState ->
             (inState[ACCOUNT_VIEW_STATE_BUNDLE_KEY] as AccountViewState?)?.let { viewState ->
@@ -40,14 +40,15 @@ constructor(
         }
     }
 
-    override fun cancelActiveJobs(){
-        viewModel.cancelActiveJobs()
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
         subscribeObservers()
+    }
+
+    override fun setupChannel() {
+        Log.d(TAG, "setupChannel ")
+        viewModel.setupChannel()
     }
 
     private fun subscribeObservers(){
@@ -67,6 +68,8 @@ constructor(
 
         viewModel.stateMessage.observe(viewLifecycleOwner, Observer { stateMessage ->
 
+            Log.d(TAG, "stack size: ${viewModel.getMessageStackSize()}")
+            Log.d(TAG, "state message: ${stateMessage}")
             stateMessage?.let {
                 uiCommunicationListener.onResponseReceived(
                     response = it.response,
@@ -112,6 +115,7 @@ constructor(
         }
         return super.onOptionsItemSelected(item)
     }
+
 }
 
 

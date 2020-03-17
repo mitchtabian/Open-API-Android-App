@@ -1,5 +1,6 @@
 package com.codingwithmitch.openapi.repository
 
+import android.util.Log
 import com.codingwithmitch.openapi.util.*
 import com.codingwithmitch.openapi.util.ApiResult.*
 import com.codingwithmitch.openapi.util.Constants.Companion.CACHE_TIMEOUT
@@ -80,21 +81,20 @@ suspend fun <T> safeCacheCall(
 }
 
 
-fun <ViewState> emitError(
+fun <ViewState> buildError(
     message: String,
     uiComponentType: UIComponentType,
     stateEvent: StateEvent?
-): Flow<DataState<ViewState>> = flow{
-    emit(
-        DataState.error(
-            response = Response(
-                message = "${stateEvent?.errorInfo()}\n\nReason: ${message}",
-                uiComponentType = uiComponentType,
-                messageType = MessageType.Error()
-            ),
-            stateEvent = stateEvent
-        )
+): DataState<ViewState>{
+    return DataState.error(
+        response = Response(
+            message = "${stateEvent?.errorInfo()}\n\nReason: ${message}",
+            uiComponentType = uiComponentType,
+            messageType = MessageType.Error()
+        ),
+        stateEvent = stateEvent
     )
+
 }
 
 private fun convertErrorBody(throwable: HttpException): String? {

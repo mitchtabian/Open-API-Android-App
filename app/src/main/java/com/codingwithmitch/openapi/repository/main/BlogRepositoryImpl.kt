@@ -11,6 +11,7 @@ import com.codingwithmitch.openapi.models.BlogPost
 import com.codingwithmitch.openapi.persistence.BlogPostDao
 import com.codingwithmitch.openapi.persistence.returnOrderedBlogQuery
 import com.codingwithmitch.openapi.repository.NetworkBoundResource
+import com.codingwithmitch.openapi.repository.buildError
 import com.codingwithmitch.openapi.repository.safeApiCall
 import com.codingwithmitch.openapi.repository.safeCacheCall
 import com.codingwithmitch.openapi.session.SessionManager
@@ -48,7 +49,6 @@ constructor(
         page: Int,
         stateEvent: StateEvent
     ): Flow<DataState<BlogViewState>> {
-
         return object: NetworkBoundResource<BlogListSearchResponse, List<BlogPost>, BlogViewState>(
             dispatcher = IO,
             stateEvent = stateEvent,
@@ -146,7 +146,6 @@ constructor(
         slug: String,
         stateEvent: StateEvent
     ) = flow {
-
         val apiResult = safeApiCall(IO){
             openApiMainService.isAuthorOfBlogPost(
                 "Token ${authToken.token!!}",
@@ -184,13 +183,10 @@ constructor(
                         }
 
                         else -> {
-                            DataState.error(
-                                response = Response(
-                                    message = ERROR_UNKNOWN,
-                                    uiComponentType = UIComponentType.None(),
-                                    messageType = MessageType.Error()
-                                ),
-                                stateEvent = stateEvent
+                            buildError(
+                                ERROR_UNKNOWN,
+                                UIComponentType.None(),
+                                stateEvent
                             )
                         }
                     }
@@ -229,13 +225,10 @@ constructor(
                         )
                     }
                     else{
-                        return DataState.error(
-                            response = Response(
-                                message = ERROR_UNKNOWN,
-                                uiComponentType = UIComponentType.Dialog(),
-                                messageType = MessageType.Error()
-                            ),
-                            stateEvent = stateEvent
+                        return buildError(
+                            ERROR_UNKNOWN,
+                            UIComponentType.Dialog(),
+                            stateEvent
                         )
                     }
                 }

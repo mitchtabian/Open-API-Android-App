@@ -66,30 +66,8 @@ class MainActivity : BaseActivity(),
     }
 
     override fun onGraphChange() {
-        cancelActiveJobs()
         expandAppBar()
     }
-
-    private fun cancelActiveJobs(){
-    val fragments = bottomNavController.fragmentManager
-        .findFragmentById(bottomNavController.containerId)
-        ?.childFragmentManager
-        ?.fragments
-    if(fragments != null){
-        for(fragment in fragments){
-            if(fragment is BaseAccountFragment){
-                fragment.cancelActiveJobs()
-            }
-            if(fragment is BaseBlogFragment){
-                fragment.cancelActiveJobs()
-            }
-            if(fragment is BaseCreateBlogFragment){
-                fragment.cancelActiveJobs()
-            }
-        }
-    }
-    displayProgressBar(false)
-}
 
     override fun onReselectNavItem(
         navController: NavController,
@@ -178,7 +156,6 @@ class MainActivity : BaseActivity(),
     }
 
     fun subscribeObservers(){
-
 
         sessionManager.cachedToken.observe(this, Observer{ authToken ->
             Log.d(TAG, "MainActivity, subscribeObservers: ViewState: ${authToken}")

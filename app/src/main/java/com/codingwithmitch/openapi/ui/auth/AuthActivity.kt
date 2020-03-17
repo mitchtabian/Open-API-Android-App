@@ -8,11 +8,13 @@ import androidx.activity.viewModels
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.codingwithmitch.openapi.BaseApplication
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.fragments.auth.AuthNavHostFragment
 import com.codingwithmitch.openapi.ui.BaseActivity
 import com.codingwithmitch.openapi.ui.auth.state.AuthStateEvent
+import com.codingwithmitch.openapi.ui.auth.state.AuthStateEvent.*
 import com.codingwithmitch.openapi.ui.displayErrorDialog
 import com.codingwithmitch.openapi.ui.main.MainActivity
 import com.codingwithmitch.openapi.util.StateMessageCallback
@@ -43,6 +45,7 @@ class AuthActivity : BaseActivity()
         setContentView(R.layout.activity_auth)
         subscribeObservers()
         onRestoreInstanceState()
+        viewModel.setupChannel()
     }
 
     fun onRestoreInstanceState(){
@@ -121,7 +124,7 @@ class AuthActivity : BaseActivity()
     }
 
     private fun checkPreviousAuthUser(){
-        viewModel.setStateEvent(AuthStateEvent.CheckPreviousAuthEvent())
+        viewModel.setStateEvent(CheckPreviousAuthEvent())
     }
 
     private fun onFinishCheckPreviousAuthUser(){
