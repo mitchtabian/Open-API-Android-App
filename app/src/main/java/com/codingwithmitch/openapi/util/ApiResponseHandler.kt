@@ -1,6 +1,7 @@
 package com.codingwithmitch.openapi.util
 
-import com.codingwithmitch.openapi.util.Constants.Companion.NETWORK_ERROR
+import com.codingwithmitch.openapi.util.ErrorHandling.Companion.NETWORK_ERROR
+
 
 abstract class ApiResponseHandler <ViewState, Data>(
     private val response: ApiResult<Data?>,

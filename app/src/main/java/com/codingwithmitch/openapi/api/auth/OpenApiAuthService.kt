@@ -1,6 +1,5 @@
 package com.codingwithmitch.openapi.api.auth
 
-import com.codingwithmitch.openapi.util.GenericApiResponse
 import com.codingwithmitch.openapi.api.auth.network_responses.LoginResponse
 import com.codingwithmitch.openapi.api.auth.network_responses.RegistrationResponse
 import com.codingwithmitch.openapi.di.auth.AuthScope
