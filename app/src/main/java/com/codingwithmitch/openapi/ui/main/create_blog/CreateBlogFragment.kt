@@ -37,14 +37,10 @@ import javax.inject.Inject
 class CreateBlogFragment
 @Inject
 constructor(
-    private val viewModelFactory: ViewModelProvider.Factory,
+    viewModelFactory: ViewModelProvider.Factory,
     private val requestManager: RequestManager
-): BaseCreateBlogFragment(R.layout.fragment_create_blog)
+): BaseCreateBlogFragment(R.layout.fragment_create_blog, viewModelFactory)
 {
-
-    val viewModel: CreateBlogViewModel by viewModels{
-        viewModelFactory
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,10 +62,6 @@ constructor(
             viewModel.viewState.value
         )
         super.onSaveInstanceState(outState)
-    }
-
-    override fun setupChannel(){
-        viewModel.setupChannel()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

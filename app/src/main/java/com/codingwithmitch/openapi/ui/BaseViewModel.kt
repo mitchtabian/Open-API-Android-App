@@ -15,31 +15,30 @@ abstract class BaseViewModel<ViewState> : ViewModel()
 
     private val _viewState: MutableLiveData<ViewState> = MutableLiveData()
 
-    private val _activeStateEventTracker: DataChannelManager<ViewState>
+    private val dataChannelManager: DataChannelManager<ViewState>
             = object: DataChannelManager<ViewState>(){
 
         override fun handleNewData(data: ViewState) {
             this@BaseViewModel.handleNewData(data)
         }
-
     }
 
     val viewState: LiveData<ViewState>
         get() = _viewState
 
     val numActiveJobs: LiveData<Int>
-            = _activeStateEventTracker.numActiveJobs
+            = dataChannelManager.numActiveJobs
 
     val stateMessage: LiveData<StateMessage?>
-        get() = _activeStateEventTracker.messageStack.stateMessage
+        get() = dataChannelManager.messageStack.stateMessage
 
     // FOR DEBUGGING
     fun getMessageStackSize(): Int{
-        return _activeStateEventTracker.messageStack.size
+        return dataChannelManager.messageStack.size
     }
 
     fun setupChannel(){
-        _activeStateEventTracker.setupChannel()
+        dataChannelManager.setupChannel()
     }
 
     abstract fun handleNewData(data: ViewState)
@@ -50,17 +49,17 @@ abstract class BaseViewModel<ViewState> : ViewModel()
         stateEvent: StateEvent,
         jobFunction: Flow<DataState<ViewState>>
     ){
-        _activeStateEventTracker.launchJob(stateEvent, jobFunction)
+        dataChannelManager.launchJob(stateEvent, jobFunction)
     }
 
     fun areAnyJobsActive(): Boolean{
-        return _activeStateEventTracker.numActiveJobs.value?.let {
+        return dataChannelManager.numActiveJobs.value?.let {
             it > 0
         }?: false
     }
 
     fun isJobAlreadyActive(stateEvent: StateEvent): Boolean {
-        return _activeStateEventTracker.isJobAlreadyActive(stateEvent)
+        return dataChannelManager.isJobAlreadyActive(stateEvent)
     }
 
     fun getCurrentViewStateOrNew(): ViewState{
@@ -75,14 +74,14 @@ abstract class BaseViewModel<ViewState> : ViewModel()
     }
 
     fun clearStateMessage(index: Int = 0){
-        _activeStateEventTracker.clearStateMessage(index)
+        dataChannelManager.clearStateMessage(index)
     }
 
     open fun cancelActiveJobs(){
         if(areAnyJobsActive()){
 //            Log.d(TAG, "cancel active jobs: ${getNumActiveJobs()}")
-            Log.d(TAG, "cancel active jobs: ${_activeStateEventTracker.numActiveJobs.value ?: 0}")
-            _activeStateEventTracker.cancelJobs()
+            Log.d(TAG, "cancel active jobs: ${dataChannelManager.numActiveJobs.value ?: 0}")
+            dataChannelManager.cancelJobs()
         }
     }
 

@@ -7,6 +7,8 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.fragment.findNavController
@@ -18,10 +20,16 @@ import com.codingwithmitch.openapi.ui.UICommunicationListener
 abstract class BaseCreateBlogFragment
 constructor(
     @LayoutRes
-    private val layoutRes: Int
-): Fragment(layoutRes) {
+    private val layoutRes: Int,
+    private val viewModelFactory: ViewModelProvider.Factory
+): Fragment(layoutRes)
+{
 
     val TAG: String = "AppDebug"
+
+    val viewModel: CreateBlogViewModel by viewModels{
+        viewModelFactory
+    }
 
     lateinit var uiCommunicationListener: UICommunicationListener
 
@@ -43,7 +51,7 @@ constructor(
         }
     }
 
-    abstract fun setupChannel()
+    private fun setupChannel() = viewModel.setupChannel()
 
     fun setupActionBarWithNavController(fragmentId: Int, activity: AppCompatActivity){
         val appBarConfiguration = AppBarConfiguration(setOf(fragmentId))

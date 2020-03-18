@@ -2,7 +2,6 @@ package com.codingwithmitch.openapi.ui.auth
 
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -10,14 +9,11 @@ import android.view.animation.TranslateAnimation
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.di.auth.AuthScope
-import com.codingwithmitch.openapi.ui.*
 import com.codingwithmitch.openapi.ui.auth.ForgotPasswordFragment.WebAppInterface.*
 import com.codingwithmitch.openapi.util.*
 import kotlinx.android.synthetic.main.fragment_forgot_password.*
@@ -34,18 +30,10 @@ import javax.inject.Inject
 class ForgotPasswordFragment
 @Inject
 constructor(
-    private val viewModelFactory: ViewModelProvider.Factory
-): Fragment(R.layout.fragment_forgot_password) {
-
-    private val TAG: String = "AppDebug"
-
-    val viewModel: AuthViewModel by viewModels{
-        viewModelFactory
-    }
+    viewModelFactory: ViewModelProvider.Factory
+): BaseAuthFragment(R.layout.fragment_forgot_password, viewModelFactory) {
 
     lateinit var webView: WebView
-
-    lateinit var uiCommunicationListener: UICommunicationListener
 
     val webInteractionCallback = object: OnWebInteractionCallback {
 
@@ -74,11 +62,6 @@ constructor(
             Log.d(TAG, "onLoading... ")
             uiCommunicationListener.displayProgressBar(isLoading)
         }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        viewModel.cancelActiveJobs()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -157,14 +140,6 @@ constructor(
         }
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        try{
-            uiCommunicationListener = context as UICommunicationListener
-        }catch(e: ClassCastException){
-            Log.e(TAG, "$context must implement UICommunicationListener" )
-        }
-    }
 }
 
 

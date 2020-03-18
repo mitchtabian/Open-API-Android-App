@@ -1,19 +1,13 @@
 package com.codingwithmitch.openapi.ui.auth
 
 
-import android.content.Context
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.View
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.di.auth.AuthScope
-import com.codingwithmitch.openapi.ui.UICommunicationListener
 import com.codingwithmitch.openapi.ui.auth.state.AuthStateEvent.*
 import com.codingwithmitch.openapi.ui.auth.state.RegistrationFields
 import kotlinx.android.synthetic.main.fragment_register.*
@@ -27,21 +21,8 @@ import javax.inject.Inject
 class RegisterFragment
 @Inject
 constructor(
-    private val viewModelFactory: ViewModelProvider.Factory
-): Fragment(R.layout.fragment_register) {
-
-    private val TAG: String = "AppDebug"
-
-    lateinit var uiCommunicationListener: UICommunicationListener
-
-    val viewModel: AuthViewModel by viewModels{
-        viewModelFactory
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        viewModel.cancelActiveJobs()
-    }
+    viewModelFactory: ViewModelProvider.Factory
+): BaseAuthFragment(R.layout.fragment_register, viewModelFactory) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -52,18 +33,18 @@ constructor(
         subscribeObservers()
     }
 
-    fun subscribeObservers(){
-        viewModel.viewState.observe(viewLifecycleOwner, Observer{viewState ->
+    fun subscribeObservers() {
+        viewModel.viewState.observe(viewLifecycleOwner, Observer { viewState ->
             viewState.registrationFields?.let {
-                it.registration_email?.let{input_email.setText(it)}
-                it.registration_username?.let{input_username.setText(it)}
-                it.registration_password?.let{input_password.setText(it)}
-                it.registration_confirm_password?.let{input_password_confirm.setText(it)}
+                it.registration_email?.let { input_email.setText(it) }
+                it.registration_username?.let { input_username.setText(it) }
+                it.registration_password?.let { input_password.setText(it) }
+                it.registration_confirm_password?.let { input_password_confirm.setText(it) }
             }
         })
     }
 
-    fun register(){
+    fun register() {
         viewModel.setStateEvent(
             RegisterAttemptEvent(
                 input_email.text.toString(),
@@ -85,13 +66,5 @@ constructor(
             )
         )
     }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        try{
-            uiCommunicationListener = context as UICommunicationListener
-        }catch(e: ClassCastException){
-            Log.e(TAG, "$context must implement UICommunicationListener" )
-        }
-    }
 }
+

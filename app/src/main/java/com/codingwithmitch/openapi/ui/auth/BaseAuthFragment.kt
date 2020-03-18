@@ -1,4 +1,4 @@
-package com.codingwithmitch.openapi.ui.main.account
+package com.codingwithmitch.openapi.ui.auth
 
 import android.content.Context
 import android.os.Bundle
@@ -21,7 +21,7 @@ import kotlinx.coroutines.FlowPreview
 
 @FlowPreview
 @ExperimentalCoroutinesApi
-abstract class BaseAccountFragment
+abstract class BaseAuthFragment
 constructor(
     @LayoutRes
     private val layoutRes: Int,
@@ -30,7 +30,7 @@ constructor(
 
     val TAG: String = "AppDebug"
 
-    val viewModel: AccountViewModel by viewModels{
+    val viewModel: AuthViewModel by viewModels{
         viewModelFactory
     }
 
@@ -38,7 +38,6 @@ constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupActionBarWithNavController(R.id.accountFragment, activity as AppCompatActivity)
 
         findNavController()
             .addOnDestinationChangedListener(onDestinationChangeListener)
@@ -56,15 +55,6 @@ constructor(
     }
 
     private fun setupChannel() = viewModel.setupChannel()
-
-    fun setupActionBarWithNavController(fragmentId: Int, activity: AppCompatActivity){
-        val appBarConfiguration = AppBarConfiguration(setOf(fragmentId))
-        NavigationUI.setupActionBarWithNavController(
-            activity,
-            findNavController(),
-            appBarConfiguration
-        )
-    }
 
     override fun onDetach() {
         super.onDetach()

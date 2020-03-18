@@ -51,16 +51,12 @@ import javax.inject.Inject
 class BlogFragment
 @Inject
 constructor(
-    private val viewModelFactory: ViewModelProvider.Factory,
+    viewModelFactory: ViewModelProvider.Factory,
     private val requestManager: RequestManager
-): BaseBlogFragment(R.layout.fragment_blog),
+): BaseBlogFragment(R.layout.fragment_blog, viewModelFactory),
     BlogListAdapter.Interaction,
     SwipeRefreshLayout.OnRefreshListener
 {
-
-    val viewModel: BlogViewModel by viewModels{
-        viewModelFactory
-    }
 
     private lateinit var searchView: SearchView
     private lateinit var recyclerAdapter: BlogListAdapter
@@ -90,10 +86,6 @@ constructor(
             viewState
         )
         super.onSaveInstanceState(outState)
-    }
-
-    override fun setupChannel(){
-        viewModel.setupChannel()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

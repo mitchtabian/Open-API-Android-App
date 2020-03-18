@@ -8,14 +8,11 @@ import androidx.activity.viewModels
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import com.codingwithmitch.openapi.BaseApplication
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.fragments.auth.AuthNavHostFragment
 import com.codingwithmitch.openapi.ui.BaseActivity
-import com.codingwithmitch.openapi.ui.auth.state.AuthStateEvent
 import com.codingwithmitch.openapi.ui.auth.state.AuthStateEvent.*
-import com.codingwithmitch.openapi.ui.displayErrorDialog
 import com.codingwithmitch.openapi.ui.main.MainActivity
 import com.codingwithmitch.openapi.util.StateMessageCallback
 import com.codingwithmitch.openapi.util.SuccessHandling.Companion.RESPONSE_CHECK_PREVIOUS_AUTH_USER_DONE
@@ -45,10 +42,9 @@ class AuthActivity : BaseActivity()
         setContentView(R.layout.activity_auth)
         subscribeObservers()
         onRestoreInstanceState()
-        viewModel.setupChannel()
     }
 
-    fun onRestoreInstanceState(){
+    private fun onRestoreInstanceState(){
         val host = supportFragmentManager.findFragmentById(R.id.auth_fragments_container)
         host?.let {
             // do nothing
@@ -71,6 +67,7 @@ class AuthActivity : BaseActivity()
 
     override fun onResume() {
         super.onResume()
+        Log.d(TAG, "AuthActivity onResume: ")
         checkPreviousAuthUser()
     }
 
@@ -91,13 +88,11 @@ class AuthActivity : BaseActivity()
         viewModel.stateMessage.observe(this, Observer { stateMessage ->
 
             stateMessage?.let {
-                if(it.response.message.equals(RESPONSE_CHECK_PREVIOUS_AUTH_USER_DONE)){
-                    onFinishCheckPreviousAuthUser()
-                }
                 onResponseReceived(
                     response = it.response,
                     stateMessageCallback = object: StateMessageCallback{
                         override fun removeMessageFromStack() {
+                            Log.d(TAG, "removing message from stack: ")
                             viewModel.clearStateMessage()
                         }
                     }
@@ -127,10 +122,6 @@ class AuthActivity : BaseActivity()
         viewModel.setStateEvent(CheckPreviousAuthEvent())
     }
 
-    private fun onFinishCheckPreviousAuthUser(){
-        fragment_container.visibility = View.VISIBLE
-    }
-
     override fun inject() {
         (application as BaseApplication).authComponent()
             .inject(this)
@@ -148,6 +139,7 @@ class AuthActivity : BaseActivity()
     override fun expandAppBar() {
         // ignore
     }
+
 
 
 }

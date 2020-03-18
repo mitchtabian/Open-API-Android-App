@@ -25,12 +25,8 @@ import javax.inject.Inject
 class AccountFragment
 @Inject
 constructor(
-    private val viewModelFactory: ViewModelProvider.Factory
-): BaseAccountFragment(R.layout.fragment_account) {
-
-    val viewModel: AccountViewModel by viewModels{
-        viewModelFactory
-    }
+    viewModelFactory: ViewModelProvider.Factory
+): BaseAccountFragment(R.layout.fragment_account, viewModelFactory) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,14 +53,9 @@ constructor(
         subscribeObservers()
     }
 
-    override fun setupChannel() {
-        viewModel.setupChannel()
-    }
-
     private fun subscribeObservers(){
 
         viewModel.viewState.observe(viewLifecycleOwner, Observer{ viewState->
-            Log.d(TAG, "AccountFragment, ViewState: ${viewState}")
             if(viewState != null){
                 viewState.accountProperties?.let{
                     setAccountDataFields(it)
@@ -77,7 +68,6 @@ constructor(
         })
 
         viewModel.stateMessage.observe(viewLifecycleOwner, Observer { stateMessage ->
-
 
             stateMessage?.let {
                 uiCommunicationListener.onResponseReceived(

@@ -48,6 +48,7 @@ constructor(
 
         ){
             override suspend fun updateCache(networkObject: AccountProperties) {
+                Log.d(TAG, "updateCache: ${networkObject} ")
                 accountPropertiesDao.updateAccountProperties(
                     networkObject.pk,
                     networkObject.email,

@@ -23,12 +23,8 @@ import javax.inject.Inject
 class UpdateAccountFragment
 @Inject
 constructor(
-    private val viewModelFactory: ViewModelProvider.Factory
-): BaseAccountFragment(R.layout.fragment_update_account) {
-
-    val viewModel: AccountViewModel by viewModels{
-        viewModelFactory
-    }
+    viewModelFactory: ViewModelProvider.Factory
+): BaseAccountFragment(R.layout.fragment_update_account, viewModelFactory) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,11 +40,6 @@ constructor(
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
         subscribeObservers()
-    }
-
-    override fun setupChannel() {
-        Log.d(TAG, "setupChannel ")
-        viewModel.setupChannel()
     }
 
     private fun subscribeObservers(){

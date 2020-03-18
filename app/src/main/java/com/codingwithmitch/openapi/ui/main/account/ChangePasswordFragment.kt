@@ -26,12 +26,8 @@ import javax.inject.Inject
 class ChangePasswordFragment
 @Inject
 constructor(
-    private val viewModelFactory: ViewModelProvider.Factory
-): BaseAccountFragment(R.layout.fragment_change_password) {
-
-    val viewModel: AccountViewModel by viewModels{
-        viewModelFactory
-    }
+    viewModelFactory: ViewModelProvider.Factory
+): BaseAccountFragment(R.layout.fragment_change_password, viewModelFactory) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,10 +53,6 @@ constructor(
         }
 
         subscribeObservers()
-    }
-
-    override fun setupChannel() {
-        viewModel.setupChannel()
     }
 
     private fun subscribeObservers(){

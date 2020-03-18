@@ -62,6 +62,9 @@ constructor(
                     stateEvent = stateEvent
                 ) {
                     override suspend fun handleSuccess(resultObj: LoginResponse): DataState<AuthViewState> {
+
+                        Log.d(TAG, "handleSuccess ")
+
                         // Incorrect login credentials counts as a 200 response from server, so need to handle that
                         if(resultObj.response.equals(GENERIC_AUTH_ERROR)){
                             return DataState.error(
@@ -258,7 +261,7 @@ constructor(
                         return DataState.error(
                             response = Response(
                                 RESPONSE_CHECK_PREVIOUS_AUTH_USER_DONE,
-                                UIComponentType.Dialog(),
+                                UIComponentType.None(),
                                 MessageType.Error()
                             ),
                             stateEvent = stateEvent
