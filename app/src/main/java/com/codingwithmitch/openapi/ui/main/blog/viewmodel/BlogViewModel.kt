@@ -47,7 +47,7 @@ constructor(
         )
     }
 
-    override fun handleNewData(stateEvent: StateEvent?, data: BlogViewState) {
+    override fun handleNewData(data: BlogViewState) {
 
         data.blogFields.let { blogFields ->
 
@@ -85,8 +85,6 @@ constructor(
                 setUpdatedBody(body)
             }
         }
-
-        _activeStateEventTracker.removeStateEvent(stateEvent)
     }
 
     override fun setStateEvent(stateEvent: StateEvent) {

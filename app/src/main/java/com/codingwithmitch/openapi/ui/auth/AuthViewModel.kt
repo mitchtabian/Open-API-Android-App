@@ -23,13 +23,10 @@ constructor(
 ): BaseViewModel<AuthViewState>()
 {
 
-    override fun handleNewData(stateEvent: StateEvent?, data: AuthViewState) {
-
+    override fun handleNewData(data: AuthViewState) {
         data.authToken?.let { authToken ->
             setAuthToken(authToken)
         }
-
-        _activeStateEventTracker.removeStateEvent(stateEvent)
     }
 
     override fun setStateEvent(stateEvent: StateEvent) {

@@ -27,15 +27,10 @@ constructor(
     : BaseViewModel<AccountViewState>()
 {
 
-    override fun handleNewData(stateEvent: StateEvent?, data: AccountViewState) {
-
-        Log.d(TAG, "handleNewData: ${data}")
-
+    override fun handleNewData(data: AccountViewState) {
         data.accountProperties?.let { accountProperties ->
             setAccountPropertiesData(accountProperties)
         }
-
-        _activeStateEventTracker.removeStateEvent(stateEvent)
     }
 
     override fun setStateEvent(stateEvent: StateEvent) {
