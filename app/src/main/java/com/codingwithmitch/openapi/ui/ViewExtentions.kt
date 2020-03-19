@@ -26,68 +26,6 @@ fun Activity.displayToast(
     stateMessageCallback.removeMessageFromStack()
 }
 
-fun Activity.displaySuccessDialog(
-    message: String?,
-    stateMessageCallback: StateMessageCallback
-): MaterialDialog {
-    return MaterialDialog(this)
-        .show{
-            title(R.string.text_success)
-            message(text = message)
-            positiveButton(R.string.text_ok){
-                stateMessageCallback.removeMessageFromStack()
-            }
-        }
-}
-
-fun Activity.displayErrorDialog(
-    message: String?,
-    stateMessageCallback: StateMessageCallback
-): MaterialDialog {
-    return MaterialDialog(this)
-        .show{
-            title(R.string.text_error)
-            message(text = message)
-            positiveButton(R.string.text_ok){
-                stateMessageCallback.removeMessageFromStack()
-            }
-        }
-}
-
-fun Activity.displayInfoDialog(
-    message: String?,
-    stateMessageCallback: StateMessageCallback
-): MaterialDialog {
-    return MaterialDialog(this)
-        .show{
-            title(R.string.text_info)
-            message(text = message)
-            positiveButton(R.string.text_ok){
-                stateMessageCallback.removeMessageFromStack()
-            }
-        }
-}
-
-fun Activity.areYouSureDialog(
-    message: String,
-    callback: AreYouSureCallback,
-    stateMessageCallback: StateMessageCallback
-): MaterialDialog {
-    return MaterialDialog(this)
-        .show{
-            title(R.string.are_you_sure)
-            message(text = message)
-            negativeButton(R.string.text_cancel){
-                callback.cancel()
-                stateMessageCallback.removeMessageFromStack()
-            }
-            positiveButton(R.string.text_yes){
-                callback.proceed()
-                stateMessageCallback.removeMessageFromStack()
-            }
-        }
-}
-
 
 interface AreYouSureCallback {
 

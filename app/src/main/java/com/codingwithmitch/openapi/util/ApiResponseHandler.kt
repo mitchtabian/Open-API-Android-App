@@ -1,5 +1,6 @@
 package com.codingwithmitch.openapi.util
 
+import android.util.Log
 import com.codingwithmitch.openapi.util.ErrorHandling.Companion.NETWORK_ERROR
 
 
@@ -8,6 +9,8 @@ abstract class ApiResponseHandler <ViewState, Data>(
     private val stateEvent: StateEvent
 ){
 
+    private val TAG: String = "AppDebug"
+
     suspend fun getResult(): DataState<ViewState>{
 
         return when(response){
@@ -15,7 +18,7 @@ abstract class ApiResponseHandler <ViewState, Data>(
             is ApiResult.GenericError -> {
                 DataState.error(
                     response = Response(
-                        message = "${stateEvent.errorInfo()}\n\nReason: ${response.errorMessage}",
+                        message = "${stateEvent.errorInfo()}\n\nReason: ${response.errorMessage.toString()}",
                         uiComponentType = UIComponentType.Dialog(),
                         messageType = MessageType.Error()
                     ),

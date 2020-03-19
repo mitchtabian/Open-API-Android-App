@@ -31,6 +31,7 @@ suspend fun <T> safeApiCall(
                 Success(apiCall.invoke())
             }
         } catch (throwable: Throwable) {
+            throwable.printStackTrace()
             when (throwable) {
                 is TimeoutCancellationException -> {
                     val code = 408 // timeout error code
@@ -54,6 +55,7 @@ suspend fun <T> safeApiCall(
                     )
                 }
             }
+
         }
     }
 }
@@ -100,7 +102,7 @@ fun <ViewState> buildError(
 
 private fun convertErrorBody(throwable: HttpException): String? {
     return try {
-        throwable.response()?.errorBody()?.toString()
+        throwable.response()?.errorBody()?.string()
     } catch (exception: Exception) {
         UNKNOWN_ERROR
     }
