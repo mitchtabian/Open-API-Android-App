@@ -23,13 +23,6 @@ interface BlogRepository {
         stateEvent: StateEvent
     ): Flow<DataState<BlogViewState>>
 
-    fun restoreBlogListFromCache(
-        query: String,
-        filterAndOrder: String,
-        page: Int,
-        stateEvent: StateEvent
-    ): Flow<DataState<BlogViewState>>
-
     fun isAuthorOfBlogPost(
         authToken: AuthToken,
         slug: String,
@@ -50,7 +43,6 @@ interface BlogRepository {
         image: MultipartBody.Part?,
         stateEvent: StateEvent
     ): Flow<DataState<BlogViewState>>
-
 
 }
 

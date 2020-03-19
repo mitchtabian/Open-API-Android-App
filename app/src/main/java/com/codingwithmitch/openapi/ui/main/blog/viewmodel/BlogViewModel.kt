@@ -59,6 +59,7 @@ constructor(
             blogFields.isQueryExhausted?.let { isQueryExhausted ->
                 setQueryExhausted(isQueryExhausted)
             }
+
         }
 
         data.viewBlogFields.let { viewBlogFields ->
@@ -94,19 +95,12 @@ constructor(
                 val job: Flow<DataState<BlogViewState>> = when(stateEvent){
 
                     is BlogSearchEvent -> {
-                        clearLayoutManagerState()
+                        if(stateEvent.clearLayoutManagerState){
+                            clearLayoutManagerState()
+                        }
                         blogRepository.searchBlogPosts(
                             stateEvent = stateEvent,
                             authToken = authToken,
-                            query = getSearchQuery(),
-                            filterAndOrder = getOrder() + getFilter(),
-                            page = getPage()
-                        )
-                    }
-
-                    is RestoreBlogListFromCache -> {
-                        blogRepository.restoreBlogListFromCache(
-                            stateEvent = stateEvent,
                             query = getSearchQuery(),
                             filterAndOrder = getOrder() + getFilter(),
                             page = getPage()

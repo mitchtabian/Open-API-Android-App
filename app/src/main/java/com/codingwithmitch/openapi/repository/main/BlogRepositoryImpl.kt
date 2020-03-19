@@ -104,43 +104,6 @@ constructor(
         }.result
     }
 
-    override fun restoreBlogListFromCache(
-        query: String,
-        filterAndOrder: String,
-        page: Int,
-        stateEvent: StateEvent
-    ) = flow{
-
-        val cacheResult = safeCacheCall(IO){
-            blogPostDao.returnOrderedBlogQuery(
-                query = query,
-                filterAndOrder = filterAndOrder,
-                page = page)
-        }
-        emit(
-            object: CacheResponseHandler<BlogViewState, List<BlogPost>>(
-                response = cacheResult,
-                stateEvent = stateEvent
-            ){
-                override suspend fun handleSuccess(
-                    resultObj: List<BlogPost>
-                ): DataState<BlogViewState> {
-                    val viewState = BlogViewState(
-                        blogFields = BlogFields(
-                            blogList = resultObj
-                        )
-                    )
-                    return DataState.data(
-                        response = null,
-                        data = viewState,
-                        stateEvent = stateEvent
-                    )
-                }
-
-            }.getResult()
-        )
-    }
-
     override fun isAuthorOfBlogPost(
         authToken: AuthToken,
         slug: String,
@@ -289,6 +252,7 @@ constructor(
             }.getResult()
         )
     }
+
 
 
 }

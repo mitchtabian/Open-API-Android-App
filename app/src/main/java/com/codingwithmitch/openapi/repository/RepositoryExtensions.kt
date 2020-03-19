@@ -1,6 +1,5 @@
 package com.codingwithmitch.openapi.repository
 
-import android.util.Log
 import com.codingwithmitch.openapi.util.*
 import com.codingwithmitch.openapi.util.ApiResult.*
 import com.codingwithmitch.openapi.util.Constants.Companion.CACHE_TIMEOUT
@@ -9,11 +8,8 @@ import com.codingwithmitch.openapi.util.ErrorHandling.Companion.CACHE_ERROR_TIME
 import com.codingwithmitch.openapi.util.ErrorHandling.Companion.NETWORK_ERROR_TIMEOUT
 import com.codingwithmitch.openapi.util.ErrorHandling.Companion.UNKNOWN_ERROR
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import retrofit2.HttpException
 import java.io.IOException
-import java.net.UnknownHostException
 
 /**
  * Reference: https://medium.com/@douglas.iacovelli/how-to-handle-errors-with-retrofit-and-coroutines-33e7492a912

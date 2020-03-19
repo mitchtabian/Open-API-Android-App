@@ -84,7 +84,6 @@ interface BlogPostDao {
         pageSize: Int = PAGINATION_PAGE_SIZE
     ): List<BlogPost>
 
-
 }
 
 

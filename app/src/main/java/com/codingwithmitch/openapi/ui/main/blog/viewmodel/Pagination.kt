@@ -22,9 +22,9 @@ fun BlogViewModel.resetPage(){
 @FlowPreview
 @UseExperimental(ExperimentalCoroutinesApi::class)
 fun BlogViewModel.refreshFromCache(){
-    if(!isJobAlreadyActive(RestoreBlogListFromCache())){
+    if(!isJobAlreadyActive(BlogSearchEvent())){
         setQueryExhausted(false)
-        setStateEvent(RestoreBlogListFromCache())
+        setStateEvent(BlogSearchEvent(false))
     }
 }
 
