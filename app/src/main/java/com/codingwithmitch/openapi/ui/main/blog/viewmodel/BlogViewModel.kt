@@ -1,6 +1,7 @@
 package com.codingwithmitch.openapi.ui.main.blog.viewmodel
 
 import android.content.SharedPreferences
+import android.util.Log
 import com.codingwithmitch.openapi.di.main.MainScope
 import com.codingwithmitch.openapi.persistence.BlogQueryUtils
 import com.codingwithmitch.openapi.repository.main.BlogRepositoryImpl
@@ -88,83 +89,84 @@ constructor(
     }
 
     override fun setStateEvent(stateEvent: StateEvent) {
-        sessionManager.cachedToken.value?.let { authToken ->
-            val job: Flow<DataState<BlogViewState>> = when(stateEvent){
+        if(!isJobAlreadyActive(stateEvent)){
+            sessionManager.cachedToken.value?.let { authToken ->
+                val job: Flow<DataState<BlogViewState>> = when(stateEvent){
 
-                is BlogSearchEvent -> {
-                    clearLayoutManagerState()
-                    blogRepository.searchBlogPosts(
-                        stateEvent = stateEvent,
-                        authToken = authToken,
-                        query = getSearchQuery(),
-                        filterAndOrder = getOrder() + getFilter(),
-                        page = getPage()
-                    )
-                }
-
-                is RestoreBlogListFromCache -> {
-                    blogRepository.restoreBlogListFromCache(
-                        stateEvent = stateEvent,
-                        query = getSearchQuery(),
-                        filterAndOrder = getOrder() + getFilter(),
-                        page = getPage()
-                    )
-                }
-
-                is CheckAuthorOfBlogPost -> {
-                    blogRepository.isAuthorOfBlogPost(
-                        stateEvent = stateEvent,
-                        authToken = authToken,
-                        slug = getSlug()
-                    )
-                }
-
-                is DeleteBlogPostEvent -> {
-                    blogRepository.deleteBlogPost(
-                        stateEvent = stateEvent,
-                        authToken = authToken,
-                        blogPost = getBlogPost()
-                    )
-                }
-
-                is UpdateBlogPostEvent -> {
-                    val title = RequestBody.create(
-                        MediaType.parse("text/plain"),
-                        stateEvent.title
-                    )
-                    val body = RequestBody.create(
-                        MediaType.parse("text/plain"),
-                        stateEvent.body
-                    )
-
-                    blogRepository.updateBlogPost(
-                        stateEvent = stateEvent,
-                        authToken = authToken,
-                        slug = getSlug(),
-                        title = title,
-                        body = body,
-                        image = stateEvent.image
-                    )
-                }
-
-                else -> {
-                    flow{
-                        emit(
-                            DataState.error(
-                                response = Response(
-                                    message = INVALID_STATE_EVENT,
-                                    uiComponentType = UIComponentType.None(),
-                                    messageType = MessageType.Error()
-                                ),
-                                stateEvent = stateEvent
-                            )
+                    is BlogSearchEvent -> {
+                        clearLayoutManagerState()
+                        blogRepository.searchBlogPosts(
+                            stateEvent = stateEvent,
+                            authToken = authToken,
+                            query = getSearchQuery(),
+                            filterAndOrder = getOrder() + getFilter(),
+                            page = getPage()
                         )
                     }
-                }
-            }
-            launchJob(stateEvent, job)
-        }?: sessionManager.logout()
 
+                    is RestoreBlogListFromCache -> {
+                        blogRepository.restoreBlogListFromCache(
+                            stateEvent = stateEvent,
+                            query = getSearchQuery(),
+                            filterAndOrder = getOrder() + getFilter(),
+                            page = getPage()
+                        )
+                    }
+
+                    is CheckAuthorOfBlogPost -> {
+                        blogRepository.isAuthorOfBlogPost(
+                            stateEvent = stateEvent,
+                            authToken = authToken,
+                            slug = getSlug()
+                        )
+                    }
+
+                    is DeleteBlogPostEvent -> {
+                        blogRepository.deleteBlogPost(
+                            stateEvent = stateEvent,
+                            authToken = authToken,
+                            blogPost = getBlogPost()
+                        )
+                    }
+
+                    is UpdateBlogPostEvent -> {
+                        val title = RequestBody.create(
+                            MediaType.parse("text/plain"),
+                            stateEvent.title
+                        )
+                        val body = RequestBody.create(
+                            MediaType.parse("text/plain"),
+                            stateEvent.body
+                        )
+
+                        blogRepository.updateBlogPost(
+                            stateEvent = stateEvent,
+                            authToken = authToken,
+                            slug = getSlug(),
+                            title = title,
+                            body = body,
+                            image = stateEvent.image
+                        )
+                    }
+
+                    else -> {
+                        flow{
+                            emit(
+                                DataState.error(
+                                    response = Response(
+                                        message = INVALID_STATE_EVENT,
+                                        uiComponentType = UIComponentType.None(),
+                                        messageType = MessageType.Error()
+                                    ),
+                                    stateEvent = stateEvent
+                                )
+                            )
+                        }
+                    }
+                }
+                launchJob(stateEvent, job)
+            }?: sessionManager.logout()
+        }
     }
 
     override fun initNewViewState(): BlogViewState {

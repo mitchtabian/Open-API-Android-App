@@ -79,7 +79,6 @@ abstract class BaseViewModel<ViewState> : ViewModel()
 
     open fun cancelActiveJobs(){
         if(areAnyJobsActive()){
-//            Log.d(TAG, "cancel active jobs: ${getNumActiveJobs()}")
             Log.d(TAG, "cancel active jobs: ${dataChannelManager.numActiveJobs.value ?: 0}")
             dataChannelManager.cancelJobs()
         }

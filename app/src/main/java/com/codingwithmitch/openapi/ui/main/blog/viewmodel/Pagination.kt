@@ -4,6 +4,7 @@ import com.codingwithmitch.openapi.ui.main.blog.state.BlogStateEvent.*
 import com.codingwithmitch.openapi.ui.main.blog.state.BlogViewState
 import com.codingwithmitch.openapi.ui.main.blog.viewmodel.BlogViewModel
 import com.codingwithmitch.openapi.ui.main.blog.viewmodel.setBlogListData
+import com.codingwithmitch.openapi.ui.main.blog.viewmodel.setQuery
 import com.codingwithmitch.openapi.ui.main.blog.viewmodel.setQueryExhausted
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -21,25 +22,29 @@ fun BlogViewModel.resetPage(){
 @FlowPreview
 @UseExperimental(ExperimentalCoroutinesApi::class)
 fun BlogViewModel.refreshFromCache(){
-    setQueryExhausted(false)
-    setStateEvent(RestoreBlogListFromCache())
+    if(!isJobAlreadyActive(RestoreBlogListFromCache())){
+        setQueryExhausted(false)
+        setStateEvent(RestoreBlogListFromCache())
+    }
 }
 
 @FlowPreview
 @UseExperimental(ExperimentalCoroutinesApi::class)
 fun BlogViewModel.loadFirstPage() {
-    setQueryExhausted(false)
-    resetPage()
-    setStateEvent(BlogSearchEvent())
-    Log.e(TAG, "BlogViewModel: loadFirstPage: ${viewState.value!!.blogFields.searchQuery}")
+    if(!isJobAlreadyActive(BlogSearchEvent())){
+        setQueryExhausted(false)
+        resetPage()
+        setStateEvent(BlogSearchEvent())
+        Log.e(TAG, "BlogViewModel: loadFirstPage: ${viewState.value!!.blogFields.searchQuery}")
+    }
 }
 
 @FlowPreview
 @UseExperimental(ExperimentalCoroutinesApi::class)
-private fun BlogViewModel.incrementPageNumber(){
+    private fun BlogViewModel.incrementPageNumber(){
     val update = getCurrentViewStateOrNew()
-    val page = update.copy().blogFields.page // get current page
-    update.blogFields.page = page?.plus(1)
+    val page = update.copy().blogFields.page ?: 1
+    update.blogFields.page = page.plus(1)
     setViewState(update)
 }
 
@@ -60,7 +65,6 @@ fun BlogViewModel.nextPage(){
 fun BlogViewModel.handleIncomingBlogListData(viewState: BlogViewState){
     viewState.blogFields.let { blogFields ->
         blogFields.blogList?.let { setBlogListData(it) }
-        blogFields.isQueryExhausted?.let {  setQueryExhausted(it) }
     }
 }
 

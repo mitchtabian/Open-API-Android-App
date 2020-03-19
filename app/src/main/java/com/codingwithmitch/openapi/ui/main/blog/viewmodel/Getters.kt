@@ -9,6 +9,12 @@ import kotlinx.coroutines.FlowPreview
 
 @FlowPreview
 @UseExperimental(ExperimentalCoroutinesApi::class)
+fun BlogViewModel.getIsQueryExhausted(): Boolean {
+    return getCurrentViewStateOrNew().blogFields.isQueryExhausted ?: false
+}
+
+@FlowPreview
+@UseExperimental(ExperimentalCoroutinesApi::class)
 fun BlogViewModel.getFilter(): String {
     return getCurrentViewStateOrNew().let {
         it.blogFields.filter

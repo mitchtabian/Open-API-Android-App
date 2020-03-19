@@ -19,7 +19,7 @@ class ErrorHandling{
         const val ERROR_MUST_SELECT_IMAGE = "You must select an image."
 
         const val GENERIC_AUTH_ERROR = "Error"
-        const val PAGINATION_DONE_ERROR = "Invalid page."
+        const val INVALID_PAGE = "Invalid page."
         const val ERROR_CHECK_NETWORK_CONNECTION = "Check network connection."
         const val ERROR_UNKNOWN = "Unknown error"
         const val INVALID_CREDENTIALS = "Invalid credentials"
@@ -39,24 +39,9 @@ class ErrorHandling{
             }
         }
 
-        fun parseDetailJsonResponse(rawJson: String?): String{
-            Log.d(TAG, "parseDetailJsonResponse: ${rawJson}")
-            try{
-                if(!rawJson.isNullOrBlank()){
-                    if(rawJson.equals(ERROR_CHECK_NETWORK_CONNECTION)){
-                        return PAGINATION_DONE_ERROR
-                    }
-                    return JSONObject(rawJson).get("detail") as String
-                }
-            }catch (e: JSONException){
-                Log.e(TAG, "parseDetailJsonResponse: ${e.message}")
-            }
-            return ""
-        }
-
         fun isPaginationDone(errorResponse: String?): Boolean{
             // if error response = '{"detail":"Invalid page."}' then pagination is finished
-            return PAGINATION_DONE_ERROR.equals(parseDetailJsonResponse(errorResponse))
+            return errorResponse?.contains(INVALID_PAGE)?: false
         }
     }
 

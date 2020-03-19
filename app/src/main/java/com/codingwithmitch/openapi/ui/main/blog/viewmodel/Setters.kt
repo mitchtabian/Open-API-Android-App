@@ -47,14 +47,6 @@ fun BlogViewModel.setQueryExhausted(isExhausted: Boolean){
     setViewState(update)
 }
 
-//@FlowPreview
-//@UseExperimental(ExperimentalCoroutinesApi::class)
-//fun BlogViewModel.setQueryInProgress(isInProgress: Boolean){
-//    val update = getCurrentViewStateOrNew()
-//    update.blogFields.isQueryInProgress = isInProgress
-//    setViewState(update)
-//}
-
 
 // Filter can be "date_updated" or "username"
 @FlowPreview

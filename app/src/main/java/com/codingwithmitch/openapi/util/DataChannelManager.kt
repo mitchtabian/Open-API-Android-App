@@ -63,6 +63,8 @@ abstract class DataChannelManager<ViewState> {
         stateEvent: StateEvent,
         jobFunction: Flow<DataState<ViewState>>
     ){
+        Log.d(TAG, "launchJob: ${messageStack.size}")
+        Log.d(TAG, "launchJob: ${isStateEventActive(stateEvent)}")
         if(!isStateEventActive(stateEvent) && messageStack.size == 0){
             Log.d(TAG, "launching job: ")
             addStateEvent(stateEvent)
