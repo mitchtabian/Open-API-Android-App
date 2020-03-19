@@ -173,10 +173,12 @@ abstract class BaseActivity: AppCompatActivity(),
                 message(text = message)
                 positiveButton(R.string.text_ok){
                     stateMessageCallback.removeMessageFromStack()
+                    dismiss()
                 }
                 onDismiss {
                     dialogInView = null
                 }
+                cancelable(false)
             }
     }
 
@@ -190,10 +192,12 @@ abstract class BaseActivity: AppCompatActivity(),
                 message(text = message)
                 positiveButton(R.string.text_ok){
                     stateMessageCallback.removeMessageFromStack()
+                    dismiss()
                 }
                 onDismiss {
                     dialogInView = null
                 }
+                cancelable(false)
             }
     }
 
@@ -207,10 +211,12 @@ abstract class BaseActivity: AppCompatActivity(),
                 message(text = message)
                 positiveButton(R.string.text_ok){
                     stateMessageCallback.removeMessageFromStack()
+                    dismiss()
                 }
                 onDismiss {
                     dialogInView = null
                 }
+                cancelable(false)
             }
     }
 
@@ -226,14 +232,17 @@ abstract class BaseActivity: AppCompatActivity(),
                 negativeButton(R.string.text_cancel){
                     callback.cancel()
                     stateMessageCallback.removeMessageFromStack()
+                    dismiss()
                 }
                 positiveButton(R.string.text_yes){
                     callback.proceed()
                     stateMessageCallback.removeMessageFromStack()
+                    dismiss()
                 }
                 onDismiss {
                     dialogInView = null
                 }
+                cancelable(false)
             }
     }
 }
