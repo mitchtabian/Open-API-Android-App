@@ -18,6 +18,7 @@ import com.codingwithmitch.openapi.ui.main.blog.state.BlogStateEvent.*
 import com.codingwithmitch.openapi.ui.main.blog.state.BlogViewState
 import com.codingwithmitch.openapi.ui.main.blog.viewmodel.*
 import com.codingwithmitch.openapi.util.*
+import com.codingwithmitch.openapi.util.SuccessHandling.Companion.SUCCESS_BLOG_DELETED
 import kotlinx.android.synthetic.main.fragment_view_blog.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -128,6 +129,11 @@ constructor(
         })
 
         viewModel.stateMessage.observe(viewLifecycleOwner, Observer { stateMessage ->
+
+            if(stateMessage?.response?.message.equals(SUCCESS_BLOG_DELETED)){
+                viewModel.removeDeletedBlogPost()
+                findNavController().popBackStack()
+            }
 
             stateMessage?.let {
                 uiCommunicationListener.onResponseReceived(
