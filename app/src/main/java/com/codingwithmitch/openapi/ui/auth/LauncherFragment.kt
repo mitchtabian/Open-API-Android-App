@@ -4,9 +4,7 @@ package com.codingwithmitch.openapi.ui.auth
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.di.auth.AuthScope
 import kotlinx.android.synthetic.main.fragment_launcher.*

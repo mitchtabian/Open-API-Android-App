@@ -67,7 +67,6 @@ class AuthActivity : BaseActivity()
 
     override fun onResume() {
         super.onResume()
-        Log.d(TAG, "AuthActivity onResume: ")
         checkPreviousAuthUser()
     }
 
@@ -81,18 +80,21 @@ class AuthActivity : BaseActivity()
         })
 
         viewModel.numActiveJobs.observe(this, Observer { jobCounter ->
-            Log.d(TAG, "active jobs: ${jobCounter}")
             displayProgressBar(viewModel.areAnyJobsActive())
         })
 
         viewModel.stateMessage.observe(this, Observer { stateMessage ->
 
             stateMessage?.let {
+
+                if(stateMessage.response.message.equals(RESPONSE_CHECK_PREVIOUS_AUTH_USER_DONE)){
+                    onFinishCheckPreviousAuthUser()
+                }
+
                 onResponseReceived(
                     response = it.response,
                     stateMessageCallback = object: StateMessageCallback{
                         override fun removeMessageFromStack() {
-                            Log.d(TAG, "removing message from stack: ")
                             viewModel.clearStateMessage()
                         }
                     }
@@ -110,8 +112,12 @@ class AuthActivity : BaseActivity()
         })
     }
 
+    private fun onFinishCheckPreviousAuthUser(){
+        fragment_container.visibility = View.VISIBLE
+        splash_logo.visibility = View.INVISIBLE
+    }
+
     fun navMainActivity(){
-        Log.d(TAG, "navMainActivity: called.")
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
         finish()
