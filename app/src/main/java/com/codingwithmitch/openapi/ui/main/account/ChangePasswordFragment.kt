@@ -64,6 +64,12 @@ constructor(
         viewModel.stateMessage.observe(viewLifecycleOwner, Observer { stateMessage ->
 
             stateMessage?.let {
+
+                if(stateMessage.response.message.equals(RESPONSE_PASSWORD_UPDATE_SUCCESS)){
+                    uiCommunicationListener.hideSoftKeyboard()
+                    findNavController().popBackStack()
+                }
+
                 uiCommunicationListener.onResponseReceived(
                     response = it.response,
                     stateMessageCallback = object: StateMessageCallback {

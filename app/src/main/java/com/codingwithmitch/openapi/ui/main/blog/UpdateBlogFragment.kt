@@ -13,6 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.RequestManager
 import com.codingwithmitch.openapi.R
+import com.codingwithmitch.openapi.models.BlogPost
 import com.codingwithmitch.openapi.ui.main.blog.state.BLOG_VIEW_STATE_BUNDLE_KEY
 import com.codingwithmitch.openapi.ui.main.blog.state.BlogStateEvent
 import com.codingwithmitch.openapi.ui.main.blog.state.BlogViewState
@@ -20,6 +21,7 @@ import com.codingwithmitch.openapi.ui.main.blog.viewmodel.*
 import com.codingwithmitch.openapi.util.*
 import com.codingwithmitch.openapi.util.Constants.Companion.GALLERY_REQUEST_CODE
 import com.codingwithmitch.openapi.util.ErrorHandling.Companion.SOMETHING_WRONG_WITH_IMAGE
+import com.codingwithmitch.openapi.util.SuccessHandling.Companion.SUCCESS_BLOG_UPDATED
 import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView
 import kotlinx.android.synthetic.main.fragment_update_blog.*
@@ -164,6 +166,11 @@ constructor(
         viewModel.stateMessage.observe(viewLifecycleOwner, Observer { stateMessage ->
 
             stateMessage?.let {
+
+                if(stateMessage.response.message.equals(SUCCESS_BLOG_UPDATED)){
+                   viewModel.updateListItem()
+                }
+
                 uiCommunicationListener.onResponseReceived(
                     response = it.response,
                     stateMessageCallback = object: StateMessageCallback {
@@ -177,9 +184,11 @@ constructor(
     }
 
     fun setBlogProperties(title: String?, body: String?, image: Uri?){
-        requestManager
-            .load(image)
-            .into(blog_image)
+        image?.let {
+            requestManager
+                .load(it)
+                .into(blog_image)
+        }
         blog_title.setText(title)
         blog_body.setText(body)
     }

@@ -242,6 +242,11 @@ constructor(
                         data =  BlogViewState(
                             viewBlogFields = ViewBlogFields(
                                 blogPost = updatedBlogPost
+                            ),
+                            updatedBlogFields = UpdatedBlogFields(
+                                updatedBlogTitle = updatedBlogPost.title,
+                                updatedBlogBody = updatedBlogPost.body,
+                                updatedImageUri = null
                             )
                         ),
                         stateEvent = stateEvent

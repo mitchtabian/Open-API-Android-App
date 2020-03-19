@@ -103,10 +103,11 @@ fun BlogViewModel.removeDeletedBlogPost(){
 
 @FlowPreview
 @UseExperimental(ExperimentalCoroutinesApi::class)
-fun BlogViewModel.updateListItem(newBlogPost: BlogPost){
+fun BlogViewModel.updateListItem(){
     val update = getCurrentViewStateOrNew()
     val list = update.blogFields.blogList?.toMutableList()
     if(list != null){
+        val newBlogPost = getBlogPost()
         for(i in 0..(list.size - 1)){
             if(list[i].pk == newBlogPost.pk){
                 list[i] = newBlogPost
@@ -118,12 +119,20 @@ fun BlogViewModel.updateListItem(newBlogPost: BlogPost){
     }
 }
 
-@FlowPreview
-@UseExperimental(ExperimentalCoroutinesApi::class)
-fun BlogViewModel.onBlogPostUpdateSuccess(blogPost: BlogPost){
-    setBlogPost(blogPost) // update ViewBlogFragment
-    updateListItem(blogPost) // update BlogFragment
-}
+//@FlowPreview
+//@UseExperimental(ExperimentalCoroutinesApi::class)
+//fun BlogViewModel.onBlogPostUpdateSuccess(
+//    title: String,
+//    body: String,
+//    image: String
+//){
+//    val currentBlogPost = getBlogPost()
+//    currentBlogPost.title = title
+//    currentBlogPost.body = body
+//    currentBlogPost.image = image
+//    setBlogPost(currentBlogPost) // update ViewBlogFragment
+//    updateListItem(currentBlogPost) // update BlogFragment
+//}
 
 
 @FlowPreview
