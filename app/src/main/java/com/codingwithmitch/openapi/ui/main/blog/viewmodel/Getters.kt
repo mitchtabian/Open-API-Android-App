@@ -10,39 +10,36 @@ import kotlinx.coroutines.FlowPreview
 @FlowPreview
 @UseExperimental(ExperimentalCoroutinesApi::class)
 fun BlogViewModel.getIsQueryExhausted(): Boolean {
-    return getCurrentViewStateOrNew().blogFields.isQueryExhausted ?: false
+    return getCurrentViewStateOrNew().blogFields.isQueryExhausted
+        ?: false
 }
 
 @FlowPreview
 @UseExperimental(ExperimentalCoroutinesApi::class)
 fun BlogViewModel.getFilter(): String {
-    return getCurrentViewStateOrNew().let {
-        it.blogFields.filter
-    }?: BLOG_FILTER_DATE_UPDATED
+    return getCurrentViewStateOrNew().blogFields.filter
+        ?: BLOG_FILTER_DATE_UPDATED
 }
 
 @FlowPreview
 @UseExperimental(ExperimentalCoroutinesApi::class)
 fun BlogViewModel.getOrder(): String {
-    return getCurrentViewStateOrNew().let {
-        it.blogFields.order
-    }?: BLOG_ORDER_DESC
+    return getCurrentViewStateOrNew().blogFields.order
+        ?: BLOG_ORDER_DESC
 }
 
 @FlowPreview
 @UseExperimental(ExperimentalCoroutinesApi::class)
 fun BlogViewModel.getSearchQuery(): String {
-    return getCurrentViewStateOrNew().let {
-        it.blogFields.searchQuery
-    }?: return ""
+    return getCurrentViewStateOrNew().blogFields.searchQuery
+        ?: return ""
 }
 
 @FlowPreview
 @UseExperimental(ExperimentalCoroutinesApi::class)
 fun BlogViewModel.getPage(): Int{
-    return getCurrentViewStateOrNew().let {
-        it.blogFields.page
-    }?: return 1
+    return getCurrentViewStateOrNew().blogFields.page
+        ?: return 1
 }
 
 @FlowPreview
@@ -59,7 +56,8 @@ fun BlogViewModel.getSlug(): String{
 @FlowPreview
 @UseExperimental(ExperimentalCoroutinesApi::class)
 fun BlogViewModel.isAuthorOfBlogPost(): Boolean{
-    return getCurrentViewStateOrNew().viewBlogFields.isAuthorOfBlogPost ?: false
+    return getCurrentViewStateOrNew().viewBlogFields.isAuthorOfBlogPost
+        ?: false
 }
 
 @FlowPreview

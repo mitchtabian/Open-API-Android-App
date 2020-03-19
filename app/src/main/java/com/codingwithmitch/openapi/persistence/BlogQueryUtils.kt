@@ -59,7 +59,7 @@ suspend fun BlogPostDao.returnOrderedBlogQuery(
                 page = page)
         }
         else ->
-            return searchBlogPostsOrderByDateASC(
+            return searchBlogPostsOrderByDateDESC(
                 query = query,
                 page = page
             )
