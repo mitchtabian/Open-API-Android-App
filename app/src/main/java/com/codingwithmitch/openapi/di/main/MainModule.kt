@@ -5,13 +5,16 @@ import com.codingwithmitch.openapi.persistence.AccountPropertiesDao
 import com.codingwithmitch.openapi.persistence.AppDatabase
 import com.codingwithmitch.openapi.persistence.BlogPostDao
 import com.codingwithmitch.openapi.repository.main.AccountRepository
-import com.codingwithmitch.openapi.repository.main.BlogRepository
-import com.codingwithmitch.openapi.repository.main.CreateBlogRepository
+import com.codingwithmitch.openapi.repository.main.AccountRepositoryImpl
+import com.codingwithmitch.openapi.repository.main.BlogRepositoryImpl
+import com.codingwithmitch.openapi.repository.main.CreateBlogRepositoryImpl
 import com.codingwithmitch.openapi.session.SessionManager
 import dagger.Module
 import dagger.Provides
+import kotlinx.coroutines.FlowPreview
 import retrofit2.Retrofit
 
+@FlowPreview
 @Module
 object MainModule {
 
@@ -32,7 +35,7 @@ object MainModule {
         accountPropertiesDao: AccountPropertiesDao,
         sessionManager: SessionManager
     ): AccountRepository {
-        return AccountRepository(openApiMainService, accountPropertiesDao, sessionManager)
+        return AccountRepositoryImpl(openApiMainService, accountPropertiesDao, sessionManager)
     }
 
     @JvmStatic
@@ -49,8 +52,8 @@ object MainModule {
         openApiMainService: OpenApiMainService,
         blogPostDao: BlogPostDao,
         sessionManager: SessionManager
-    ): BlogRepository {
-        return BlogRepository(openApiMainService, blogPostDao, sessionManager)
+    ): BlogRepositoryImpl {
+        return BlogRepositoryImpl(openApiMainService, blogPostDao, sessionManager)
     }
 
     @JvmStatic
@@ -60,8 +63,8 @@ object MainModule {
         openApiMainService: OpenApiMainService,
         blogPostDao: BlogPostDao,
         sessionManager: SessionManager
-    ): CreateBlogRepository {
-        return CreateBlogRepository(openApiMainService, blogPostDao, sessionManager)
+    ): CreateBlogRepositoryImpl {
+        return CreateBlogRepositoryImpl(openApiMainService, blogPostDao, sessionManager)
     }
 }
 

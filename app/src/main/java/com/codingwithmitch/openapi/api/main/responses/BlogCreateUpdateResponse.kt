@@ -1,5 +1,7 @@
 package com.codingwithmitch.openapi.api.main.responses
 
+import com.codingwithmitch.openapi.models.BlogPost
+import com.codingwithmitch.openapi.util.DateUtils
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
@@ -39,4 +41,31 @@ class BlogCreateUpdateResponse(
 
 
 
-)
+){
+    fun toBlogPost(): BlogPost {
+        return BlogPost(
+            pk = pk,
+            title = title,
+            slug = slug,
+            body = body,
+            image = image,
+            date_updated = DateUtils.convertServerStringDateToLong(
+                date_updated
+            ),
+            username = username
+        )
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+

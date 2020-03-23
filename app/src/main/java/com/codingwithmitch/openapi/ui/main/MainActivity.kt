@@ -31,9 +31,13 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main.progress_bar
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import javax.inject.Inject
 import javax.inject.Named
 
+@ExperimentalCoroutinesApi
+@FlowPreview
 class MainActivity : BaseActivity(),
     OnNavigationGraphChanged,
     OnNavigationReselectedListener
@@ -51,7 +55,6 @@ class MainActivity : BaseActivity(),
     @Named("CreateBlogFragmentFactory")
     lateinit var createBlogFragmentFactory: FragmentFactory
 
-
     private lateinit var bottomNavigationView: BottomNavigationView
 
     private val bottomNavController by lazy(LazyThreadSafetyMode.NONE) {
@@ -63,30 +66,8 @@ class MainActivity : BaseActivity(),
     }
 
     override fun onGraphChange() {
-        cancelActiveJobs()
         expandAppBar()
     }
-
-    private fun cancelActiveJobs(){
-    val fragments = bottomNavController.fragmentManager
-        .findFragmentById(bottomNavController.containerId)
-        ?.childFragmentManager
-        ?.fragments
-    if(fragments != null){
-        for(fragment in fragments){
-            if(fragment is BaseAccountFragment){
-                fragment.cancelActiveJobs()
-            }
-            if(fragment is BaseBlogFragment){
-                fragment.cancelActiveJobs()
-            }
-            if(fragment is BaseCreateBlogFragment){
-                fragment.cancelActiveJobs()
-            }
-        }
-    }
-    displayProgressBar(false)
-}
 
     override fun onReselectNavItem(
         navController: NavController,
@@ -175,6 +156,7 @@ class MainActivity : BaseActivity(),
     }
 
     fun subscribeObservers(){
+
         sessionManager.cachedToken.observe(this, Observer{ authToken ->
             Log.d(TAG, "MainActivity, subscribeObservers: ViewState: ${authToken}")
             if(authToken == null || authToken.account_pk == -1 || authToken.token == null){

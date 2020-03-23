@@ -3,11 +3,7 @@ package com.codingwithmitch.openapi.ui.auth
 
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 
@@ -16,26 +12,19 @@ import com.codingwithmitch.openapi.di.auth.AuthScope
 import com.codingwithmitch.openapi.ui.auth.state.AuthStateEvent.*
 import com.codingwithmitch.openapi.ui.auth.state.LoginFields
 import kotlinx.android.synthetic.main.fragment_login.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import javax.inject.Inject
 
 
+@FlowPreview
+@ExperimentalCoroutinesApi
 @AuthScope
 class LoginFragment
 @Inject
 constructor(
-    private val viewModelFactory: ViewModelProvider.Factory
-): Fragment(R.layout.fragment_login) {
-
-    private val TAG: String = "AppDebug"
-
-    val viewModel: AuthViewModel by viewModels{
-        viewModelFactory
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        viewModel.cancelActiveJobs()
-    }
+    viewModelFactory: ViewModelProvider.Factory
+): BaseAuthFragment(R.layout.fragment_login, viewModelFactory) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -45,6 +34,7 @@ constructor(
         login_button.setOnClickListener {
             login()
         }
+
     }
 
     fun subscribeObservers(){
@@ -57,6 +47,7 @@ constructor(
     }
 
     fun login(){
+        saveLoginFields()
         viewModel.setStateEvent(
             LoginAttemptEvent(
                 input_email.text.toString(),
@@ -65,8 +56,7 @@ constructor(
         )
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
+    private fun saveLoginFields(){
         viewModel.setLoginFields(
             LoginFields(
                 input_email.text.toString(),
@@ -75,15 +65,12 @@ constructor(
         )
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        saveLoginFields()
+    }
+
 }
-
-
-
-
-
-
-
-
 
 
 

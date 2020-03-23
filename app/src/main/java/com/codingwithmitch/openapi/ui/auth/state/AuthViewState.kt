@@ -8,9 +8,9 @@ const val AUTH_VIEW_STATE_BUNDLE_KEY = "com.codingwithmitch.openapi.ui.auth.stat
 
 @Parcelize
 data class AuthViewState(
-    var registrationFields: RegistrationFields? = RegistrationFields(),
+    var registrationFields: RegistrationFields? = null,
 
-    var loginFields: LoginFields? = LoginFields(),
+    var loginFields: LoginFields? = null,
 
     var authToken: AuthToken? = null
 
@@ -91,5 +91,4 @@ data class LoginFields(
         return "LoginState(email=$login_email, password=$login_password)"
     }
 }
-
 

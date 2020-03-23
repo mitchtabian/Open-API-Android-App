@@ -11,7 +11,6 @@ import android.widget.RadioGroup
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -28,39 +27,37 @@ import com.codingwithmitch.openapi.persistence.BlogQueryUtils.Companion.BLOG_FIL
 import com.codingwithmitch.openapi.persistence.BlogQueryUtils.Companion.BLOG_FILTER_USERNAME
 import com.codingwithmitch.openapi.persistence.BlogQueryUtils.Companion.BLOG_ORDER_ASC
 import com.codingwithmitch.openapi.persistence.BlogQueryUtils.Companion.BLOG_ORDER_DESC
-import com.codingwithmitch.openapi.ui.DataState
 import com.codingwithmitch.openapi.ui.main.blog.state.BLOG_VIEW_STATE_BUNDLE_KEY
 import com.codingwithmitch.openapi.ui.main.blog.state.BlogViewState
 import com.codingwithmitch.openapi.ui.main.blog.viewmodel.*
-import com.codingwithmitch.openapi.util.ErrorHandling
+import com.codingwithmitch.openapi.util.ErrorHandling.Companion.isPaginationDone
+import com.codingwithmitch.openapi.util.StateMessageCallback
 import com.codingwithmitch.openapi.util.TopSpacingItemDecoration
-import handleIncomingBlogListData
 import kotlinx.android.synthetic.main.fragment_blog.*
+import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers.Main
 import loadFirstPage
 import nextPage
 import refreshFromCache
 import javax.inject.Inject
 
+@FlowPreview
+@ExperimentalCoroutinesApi
 class BlogFragment
 @Inject
 constructor(
-    private val viewModelFactory: ViewModelProvider.Factory,
+    viewModelFactory: ViewModelProvider.Factory,
     private val requestManager: RequestManager
-): BaseBlogFragment(R.layout.fragment_blog),
+): BaseBlogFragment(R.layout.fragment_blog, viewModelFactory),
     BlogListAdapter.Interaction,
     SwipeRefreshLayout.OnRefreshListener
 {
-
-    val viewModel: BlogViewModel by viewModels{
-        viewModelFactory
-    }
 
     private lateinit var searchView: SearchView
     private lateinit var recyclerAdapter: BlogListAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        cancelActiveJobs()
         // Restore state after process death
         savedInstanceState?.let { inState ->
             (inState[BLOG_VIEW_STATE_BUNDLE_KEY] as BlogViewState?)?.let { viewState ->
@@ -86,16 +83,11 @@ constructor(
         super.onSaveInstanceState(outState)
     }
 
-    override fun cancelActiveJobs(){
-        viewModel.cancelActiveJobs()
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (activity as AppCompatActivity).supportActionBar?.setDisplayShowTitleEnabled(false)
         setHasOptionsMenu(true)
         swipe_refresh.setOnRefreshListener(this)
-
         initRecyclerView()
         subscribeObservers()
     }
@@ -117,28 +109,47 @@ constructor(
     }
 
     private fun subscribeObservers(){
-        viewModel.dataState.observe(viewLifecycleOwner, Observer{ dataState ->
-            if(dataState != null) {
-                // call before onDataStateChange to consume error if there is one
-                handlePagination(dataState)
-                stateChangeListener.onDataStateChange(dataState)
-            }
-        })
 
         viewModel.viewState.observe(viewLifecycleOwner, Observer{ viewState ->
-            Log.d(TAG, "BlogFragment, ViewState: ${viewState}")
             if(viewState != null){
                 recyclerAdapter.apply {
-                    preloadGlideImages(
-                        requestManager = requestManager,
-                        list = viewState.blogFields.blogList
-                    )
+                    viewState.blogFields.blogList?.let {
+                        preloadGlideImages(
+                            requestManager = requestManager,
+                            list = it
+                        )
+                    }
+
                     submitList(
                         blogList = viewState.blogFields.blogList,
-                        isQueryExhausted = viewState.blogFields.isQueryExhausted
+                        isQueryExhausted = viewState.blogFields.isQueryExhausted?: true
                     )
                 }
 
+            }
+        })
+
+        viewModel.numActiveJobs.observe(viewLifecycleOwner, Observer { jobCounter ->
+            Log.d(TAG, "active jobs: ${jobCounter}")
+            uiCommunicationListener.displayProgressBar(viewModel.areAnyJobsActive())
+        })
+
+        viewModel.stateMessage.observe(viewLifecycleOwner, Observer { stateMessage ->
+
+            stateMessage?.let {
+                if(isPaginationDone(stateMessage.response.message)){
+                    viewModel.setQueryExhausted(true)
+                    viewModel.clearStateMessage()
+                }else{
+                    uiCommunicationListener.onResponseReceived(
+                        response = it.response,
+                        stateMessageCallback = object: StateMessageCallback {
+                            override fun removeMessageFromStack() {
+                                viewModel.clearStateMessage()
+                            }
+                        }
+                    )
+                }
             }
         })
     }
@@ -188,37 +199,8 @@ constructor(
 
     private  fun resetUI(){
         blog_post_recyclerview.smoothScrollToPosition(0)
-        stateChangeListener.hideSoftKeyboard()
+        uiCommunicationListener.hideSoftKeyboard()
         focusable_view.requestFocus()
-    }
-
-    private fun handlePagination(dataState: DataState<BlogViewState>){
-
-        // Handle incoming data from DataState
-        dataState.data?.let {
-            it.data?.let{
-                it.getContentIfNotHandled()?.let{
-                    viewModel.handleIncomingBlogListData(it)
-                }
-            }
-        }
-
-        // Check for pagination end (no more results)
-        // must do this b/c server will return an ApiErrorResponse if page is not valid,
-        // -> meaning there is no more data.
-        dataState.error?.let{ event ->
-            event.peekContent().response.message?.let{
-                if(ErrorHandling.isPaginationDone(it)){
-
-                    // handle the error message event so it doesn't display in UI
-                    event.getContentIfNotHandled()
-
-                    // set query exhausted to update RecyclerView with
-                    // "No more results..." list item
-                    viewModel.setQueryExhausted(true)
-                }
-            }
-        }
     }
 
     private fun initRecyclerView(){
@@ -352,15 +334,6 @@ constructor(
 
 
 }
-
-
-
-
-
-
-
-
-
 
 
 

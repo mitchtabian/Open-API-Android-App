@@ -45,7 +45,8 @@
                 app:enterAnim="@anim/fade_in"
                 app:exitAnim="@anim/fade_out"
                 app:popUpTo="@+id/nav_blog"
-                app:popUpToInclusive="true" />
+                app:popUpToInclusive="true"
+                />
 
     </fragment>
 

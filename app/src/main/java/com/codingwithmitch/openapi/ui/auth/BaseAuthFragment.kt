@@ -1,26 +1,26 @@
-package com.codingwithmitch.openapi.ui.main.account
+package com.codingwithmitch.openapi.ui.auth
 
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.annotation.LayoutRes
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.NavigationUI
-import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.ui.UICommunicationListener
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.launch
 
 @FlowPreview
 @ExperimentalCoroutinesApi
-abstract class BaseAccountFragment
+abstract class BaseAuthFragment
 constructor(
     @LayoutRes
     private val layoutRes: Int,
@@ -29,7 +29,7 @@ constructor(
 
     val TAG: String = "AppDebug"
 
-    val viewModel: AccountViewModel by viewModels{
+    val viewModel: AuthViewModel by viewModels{
         viewModelFactory
     }
 
@@ -37,7 +37,6 @@ constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupActionBarWithNavController(R.id.accountFragment, activity as AppCompatActivity)
 
         if(onDestinationChangeListener == null){
             onDestinationChangeListener = object: NavController.OnDestinationChangedListener {
@@ -60,15 +59,6 @@ constructor(
 
     private fun setupChannel() = viewModel.setupChannel()
 
-    fun setupActionBarWithNavController(fragmentId: Int, activity: AppCompatActivity){
-        val appBarConfiguration = AppBarConfiguration(setOf(fragmentId))
-        NavigationUI.setupActionBarWithNavController(
-            activity,
-            findNavController(),
-            appBarConfiguration
-        )
-    }
-
     override fun onDetach() {
         super.onDetach()
         onDestinationChangeListener?.let {
@@ -88,6 +78,15 @@ constructor(
 
     }
 }
+
+
+
+
+
+
+
+
+
 
 
 

@@ -2,7 +2,6 @@ package com.codingwithmitch.openapi.ui.auth
 
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -10,49 +9,47 @@ import android.view.animation.TranslateAnimation
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.di.auth.AuthScope
-import com.codingwithmitch.openapi.ui.*
 import com.codingwithmitch.openapi.ui.auth.ForgotPasswordFragment.WebAppInterface.*
-import com.codingwithmitch.openapi.util.Constants
+import com.codingwithmitch.openapi.util.*
 import kotlinx.android.synthetic.main.fragment_forgot_password.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@FlowPreview
+@ExperimentalCoroutinesApi
 @AuthScope
 class ForgotPasswordFragment
 @Inject
 constructor(
-    private val viewModelFactory: ViewModelProvider.Factory
-): Fragment(R.layout.fragment_forgot_password) {
-
-    private val TAG: String = "AppDebug"
-
-    val viewModel: AuthViewModel by viewModels{
-        viewModelFactory
-    }
+    viewModelFactory: ViewModelProvider.Factory
+): BaseAuthFragment(R.layout.fragment_forgot_password, viewModelFactory) {
 
     lateinit var webView: WebView
-
-    lateinit var stateChangeListener: DataStateChangeListener
 
     val webInteractionCallback = object: OnWebInteractionCallback {
 
         override fun onError(errorMessage: String) {
             Log.e(TAG, "onError: $errorMessage")
-
-            val dataState = DataState.error<Any>(
-                response = Response(errorMessage, ResponseType.Dialog())
-            )
-            stateChangeListener.onDataStateChange(
-                dataState = dataState
+            uiCommunicationListener.onResponseReceived(
+                response = Response(
+                    message = errorMessage,
+                    uiComponentType = UIComponentType.Dialog(),
+                    messageType = MessageType.Error()
+                ),
+                stateMessageCallback = object: StateMessageCallback{
+                    override fun removeMessageFromStack() {
+                        viewModel.clearStateMessage()
+                    }
+                }
             )
         }
 
@@ -63,17 +60,8 @@ constructor(
 
         override fun onLoading(isLoading: Boolean) {
             Log.d(TAG, "onLoading... ")
-            CoroutineScope(Main).launch {
-                stateChangeListener.onDataStateChange(
-                    DataState.loading(isLoading = isLoading, cachedData = null)
-                )
-            }
+            uiCommunicationListener.displayProgressBar(isLoading)
         }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        viewModel.cancelActiveJobs()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -89,15 +77,11 @@ constructor(
 
     @SuppressLint("SetJavaScriptEnabled")
     fun loadPasswordResetWebView(){
-        stateChangeListener.onDataStateChange(
-            DataState.loading(isLoading = true, cachedData = null)
-        )
+        uiCommunicationListener.displayProgressBar(true)
         webView.webViewClient = object: WebViewClient(){
             override fun onPageFinished(view: WebView?, url: String?) {
                 super.onPageFinished(view, url)
-                stateChangeListener.onDataStateChange(
-                    DataState.loading(isLoading = false, cachedData = null)
-                )
+                uiCommunicationListener.displayProgressBar(false)
             }
         }
         webView.loadUrl(Constants.PASSWORD_RESET_URL)
@@ -156,27 +140,5 @@ constructor(
         }
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        try{
-            stateChangeListener = context as DataStateChangeListener
-        }catch(e: ClassCastException){
-            Log.e(TAG, "$context must implement DataStateChangeListener" )
-        }
-    }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
