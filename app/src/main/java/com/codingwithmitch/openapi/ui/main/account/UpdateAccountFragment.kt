@@ -3,10 +3,8 @@ package com.codingwithmitch.openapi.ui.main.account
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.models.AccountProperties
 import com.codingwithmitch.openapi.ui.main.account.state.ACCOUNT_VIEW_STATE_BUNDLE_KEY
@@ -59,6 +57,7 @@ constructor(
         viewModel.stateMessage.observe(viewLifecycleOwner, Observer { stateMessage ->
 
             stateMessage?.let {
+
                 uiCommunicationListener.onResponseReceived(
                     response = it.response,
                     stateMessageCallback = object: StateMessageCallback {
