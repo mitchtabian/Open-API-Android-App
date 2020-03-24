@@ -130,7 +130,6 @@ constructor(
         })
 
         viewModel.numActiveJobs.observe(viewLifecycleOwner, Observer { jobCounter ->
-            Log.d(TAG, "active jobs: ${jobCounter}")
             uiCommunicationListener.displayProgressBar(viewModel.areAnyJobsActive())
         })
 

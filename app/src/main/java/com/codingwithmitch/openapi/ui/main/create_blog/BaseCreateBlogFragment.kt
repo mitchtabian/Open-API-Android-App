@@ -9,17 +9,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.NavController
-import androidx.navigation.NavDestination
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.ui.UICommunicationListener
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.launch
 
 @FlowPreview
 abstract class BaseCreateBlogFragment
@@ -41,25 +36,7 @@ constructor(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupActionBarWithNavController(R.id.createBlogFragment, activity as AppCompatActivity)
-
-        if(onDestinationChangeListener == null){
-            onDestinationChangeListener = object: NavController.OnDestinationChangedListener {
-                override fun onDestinationChanged(
-                    controller: NavController,
-                    destination: NavDestination,
-                    arguments: Bundle?
-                ) {
-                    setupChannel()
-                }
-            }
-            findNavController()
-                .addOnDestinationChangedListener(
-                    onDestinationChangeListener as NavController.OnDestinationChangedListener
-                )
-        }
     }
-
-    private var onDestinationChangeListener: NavController.OnDestinationChangedListener? = null
 
     private fun setupChannel() = viewModel.setupChannel()
 
@@ -72,17 +49,9 @@ constructor(
         )
     }
 
-    override fun onDetach() {
-        super.onDetach()
-        onDestinationChangeListener?.let {
-            findNavController()
-                .removeOnDestinationChangedListener(it)
-            onDestinationChangeListener = null
-        }
-    }
-
     override fun onAttach(context: Context) {
         super.onAttach(context)
+        setupChannel()
         try{
             uiCommunicationListener = context as UICommunicationListener
         }catch(e: ClassCastException){

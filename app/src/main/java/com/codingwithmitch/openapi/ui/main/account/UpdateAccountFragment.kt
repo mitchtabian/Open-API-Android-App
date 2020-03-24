@@ -47,7 +47,6 @@ constructor(
         viewModel.viewState.observe(viewLifecycleOwner, Observer{ viewState ->
             if(viewState != null){
                 viewState.accountProperties?.let{
-                    Log.d(TAG, "UpdateAccountFragment, ViewState: ${it}")
                     setAccountDataFields(it)
                 }
             }
@@ -59,8 +58,6 @@ constructor(
 
         viewModel.stateMessage.observe(viewLifecycleOwner, Observer { stateMessage ->
 
-            Log.d(TAG, "stack size: ${viewModel.getMessageStackSize()}")
-            Log.d(TAG, "state message: ${stateMessage}")
             stateMessage?.let {
                 uiCommunicationListener.onResponseReceived(
                     response = it.response,

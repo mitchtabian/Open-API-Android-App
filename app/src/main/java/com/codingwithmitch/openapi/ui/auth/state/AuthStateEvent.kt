@@ -12,6 +12,10 @@ sealed class AuthStateEvent: StateEvent {
         override fun errorInfo(): String {
             return "Login attempt failed."
         }
+
+        override fun toString(): String {
+            return "LoginStateEvent"
+        }
     }
 
     data class RegisterAttemptEvent(
@@ -24,12 +28,20 @@ sealed class AuthStateEvent: StateEvent {
         override fun errorInfo(): String {
             return "Register attempt failed."
         }
+
+        override fun toString(): String {
+            return "RegisterAttemptEvent"
+        }
     }
 
     class CheckPreviousAuthEvent(): AuthStateEvent() {
 
         override fun errorInfo(): String {
             return "Error checking for previously authenticated user."
+        }
+
+        override fun toString(): String {
+            return "CheckPreviousAuthEvent"
         }
     }
 
@@ -38,5 +50,6 @@ sealed class AuthStateEvent: StateEvent {
         override fun errorInfo(): String {
             return "None"
         }
+
     }
 }
