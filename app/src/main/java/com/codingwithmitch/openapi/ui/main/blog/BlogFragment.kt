@@ -34,8 +34,8 @@ import com.codingwithmitch.openapi.util.ErrorHandling.Companion.isPaginationDone
 import com.codingwithmitch.openapi.util.StateMessageCallback
 import com.codingwithmitch.openapi.util.TopSpacingItemDecoration
 import kotlinx.android.synthetic.main.fragment_blog.*
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers.Main
 import loadFirstPage
 import nextPage
 import refreshFromCache
@@ -333,15 +333,6 @@ constructor(
 
 
 }
-
-
-
-
-
-
-
-
-
 
 
 

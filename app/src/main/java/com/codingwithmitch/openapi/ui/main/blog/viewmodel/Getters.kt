@@ -1,5 +1,6 @@
 package com.codingwithmitch.openapi.ui.main.blog.viewmodel
 
+
 import android.net.Uri
 import com.codingwithmitch.openapi.models.BlogPost
 import com.codingwithmitch.openapi.persistence.BlogQueryUtils.Companion.BLOG_FILTER_DATE_UPDATED
@@ -86,8 +87,6 @@ fun BlogViewModel.getUpdatedBlogUri(): Uri? {
     }
     return null
 }
-
-
 
 
 

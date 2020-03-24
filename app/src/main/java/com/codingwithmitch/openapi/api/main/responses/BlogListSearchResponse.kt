@@ -29,6 +29,7 @@ class BlogListSearchResponse(
         return blogPostList
     }
 
+
     override fun toString(): String {
         return "BlogListSearchResponse(results=$results, detail='$detail')"
     }

@@ -9,8 +9,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.NavController
-import androidx.navigation.NavDestination
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
@@ -41,20 +39,9 @@ constructor(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupActionBarWithNavController(R.id.blogFragment, activity as AppCompatActivity)
-        findNavController()
-            .addOnDestinationChangedListener(onDestinationChangeListener)
+        setupChannel()
     }
 
-    private val onDestinationChangeListener
-            = object: NavController.OnDestinationChangedListener {
-        override fun onDestinationChanged(
-            controller: NavController,
-            destination: NavDestination,
-            arguments: Bundle?
-        ) {
-            setupChannel()
-        }
-    }
 
     private fun setupChannel() = viewModel.setupChannel()
 
@@ -65,12 +52,6 @@ constructor(
             findNavController(),
             appBarConfiguration
         )
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        findNavController()
-            .removeOnDestinationChangedListener(onDestinationChangeListener)
     }
 
     override fun onAttach(context: Context) {

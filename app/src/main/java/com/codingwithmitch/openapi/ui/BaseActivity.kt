@@ -1,5 +1,6 @@
 package com.codingwithmitch.openapi.ui
 
+
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
@@ -42,42 +43,42 @@ abstract class BaseActivity: AppCompatActivity(),
         stateMessageCallback: StateMessageCallback
     ) {
 
-            when(response.uiComponentType){
+        when(response.uiComponentType){
 
-                is UIComponentType.AreYouSureDialog -> {
+            is UIComponentType.AreYouSureDialog -> {
 
-                    response.message?.let {
-                        areYouSureDialog(
-                            message = it,
-                            callback = response.uiComponentType.callback,
-                            stateMessageCallback = stateMessageCallback
-                        )
-                    }
-                }
-
-                is UIComponentType.Toast -> {
-                    response.message?.let {
-                        displayToast(
-                            message = it,
-                            stateMessageCallback = stateMessageCallback
-                        )
-                    }
-                }
-
-                is UIComponentType.Dialog -> {
-                    displayDialog(
-                        response = response,
+                response.message?.let {
+                    areYouSureDialog(
+                        message = it,
+                        callback = response.uiComponentType.callback,
                         stateMessageCallback = stateMessageCallback
                     )
                 }
+            }
 
-                is UIComponentType.None -> {
-                    // This would be a good place to send to your Error Reporting
-                    // software of choice (ex: Firebase crash reporting)
-                    Log.i(TAG, "onResponseReceived: ${response.message}")
-                    stateMessageCallback.removeMessageFromStack()
+            is UIComponentType.Toast -> {
+                response.message?.let {
+                    displayToast(
+                        message = it,
+                        stateMessageCallback = stateMessageCallback
+                    )
                 }
             }
+
+            is UIComponentType.Dialog -> {
+                displayDialog(
+                    response = response,
+                    stateMessageCallback = stateMessageCallback
+                )
+            }
+
+            is UIComponentType.None -> {
+                // This would be a good place to send to your Error Reporting
+                // software of choice (ex: Firebase crash reporting)
+                Log.i(TAG, "onResponseReceived: ${response.message}")
+                stateMessageCallback.removeMessageFromStack()
+            }
+        }
     }
 
     private fun displayDialog(
@@ -246,8 +247,6 @@ abstract class BaseActivity: AppCompatActivity(),
             }
     }
 }
-
-
 
 
 

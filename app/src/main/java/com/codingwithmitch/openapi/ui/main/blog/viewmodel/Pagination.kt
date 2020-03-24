@@ -41,7 +41,7 @@ fun BlogViewModel.loadFirstPage() {
 
 @FlowPreview
 @UseExperimental(ExperimentalCoroutinesApi::class)
-    private fun BlogViewModel.incrementPageNumber(){
+private fun BlogViewModel.incrementPageNumber(){
     val update = getCurrentViewStateOrNew()
     val page = update.copy().blogFields.page ?: 1
     update.blogFields.page = page.plus(1)
@@ -67,11 +67,6 @@ fun BlogViewModel.handleIncomingBlogListData(viewState: BlogViewState){
         blogFields.blogList?.let { setBlogListData(it) }
     }
 }
-
-
-
-
-
 
 
 

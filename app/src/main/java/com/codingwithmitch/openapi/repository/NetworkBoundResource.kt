@@ -1,5 +1,6 @@
 package com.codingwithmitch.openapi.repository
 
+
 import android.util.Log
 import com.codingwithmitch.openapi.util.*
 import com.codingwithmitch.openapi.util.ErrorHandling.Companion.NETWORK_ERROR
@@ -22,7 +23,7 @@ constructor(
 
     private val TAG: String = "AppDebug"
 
-    val result: Flow<DataState<ViewState>> = flow{
+    val result: Flow<DataState<ViewState>> = flow {
 
         // ****** STEP 1: VIEW CACHE ******
         emit(returnCache(markJobComplete = false))
@@ -72,7 +73,7 @@ constructor(
     }
 
     private suspend fun returnCache(markJobComplete: Boolean): DataState<ViewState> {
-        
+
         val cacheResult = safeCacheCall(dispatcher){cacheCall.invoke()}
 
         var jobCompleteMarker: StateEvent? = null

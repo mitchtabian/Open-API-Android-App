@@ -223,7 +223,7 @@ constructor(
 
     override fun checkPreviousAuthUser(
         stateEvent: StateEvent
-    ): Flow<DataState<AuthViewState>> = flow{
+    ): Flow<DataState<AuthViewState>> = flow {
         Log.d(TAG, "checkPreviousAuthUser: ")
         val previousAuthUserEmail: String? = sharedPreferences.getString(PreferenceKeys.PREVIOUS_AUTH_USER, null)
 
@@ -294,3 +294,8 @@ constructor(
 
 
 }
+
+
+
+
+

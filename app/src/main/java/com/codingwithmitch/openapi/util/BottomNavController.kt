@@ -59,6 +59,7 @@ class BottomNavController(
 
     fun onNavigationItemSelected(menuItemId: Int = navigationBackStack.last()): Boolean {
 
+        Log.d(TAG, "onNavigationItemSelected ")
         // Replace fragment representing a navigation item
         val fragment = fragmentManager.findFragmentByTag(menuItemId.toString())
             ?: createNavHost(menuItemId)

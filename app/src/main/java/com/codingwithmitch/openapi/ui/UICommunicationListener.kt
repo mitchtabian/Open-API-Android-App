@@ -3,7 +3,6 @@ package com.codingwithmitch.openapi.ui
 import com.codingwithmitch.openapi.util.Response
 import com.codingwithmitch.openapi.util.StateMessageCallback
 
-
 interface UICommunicationListener {
 
     fun onResponseReceived(

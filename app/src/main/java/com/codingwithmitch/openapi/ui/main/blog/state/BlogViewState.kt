@@ -1,10 +1,9 @@
 package com.codingwithmitch.openapi.ui.main.blog.state
 
+
 import android.net.Uri
 import android.os.Parcelable
 import com.codingwithmitch.openapi.models.BlogPost
-import com.codingwithmitch.openapi.persistence.BlogQueryUtils.Companion.BLOG_ORDER_ASC
-import com.codingwithmitch.openapi.persistence.BlogQueryUtils.Companion.ORDER_BY_ASC_DATE_UPDATED
 import kotlinx.android.parcel.Parcelize
 
 const val BLOG_VIEW_STATE_BUNDLE_KEY = "com.codingwithmitch.openapi.ui.main.blog.state.BlogViewState"
@@ -47,8 +46,6 @@ data class BlogViewState (
         var updatedImageUri: Uri? = null
     ) : Parcelable
 }
-
-
 
 
 

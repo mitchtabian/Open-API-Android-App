@@ -3,7 +3,6 @@ package com.codingwithmitch.openapi.repository.auth
 import com.codingwithmitch.openapi.di.auth.AuthScope
 import com.codingwithmitch.openapi.ui.auth.state.AuthViewState
 import com.codingwithmitch.openapi.util.DataState
-import com.codingwithmitch.openapi.util.Response
 import com.codingwithmitch.openapi.util.StateEvent
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
@@ -37,10 +36,3 @@ interface AuthRepository {
     ): DataState<AuthViewState>
 
 }
-
-
-
-
-
-
-

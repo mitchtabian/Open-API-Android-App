@@ -36,7 +36,6 @@ class BlogSearchResponse(
     var username: String
 
 
-
 ) {
     fun toBlogPost(): BlogPost{
         return BlogPost(
@@ -51,7 +50,7 @@ class BlogSearchResponse(
             username = username
         )
     }
-    
+
     override fun toString(): String {
         return "BlogSearchResponse(pk=$pk, title='$title', slug='$slug',  image='$image', date_updated='$date_updated', username='$username')"
     }

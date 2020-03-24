@@ -4,6 +4,7 @@ import com.codingwithmitch.openapi.api.main.OpenApiMainService
 import com.codingwithmitch.openapi.persistence.AccountPropertiesDao
 import com.codingwithmitch.openapi.persistence.AppDatabase
 import com.codingwithmitch.openapi.persistence.BlogPostDao
+import com.codingwithmitch.openapi.repository.main.AccountRepository
 import com.codingwithmitch.openapi.repository.main.AccountRepositoryImpl
 import com.codingwithmitch.openapi.repository.main.BlogRepositoryImpl
 import com.codingwithmitch.openapi.repository.main.CreateBlogRepositoryImpl
@@ -33,12 +34,8 @@ object MainModule {
         openApiMainService: OpenApiMainService,
         accountPropertiesDao: AccountPropertiesDao,
         sessionManager: SessionManager
-    ): AccountRepositoryImpl {
-        return AccountRepositoryImpl(
-            openApiMainService,
-            accountPropertiesDao,
-            sessionManager
-        )
+    ): AccountRepository {
+        return AccountRepositoryImpl(openApiMainService, accountPropertiesDao, sessionManager)
     }
 
     @JvmStatic
@@ -56,11 +53,7 @@ object MainModule {
         blogPostDao: BlogPostDao,
         sessionManager: SessionManager
     ): BlogRepositoryImpl {
-        return BlogRepositoryImpl(
-            openApiMainService,
-            blogPostDao,
-            sessionManager
-        )
+        return BlogRepositoryImpl(openApiMainService, blogPostDao, sessionManager)
     }
 
     @JvmStatic
@@ -71,10 +64,7 @@ object MainModule {
         blogPostDao: BlogPostDao,
         sessionManager: SessionManager
     ): CreateBlogRepositoryImpl {
-        return CreateBlogRepositoryImpl(
-            openApiMainService, blogPostDao,
-            sessionManager
-        )
+        return CreateBlogRepositoryImpl(openApiMainService, blogPostDao, sessionManager)
     }
 }
 

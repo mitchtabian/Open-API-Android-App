@@ -1,9 +1,11 @@
 package com.codingwithmitch.openapi.util
 
+
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.Flow
@@ -17,9 +19,9 @@ abstract class DataChannelManager<ViewState> {
 
     private val TAG: String = "AppDebug"
 
-    private val _activeStateEvents: HashSet<StateEvent> = HashSet()
+    private val _activeStateEvents: HashSet<String> = HashSet()
     private val _numActiveJobs: MutableLiveData<Int> = MutableLiveData()
-    private var dataChannel: ConflatedBroadcastChannel<DataState<ViewState>>? = null
+    private val dataChannel: ConflatedBroadcastChannel<DataState<ViewState>> =  ConflatedBroadcastChannel()
     private var channelScope: CoroutineScope? = null
 
     val messageStack = MessageStack()
@@ -27,14 +29,8 @@ abstract class DataChannelManager<ViewState> {
     val numActiveJobs: LiveData<Int>
         get() = _numActiveJobs
 
-    fun setupChannel(){
-        cancelJobs()
-        setupNewChannelScope(CoroutineScope(Main))
-        if(dataChannel != null){
-            dataChannel = null
-        }
-        dataChannel = ConflatedBroadcastChannel()
-        (dataChannel as ConflatedBroadcastChannel)
+    init {
+        dataChannel
             .asFlow()
             .onEach{ dataState ->
                 dataState.data?.let { data ->
@@ -46,13 +42,18 @@ abstract class DataChannelManager<ViewState> {
                     removeStateEvent(dataState.stateEvent)
                 }
             }
-            .launchIn(getChannelScope())
+            .launchIn(CoroutineScope(Main))
+    }
+
+    fun setupChannel(){
+        cancelJobs()
+        setupNewChannelScope(CoroutineScope(IO))
     }
 
     abstract fun handleNewData(data: ViewState)
 
     private fun offerToDataChannel(dataState: DataState<ViewState>){
-        dataChannel?.let {
+        dataChannel.let {
             if(!it.isClosedForSend){
                 it.offer(dataState)
             }
@@ -63,10 +64,7 @@ abstract class DataChannelManager<ViewState> {
         stateEvent: StateEvent,
         jobFunction: Flow<DataState<ViewState>>
     ){
-        Log.d(TAG, "launchJob: ${messageStack.size}")
-        Log.d(TAG, "launchJob: ${isStateEventActive(stateEvent)}")
         if(!isStateEventActive(stateEvent) && messageStack.size == 0){
-            Log.d(TAG, "launching job: ")
             addStateEvent(stateEvent)
             jobFunction
                 .onEach { dataState ->
@@ -94,12 +92,12 @@ abstract class DataChannelManager<ViewState> {
     }
 
     private fun addStateEvent(stateEvent: StateEvent){
-        _activeStateEvents.add(stateEvent)
+        _activeStateEvents.add(stateEvent.toString())
         syncNumActiveStateEvents()
     }
 
     private fun removeStateEvent(stateEvent: StateEvent?){
-        _activeStateEvents.remove(stateEvent)
+        _activeStateEvents.remove(stateEvent.toString())
         syncNumActiveStateEvents()
     }
 
@@ -108,13 +106,11 @@ abstract class DataChannelManager<ViewState> {
     }
 
     private fun isStateEventActive(stateEvent: StateEvent): Boolean{
-        return _activeStateEvents.contains(stateEvent)
+        return _activeStateEvents.contains(stateEvent.toString())
     }
 
-    private fun getChannelScope(): CoroutineScope {
-        return channelScope?.let {
-            it
-        }?: setupNewChannelScope(CoroutineScope(Main))
+    fun getChannelScope(): CoroutineScope {
+        return channelScope?: setupNewChannelScope(CoroutineScope(IO))
     }
 
     private fun setupNewChannelScope(coroutineScope: CoroutineScope): CoroutineScope{
@@ -127,6 +123,7 @@ abstract class DataChannelManager<ViewState> {
             if(channelScope?.isActive == true){
                 channelScope?.cancel()
             }
+            channelScope = null
         }
         clearActiveStateEventCounter()
     }
@@ -135,3 +132,26 @@ abstract class DataChannelManager<ViewState> {
         _numActiveJobs.value = _activeStateEvents.size
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

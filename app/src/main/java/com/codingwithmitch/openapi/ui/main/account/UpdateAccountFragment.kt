@@ -3,10 +3,8 @@ package com.codingwithmitch.openapi.ui.main.account
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.models.AccountProperties
 import com.codingwithmitch.openapi.ui.main.account.state.ACCOUNT_VIEW_STATE_BUNDLE_KEY
@@ -47,7 +45,6 @@ constructor(
         viewModel.viewState.observe(viewLifecycleOwner, Observer{ viewState ->
             if(viewState != null){
                 viewState.accountProperties?.let{
-                    Log.d(TAG, "UpdateAccountFragment, ViewState: ${it}")
                     setAccountDataFields(it)
                 }
             }
@@ -59,9 +56,8 @@ constructor(
 
         viewModel.stateMessage.observe(viewLifecycleOwner, Observer { stateMessage ->
 
-            Log.d(TAG, "stack size: ${viewModel.getMessageStackSize()}")
-            Log.d(TAG, "state message: ${stateMessage}")
             stateMessage?.let {
+
                 uiCommunicationListener.onResponseReceived(
                     response = it.response,
                     stateMessageCallback = object: StateMessageCallback {
@@ -108,13 +104,6 @@ constructor(
     }
 
 }
-
-
-
-
-
-
-
 
 
 

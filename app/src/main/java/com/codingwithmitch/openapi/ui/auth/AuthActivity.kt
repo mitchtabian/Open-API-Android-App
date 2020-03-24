@@ -159,10 +159,3 @@ class AuthActivity : BaseActivity()
 
 
 
-
-
-
-
-
-
-

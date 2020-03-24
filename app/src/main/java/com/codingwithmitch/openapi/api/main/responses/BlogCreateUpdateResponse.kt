@@ -40,8 +40,8 @@ class BlogCreateUpdateResponse(
     var username: String
 
 
-)
-{
+
+){
     fun toBlogPost(): BlogPost {
         return BlogPost(
             pk = pk,
@@ -56,6 +56,7 @@ class BlogCreateUpdateResponse(
         )
     }
 }
+
 
 
 

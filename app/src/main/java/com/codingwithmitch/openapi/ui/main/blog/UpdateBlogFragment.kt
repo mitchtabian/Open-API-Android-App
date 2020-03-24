@@ -168,7 +168,7 @@ constructor(
             stateMessage?.let {
 
                 if(stateMessage.response.message.equals(SUCCESS_BLOG_UPDATED)){
-                   viewModel.updateListItem()
+                    viewModel.updateListItem()
                 }
 
                 uiCommunicationListener.onResponseReceived(
@@ -246,14 +246,6 @@ constructor(
         viewModel.setUpdatedBody(blog_body.text.toString())
     }
 }
-
-
-
-
-
-
-
-
 
 
 

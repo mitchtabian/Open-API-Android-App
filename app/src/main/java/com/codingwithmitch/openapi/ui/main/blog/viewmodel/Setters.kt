@@ -119,21 +119,6 @@ fun BlogViewModel.updateListItem(){
     }
 }
 
-//@FlowPreview
-//@UseExperimental(ExperimentalCoroutinesApi::class)
-//fun BlogViewModel.onBlogPostUpdateSuccess(
-//    title: String,
-//    body: String,
-//    image: String
-//){
-//    val currentBlogPost = getBlogPost()
-//    currentBlogPost.title = title
-//    currentBlogPost.body = body
-//    currentBlogPost.image = image
-//    setBlogPost(currentBlogPost) // update ViewBlogFragment
-//    updateListItem(currentBlogPost) // update BlogFragment
-//}
-
 
 @FlowPreview
 @UseExperimental(ExperimentalCoroutinesApi::class)
@@ -165,15 +150,6 @@ fun BlogViewModel.setUpdatedBody(body: String){
     update.updatedBlogFields = updatedBlogFields
     setViewState(update)
 }
-
-
-
-
-
-
-
-
-
 
 
 

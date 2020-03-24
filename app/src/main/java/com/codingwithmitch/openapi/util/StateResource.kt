@@ -1,5 +1,6 @@
 package com.codingwithmitch.openapi.util
 
+
 import com.codingwithmitch.openapi.ui.AreYouSureCallback
 
 
@@ -37,10 +38,6 @@ sealed class MessageType{
 
 
 interface StateMessageCallback{
-    
+
     fun removeMessageFromStack()
 }
-
-
-
-
