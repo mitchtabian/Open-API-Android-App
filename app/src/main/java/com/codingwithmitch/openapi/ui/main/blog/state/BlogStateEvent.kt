@@ -12,9 +12,6 @@ sealed class BlogStateEvent: StateEvent {
             return "Error searching for blog posts."
         }
 
-        override fun toString(): String {
-            return "BlogSearchEvent"
-        }
     }
 
     class CheckAuthorOfBlogPost: BlogStateEvent() {
@@ -22,9 +19,6 @@ sealed class BlogStateEvent: StateEvent {
             return "Error checking if you are the author of this blog post."
         }
 
-        override fun toString(): String {
-            return "CheckAuthorOfBlogPost"
-        }
     }
 
     class DeleteBlogPostEvent: BlogStateEvent() {
@@ -32,9 +26,6 @@ sealed class BlogStateEvent: StateEvent {
             return "Error deleting that blog post."
         }
 
-        override fun toString(): String {
-            return "DeleteBlogPostEvent"
-        }
     }
 
     data class UpdateBlogPostEvent(
@@ -46,9 +37,6 @@ sealed class BlogStateEvent: StateEvent {
             return "Error updating that blog post."
         }
 
-        override fun toString(): String {
-            return "UpdateBlogPostEvent"
-        }
     }
 
     class None: BlogStateEvent() {

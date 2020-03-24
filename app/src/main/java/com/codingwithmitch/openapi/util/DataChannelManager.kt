@@ -18,7 +18,7 @@ abstract class DataChannelManager<ViewState> {
 
     private val TAG: String = "AppDebug"
 
-    private val _activeStateEvents: HashSet<String> = HashSet()
+    private val _activeStateEvents: HashSet<StateEvent> = HashSet()
     private val _numActiveJobs: MutableLiveData<Int> = MutableLiveData()
     private var dataChannel: ConflatedBroadcastChannel<DataState<ViewState>>? = null
     private var channelScope: CoroutineScope? = null
@@ -93,12 +93,12 @@ abstract class DataChannelManager<ViewState> {
     }
 
     private fun addStateEvent(stateEvent: StateEvent){
-        _activeStateEvents.add(stateEvent.toString())
+        _activeStateEvents.add(stateEvent)
         syncNumActiveStateEvents()
     }
 
     private fun removeStateEvent(stateEvent: StateEvent?){
-        _activeStateEvents.remove(stateEvent.toString())
+        _activeStateEvents.remove(stateEvent)
         syncNumActiveStateEvents()
     }
 
@@ -107,7 +107,7 @@ abstract class DataChannelManager<ViewState> {
     }
 
     private fun isStateEventActive(stateEvent: StateEvent): Boolean{
-        return _activeStateEvents.contains(stateEvent.toString())
+        return _activeStateEvents.contains(stateEvent)
     }
 
     private fun getChannelScope(): CoroutineScope {
