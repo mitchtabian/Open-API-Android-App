@@ -3,6 +3,7 @@ package com.codingwithmitch.openapi.fragments.main.blog
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.RequestManager
+import com.bumptech.glide.request.RequestOptions
 import com.codingwithmitch.openapi.di.main.MainScope
 import com.codingwithmitch.openapi.ui.main.blog.BlogFragment
 import com.codingwithmitch.openapi.ui.main.blog.UpdateBlogFragment
@@ -14,6 +15,7 @@ class BlogFragmentFactory
 @Inject
 constructor(
     private val viewModelFactory: ViewModelProvider.Factory,
+    private val requestOptions: RequestOptions,
     private val requestManager: RequestManager
 ) : FragmentFactory() {
 
@@ -22,7 +24,7 @@ constructor(
         when (className) {
 
             BlogFragment::class.java.name -> {
-                BlogFragment(viewModelFactory, requestManager)
+                BlogFragment(viewModelFactory, requestOptions)
             }
 
             ViewBlogFragment::class.java.name -> {
@@ -34,7 +36,7 @@ constructor(
             }
 
             else -> {
-                BlogFragment(viewModelFactory, requestManager)
+                BlogFragment(viewModelFactory, requestOptions)
             }
         }
 

@@ -20,7 +20,9 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
 import com.afollestad.materialdialogs.customview.getCustomView
+import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
+import com.bumptech.glide.request.RequestOptions
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.models.BlogPost
 import com.codingwithmitch.openapi.persistence.BlogQueryUtils.Companion.BLOG_FILTER_DATE_UPDATED
@@ -47,7 +49,7 @@ class BlogFragment
 @Inject
 constructor(
     viewModelFactory: ViewModelProvider.Factory,
-    private val requestManager: RequestManager
+    private val requestOptions: RequestOptions
 ): BaseBlogFragment(R.layout.fragment_blog, viewModelFactory),
     BlogListAdapter.Interaction,
     SwipeRefreshLayout.OnRefreshListener
@@ -55,6 +57,7 @@ constructor(
 
     private lateinit var searchView: SearchView
     private lateinit var recyclerAdapter: BlogListAdapter
+    private var requestManager: RequestManager? = null // can leak memory, must be nullable
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,6 +67,17 @@ constructor(
                 viewModel.setViewState(viewState)
             }
         }
+
+        setupGlide()
+    }
+
+    private fun setupGlide(){
+        val requestOptions = RequestOptions
+            .placeholderOf(R.drawable.default_image)
+            .error(R.drawable.default_image)
+
+        requestManager = Glide.with(this)
+            .applyDefaultRequestOptions(requestOptions)
     }
 
     /**
@@ -110,12 +124,13 @@ constructor(
 
     private fun subscribeObservers(){
 
+
         viewModel.viewState.observe(viewLifecycleOwner, Observer{ viewState ->
             if(viewState != null){
                 recyclerAdapter.apply {
                     viewState.blogFields.blogList?.let {
                         preloadGlideImages(
-                            requestManager = requestManager,
+                            requestManager = requestManager as RequestManager,
                             list = it
                         )
                     }
@@ -128,6 +143,25 @@ constructor(
 
             }
         })
+
+//        viewModel.viewState.observe(viewLifecycleOwner, Observer{ viewState ->
+//            if(viewState != null){
+//                recyclerAdapter.apply {
+//                    viewState.blogFields.blogList?.let {
+//                        preloadGlideImages(
+//                            requestManager = requestManager,
+//                            list = it
+//                        )
+//                    }
+//
+//                    submitList(
+//                        blogList = viewState.blogFields.blogList,
+//                        isQueryExhausted = viewState.blogFields.isQueryExhausted?: true
+//                    )
+//                }
+//
+//            }
+//        })
 
         viewModel.numActiveJobs.observe(viewLifecycleOwner, Observer { jobCounter ->
             uiCommunicationListener.displayProgressBar(viewModel.areAnyJobsActive())
@@ -210,8 +244,13 @@ constructor(
             removeItemDecoration(topSpacingDecorator) // does nothing if not applied already
             addItemDecoration(topSpacingDecorator)
 
+//            recyclerAdapter = BlogListAdapter(
+//                requestManager,
+//                this@BlogFragment
+//            )
+
             recyclerAdapter = BlogListAdapter(
-                requestManager,
+                requestManager as RequestManager,
                 this@BlogFragment
             )
             addOnScrollListener(object: RecyclerView.OnScrollListener(){
@@ -262,6 +301,7 @@ constructor(
         super.onDestroyView()
         // clear references (can leak memory)
         blog_post_recyclerview.adapter = null
+        requestManager = null
     }
 
     override fun onRefresh() {
@@ -330,6 +370,7 @@ constructor(
             dialog.show()
         }
     }
+
 
 
 }

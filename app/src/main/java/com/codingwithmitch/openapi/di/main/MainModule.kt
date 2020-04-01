@@ -1,5 +1,9 @@
 package com.codingwithmitch.openapi.di.main
 
+import android.app.Application
+import com.bumptech.glide.Glide
+import com.bumptech.glide.RequestManager
+import com.bumptech.glide.request.RequestOptions
 import com.codingwithmitch.openapi.api.main.OpenApiMainService
 import com.codingwithmitch.openapi.persistence.AccountPropertiesDao
 import com.codingwithmitch.openapi.persistence.AppDatabase
@@ -13,6 +17,7 @@ import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.FlowPreview
 import retrofit2.Retrofit
+import javax.inject.Singleton
 
 @FlowPreview
 @Module
@@ -66,6 +71,7 @@ object MainModule {
     ): CreateBlogRepositoryImpl {
         return CreateBlogRepositoryImpl(openApiMainService, blogPostDao, sessionManager)
     }
+
 }
 
 

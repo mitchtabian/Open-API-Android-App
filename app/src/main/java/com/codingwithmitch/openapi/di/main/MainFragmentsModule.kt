@@ -3,6 +3,7 @@ package com.codingwithmitch.openapi.di.main
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.RequestManager
+import com.bumptech.glide.request.RequestOptions
 import com.codingwithmitch.openapi.fragments.main.account.AccountFragmentFactory
 import com.codingwithmitch.openapi.fragments.main.blog.BlogFragmentFactory
 import com.codingwithmitch.openapi.fragments.main.create_blog.CreateBlogFragmentFactory
@@ -31,10 +32,12 @@ object MainFragmentsModule {
     @Named("BlogFragmentFactory")
     fun provideBlogFragmentFactory(
         viewModelFactory: ViewModelProvider.Factory,
+        requestOptions: RequestOptions,
         requestManager: RequestManager
     ): FragmentFactory {
         return BlogFragmentFactory(
             viewModelFactory,
+            requestOptions,
             requestManager
         )
     }
