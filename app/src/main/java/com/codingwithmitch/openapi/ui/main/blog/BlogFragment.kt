@@ -144,25 +144,6 @@ constructor(
             }
         })
 
-//        viewModel.viewState.observe(viewLifecycleOwner, Observer{ viewState ->
-//            if(viewState != null){
-//                recyclerAdapter.apply {
-//                    viewState.blogFields.blogList?.let {
-//                        preloadGlideImages(
-//                            requestManager = requestManager,
-//                            list = it
-//                        )
-//                    }
-//
-//                    submitList(
-//                        blogList = viewState.blogFields.blogList,
-//                        isQueryExhausted = viewState.blogFields.isQueryExhausted?: true
-//                    )
-//                }
-//
-//            }
-//        })
-
         viewModel.numActiveJobs.observe(viewLifecycleOwner, Observer { jobCounter ->
             uiCommunicationListener.displayProgressBar(viewModel.areAnyJobsActive())
         })
@@ -243,11 +224,6 @@ constructor(
             val topSpacingDecorator = TopSpacingItemDecoration(30)
             removeItemDecoration(topSpacingDecorator) // does nothing if not applied already
             addItemDecoration(topSpacingDecorator)
-
-//            recyclerAdapter = BlogListAdapter(
-//                requestManager,
-//                this@BlogFragment
-//            )
 
             recyclerAdapter = BlogListAdapter(
                 requestManager as RequestManager,
