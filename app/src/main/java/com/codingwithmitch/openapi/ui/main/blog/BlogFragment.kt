@@ -67,17 +67,6 @@ constructor(
                 viewModel.setViewState(viewState)
             }
         }
-
-        setupGlide()
-    }
-
-    private fun setupGlide(){
-        val requestOptions = RequestOptions
-            .placeholderOf(R.drawable.default_image)
-            .error(R.drawable.default_image)
-
-        requestManager = Glide.with(this)
-            .applyDefaultRequestOptions(requestOptions)
     }
 
     /**
@@ -102,6 +91,7 @@ constructor(
         (activity as AppCompatActivity).supportActionBar?.setDisplayShowTitleEnabled(false)
         setHasOptionsMenu(true)
         swipe_refresh.setOnRefreshListener(this)
+        setupGlide()
         initRecyclerView()
         subscribeObservers()
     }
@@ -243,6 +233,15 @@ constructor(
             })
             adapter = recyclerAdapter
         }
+    }
+
+    private fun setupGlide(){
+        val requestOptions = RequestOptions
+            .placeholderOf(R.drawable.default_image)
+            .error(R.drawable.default_image)
+
+        requestManager = Glide.with(this)
+            .applyDefaultRequestOptions(requestOptions)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
