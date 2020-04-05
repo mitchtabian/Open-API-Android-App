@@ -240,8 +240,10 @@ constructor(
             .placeholderOf(R.drawable.default_image)
             .error(R.drawable.default_image)
 
-        requestManager = Glide.with(this)
-            .applyDefaultRequestOptions(requestOptions)
+        activity?.let {
+            requestManager = Glide.with(it)
+                .applyDefaultRequestOptions(requestOptions)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
