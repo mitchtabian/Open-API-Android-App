@@ -36,23 +36,22 @@ constructor(
     fun logout(){
         Log.d(TAG, "logout: ")
 
-
         CoroutineScope(IO).launch{
             var errorMessage: String? = null
             try{
                 _cachedToken.value!!.account_pk?.let { authTokenDao.nullifyToken(it)
                 } ?: throw CancellationException("Token Error. Logging out user.")
             }catch (e: CancellationException) {
-                Log.e(TAG, "logout: ${e.message}")
+                Log.e(TAG, "CancellationException: ${e.message}")
                 errorMessage = e.message
             }
             catch (e: Exception) {
-                Log.e(TAG, "logout: ${e.message}")
+                Log.e(TAG, "Exception: ${e.message}")
                 errorMessage = errorMessage + "\n" + e.message
             }
             finally {
                 errorMessage?.let{
-                    Log.e(TAG, "logout: ${errorMessage}" )
+                    Log.e(TAG, "finally: logout: ${errorMessage}" )
                 }
                 Log.d(TAG, "logout: finally")
                 setValue(null)

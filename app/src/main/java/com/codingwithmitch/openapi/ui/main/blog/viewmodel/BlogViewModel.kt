@@ -160,7 +160,7 @@ constructor(
                     }
                 }
                 launchJob(stateEvent, job)
-            }?: sessionManager.logout()
+            }
         }
     }
 

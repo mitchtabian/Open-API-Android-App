@@ -119,8 +119,8 @@ class MainActivity : BaseActivity(),
         setupActionBar()
         setupBottomNavigationView(savedInstanceState)
 
-        subscribeObservers()
         restoreSession(savedInstanceState)
+        subscribeObservers()
     }
 
     private fun setupBottomNavigationView(savedInstanceState: Bundle?){
@@ -141,6 +141,7 @@ class MainActivity : BaseActivity(),
 
     private fun restoreSession(savedInstanceState: Bundle?){
         savedInstanceState?.get(AUTH_TOKEN_BUNDLE_KEY)?.let{ authToken ->
+            Log.d(TAG, "restoreSession: Restoring token: ${authToken}")
             sessionManager.setValue(authToken as AuthToken)
         }
     }

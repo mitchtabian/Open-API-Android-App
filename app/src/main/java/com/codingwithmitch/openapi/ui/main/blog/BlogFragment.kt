@@ -62,8 +62,11 @@ constructor(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // Restore state after process death
+
         savedInstanceState?.let { inState ->
+            Log.d(TAG, "BlogViewState: inState is NOT null")
             (inState[BLOG_VIEW_STATE_BUNDLE_KEY] as BlogViewState?)?.let { viewState ->
+                Log.d(TAG, "BlogViewState: restoring view state: ${viewState}")
                 viewModel.setViewState(viewState)
             }
         }
