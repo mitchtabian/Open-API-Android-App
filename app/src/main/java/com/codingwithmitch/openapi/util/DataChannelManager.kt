@@ -7,6 +7,8 @@ import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.channels.BroadcastChannel
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
@@ -21,7 +23,7 @@ abstract class DataChannelManager<ViewState> {
 
     private val _activeStateEvents: HashSet<String> = HashSet()
     private val _numActiveJobs: MutableLiveData<Int> = MutableLiveData()
-    private val dataChannel: ConflatedBroadcastChannel<DataState<ViewState>> =  ConflatedBroadcastChannel()
+    private val dataChannel: BroadcastChannel<DataState<ViewState>> =  BroadcastChannel(Channel.BUFFERED)
     private var channelScope: CoroutineScope? = null
 
     val messageStack = MessageStack()
