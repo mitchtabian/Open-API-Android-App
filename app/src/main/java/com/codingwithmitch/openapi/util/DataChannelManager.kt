@@ -23,29 +23,12 @@ abstract class DataChannelManager<ViewState> {
 
     private val _activeStateEvents: HashSet<String> = HashSet()
     private val _numActiveJobs: MutableLiveData<Int> = MutableLiveData()
-    private val dataChannel: BroadcastChannel<DataState<ViewState>> =  BroadcastChannel(Channel.BUFFERED)
     private var channelScope: CoroutineScope? = null
 
     val messageStack = MessageStack()
 
     val numActiveJobs: LiveData<Int>
         get() = _numActiveJobs
-
-    init {
-        dataChannel
-            .asFlow()
-            .onEach{ dataState ->
-                dataState.data?.let { data ->
-                    handleNewData(data)
-                    removeStateEvent(dataState.stateEvent)
-                }
-                dataState.stateMessage?.let { stateMessage ->
-                    handleNewStateMessage(stateMessage)
-                    removeStateEvent(dataState.stateEvent)
-                }
-            }
-            .launchIn(CoroutineScope(Main))
-    }
 
     fun setupChannel(){
         cancelJobs()
@@ -54,23 +37,25 @@ abstract class DataChannelManager<ViewState> {
 
     abstract fun handleNewData(data: ViewState)
 
-    private fun offerToDataChannel(dataState: DataState<ViewState>){
-        dataChannel.let {
-            if(!it.isClosedForSend){
-                it.offer(dataState)
-            }
-        }
-    }
-
     fun launchJob(
         stateEvent: StateEvent,
-        jobFunction: Flow<DataState<ViewState>>
+        jobFunction: Flow<DataState<ViewState>?>
     ){
         if(!isStateEventActive(stateEvent) && messageStack.size == 0){
             addStateEvent(stateEvent)
             jobFunction
-                .onEach { dataState ->
-                    offerToDataChannel(dataState)
+                .onEach{ dataState ->
+                    withContext(Main){
+                        dataState?.data?.let { data ->
+                            handleNewData(data)
+                        }
+                        dataState?.stateMessage?.let { stateMessage ->
+                            handleNewStateMessage(stateMessage)
+                        }
+                        dataState?.stateEvent?.let { stateEvent ->
+                            removeStateEvent(stateEvent)
+                        }
+                    }
                 }
                 .launchIn(getChannelScope())
         }
