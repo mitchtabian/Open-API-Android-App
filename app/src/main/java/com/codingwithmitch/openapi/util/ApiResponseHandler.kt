@@ -1,8 +1,6 @@
 package com.codingwithmitch.openapi.util
 
-import android.util.Log
 import com.codingwithmitch.openapi.util.ErrorHandling.Companion.NETWORK_ERROR
-
 
 abstract class ApiResponseHandler <ViewState, Data>(
     private val response: ApiResult<Data?>,

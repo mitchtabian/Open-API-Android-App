@@ -5,7 +5,6 @@ import android.util.Log
 import com.codingwithmitch.openapi.api.auth.OpenApiAuthService
 import com.codingwithmitch.openapi.api.auth.network_responses.LoginResponse
 import com.codingwithmitch.openapi.api.auth.network_responses.RegistrationResponse
-import com.codingwithmitch.openapi.di.auth.AuthScope
 import com.codingwithmitch.openapi.models.AccountProperties
 import com.codingwithmitch.openapi.models.AuthToken
 import com.codingwithmitch.openapi.persistence.AccountPropertiesDao
@@ -23,14 +22,11 @@ import com.codingwithmitch.openapi.util.ErrorHandling.Companion.ERROR_SAVE_AUTH_
 import com.codingwithmitch.openapi.util.ErrorHandling.Companion.GENERIC_AUTH_ERROR
 import com.codingwithmitch.openapi.util.ErrorHandling.Companion.INVALID_CREDENTIALS
 import com.codingwithmitch.openapi.util.SuccessHandling.Companion.RESPONSE_CHECK_PREVIOUS_AUTH_USER_DONE
-import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-@FlowPreview
-@AuthScope
 class AuthRepositoryImpl
 @Inject
 constructor(
@@ -42,7 +38,6 @@ constructor(
     val sharedPrefsEditor: SharedPreferences.Editor
 ): AuthRepository
 {
-
     private val TAG: String = "AppDebug"
 
     override fun attemptLogin(
@@ -117,7 +112,7 @@ constructor(
         else{
             Log.d(TAG, "emitting error: ${loginFieldErrors}")
             emit(
-                buildError(
+                buildError<AuthViewState>(
                     loginFieldErrors,
                     UIComponentType.Dialog(),
                     stateEvent
@@ -210,7 +205,7 @@ constructor(
         }
         else{
             emit(
-                buildError(
+                buildError<AuthViewState>(
                     registrationFieldErrors,
                     UIComponentType.Dialog(),
                     stateEvent

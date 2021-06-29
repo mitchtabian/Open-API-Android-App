@@ -1,16 +1,11 @@
 package com.codingwithmitch.openapi.repository.main
 
-import com.codingwithmitch.openapi.di.main.MainScope
-import com.codingwithmitch.openapi.models.AccountProperties
 import com.codingwithmitch.openapi.models.AuthToken
 import com.codingwithmitch.openapi.ui.main.account.state.AccountViewState
 import com.codingwithmitch.openapi.util.DataState
 import com.codingwithmitch.openapi.util.StateEvent
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 
-@FlowPreview
-@MainScope
 interface AccountRepository {
 
     fun getAccountProperties(

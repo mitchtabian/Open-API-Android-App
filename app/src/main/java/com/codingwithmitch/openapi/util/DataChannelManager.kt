@@ -1,6 +1,5 @@
 package com.codingwithmitch.openapi.util
 
-
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.*
@@ -10,8 +9,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
-@FlowPreview
-@ExperimentalCoroutinesApi
 abstract class DataChannelManager<ViewState> {
 
     private val TAG: String = "AppDebug"

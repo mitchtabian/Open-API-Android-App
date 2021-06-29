@@ -1,7 +1,6 @@
 package com.codingwithmitch.openapi.ui.main.create_blog
 
 import android.net.Uri
-import com.codingwithmitch.openapi.di.main.MainScope
 import com.codingwithmitch.openapi.repository.main.CreateBlogRepositoryImpl
 import com.codingwithmitch.openapi.session.SessionManager
 import com.codingwithmitch.openapi.ui.BaseViewModel
@@ -10,16 +9,14 @@ import com.codingwithmitch.openapi.ui.main.create_blog.state.CreateBlogViewState
 import com.codingwithmitch.openapi.ui.main.create_blog.state.CreateBlogViewState.*
 import com.codingwithmitch.openapi.util.*
 import com.codingwithmitch.openapi.util.ErrorHandling.Companion.INVALID_STATE_EVENT
-import kotlinx.coroutines.*
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import javax.inject.Inject
 
-@UseExperimental(ExperimentalCoroutinesApi::class)
-@FlowPreview
-@MainScope
+@HiltViewModel
 class CreateBlogViewModel
 @Inject
 constructor(
@@ -63,7 +60,7 @@ constructor(
                 else -> {
                     flow{
                         emit(
-                            DataState.error(
+                            DataState.error<CreateBlogViewState>(
                                 response = Response(
                                     message = INVALID_STATE_EVENT,
                                     uiComponentType = UIComponentType.None(),

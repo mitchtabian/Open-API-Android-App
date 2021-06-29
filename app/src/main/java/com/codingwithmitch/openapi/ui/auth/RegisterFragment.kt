@@ -1,28 +1,14 @@
 package com.codingwithmitch.openapi.ui.auth
 
-
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-
 import com.codingwithmitch.openapi.R
-import com.codingwithmitch.openapi.di.auth.AuthScope
 import com.codingwithmitch.openapi.ui.auth.state.AuthStateEvent.*
 import com.codingwithmitch.openapi.ui.auth.state.RegistrationFields
 import kotlinx.android.synthetic.main.fragment_register.*
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
-import javax.inject.Inject
 
-@FlowPreview
-@ExperimentalCoroutinesApi
-@AuthScope
-class RegisterFragment
-@Inject
-constructor(
-    viewModelFactory: ViewModelProvider.Factory
-): BaseAuthFragment(R.layout.fragment_register, viewModelFactory) {
+class RegisterFragment : BaseAuthFragment(R.layout.fragment_register) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

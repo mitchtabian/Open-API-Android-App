@@ -4,12 +4,10 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import androidx.core.net.toUri
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import com.bumptech.glide.RequestManager
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.models.BlogPost
 import com.codingwithmitch.openapi.ui.AreYouSureCallback
@@ -23,15 +21,10 @@ import kotlinx.android.synthetic.main.fragment_view_blog.*
 import kotlinx.coroutines.*
 import javax.inject.Inject
 
-@FlowPreview
-@ExperimentalCoroutinesApi
-class ViewBlogFragment
-@Inject
-constructor(
-    viewModelFactory: ViewModelProvider.Factory,
-    private val requestManager: RequestManager
-): BaseBlogFragment(R.layout.fragment_view_blog, viewModelFactory)
+class ViewBlogFragment : BaseBlogFragment(R.layout.fragment_view_blog)
 {
+    @Inject
+    lateinit var options: RequestOptions
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -151,7 +144,8 @@ constructor(
     }
 
     fun setBlogProperties(blogPost: BlogPost){
-        requestManager
+        Glide.with(this)
+            .setDefaultRequestOptions(options)
             .load(blogPost.image)
             .into(blog_image)
         blog_title.setText(blogPost.title)

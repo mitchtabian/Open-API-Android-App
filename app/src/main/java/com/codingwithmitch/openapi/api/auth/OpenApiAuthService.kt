@@ -2,10 +2,8 @@ package com.codingwithmitch.openapi.api.auth
 
 import com.codingwithmitch.openapi.api.auth.network_responses.LoginResponse
 import com.codingwithmitch.openapi.api.auth.network_responses.RegistrationResponse
-import com.codingwithmitch.openapi.di.auth.AuthScope
 import retrofit2.http.*
 
-@AuthScope
 interface OpenApiAuthService {
 
     @POST("account/login")

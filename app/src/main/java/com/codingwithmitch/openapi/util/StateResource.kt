@@ -1,8 +1,6 @@
 package com.codingwithmitch.openapi.util
 
-
 import com.codingwithmitch.openapi.ui.AreYouSureCallback
-
 
 data class StateMessage(val response: Response)
 

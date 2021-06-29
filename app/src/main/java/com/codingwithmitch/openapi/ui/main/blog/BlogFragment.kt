@@ -12,8 +12,6 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -29,6 +27,7 @@ import com.codingwithmitch.openapi.persistence.BlogQueryUtils.Companion.BLOG_FIL
 import com.codingwithmitch.openapi.persistence.BlogQueryUtils.Companion.BLOG_FILTER_USERNAME
 import com.codingwithmitch.openapi.persistence.BlogQueryUtils.Companion.BLOG_ORDER_ASC
 import com.codingwithmitch.openapi.persistence.BlogQueryUtils.Companion.BLOG_ORDER_DESC
+import com.codingwithmitch.openapi.ui.main.MainActivity
 import com.codingwithmitch.openapi.ui.main.blog.state.BLOG_VIEW_STATE_BUNDLE_KEY
 import com.codingwithmitch.openapi.ui.main.blog.state.BlogViewState
 import com.codingwithmitch.openapi.ui.main.blog.viewmodel.*
@@ -37,20 +36,8 @@ import com.codingwithmitch.openapi.util.StateMessageCallback
 import com.codingwithmitch.openapi.util.TopSpacingItemDecoration
 import kotlinx.android.synthetic.main.fragment_blog.*
 import kotlinx.coroutines.*
-import kotlinx.coroutines.Dispatchers.Main
-import loadFirstPage
-import nextPage
-import refreshFromCache
-import javax.inject.Inject
 
-@FlowPreview
-@ExperimentalCoroutinesApi
-class BlogFragment
-@Inject
-constructor(
-    viewModelFactory: ViewModelProvider.Factory,
-    private val requestOptions: RequestOptions
-): BaseBlogFragment(R.layout.fragment_blog, viewModelFactory),
+class BlogFragment : BaseBlogFragment(R.layout.fragment_blog),
     BlogListAdapter.Interaction,
     SwipeRefreshLayout.OnRefreshListener
 {
@@ -268,7 +255,8 @@ constructor(
 
     override fun onItemSelected(position: Int, item: BlogPost) {
         viewModel.setBlogPost(item)
-        findNavController().navigate(R.id.action_blogFragment_to_viewBlogFragment)
+//        findNavController().navigate(R.id.action_blogFragment_to_viewBlogFragment)
+        (activity as MainActivity).navController.navigate(R.id.action_blogFragment_to_viewBlogFragment)
     }
 
     override fun restoreListPosition() {

@@ -9,15 +9,18 @@ import com.codingwithmitch.openapi.repository.auth.AuthRepositoryImpl
 import com.codingwithmitch.openapi.session.SessionManager
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.FlowPreview
 import retrofit2.Retrofit
+import javax.inject.Singleton
 
 @FlowPreview
 @Module
+@InstallIn(SingletonComponent::class)
 object AuthModule{
 
-    @JvmStatic
-    @AuthScope
+    @Singleton
     @Provides
     fun provideOpenApiAuthService(retrofitBuilder: Retrofit.Builder): OpenApiAuthService {
         return retrofitBuilder
@@ -25,8 +28,7 @@ object AuthModule{
             .create(OpenApiAuthService::class.java)
     }
 
-    @JvmStatic
-    @AuthScope
+    @Singleton
     @Provides
     fun provideAuthRepository(
         sessionManager: SessionManager,

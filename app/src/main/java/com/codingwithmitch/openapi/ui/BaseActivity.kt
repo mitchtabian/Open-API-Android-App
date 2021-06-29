@@ -1,10 +1,8 @@
 package com.codingwithmitch.openapi.ui
 
-
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
-import android.os.Bundle
 import android.util.Log
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
@@ -12,7 +10,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.callbacks.onDismiss
-import com.codingwithmitch.openapi.BaseApplication
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.session.SessionManager
 import com.codingwithmitch.openapi.util.*
@@ -29,14 +26,6 @@ abstract class BaseActivity: AppCompatActivity(),
 
     @Inject
     lateinit var sessionManager: SessionManager
-
-    abstract fun inject()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        (application as BaseApplication).appComponent
-            .inject(this)
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onResponseReceived(
         response: Response,

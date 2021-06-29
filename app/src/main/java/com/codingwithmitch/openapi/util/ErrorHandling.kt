@@ -1,9 +1,5 @@
 package com.codingwithmitch.openapi.util
 
-import android.util.Log
-import org.json.JSONException
-import org.json.JSONObject
-
 class ErrorHandling{
 
     companion object{

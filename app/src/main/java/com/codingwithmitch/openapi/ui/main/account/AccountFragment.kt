@@ -20,13 +20,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import javax.inject.Inject
 
-@FlowPreview
-@ExperimentalCoroutinesApi
-class AccountFragment
-@Inject
-constructor(
-    viewModelFactory: ViewModelProvider.Factory
-): BaseAccountFragment(R.layout.fragment_account, viewModelFactory) {
+class AccountFragment : BaseAccountFragment(R.layout.fragment_account,) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

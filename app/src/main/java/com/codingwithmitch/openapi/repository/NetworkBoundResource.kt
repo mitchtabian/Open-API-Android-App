@@ -1,7 +1,5 @@
 package com.codingwithmitch.openapi.repository
 
-
-import android.util.Log
 import com.codingwithmitch.openapi.util.*
 import com.codingwithmitch.openapi.util.ErrorHandling.Companion.NETWORK_ERROR
 import com.codingwithmitch.openapi.util.ErrorHandling.Companion.UNKNOWN_ERROR
@@ -10,8 +8,6 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-
-@FlowPreview
 abstract class NetworkBoundResource<NetworkObj, CacheObj, ViewState>
 constructor(
     private val dispatcher: CoroutineDispatcher,
@@ -34,7 +30,7 @@ constructor(
         when(apiResult){
             is ApiResult.GenericError -> {
                 emit(
-                    buildError(
+                    buildError<ViewState>(
                         apiResult.errorMessage?.let { it }?: UNKNOWN_ERROR,
                         UIComponentType.Dialog(),
                         stateEvent
@@ -44,7 +40,7 @@ constructor(
 
             is ApiResult.NetworkError -> {
                 emit(
-                    buildError(
+                    buildError<ViewState>(
                         NETWORK_ERROR,
                         UIComponentType.Dialog(),
                         stateEvent
@@ -55,7 +51,7 @@ constructor(
             is ApiResult.Success -> {
                 if(apiResult.value == null){
                     emit(
-                        buildError(
+                        buildError<ViewState>(
                             UNKNOWN_ERROR,
                             UIComponentType.Dialog(),
                             stateEvent

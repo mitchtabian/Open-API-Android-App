@@ -3,13 +3,11 @@ package com.codingwithmitch.openapi.api.main
 import com.codingwithmitch.openapi.api.GenericResponse
 import com.codingwithmitch.openapi.api.main.responses.BlogCreateUpdateResponse
 import com.codingwithmitch.openapi.api.main.responses.BlogListSearchResponse
-import com.codingwithmitch.openapi.di.main.MainScope
 import com.codingwithmitch.openapi.models.AccountProperties
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.*
 
-@MainScope
 interface OpenApiMainService {
 
 

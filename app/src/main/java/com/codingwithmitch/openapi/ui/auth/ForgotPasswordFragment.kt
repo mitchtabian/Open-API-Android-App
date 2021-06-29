@@ -1,6 +1,5 @@
 package com.codingwithmitch.openapi.ui.auth
 
-
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
@@ -9,29 +8,16 @@ import android.view.animation.TranslateAnimation
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-
 import com.codingwithmitch.openapi.R
-import com.codingwithmitch.openapi.di.auth.AuthScope
 import com.codingwithmitch.openapi.ui.auth.ForgotPasswordFragment.WebAppInterface.*
 import com.codingwithmitch.openapi.util.*
 import kotlinx.android.synthetic.main.fragment_forgot_password.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.Main
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@FlowPreview
-@ExperimentalCoroutinesApi
-@AuthScope
-class ForgotPasswordFragment
-@Inject
-constructor(
-    viewModelFactory: ViewModelProvider.Factory
-): BaseAuthFragment(R.layout.fragment_forgot_password, viewModelFactory) {
+class ForgotPasswordFragment : BaseAuthFragment(R.layout.fragment_forgot_password) {
 
     lateinit var webView: WebView
 

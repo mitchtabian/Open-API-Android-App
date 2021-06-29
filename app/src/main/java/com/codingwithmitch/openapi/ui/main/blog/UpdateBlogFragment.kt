@@ -6,14 +6,10 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
-import com.bumptech.glide.RequestManager
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.codingwithmitch.openapi.R
-import com.codingwithmitch.openapi.models.BlogPost
 import com.codingwithmitch.openapi.ui.main.blog.state.BLOG_VIEW_STATE_BUNDLE_KEY
 import com.codingwithmitch.openapi.ui.main.blog.state.BlogStateEvent
 import com.codingwithmitch.openapi.ui.main.blog.state.BlogViewState
@@ -25,24 +21,17 @@ import com.codingwithmitch.openapi.util.SuccessHandling.Companion.SUCCESS_BLOG_U
 import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView
 import kotlinx.android.synthetic.main.fragment_update_blog.*
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.cancel
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import java.io.File
 import javax.inject.Inject
 
-@FlowPreview
-@ExperimentalCoroutinesApi
-class UpdateBlogFragment
-@Inject
-constructor(
-    viewModelFactory: ViewModelProvider.Factory,
-    private val requestManager: RequestManager
-): BaseBlogFragment(R.layout.fragment_update_blog, viewModelFactory)
+class UpdateBlogFragment : BaseBlogFragment(R.layout.fragment_update_blog)
 {
+
+    @Inject
+    lateinit var options: RequestOptions
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -185,7 +174,8 @@ constructor(
 
     fun setBlogProperties(title: String?, body: String?, image: Uri?){
         image?.let {
-            requestManager
+            Glide.with(this)
+                .setDefaultRequestOptions(options)
                 .load(it)
                 .into(blog_image)
         }

@@ -1,7 +1,7 @@
 package com.codingwithmitch.openapi.repository.main
+
 import com.codingwithmitch.openapi.api.main.OpenApiMainService
 import com.codingwithmitch.openapi.api.main.responses.BlogCreateUpdateResponse
-import com.codingwithmitch.openapi.di.main.MainScope
 import com.codingwithmitch.openapi.models.AuthToken
 import com.codingwithmitch.openapi.persistence.BlogPostDao
 import com.codingwithmitch.openapi.repository.safeApiCall
@@ -10,14 +10,11 @@ import com.codingwithmitch.openapi.ui.main.create_blog.state.CreateBlogViewState
 import com.codingwithmitch.openapi.util.*
 import com.codingwithmitch.openapi.util.SuccessHandling.Companion.RESPONSE_MUST_BECOME_CODINGWITHMITCH_MEMBER
 import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.flow
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import javax.inject.Inject
 
-@FlowPreview
-@MainScope
 class CreateBlogRepositoryImpl
 @Inject
 constructor(

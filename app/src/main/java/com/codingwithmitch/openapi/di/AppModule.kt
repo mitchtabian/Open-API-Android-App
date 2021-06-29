@@ -4,8 +4,6 @@ import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.room.Room
-import com.bumptech.glide.Glide
-import com.bumptech.glide.RequestManager
 import com.bumptech.glide.request.RequestOptions
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.persistence.AccountPropertiesDao
@@ -18,14 +16,16 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
 @Module
+@InstallIn(SingletonComponent::class)
 object AppModule{
 
-    @JvmStatic
     @Singleton
     @Provides
     fun provideSharedPreferences(
@@ -38,7 +38,6 @@ object AppModule{
             )
     }
 
-    @JvmStatic
     @Singleton
     @Provides
     fun provideSharedPrefsEditor(
@@ -47,7 +46,6 @@ object AppModule{
         return sharedPreferences.edit()
     }
 
-    @JvmStatic
     @Singleton
     @Provides
     fun provideGsonBuilder(): Gson {
@@ -56,7 +54,6 @@ object AppModule{
             .create()
     }
 
-    @JvmStatic
     @Singleton
     @Provides
     fun provideRetrofitBuilder(gsonBuilder:  Gson): Retrofit.Builder{
@@ -65,7 +62,6 @@ object AppModule{
             .addConverterFactory(GsonConverterFactory.create(gsonBuilder))
     }
 
-    @JvmStatic
     @Singleton
     @Provides
     fun provideAppDb(app: Application): AppDatabase {
@@ -75,35 +71,24 @@ object AppModule{
             .build()
     }
 
-    @JvmStatic
     @Singleton
     @Provides
     fun provideAuthTokenDao(db: AppDatabase): AuthTokenDao {
         return db.getAuthTokenDao()
     }
 
-    @JvmStatic
     @Singleton
     @Provides
     fun provideAccountPropertiesDao(db: AppDatabase): AccountPropertiesDao {
         return db.getAccountPropertiesDao()
     }
 
-    @JvmStatic
     @Singleton
     @Provides
     fun provideRequestOptions(): RequestOptions {
         return RequestOptions
             .placeholderOf(R.drawable.default_image)
             .error(R.drawable.default_image)
-    }
-
-    @JvmStatic
-    @Singleton
-    @Provides
-    fun provideGlideInstance(application: Application, requestOptions: RequestOptions): RequestManager {
-        return Glide.with(application)
-            .setDefaultRequestOptions(requestOptions)
     }
 
 }

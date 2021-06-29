@@ -1,7 +1,5 @@
 package com.codingwithmitch.openapi.ui.auth
 
-
-import com.codingwithmitch.openapi.di.auth.AuthScope
 import com.codingwithmitch.openapi.models.AuthToken
 import com.codingwithmitch.openapi.repository.auth.AuthRepository
 import com.codingwithmitch.openapi.ui.BaseViewModel
@@ -9,14 +7,12 @@ import com.codingwithmitch.openapi.ui.auth.state.*
 import com.codingwithmitch.openapi.ui.auth.state.AuthStateEvent.*
 import com.codingwithmitch.openapi.util.*
 import com.codingwithmitch.openapi.util.ErrorHandling.Companion.INVALID_STATE_EVENT
-import kotlinx.coroutines.*
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-@ExperimentalCoroutinesApi
-@FlowPreview
-@AuthScope
+@HiltViewModel
 class AuthViewModel
 @Inject
 constructor(
@@ -59,7 +55,7 @@ constructor(
             else -> {
                 flow{
                     emit(
-                        DataState.error(
+                        DataState.error<AuthViewState>(
                             response = Response(
                                 message = INVALID_STATE_EVENT,
                                 uiComponentType = UIComponentType.None(),

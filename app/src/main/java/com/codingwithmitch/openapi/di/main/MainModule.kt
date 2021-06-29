@@ -1,9 +1,5 @@
 package com.codingwithmitch.openapi.di.main
 
-import android.app.Application
-import com.bumptech.glide.Glide
-import com.bumptech.glide.RequestManager
-import com.bumptech.glide.request.RequestOptions
 import com.codingwithmitch.openapi.api.main.OpenApiMainService
 import com.codingwithmitch.openapi.persistence.AccountPropertiesDao
 import com.codingwithmitch.openapi.persistence.AppDatabase
@@ -15,16 +11,18 @@ import com.codingwithmitch.openapi.repository.main.CreateBlogRepositoryImpl
 import com.codingwithmitch.openapi.session.SessionManager
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.FlowPreview
 import retrofit2.Retrofit
 import javax.inject.Singleton
 
 @FlowPreview
 @Module
+@InstallIn(SingletonComponent::class)
 object MainModule {
 
-    @JvmStatic
-    @MainScope
+    @Singleton
     @Provides
     fun provideOpenApiMainService(retrofitBuilder: Retrofit.Builder): OpenApiMainService {
         return retrofitBuilder
@@ -32,8 +30,7 @@ object MainModule {
             .create(OpenApiMainService::class.java)
     }
 
-    @JvmStatic
-    @MainScope
+    @Singleton
     @Provides
     fun provideAccountRepository(
         openApiMainService: OpenApiMainService,
@@ -43,15 +40,13 @@ object MainModule {
         return AccountRepositoryImpl(openApiMainService, accountPropertiesDao, sessionManager)
     }
 
-    @JvmStatic
-    @MainScope
+    @Singleton
     @Provides
     fun provideBlogPostDao(db: AppDatabase): BlogPostDao {
         return db.getBlogPostDao()
     }
 
-    @JvmStatic
-    @MainScope
+    @Singleton
     @Provides
     fun provideBlogRepository(
         openApiMainService: OpenApiMainService,
@@ -61,8 +56,7 @@ object MainModule {
         return BlogRepositoryImpl(openApiMainService, blogPostDao, sessionManager)
     }
 
-    @JvmStatic
-    @MainScope
+    @Singleton
     @Provides
     fun provideCreateBlogRepository(
         openApiMainService: OpenApiMainService,

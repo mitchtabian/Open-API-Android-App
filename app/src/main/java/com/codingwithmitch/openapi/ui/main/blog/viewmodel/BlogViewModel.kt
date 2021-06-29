@@ -1,9 +1,6 @@
 package com.codingwithmitch.openapi.ui.main.blog.viewmodel
 
-
 import android.content.SharedPreferences
-import android.util.Log
-import com.codingwithmitch.openapi.di.main.MainScope
 import com.codingwithmitch.openapi.persistence.BlogQueryUtils
 import com.codingwithmitch.openapi.repository.main.BlogRepositoryImpl
 import com.codingwithmitch.openapi.session.SessionManager
@@ -14,17 +11,15 @@ import com.codingwithmitch.openapi.util.*
 import com.codingwithmitch.openapi.util.ErrorHandling.Companion.INVALID_STATE_EVENT
 import com.codingwithmitch.openapi.util.PreferenceKeys.Companion.BLOG_FILTER
 import com.codingwithmitch.openapi.util.PreferenceKeys.Companion.BLOG_ORDER
+import dagger.hilt.android.lifecycle.HiltViewModel
 import handleIncomingBlogListData
-import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import javax.inject.Inject
 
-@ExperimentalCoroutinesApi
-@FlowPreview
-@MainScope
+@HiltViewModel
 class BlogViewModel
 @Inject
 constructor(
@@ -41,12 +36,11 @@ constructor(
                 BlogQueryUtils.BLOG_FILTER_DATE_UPDATED
             )
         )
-        setBlogOrder(
-            sharedPreferences.getString(
-                BLOG_ORDER,
-                BlogQueryUtils.BLOG_ORDER_DESC
-            )
-        )
+        sharedPreferences.getString(
+            BLOG_ORDER,
+            BlogQueryUtils.BLOG_ORDER_DESC
+        )?.let { setBlogOrder(it) }
+
     }
 
     override fun handleNewData(data: BlogViewState) {
@@ -147,7 +141,7 @@ constructor(
                     else -> {
                         flow{
                             emit(
-                                DataState.error(
+                                DataState.error<BlogViewState>(
                                     response = Response(
                                         message = INVALID_STATE_EVENT,
                                         uiComponentType = UIComponentType.None(),

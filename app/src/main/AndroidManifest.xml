@@ -17,14 +17,12 @@
             android:theme="@style/AppTheme">
         <activity android:name=".ui.main.MainActivity"
                 android:windowSoftInputMode="adjustPan">
-
         </activity>
         <activity
                 android:name=".ui.auth.AuthActivity"
                 android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -32,7 +30,6 @@
         <activity android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
                 android:theme="@style/Base.Theme.AppCompat"/> <!-- optional (needed if default theme has no action bar) -->
 
-        <activity android:name=".testing.SingleFragmentActivity"></activity>
     </application>
 
 </manifest>

@@ -25,7 +25,6 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-
     <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -34,9 +33,12 @@
 
         <androidx.fragment.app.FragmentContainerView
                 android:id="@+id/main_fragments_container"
+                android:name="androidx.navigation.fragment.NavHostFragment"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginBottom="@dimen/bottom_nav_height"
+                app:defaultNavHost="true"
+                app:navGraph="@navigation/nav_main"
                 />
 
         <ProgressBar
@@ -50,8 +52,6 @@
                 app:layout_constraintVertical_bias="0.10"
                 android:visibility="gone"
                 />
-
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

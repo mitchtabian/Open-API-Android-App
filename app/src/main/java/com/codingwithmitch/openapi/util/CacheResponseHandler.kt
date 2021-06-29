@@ -1,6 +1,5 @@
 package com.codingwithmitch.openapi.util
 
-
 abstract class CacheResponseHandler <ViewState, Data>(
     private val response: CacheResult<Data?>,
     private val stateEvent: StateEvent?

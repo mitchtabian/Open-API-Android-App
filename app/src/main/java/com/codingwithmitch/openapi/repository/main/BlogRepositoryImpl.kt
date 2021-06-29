@@ -6,7 +6,6 @@ import com.codingwithmitch.openapi.api.GenericResponse
 import com.codingwithmitch.openapi.api.main.OpenApiMainService
 import com.codingwithmitch.openapi.api.main.responses.BlogCreateUpdateResponse
 import com.codingwithmitch.openapi.api.main.responses.BlogListSearchResponse
-import com.codingwithmitch.openapi.di.main.MainScope
 import com.codingwithmitch.openapi.models.AuthToken
 import com.codingwithmitch.openapi.models.BlogPost
 import com.codingwithmitch.openapi.persistence.BlogPostDao
@@ -14,7 +13,6 @@ import com.codingwithmitch.openapi.persistence.returnOrderedBlogQuery
 import com.codingwithmitch.openapi.repository.NetworkBoundResource
 import com.codingwithmitch.openapi.repository.buildError
 import com.codingwithmitch.openapi.repository.safeApiCall
-import com.codingwithmitch.openapi.repository.safeCacheCall
 import com.codingwithmitch.openapi.session.SessionManager
 import com.codingwithmitch.openapi.ui.main.blog.state.BlogViewState
 import com.codingwithmitch.openapi.ui.main.blog.state.BlogViewState.*
@@ -31,8 +29,6 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import javax.inject.Inject
 
-@FlowPreview
-@MainScope
 class BlogRepositoryImpl
 @Inject
 constructor(
