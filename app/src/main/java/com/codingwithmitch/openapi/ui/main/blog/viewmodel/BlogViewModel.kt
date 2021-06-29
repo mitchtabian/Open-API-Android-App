@@ -12,7 +12,6 @@ import com.codingwithmitch.openapi.util.ErrorHandling.Companion.INVALID_STATE_EV
 import com.codingwithmitch.openapi.util.PreferenceKeys.Companion.BLOG_FILTER
 import com.codingwithmitch.openapi.util.PreferenceKeys.Companion.BLOG_ORDER
 import dagger.hilt.android.lifecycle.HiltViewModel
-import handleIncomingBlogListData
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import okhttp3.MediaType

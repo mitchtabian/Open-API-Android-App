@@ -10,7 +10,6 @@ import androidx.fragment.app.activityViewModels
 import com.codingwithmitch.openapi.ui.UICommunicationListener
 import dagger.hilt.android.AndroidEntryPoint
 
-@AndroidEntryPoint
 abstract class BaseAuthFragment
 constructor(
     @LayoutRes

@@ -6,7 +6,6 @@ import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
-import com.codingwithmitch.openapi.BaseApplication
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.ui.BaseActivity
 import com.codingwithmitch.openapi.ui.auth.state.AuthStateEvent.*
@@ -81,7 +80,6 @@ class AuthActivity : BaseActivity()
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
         finish()
-        (application as BaseApplication).releaseAuthComponent()
     }
 
     private fun checkPreviousAuthUser(){
