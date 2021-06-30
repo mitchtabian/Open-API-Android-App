@@ -8,9 +8,7 @@ import android.view.View
 import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupWithNavController
+import androidx.navigation.ui.*
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.models.AUTH_TOKEN_BUNDLE_KEY
 import com.codingwithmitch.openapi.models.AuthToken
@@ -64,10 +62,6 @@ class MainActivity : BaseActivity(){
         bottomNavigationView.setupWithNavController(navController)
     }
 
-    override fun onSupportNavigateUp(): Boolean {
-        return navController.navigateUp(appBarConfiguration)
-    }
-
     private fun restoreSession(savedInstanceState: Bundle?){
         savedInstanceState?.get(AUTH_TOKEN_BUNDLE_KEY)?.let{ authToken ->
             Log.d(TAG, "restoreSession: Restoring token: ${authToken}")
@@ -112,5 +106,13 @@ class MainActivity : BaseActivity(){
         }
     }
 
-
 }
+
+
+
+
+
+
+
+
+

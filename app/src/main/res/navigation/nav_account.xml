@@ -13,10 +13,12 @@
 
         <action android:id="@+id/action_accountFragment_to_changePasswordFragment"
                 app:destination="@id/changePasswordFragment"
+                app:launchSingleTop="true"
                 />
 
         <action android:id="@+id/action_accountFragment_to_updateAccountFragment"
                 app:destination="@id/updateAccountFragment"
+                app:launchSingleTop="true"
                 />
     </fragment>
 
@@ -25,12 +27,6 @@
             android:label="@string/fragment_change_password"
             tools:layout="@layout/fragment_change_password">
 
-        <action android:id="@+id/action_changePasswordFragment_to_home"
-                app:destination="@id/accountFragment"
-                app:popUpTo="@+id/nav_account"
-                app:popUpToInclusive="true"
-                />
-
     </fragment>
 
 
@@ -38,13 +34,6 @@
             android:name="com.codingwithmitch.openapi.ui.main.account.UpdateAccountFragment"
             android:label="@string/fragment_update_account"
             tools:layout="@layout/fragment_update_account">
-
-
-        <action android:id="@+id/action_updateAccountFragment_to_home"
-                app:destination="@id/accountFragment"
-                app:popUpTo="@+id/nav_account"
-                app:popUpToInclusive="true"
-                />
     </fragment>
 
 </navigation>
