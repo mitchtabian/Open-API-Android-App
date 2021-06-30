@@ -20,6 +20,7 @@ import com.codingwithmitch.openapi.util.ErrorHandling.Companion.SOMETHING_WRONG_
 import com.codingwithmitch.openapi.util.SuccessHandling.Companion.SUCCESS_BLOG_UPDATED
 import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_update_blog.*
 import okhttp3.MediaType
 import okhttp3.MultipartBody
@@ -27,6 +28,7 @@ import okhttp3.RequestBody
 import java.io.File
 import javax.inject.Inject
 
+@AndroidEntryPoint
 class UpdateBlogFragment : BaseBlogFragment(R.layout.fragment_update_blog)
 {
 

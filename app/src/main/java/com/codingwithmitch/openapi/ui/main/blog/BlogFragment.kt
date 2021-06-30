@@ -12,6 +12,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -103,8 +104,6 @@ class BlogFragment : BaseBlogFragment(R.layout.fragment_blog),
     }
 
     private fun subscribeObservers(){
-
-
         viewModel.viewState.observe(viewLifecycleOwner, Observer{ viewState ->
             if(viewState != null){
                 recyclerAdapter.apply {
@@ -255,8 +254,7 @@ class BlogFragment : BaseBlogFragment(R.layout.fragment_blog),
 
     override fun onItemSelected(position: Int, item: BlogPost) {
         viewModel.setBlogPost(item)
-//        findNavController().navigate(R.id.action_blogFragment_to_viewBlogFragment)
-        (activity as MainActivity).navController.navigate(R.id.action_blogFragment_to_viewBlogFragment)
+        findNavController().navigate(R.id.action_blogFragment_to_viewBlogFragment)
     }
 
     override fun restoreListPosition() {

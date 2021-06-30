@@ -8,6 +8,9 @@ import android.view.View
 import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.navigateUp
+import androidx.navigation.ui.setupWithNavController
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.models.AUTH_TOKEN_BUNDLE_KEY
 import com.codingwithmitch.openapi.models.AuthToken
@@ -22,7 +25,8 @@ import kotlinx.android.synthetic.main.activity_main.progress_bar
 @AndroidEntryPoint
 class MainActivity : BaseActivity(){
 
-    lateinit var navController: NavController
+    private lateinit var navController: NavController
+    private lateinit var appBarConfiguration: AppBarConfiguration
 
     private lateinit var bottomNavigationView: BottomNavigationView
 
@@ -41,14 +45,27 @@ class MainActivity : BaseActivity(){
         navController = navHostFragment.navController
 
         setupActionBar()
-        setupBottomNavigationView(savedInstanceState)
+        setupBottomNavigationView()
 
         restoreSession(savedInstanceState)
         subscribeObservers()
     }
 
-    private fun setupBottomNavigationView(savedInstanceState: Bundle?){
+    private fun setupActionBar(){
+        setSupportActionBar(tool_bar)
+        appBarConfiguration = AppBarConfiguration(
+            setOf(R.id.blogFragment, R.id.createBlogFragment, R.id.accountFragment)
+        )
+        tool_bar.setupWithNavController(navController, appBarConfiguration)
+    }
+
+    private fun setupBottomNavigationView(){
         bottomNavigationView = findViewById(R.id.bottom_navigation_view)
+        bottomNavigationView.setupWithNavController(navController)
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        return navController.navigateUp(appBarConfiguration)
     }
 
     private fun restoreSession(savedInstanceState: Bundle?){
@@ -78,10 +95,6 @@ class MainActivity : BaseActivity(){
 
     override fun expandAppBar() {
         findViewById<AppBarLayout>(R.id.app_bar).setExpanded(true)
-    }
-
-    private fun setupActionBar(){
-        setSupportActionBar(tool_bar)
     }
 
     private fun navAuthActivity(){

@@ -15,10 +15,6 @@
 
         <action android:id="@+id/action_blogFragment_to_viewBlogFragment"
                 app:destination="@id/viewBlogFragment"
-                app:popEnterAnim="@anim/slide_in_left"
-                app:popExitAnim="@anim/slide_out_right"
-                app:enterAnim="@anim/slide_in_right"
-                app:exitAnim="@anim/slide_out_left"
                 />
 
     </fragment>
@@ -31,19 +27,11 @@
 
         <action android:id="@+id/action_viewBlogFragment_to_updateBlogFragment"
                 app:destination="@id/updateBlogFragment"
-                app:popEnterAnim="@anim/slide_in_left"
-                app:popExitAnim="@anim/slide_out_right"
-                app:enterAnim="@anim/slide_in_right"
-                app:exitAnim="@anim/slide_out_left"
                 />
 
         <action
                 android:id="@+id/action_viewBlogFragment_to_home"
                 app:destination="@id/blogFragment"
-                app:popEnterAnim="@anim/fade_in"
-                app:popExitAnim="@anim/fade_out"
-                app:enterAnim="@anim/fade_in"
-                app:exitAnim="@anim/fade_out"
                 app:popUpTo="@+id/nav_blog"
                 app:popUpToInclusive="true"
                 />
@@ -58,10 +46,6 @@
         <action
                 android:id="@+id/action_updateBlogFragment_to_home"
                 app:destination="@id/blogFragment"
-                app:popEnterAnim="@anim/fade_in"
-                app:popExitAnim="@anim/fade_out"
-                app:enterAnim="@anim/fade_in"
-                app:exitAnim="@anim/fade_out"
                 app:popUpTo="@+id/nav_blog"
                 app:popUpToInclusive="true" />
 

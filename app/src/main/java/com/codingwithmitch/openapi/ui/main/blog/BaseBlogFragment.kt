@@ -12,9 +12,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.ui.UICommunicationListener
 import com.codingwithmitch.openapi.ui.main.blog.viewmodel.BlogViewModel
-import dagger.hilt.android.AndroidEntryPoint
 
-@AndroidEntryPoint
 abstract class BaseBlogFragment
 constructor(
     @LayoutRes

@@ -13,17 +13,11 @@
 
         <action android:id="@+id/action_accountFragment_to_changePasswordFragment"
                 app:destination="@id/changePasswordFragment"
-                app:popEnterAnim="@anim/slide_in_left"
-                app:popExitAnim="@anim/slide_out_right"
-                app:enterAnim="@anim/slide_in_right"
-                app:exitAnim="@anim/slide_out_left"/>
+                />
 
         <action android:id="@+id/action_accountFragment_to_updateAccountFragment"
                 app:destination="@id/updateAccountFragment"
-                app:popEnterAnim="@anim/slide_in_left"
-                app:popExitAnim="@anim/slide_out_right"
-                app:enterAnim="@anim/slide_in_right"
-                app:exitAnim="@anim/slide_out_left"/>
+                />
     </fragment>
 
     <fragment android:id="@+id/changePasswordFragment"
@@ -33,10 +27,6 @@
 
         <action android:id="@+id/action_changePasswordFragment_to_home"
                 app:destination="@id/accountFragment"
-                app:popEnterAnim="@anim/fade_in"
-                app:popExitAnim="@anim/fade_out"
-                app:enterAnim="@anim/fade_in"
-                app:exitAnim="@anim/fade_out"
                 app:popUpTo="@+id/nav_account"
                 app:popUpToInclusive="true"
                 />
@@ -52,10 +42,6 @@
 
         <action android:id="@+id/action_updateAccountFragment_to_home"
                 app:destination="@id/accountFragment"
-                app:popEnterAnim="@anim/fade_in"
-                app:popExitAnim="@anim/fade_out"
-                app:enterAnim="@anim/fade_in"
-                app:exitAnim="@anim/fade_out"
                 app:popUpTo="@+id/nav_account"
                 app:popUpToInclusive="true"
                 />
