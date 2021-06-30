@@ -6,7 +6,6 @@ import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import androidx.lifecycle.Observer
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.*
@@ -20,8 +19,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main.progress_bar
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 
 @AndroidEntryPoint
 class MainActivity : BaseActivity(){
@@ -31,8 +28,8 @@ class MainActivity : BaseActivity(){
 
     private lateinit var bottomNavigationView: BottomNavigationView
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when(item?.itemId){
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
             android.R.id.home -> onBackPressed()
         }
         return super.onOptionsItemSelected(item)
@@ -50,7 +47,9 @@ class MainActivity : BaseActivity(){
 
         restoreSession(savedInstanceState)
         subscribeObservers()
+
     }
+
 
     private fun setupActionBar(){
         setSupportActionBar(tool_bar)

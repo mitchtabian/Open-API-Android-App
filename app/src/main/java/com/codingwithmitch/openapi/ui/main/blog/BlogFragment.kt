@@ -79,7 +79,7 @@ class BlogFragment : BaseBlogFragment(R.layout.fragment_blog),
         super.onViewCreated(view, savedInstanceState)
         (activity as AppCompatActivity).supportActionBar?.setDisplayShowTitleEnabled(false)
         setHasOptionsMenu(true)
-        swipe_refresh.setOnRefreshListener(this)
+//        swipe_refresh.setOnRefreshListener(this)
         setupGlide()
         initRecyclerView()
         subscribeObservers()
@@ -270,7 +270,7 @@ class BlogFragment : BaseBlogFragment(R.layout.fragment_blog),
 
     override fun onRefresh() {
         onBlogSearchOrFilter()
-        swipe_refresh.isRefreshing = false
+//        swipe_refresh.isRefreshing = false
     }
 
     fun showFilterDialog(){

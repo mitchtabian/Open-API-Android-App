@@ -14,14 +14,14 @@
             android:id="@+id/app_bar"
             >
 
-        <androidx.appcompat.widget.Toolbar
+        <com.google.android.material.appbar.MaterialToolbar
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:id="@+id/tool_bar"
                 app:layout_scrollFlags="scroll|enterAlways"
                 >
 
-        </androidx.appcompat.widget.Toolbar>
+        </com.google.android.material.appbar.MaterialToolbar>
 
     </com.google.android.material.appbar.AppBarLayout>
 

@@ -9,7 +9,7 @@
 
     <fragment android:id="@+id/blogFragment"
             android:name="com.codingwithmitch.openapi.ui.main.blog.BlogFragment"
-            android:label="@string/fragment_blog"
+            android:label=""
             tools:layout="@layout/fragment_blog"
             >
 
@@ -23,7 +23,7 @@
 
     <fragment android:id="@+id/viewBlogFragment"
             android:name="com.codingwithmitch.openapi.ui.main.blog.ViewBlogFragment"
-            android:label="@string/fragment_view_blog"
+            android:label=""
             tools:layout="@layout/fragment_view_blog">
 
         <action android:id="@+id/action_viewBlogFragment_to_updateBlogFragment"
@@ -36,7 +36,8 @@
     <fragment android:id="@+id/updateBlogFragment"
             android:name="com.codingwithmitch.openapi.ui.main.blog.UpdateBlogFragment"
             android:label="@string/fragment_update_blog"
-            tools:layout="@layout/fragment_update_blog">
+            tools:layout="@layout/fragment_update_blog"
+            >
 
     </fragment>
 </navigation>
