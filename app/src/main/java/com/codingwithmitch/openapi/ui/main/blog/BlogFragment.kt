@@ -49,10 +49,6 @@ class BlogFragment : BaseBlogFragment(R.layout.fragment_blog),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d(TAG, "instance: ${this}")
-
-        // Restore state after process death
-
         savedInstanceState?.let { inState ->
             Log.d(TAG, "BlogViewState: inState is NOT null")
             (inState[BLOG_VIEW_STATE_BUNDLE_KEY] as BlogViewState?)?.let { viewState ->
