@@ -1,7 +1,7 @@
 package com.codingwithmitch.openapi.di.main
 
 import com.codingwithmitch.openapi.api.main.OpenApiMainService
-import com.codingwithmitch.openapi.persistence.AccountPropertiesDao
+import com.codingwithmitch.openapi.persistence.account.AccountPropertiesDao
 import com.codingwithmitch.openapi.persistence.AppDatabase
 import com.codingwithmitch.openapi.persistence.BlogPostDao
 import com.codingwithmitch.openapi.repository.main.AccountRepository

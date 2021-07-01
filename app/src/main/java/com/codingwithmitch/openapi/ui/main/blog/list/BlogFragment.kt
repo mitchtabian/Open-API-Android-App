@@ -1,4 +1,4 @@
-package com.codingwithmitch.openapi.ui.main.blog
+package com.codingwithmitch.openapi.ui.main.blog.list
 
 import android.app.SearchManager
 import android.content.Context.SEARCH_SERVICE
@@ -24,13 +24,11 @@ import com.bumptech.glide.RequestManager
 import com.bumptech.glide.request.RequestOptions
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.models.BlogPost
-import com.codingwithmitch.openapi.persistence.BlogQueryUtils.Companion.BLOG_FILTER_DATE_UPDATED
-import com.codingwithmitch.openapi.persistence.BlogQueryUtils.Companion.BLOG_FILTER_USERNAME
-import com.codingwithmitch.openapi.persistence.BlogQueryUtils.Companion.BLOG_ORDER_ASC
-import com.codingwithmitch.openapi.persistence.BlogQueryUtils.Companion.BLOG_ORDER_DESC
-import com.codingwithmitch.openapi.ui.main.MainActivity
-import com.codingwithmitch.openapi.ui.main.blog.state.BLOG_VIEW_STATE_BUNDLE_KEY
-import com.codingwithmitch.openapi.ui.main.blog.state.BlogViewState
+import com.codingwithmitch.openapi.persistence.blog.BlogQueryUtils.Companion.BLOG_FILTER_DATE_UPDATED
+import com.codingwithmitch.openapi.persistence.blog.BlogQueryUtils.Companion.BLOG_FILTER_USERNAME
+import com.codingwithmitch.openapi.persistence.blog.BlogQueryUtils.Companion.BLOG_ORDER_ASC
+import com.codingwithmitch.openapi.persistence.blog.BlogQueryUtils.Companion.BLOG_ORDER_DESC
+import com.codingwithmitch.openapi.ui.main.blog.BaseBlogFragment
 import com.codingwithmitch.openapi.ui.main.blog.viewmodel.*
 import com.codingwithmitch.openapi.util.ErrorHandling.Companion.isPaginationDone
 import com.codingwithmitch.openapi.util.StateMessageCallback
@@ -47,39 +45,12 @@ class BlogFragment : BaseBlogFragment(R.layout.fragment_blog),
     private lateinit var recyclerAdapter: BlogListAdapter
     private var requestManager: RequestManager? = null // can leak memory, must be nullable
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        savedInstanceState?.let { inState ->
-            Log.d(TAG, "BlogViewState: inState is NOT null")
-            (inState[BLOG_VIEW_STATE_BUNDLE_KEY] as BlogViewState?)?.let { viewState ->
-                Log.d(TAG, "BlogViewState: restoring view state: ${viewState}")
-                viewModel.setViewState(viewState)
-            }
-        }
-    }
-
-    /**
-     * !IMPORTANT!
-     * Must save ViewState b/c in event of process death the LiveData in ViewModel will be lost
-     */
-    override fun onSaveInstanceState(outState: Bundle) {
-        val viewState = viewModel.viewState.value
-
-        //clear the list. Don't want to save a large list to bundle.
-        viewState?.blogFields?.blogList = ArrayList()
-
-        outState.putParcelable(
-            BLOG_VIEW_STATE_BUNDLE_KEY,
-            viewState
-        )
-        super.onSaveInstanceState(outState)
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (activity as AppCompatActivity).supportActionBar?.setDisplayShowTitleEnabled(false)
         setHasOptionsMenu(true)
-//        swipe_refresh.setOnRefreshListener(this)
+        swipe_refresh.setOnRefreshListener(this)
         setupGlide()
         initRecyclerView()
         subscribeObservers()

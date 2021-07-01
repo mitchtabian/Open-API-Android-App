@@ -7,8 +7,8 @@ import com.codingwithmitch.openapi.api.auth.network_responses.LoginResponse
 import com.codingwithmitch.openapi.api.auth.network_responses.RegistrationResponse
 import com.codingwithmitch.openapi.models.AccountProperties
 import com.codingwithmitch.openapi.models.AuthToken
-import com.codingwithmitch.openapi.persistence.AccountPropertiesDao
-import com.codingwithmitch.openapi.persistence.AuthTokenDao
+import com.codingwithmitch.openapi.persistence.account.AccountPropertiesDao
+import com.codingwithmitch.openapi.persistence.auth.AuthTokenDao
 import com.codingwithmitch.openapi.repository.buildError
 import com.codingwithmitch.openapi.repository.safeApiCall
 import com.codingwithmitch.openapi.repository.safeCacheCall

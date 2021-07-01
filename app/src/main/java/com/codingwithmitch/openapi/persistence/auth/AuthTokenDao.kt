@@ -1,4 +1,4 @@
-package com.codingwithmitch.openapi.persistence
+package com.codingwithmitch.openapi.persistence.auth
 
 import androidx.room.Dao
 import androidx.room.Insert

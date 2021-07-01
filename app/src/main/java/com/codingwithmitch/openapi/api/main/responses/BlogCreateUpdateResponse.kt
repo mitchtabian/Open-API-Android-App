@@ -9,52 +9,50 @@ class BlogCreateUpdateResponse(
 
     @SerializedName("response")
     @Expose
-    var response: String,
+    val response: String,
 
     @SerializedName("pk")
     @Expose
-    var pk: Int,
+    val pk: Int,
 
     @SerializedName("title")
     @Expose
-    var title: String,
+    val title: String,
 
     @SerializedName("slug")
     @Expose
-    var slug: String,
+    val slug: String,
 
     @SerializedName("body")
     @Expose
-    var body: String,
+    val body: String,
 
     @SerializedName("image")
     @Expose
-    var image: String,
+    val image: String,
 
     @SerializedName("date_updated")
     @Expose
-    var date_updated: String,
+    val date_updated: String,
 
     @SerializedName("username")
     @Expose
-    var username: String
+    val username: String
 
+)
 
-
-){
-    fun toBlogPost(): BlogPost {
-        return BlogPost(
-            pk = pk,
-            title = title,
-            slug = slug,
-            body = body,
-            image = image,
-            date_updated = DateUtils.convertServerStringDateToLong(
-                date_updated
-            ),
-            username = username
-        )
-    }
+fun BlogCreateUpdateResponse.List<BlogPost>(): BlogPost {
+    return BlogPost(
+        pk = pk,
+        title = title,
+        slug = slug,
+        body = body,
+        image = image,
+        date_updated = DateUtils.convertServerStringDateToLong(
+            date_updated
+        ),
+        username = username
+    )
 }
 
 

@@ -1,4 +1,4 @@
-package com.codingwithmitch.openapi.ui.main.blog
+package com.codingwithmitch.openapi.ui.main.blog.detail
 
 import android.os.Bundle
 import android.util.Log
@@ -11,6 +11,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.models.BlogPost
 import com.codingwithmitch.openapi.ui.AreYouSureCallback
+import com.codingwithmitch.openapi.ui.main.blog.BaseBlogFragment
 import com.codingwithmitch.openapi.ui.main.blog.state.BLOG_VIEW_STATE_BUNDLE_KEY
 import com.codingwithmitch.openapi.ui.main.blog.state.BlogStateEvent.*
 import com.codingwithmitch.openapi.ui.main.blog.state.BlogViewState

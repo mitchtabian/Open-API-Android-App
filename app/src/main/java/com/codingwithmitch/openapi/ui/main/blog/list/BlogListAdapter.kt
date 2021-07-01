@@ -1,4 +1,4 @@
-package com.codingwithmitch.openapi.ui.main.blog
+package com.codingwithmitch.openapi.ui.main.blog.list
 
 import android.util.Log
 import android.view.LayoutInflater

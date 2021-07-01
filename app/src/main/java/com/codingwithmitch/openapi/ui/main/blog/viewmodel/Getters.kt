@@ -2,8 +2,9 @@ package com.codingwithmitch.openapi.ui.main.blog.viewmodel
 
 import android.net.Uri
 import com.codingwithmitch.openapi.models.BlogPost
-import com.codingwithmitch.openapi.persistence.BlogQueryUtils.Companion.BLOG_FILTER_DATE_UPDATED
-import com.codingwithmitch.openapi.persistence.BlogQueryUtils.Companion.BLOG_ORDER_DESC
+import com.codingwithmitch.openapi.persistence.blog.BlogQueryUtils.Companion.BLOG_FILTER_DATE_UPDATED
+import com.codingwithmitch.openapi.persistence.blog.BlogQueryUtils.Companion.BLOG_ORDER_DESC
+import com.codingwithmitch.openapi.ui.main.blog.list.BlogViewModel
 
 fun BlogViewModel.getIsQueryExhausted(): Boolean {
     return getCurrentViewStateOrNew().blogFields.isQueryExhausted

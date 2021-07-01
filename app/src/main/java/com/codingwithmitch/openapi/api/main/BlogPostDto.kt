@@ -1,44 +1,46 @@
-package com.codingwithmitch.openapi.api.main.responses
+package com.codingwithmitch.openapi.api.main
 
 import com.codingwithmitch.openapi.models.BlogPost
+import com.codingwithmitch.openapi.persistence.blog.BlogPostEntity
 import com.codingwithmitch.openapi.util.DateUtils
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-class BlogSearchResponse(
+class BlogPostDto(
 
     @SerializedName("pk")
     @Expose
-    var pk: Int,
+    val pk: Int,
 
     @SerializedName("title")
     @Expose
-    var title: String,
+    val title: String,
 
     @SerializedName("slug")
     @Expose
-    var slug: String,
+    val slug: String,
 
     @SerializedName("body")
     @Expose
-    var body: String,
+    val body: String,
 
     @SerializedName("image")
     @Expose
-    var image: String,
+    val image: String,
 
     @SerializedName("date_updated")
     @Expose
-    var date_updated: String,
+    val date_updated: String,
 
     @SerializedName("username")
     @Expose
-    var username: String
+    val username: String
 
 
-) {
-    fun toBlogPost(): BlogPost{
-        return BlogPost(
+)
+
+fun BlogPostDto.toBlogPost(): BlogPost{
+    return BlogPost(
             pk = pk,
             title = title,
             slug = slug,
@@ -49,15 +51,20 @@ class BlogSearchResponse(
             ),
             username = username
         )
-    }
-
-    override fun toString(): String {
-        return "BlogSearchResponse(pk=$pk, title='$title', slug='$slug',  image='$image', date_updated='$date_updated', username='$username')"
-    }
 }
 
 
-
+fun BlogPost.toDto(): BlogPostDto {
+    return BlogPostDto(
+        pk = pk,
+        title = title,
+        slug = slug,
+        body = body,
+        image = image,
+        date_updated = DateUtils.convertLongToStringDate(date_updated),
+        username = username
+    )
+}
 
 
 

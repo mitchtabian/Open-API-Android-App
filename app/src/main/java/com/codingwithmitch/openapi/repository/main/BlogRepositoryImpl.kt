@@ -10,7 +10,6 @@ import com.codingwithmitch.openapi.models.AuthToken
 import com.codingwithmitch.openapi.models.BlogPost
 import com.codingwithmitch.openapi.persistence.BlogPostDao
 import com.codingwithmitch.openapi.persistence.returnOrderedBlogQuery
-import com.codingwithmitch.openapi.repository.NetworkBoundResource
 import com.codingwithmitch.openapi.repository.buildError
 import com.codingwithmitch.openapi.repository.safeApiCall
 import com.codingwithmitch.openapi.session.SessionManager
@@ -37,69 +36,6 @@ constructor(
     val sessionManager: SessionManager
 ): BlogRepository
 {
-
-    private val TAG: String = "AppDebug"
-    override fun searchBlogPosts(
-        authToken: AuthToken,
-        query: String,
-        filterAndOrder: String,
-        page: Int,
-        stateEvent: StateEvent
-    ): Flow<DataState<BlogViewState>> {
-        return object: NetworkBoundResource<BlogListSearchResponse, List<BlogPost>, BlogViewState>(
-            dispatcher = IO,
-            stateEvent = stateEvent,
-            apiCall = {
-                openApiMainService.searchListBlogPosts(
-                    "Token ${authToken.token!!}",
-                    query = query,
-                    ordering = filterAndOrder,
-                    page = page
-                )
-            },
-            cacheCall = {
-                blogPostDao.returnOrderedBlogQuery(
-                    query = query,
-                    filterAndOrder = filterAndOrder,
-                    page = page
-                )
-            }
-        ){
-            override suspend fun updateCache(networkObject: BlogListSearchResponse) {
-                val blogPostList = networkObject.toList()
-                withContext(IO) {
-                    for(blogPost in blogPostList){
-                        try{
-                            // Launch each insert as a separate job to be executed in parallel
-                            launch {
-                                Log.d(TAG, "updateLocalDb: inserting blog: ${blogPost}")
-                                blogPostDao.insert(blogPost)
-                            }
-                        }catch (e: Exception){
-                            Log.e(TAG, "updateLocalDb: error updating cache data on blog post with slug: ${blogPost.slug}. " +
-                                    "${e.message}")
-                            // Could send an error report here or something but I don't think you should throw an error to the UI
-                            // Since there could be many blog posts being inserted/updated.
-                        }
-                    }
-                }
-            }
-
-            override fun handleCacheSuccess(resultObj: List<BlogPost>): DataState<BlogViewState> {
-                val viewState = BlogViewState(
-                    blogFields = BlogFields(
-                        blogList = resultObj
-                    )
-                )
-                return DataState.data(
-                    response = null,
-                    data = viewState,
-                    stateEvent = stateEvent
-                )
-            }
-
-        }.result
-    }
 
     override fun isAuthorOfBlogPost(
         authToken: AuthToken,

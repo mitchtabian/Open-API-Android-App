@@ -1,0 +1,198 @@
+package com.codingwithmitch.openapi.ui.main.blog.list
+
+import android.content.SharedPreferences
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.codingwithmitch.openapi.interactors.blog.SearchBlogs
+import com.codingwithmitch.openapi.models.BlogPost
+import com.codingwithmitch.openapi.repository.main.BlogRepositoryImpl
+import com.codingwithmitch.openapi.session.SessionManager
+import com.codingwithmitch.openapi.util.PreferenceKeys.Companion.BLOG_FILTER
+import com.codingwithmitch.openapi.util.PreferenceKeys.Companion.BLOG_ORDER
+import com.codingwithmitch.openapi.util.StateMessage
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import javax.inject.Inject
+
+@HiltViewModel
+class BlogViewModel
+@Inject
+constructor(
+    private val sessionManager: SessionManager,
+    private val searchBlogs: SearchBlogs,
+    private val sharedPreferences: SharedPreferences,
+    private val editor: SharedPreferences.Editor
+): ViewModel(){
+
+    val state: MutableLiveData<BlogState> = MutableLiveData(BlogState())
+
+    init {
+        val orderValue = sharedPreferences.getString(
+            BLOG_ORDER,
+            BlogOrderOptions.DESC.value
+        )
+        onUpdateOrder(getOrderFromValue(orderValue))
+        val filterValue = sharedPreferences.getString(
+            BLOG_FILTER,
+            BlogFilterOptions.DATE_UPDATED.value
+        )
+        onUpdateFilter(getFilterFromValue(filterValue))
+        onTriggerEvent(BlogEvents.NewSearch)
+    }
+
+    fun onTriggerEvent(event: BlogEvents) {
+        when(event){
+            is BlogEvents.NewSearch -> {
+                search()
+            }
+            is BlogEvents.NextPage -> {
+                nextPage()
+            }
+            is BlogEvents.UpdateFilter -> {
+                onUpdateFilter(event.filter)
+            }
+            is BlogEvents.UpdateQuery -> {
+                onUpdateQuery(event.query)
+            }
+            is BlogEvents.UpdateOrder -> {
+                onUpdateOrder(event.order)
+            }
+            else -> {
+//                DataState.error<BlogViewState>(
+//                    response = Response(
+//                        message = INVALID_STATE_EVENT,
+//                        uiComponentType = UIComponentType.None(),
+//                        messageType = MessageType.Error()
+//                    ),
+//                )
+            }
+        }
+    }
+
+
+    fun saveFilterOptions(filter: String, order: String){
+        editor.putString(BLOG_FILTER, filter)
+        editor.apply()
+
+        editor.putString(BLOG_ORDER, order)
+        editor.apply()
+    }
+
+    private fun appendToMessageQueue(stateMessage: StateMessage){
+        // TODO
+    }
+
+    private fun appendBlogPosts(blogs: List<BlogPost>){
+        state.value?.let { state ->
+            val curr: MutableList<BlogPost> = mutableListOf()
+            curr.addAll(state.blogList)
+            curr.addAll(blogs)
+            this.state.value = state.copy(blogList = curr)
+        }
+    }
+
+    private fun onQueryExhausted(isExhausted: Boolean){
+        state.value = state.value?.copy(isQueryExhausted = isExhausted)
+    }
+
+    private fun clearList(){
+        state.value?.let { state ->
+            this.state.value = state.copy(blogList = listOf())
+        }
+    }
+
+    private fun resetPage(){
+        state.value = state.value?.copy(page = 1)
+    }
+
+    private fun incrementPageNumber(){
+        state.value?.let { state ->
+            this.state.value = state.copy(page = state.page + 1)
+        }
+    }
+
+    private fun onUpdateQuery(query: String){
+        state.value = state.value?.copy(query = query)
+    }
+
+    private fun onUpdateFilter(filter: BlogFilterOptions){
+        state.value = state.value?.copy(filter = filter)
+    }
+
+    private fun onUpdateOrder(order: BlogOrderOptions){
+        state.value = state.value?.copy(order = order)
+    }
+
+    private fun search() {
+        state.value?.let { state ->
+            onQueryExhausted(false)
+            resetPage()
+            clearList()
+            searchBlogs.execute(
+                authToken = sessionManager.cachedToken.value,
+                query = state.query,
+                page = state.page,
+                filter = state.filter,
+                order = state.order
+            ).onEach { dataState ->
+                this.state.value = state.copy(isLoading = dataState.isLoading)
+
+                dataState.data?.let { list ->
+                    this.state.value = state.copy(blogList = list)
+                }
+
+                dataState.stateMessage?.let { stateMessage ->
+                    appendToMessageQueue(stateMessage)
+                }
+
+            }.launchIn(viewModelScope)
+        }
+    }
+
+    private fun nextPage(){
+        state.value?.let { state ->
+            if(!state.isQueryExhausted){
+                incrementPageNumber()
+                onQueryExhausted(false)
+                resetPage()
+                searchBlogs.execute(
+                    authToken = sessionManager.cachedToken.value,
+                    query = state.query,
+                    page = state.page,
+                    filter = state.filter,
+                    order = state.order
+                ).onEach { dataState ->
+                    this.state.value = state.copy(isLoading = dataState.isLoading)
+
+                    dataState.data?.let { list ->
+                        appendBlogPosts(list)
+                    }
+
+                    dataState.stateMessage?.let { stateMessage ->
+                        appendToMessageQueue(stateMessage)
+                    }
+
+                }.launchIn(viewModelScope)
+            }
+        }
+    }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

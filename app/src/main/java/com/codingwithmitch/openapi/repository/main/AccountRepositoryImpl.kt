@@ -5,8 +5,7 @@ import com.codingwithmitch.openapi.api.GenericResponse
 import com.codingwithmitch.openapi.api.main.OpenApiMainService
 import com.codingwithmitch.openapi.models.AccountProperties
 import com.codingwithmitch.openapi.models.AuthToken
-import com.codingwithmitch.openapi.persistence.AccountPropertiesDao
-import com.codingwithmitch.openapi.repository.NetworkBoundResource
+import com.codingwithmitch.openapi.persistence.account.AccountPropertiesDao
 import com.codingwithmitch.openapi.repository.safeApiCall
 import com.codingwithmitch.openapi.session.SessionManager
 import com.codingwithmitch.openapi.ui.main.account.state.AccountViewState

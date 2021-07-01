@@ -1,17 +1,18 @@
-package com.codingwithmitch.openapi.persistence
+package com.codingwithmitch.openapi.persistence.blog
 
 import androidx.room.*
 import com.codingwithmitch.openapi.models.BlogPost
+import com.codingwithmitch.openapi.persistence.blog.BlogQueryUtils
 import com.codingwithmitch.openapi.util.Constants.Companion.PAGINATION_PAGE_SIZE
 
 @Dao
 interface BlogPostDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(blogPost: BlogPost): Long
+    suspend fun insert(blogPost: BlogPostEntity): Long
 
     @Delete
-    suspend fun deleteBlogPost(blogPost: BlogPost)
+    suspend fun deleteBlogPost(blogPost: BlogPostEntity)
 
     @Query("""
         UPDATE blog_post SET title = :title, body = :body, image = :image 
@@ -31,7 +32,7 @@ interface BlogPostDao {
         query: String,
         page: Int,
         pageSize: Int = PAGINATION_PAGE_SIZE
-    ): List<BlogPost>
+    ): List<BlogPostEntity>
 
     @Query("""
         SELECT * FROM blog_post 
@@ -44,7 +45,7 @@ interface BlogPostDao {
         query: String,
         page: Int,
         pageSize: Int = PAGINATION_PAGE_SIZE
-    ): List<BlogPost>
+    ): List<BlogPostEntity>
 
     @Query("""
         SELECT * FROM blog_post 
@@ -56,7 +57,7 @@ interface BlogPostDao {
         query: String,
         page: Int,
         pageSize: Int = PAGINATION_PAGE_SIZE
-    ): List<BlogPost>
+    ): List<BlogPostEntity>
 
     @Query("""
         SELECT * FROM blog_post 
@@ -68,7 +69,7 @@ interface BlogPostDao {
         query: String,
         page: Int,
         pageSize: Int = PAGINATION_PAGE_SIZE
-    ): List<BlogPost>
+    ): List<BlogPostEntity>
 
     @Query("""
         SELECT * FROM blog_post 
@@ -81,10 +82,53 @@ interface BlogPostDao {
         query: String,
         page: Int,
         pageSize: Int = PAGINATION_PAGE_SIZE
-    ): List<BlogPost>
-
+    ): List<BlogPostEntity>
 
 }
+
+suspend fun BlogPostDao.returnOrderedBlogQuery(
+    query: String,
+    filterAndOrder: String,
+    page: Int
+): List<BlogPostEntity> {
+
+    when{
+
+        filterAndOrder.contains(BlogQueryUtils.ORDER_BY_DESC_DATE_UPDATED) ->{
+            return searchBlogPostsOrderByDateDESC(
+                query = query,
+                page = page)
+        }
+
+        filterAndOrder.contains(BlogQueryUtils.ORDER_BY_ASC_DATE_UPDATED) ->{
+            return searchBlogPostsOrderByDateASC(
+                query = query,
+                page = page)
+        }
+
+        filterAndOrder.contains(BlogQueryUtils.ORDER_BY_DESC_USERNAME) ->{
+            return searchBlogPostsOrderByAuthorDESC(
+                query = query,
+                page = page)
+        }
+
+        filterAndOrder.contains(BlogQueryUtils.ORDER_BY_ASC_USERNAME) ->{
+            return searchBlogPostsOrderByAuthorASC(
+                query = query,
+                page = page)
+        }
+        else ->
+            return searchBlogPostsOrderByDateDESC(
+                query = query,
+                page = page
+            )
+    }
+}
+
+
+
+
+
 
 
 

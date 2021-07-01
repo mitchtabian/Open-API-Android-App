@@ -6,10 +6,10 @@ import android.content.SharedPreferences
 import androidx.room.Room
 import com.bumptech.glide.request.RequestOptions
 import com.codingwithmitch.openapi.R
-import com.codingwithmitch.openapi.persistence.AccountPropertiesDao
+import com.codingwithmitch.openapi.persistence.account.AccountPropertiesDao
 import com.codingwithmitch.openapi.persistence.AppDatabase
 import com.codingwithmitch.openapi.persistence.AppDatabase.Companion.DATABASE_NAME
-import com.codingwithmitch.openapi.persistence.AuthTokenDao
+import com.codingwithmitch.openapi.persistence.auth.AuthTokenDao
 import com.codingwithmitch.openapi.util.Constants
 import com.codingwithmitch.openapi.util.PreferenceKeys
 import com.google.gson.Gson
