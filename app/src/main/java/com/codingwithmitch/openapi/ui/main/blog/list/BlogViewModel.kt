@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.codingwithmitch.openapi.interactors.blog.SearchBlogs
 import com.codingwithmitch.openapi.models.BlogPost
-import com.codingwithmitch.openapi.repository.main.BlogRepositoryImpl
 import com.codingwithmitch.openapi.session.SessionManager
 import com.codingwithmitch.openapi.util.PreferenceKeys.Companion.BLOG_FILTER
 import com.codingwithmitch.openapi.util.PreferenceKeys.Companion.BLOG_ORDER
@@ -72,7 +71,7 @@ constructor(
     }
 
 
-    fun saveFilterOptions(filter: String, order: String){
+    private fun saveFilterOptions(filter: String, order: String){
         editor.putString(BLOG_FILTER, filter)
         editor.apply()
 
@@ -91,10 +90,6 @@ constructor(
             curr.addAll(blogs)
             this.state.value = state.copy(blogList = curr)
         }
-    }
-
-    private fun onQueryExhausted(isExhausted: Boolean){
-        state.value = state.value?.copy(isQueryExhausted = isExhausted)
     }
 
     private fun clearList(){
@@ -118,16 +113,21 @@ constructor(
     }
 
     private fun onUpdateFilter(filter: BlogFilterOptions){
-        state.value = state.value?.copy(filter = filter)
+        state.value?.let { state ->
+            this.state.value = state.copy(filter = filter)
+            saveFilterOptions(filter.value, state.order.value)
+        }
     }
 
     private fun onUpdateOrder(order: BlogOrderOptions){
-        state.value = state.value?.copy(order = order)
+        state.value?.let { state ->
+            this.state.value = state.copy(order = order)
+            saveFilterOptions(state.filter.value, order.value)
+        }
     }
 
     private fun search() {
         state.value?.let { state ->
-            onQueryExhausted(false)
             resetPage()
             clearList()
             searchBlogs.execute(
@@ -153,29 +153,26 @@ constructor(
 
     private fun nextPage(){
         state.value?.let { state ->
-            if(!state.isQueryExhausted){
-                incrementPageNumber()
-                onQueryExhausted(false)
-                resetPage()
-                searchBlogs.execute(
-                    authToken = sessionManager.cachedToken.value,
-                    query = state.query,
-                    page = state.page,
-                    filter = state.filter,
-                    order = state.order
-                ).onEach { dataState ->
-                    this.state.value = state.copy(isLoading = dataState.isLoading)
+            incrementPageNumber()
+            resetPage()
+            searchBlogs.execute(
+                authToken = sessionManager.cachedToken.value,
+                query = state.query,
+                page = state.page,
+                filter = state.filter,
+                order = state.order
+            ).onEach { dataState ->
+                this.state.value = state.copy(isLoading = dataState.isLoading)
 
-                    dataState.data?.let { list ->
-                        appendBlogPosts(list)
-                    }
+                dataState.data?.let { list ->
+                    appendBlogPosts(list)
+                }
 
-                    dataState.stateMessage?.let { stateMessage ->
-                        appendToMessageQueue(stateMessage)
-                    }
+                dataState.stateMessage?.let { stateMessage ->
+                    appendToMessageQueue(stateMessage)
+                }
 
-                }.launchIn(viewModelScope)
-            }
+            }.launchIn(viewModelScope)
         }
     }
 

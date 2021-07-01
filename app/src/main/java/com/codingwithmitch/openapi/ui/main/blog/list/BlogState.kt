@@ -9,7 +9,6 @@ data class BlogState(
     val blogList: List<BlogPost> = listOf(),
     val query: String = "",
     val page: Int = 1,
-    val isQueryExhausted: Boolean = false,
     val filter: BlogFilterOptions = DATE_UPDATED,
     val order: BlogOrderOptions = DESC,
 )

@@ -1,36 +1,27 @@
 package com.codingwithmitch.openapi.ui.main.blog.list
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.*
-import com.bumptech.glide.RequestManager
+import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade
+import com.bumptech.glide.request.RequestOptions
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.models.BlogPost
 import com.codingwithmitch.openapi.util.DateUtils
-import com.codingwithmitch.openapi.util.GenericViewHolder
 import kotlinx.android.synthetic.main.layout_blog_list_item.view.*
 
 class BlogListAdapter(
-    private val requestManager: RequestManager,
     private val interaction: Interaction? = null
-    ) :
-    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    private val requestOptions = RequestOptions
+        .placeholderOf(R.drawable.default_image)
+        .error(R.drawable.default_image)
 
     private val TAG: String = "AppDebug"
-    private val NO_MORE_RESULTS = -1
     private val BLOG_ITEM = 0
-    private val NO_MORE_RESULTS_BLOG_MARKER = BlogPost(
-        NO_MORE_RESULTS,
-        "" ,
-        "",
-        "",
-        "",
-        0,
-        ""
-    )
 
     val DIFF_CALLBACK = object : DiffUtil.ItemCallback<BlogPost>() {
 
@@ -51,43 +42,15 @@ class BlogListAdapter(
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-
-        when(viewType){
-
-            NO_MORE_RESULTS ->{
-                Log.e(TAG, "onCreateViewHolder: No more results...")
-                return GenericViewHolder(
-                    LayoutInflater.from(parent.context).inflate(
-                        R.layout.layout_no_more_results,
-                        parent,
-                        false
-                    )
-                )
-            }
-
-            BLOG_ITEM ->{
-                return BlogViewHolder(
-                    LayoutInflater.from(parent.context).inflate(
-                            R.layout.layout_blog_list_item,
-                        parent,
-                        false
-                    ),
-                    interaction = interaction,
-                    requestManager = requestManager
-                )
-            }
-            else -> {
-                return BlogViewHolder(
-                    LayoutInflater.from(parent.context).inflate(
-                        R.layout.layout_blog_list_item,
-                        parent,
-                        false
-                    ),
-                    interaction = interaction,
-                    requestManager = requestManager
-                )
-            }
-        }
+        return BlogViewHolder(
+            LayoutInflater.from(parent.context).inflate(
+                R.layout.layout_blog_list_item,
+                parent,
+                false
+            ),
+            requestOptions = requestOptions,
+            interaction = interaction,
+        )
     }
 
     internal inner class BlogRecyclerChangeCallback(
@@ -130,38 +93,15 @@ class BlogListAdapter(
         return differ.currentList.size
     }
 
-    // Prepare the images that will be displayed in the RecyclerView.
-    // This also ensures if the network connection is lost, they will be in the cache
-    fun preloadGlideImages(
-        requestManager: RequestManager,
-        list: List<BlogPost>
-    ){
-        for(blogPost in list){
-            requestManager
-                .load(blogPost.image)
-                .preload()
-        }
-    }
-
-    fun submitList(
-        blogList: List<BlogPost>?,
-        isQueryExhausted: Boolean
-    ){
+    fun submitList(blogList: List<BlogPost>?, ){
         val newList = blogList?.toMutableList()
-        if (isQueryExhausted)
-            newList?.add(NO_MORE_RESULTS_BLOG_MARKER)
-        val commitCallback = Runnable {
-            // if process died must restore list position
-            // very annoying
-            interaction?.restoreListPosition()
-        }
-        differ.submitList(newList, commitCallback)
+        differ.submitList(newList)
     }
 
     class BlogViewHolder
     constructor(
         itemView: View,
-        val requestManager: RequestManager,
+        private val requestOptions: RequestOptions,
         private val interaction: Interaction?
     ) : RecyclerView.ViewHolder(itemView) {
 
@@ -170,7 +110,8 @@ class BlogListAdapter(
                 interaction?.onItemSelected(adapterPosition, item)
             }
 
-            requestManager
+            Glide.with(itemView.context)
+                .setDefaultRequestOptions(requestOptions)
                 .load(item.image)
                 .transition(withCrossFade())
                 .into(itemView.blog_image)
@@ -184,6 +125,5 @@ class BlogListAdapter(
 
         fun onItemSelected(position: Int, item: BlogPost)
 
-        fun restoreListPosition()
     }
 }

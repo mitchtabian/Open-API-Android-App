@@ -11,7 +11,6 @@ import android.widget.RadioGroup
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -19,9 +18,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
 import com.afollestad.materialdialogs.customview.getCustomView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.RequestManager
-import com.bumptech.glide.request.RequestOptions
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.models.BlogPost
 import com.codingwithmitch.openapi.persistence.blog.BlogQueryUtils.Companion.BLOG_FILTER_DATE_UPDATED
@@ -30,8 +26,6 @@ import com.codingwithmitch.openapi.persistence.blog.BlogQueryUtils.Companion.BLO
 import com.codingwithmitch.openapi.persistence.blog.BlogQueryUtils.Companion.BLOG_ORDER_DESC
 import com.codingwithmitch.openapi.ui.main.blog.BaseBlogFragment
 import com.codingwithmitch.openapi.ui.main.blog.viewmodel.*
-import com.codingwithmitch.openapi.util.ErrorHandling.Companion.isPaginationDone
-import com.codingwithmitch.openapi.util.StateMessageCallback
 import com.codingwithmitch.openapi.util.TopSpacingItemDecoration
 import kotlinx.android.synthetic.main.fragment_blog.*
 import kotlinx.coroutines.*
@@ -43,76 +37,24 @@ class BlogFragment : BaseBlogFragment(R.layout.fragment_blog),
 
     private lateinit var searchView: SearchView
     private lateinit var recyclerAdapter: BlogListAdapter
-    private var requestManager: RequestManager? = null // can leak memory, must be nullable
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (activity as AppCompatActivity).supportActionBar?.setDisplayShowTitleEnabled(false)
         setHasOptionsMenu(true)
         swipe_refresh.setOnRefreshListener(this)
-        setupGlide()
         initRecyclerView()
         subscribeObservers()
     }
 
-    override fun onResume() {
-        super.onResume()
-        viewModel.refreshFromCache()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        saveLayoutManagerState()
-    }
-
-    private fun saveLayoutManagerState(){
-        blog_post_recyclerview.layoutManager?.onSaveInstanceState()?.let { lmState ->
-            viewModel.setLayoutManagerState(lmState)
-        }
-    }
-
     private fun subscribeObservers(){
-        viewModel.viewState.observe(viewLifecycleOwner, Observer{ viewState ->
-            if(viewState != null){
-                recyclerAdapter.apply {
-                    viewState.blogFields.blogList?.let {
-                        preloadGlideImages(
-                            requestManager = requestManager as RequestManager,
-                            list = it
-                        )
-                    }
-
-                    submitList(
-                        blogList = viewState.blogFields.blogList,
-                        isQueryExhausted = viewState.blogFields.isQueryExhausted?: true
-                    )
-                }
-
+        viewModel.state.observe(viewLifecycleOwner, { state ->
+            recyclerAdapter.apply {
+                submitList(
+                    blogList = state.blogList,
+                )
             }
-        })
-
-        viewModel.numActiveJobs.observe(viewLifecycleOwner, Observer { jobCounter ->
-            uiCommunicationListener.displayProgressBar(viewModel.areAnyJobsActive())
-        })
-
-        viewModel.stateMessage.observe(viewLifecycleOwner, Observer { stateMessage ->
-
-            stateMessage?.let {
-                if(isPaginationDone(stateMessage.response.message)){
-                    viewModel.setQueryExhausted(true)
-                    viewModel.clearStateMessage()
-                }else{
-                    uiCommunicationListener.onResponseReceived(
-                        response = it.response,
-                        stateMessageCallback = object: StateMessageCallback {
-                            override fun removeMessageFromStack() {
-                                viewModel.clearStateMessage()
-                            }
-                        }
-                    )
-                }
-            }
+            uiCommunicationListener.displayProgressBar(state.isLoading)
         })
     }
 
@@ -134,9 +76,7 @@ class BlogFragment : BaseBlogFragment(R.layout.fragment_blog),
                 || actionId == EditorInfo.IME_ACTION_SEARCH ) {
                 val searchQuery = v.text.toString()
                 Log.e(TAG, "SearchView: (keyboard or arrow) executing search...: ${searchQuery}")
-                viewModel.setQuery(searchQuery).let{
-                    onBlogSearchOrFilter()
-                }
+                executeNewQuery(searchQuery)
             }
             true
         }
@@ -146,21 +86,17 @@ class BlogFragment : BaseBlogFragment(R.layout.fragment_blog),
         searchButton.setOnClickListener {
             val searchQuery = searchPlate.text.toString()
             Log.e(TAG, "SearchView: (button) executing search...: ${searchQuery}")
-            viewModel.setQuery(searchQuery).let {
-                onBlogSearchOrFilter()
-            }
-
+            executeNewQuery(searchQuery)
         }
     }
 
-    private fun onBlogSearchOrFilter(){
-        viewModel.loadFirstPage().let {
-            resetUI()
-        }
+    private fun executeNewQuery(query: String){
+        viewModel.onTriggerEvent(BlogEvents.UpdateQuery(query))
+        viewModel.onTriggerEvent(BlogEvents.NewSearch)
+        resetUI()
     }
 
     private  fun resetUI(){
-        blog_post_recyclerview.smoothScrollToPosition(0)
         uiCommunicationListener.hideSoftKeyboard()
         focusable_view.requestFocus()
     }
@@ -173,10 +109,7 @@ class BlogFragment : BaseBlogFragment(R.layout.fragment_blog),
             removeItemDecoration(topSpacingDecorator) // does nothing if not applied already
             addItemDecoration(topSpacingDecorator)
 
-            recyclerAdapter = BlogListAdapter(
-                requestManager as RequestManager,
-                this@BlogFragment
-            )
+            recyclerAdapter = BlogListAdapter(this@BlogFragment)
             addOnScrollListener(object: RecyclerView.OnScrollListener(){
 
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -185,22 +118,11 @@ class BlogFragment : BaseBlogFragment(R.layout.fragment_blog),
                     val lastPosition = layoutManager.findLastVisibleItemPosition()
                     if (lastPosition == recyclerAdapter.itemCount.minus(1)) {
                         Log.d(TAG, "BlogFragment: attempting to load next page...")
-                        viewModel.nextPage()
+                        viewModel.onTriggerEvent(BlogEvents.NextPage)
                     }
                 }
             })
             adapter = recyclerAdapter
-        }
-    }
-
-    private fun setupGlide(){
-        val requestOptions = RequestOptions
-            .placeholderOf(R.drawable.default_image)
-            .error(R.drawable.default_image)
-
-        activity?.let {
-            requestManager = Glide.with(it)
-                .applyDefaultRequestOptions(requestOptions)
         }
     }
 
@@ -226,26 +148,12 @@ class BlogFragment : BaseBlogFragment(R.layout.fragment_blog),
         findNavController().navigate(R.id.action_blogFragment_to_viewBlogFragment)
     }
 
-    override fun restoreListPosition() {
-        viewModel.viewState.value?.blogFields?.layoutManagerState?.let { lmState ->
-            blog_post_recyclerview?.layoutManager?.onRestoreInstanceState(lmState)
-        }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        // clear references (can leak memory)
-        blog_post_recyclerview.adapter = null
-        requestManager = null
-    }
-
     override fun onRefresh() {
-        onBlogSearchOrFilter()
-//        swipe_refresh.isRefreshing = false
+        viewModel.onTriggerEvent(BlogEvents.NewSearch)
+        swipe_refresh.isRefreshing = false
     }
 
     fun showFilterDialog(){
-
         activity?.let {
             val dialog = MaterialDialog(it)
                 .noAutoDismiss()
@@ -287,12 +195,10 @@ class BlogFragment : BaseBlogFragment(R.layout.fragment_blog),
                     }
 
                 viewModel.apply {
-                    saveFilterOptions(newFilter, newOrder)
-                    setBlogFilter(newFilter)
-                    setBlogOrder(newOrder)
+                    onTriggerEvent(BlogEvents.UpdateFilter(getFilterFromValue(newFilter)))
+                    onTriggerEvent(BlogEvents.UpdateOrder(getOrderFromValue(newOrder)))
+                    onTriggerEvent(BlogEvents.NewSearch)
                 }
-
-                onBlogSearchOrFilter()
 
                 dialog.dismiss()
             }
