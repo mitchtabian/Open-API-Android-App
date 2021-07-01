@@ -6,27 +6,19 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import androidx.lifecycle.Observer
+import androidx.core.net.toUri
+import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.ui.main.blog.BaseBlogFragment
-import com.codingwithmitch.openapi.ui.main.blog.state.BLOG_VIEW_STATE_BUNDLE_KEY
-import com.codingwithmitch.openapi.ui.main.blog.state.BlogStateEvent
-import com.codingwithmitch.openapi.ui.main.blog.state.BlogViewState
-import com.codingwithmitch.openapi.ui.main.blog.viewmodel.*
 import com.codingwithmitch.openapi.util.*
 import com.codingwithmitch.openapi.util.Constants.Companion.GALLERY_REQUEST_CODE
 import com.codingwithmitch.openapi.util.ErrorHandling.Companion.SOMETHING_WRONG_WITH_IMAGE
-import com.codingwithmitch.openapi.util.SuccessHandling.Companion.SUCCESS_BLOG_UPDATED
 import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_update_blog.*
-import okhttp3.MediaType
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
-import java.io.File
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -36,32 +28,7 @@ class UpdateBlogFragment : BaseBlogFragment(R.layout.fragment_update_blog)
     @Inject
     lateinit var options: RequestOptions
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        // Restore state after process death
-        savedInstanceState?.let { inState ->
-            (inState[BLOG_VIEW_STATE_BUNDLE_KEY] as BlogViewState?)?.let { viewState ->
-                viewModel.setViewState(viewState)
-            }
-        }
-    }
-
-    /**
-     * !IMPORTANT!
-     * Must save ViewState b/c in event of process death the LiveData in ViewModel will be lost
-     */
-    override fun onSaveInstanceState(outState: Bundle) {
-        val viewState = viewModel.viewState.value
-
-        //clear the list. Don't want to save a large list to bundle.
-        viewState?.blogFields?.blogList = ArrayList()
-
-        outState.putParcelable(
-            BLOG_VIEW_STATE_BUNDLE_KEY,
-            viewState
-        )
-        super.onSaveInstanceState(outState)
-    }
+    private val viewModel: UpdateBlogViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -96,18 +63,15 @@ class UpdateBlogFragment : BaseBlogFragment(R.layout.fragment_update_blog)
     }
 
     private fun showImageSelectionError(){
-        uiCommunicationListener.onResponseReceived(
-            response = Response(
-                message = SOMETHING_WRONG_WITH_IMAGE,
-                uiComponentType = UIComponentType.Dialog(),
-                messageType = MessageType.Error()
-            ),
-            stateMessageCallback = object: StateMessageCallback{
-                override fun removeMessageFromStack() {
-                    viewModel.clearStateMessage()
-                }
-            }
-        )
+        viewModel.onTriggerEvent(UpdateBlogEvents.Error(
+            stateMessage = StateMessage(
+                response = Response(
+                    message = SOMETHING_WRONG_WITH_IMAGE,
+                    uiComponentType = UIComponentType.Dialog(),
+                    messageType = MessageType.Error()
+                )
+            )
+        ))
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -128,7 +92,7 @@ class UpdateBlogFragment : BaseBlogFragment(R.layout.fragment_update_blog)
                     val result = CropImage.getActivityResult(data)
                     val resultUri = result.uri
                     Log.d(TAG, "CROP: CROP_IMAGE_ACTIVITY_REQUEST_CODE: uri: ${resultUri}")
-                    viewModel.setUpdatedUri(resultUri)
+                    viewModel.onTriggerEvent(UpdateBlogEvents.OnUpdateImageUri(resultUri))
                 }
 
                 CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE -> {
@@ -141,38 +105,17 @@ class UpdateBlogFragment : BaseBlogFragment(R.layout.fragment_update_blog)
 
     fun subscribeObservers(){
 
-        viewModel.viewState.observe(viewLifecycleOwner, Observer { viewState ->
-            viewState.updatedBlogFields.let{ updatedBlogFields ->
+        viewModel.state.observe(viewLifecycleOwner, { state ->
+            state.blogPost?.let { blogPost ->
                 setBlogProperties(
-                    updatedBlogFields.updatedBlogTitle,
-                    updatedBlogFields.updatedBlogBody,
-                    updatedBlogFields.updatedImageUri
+                    blogPost.title,
+                    blogPost.body,
+                    blogPost.image.toUri()
                 )
             }
         })
 
-        viewModel.numActiveJobs.observe(viewLifecycleOwner, Observer { jobCounter ->
-            uiCommunicationListener.displayProgressBar(viewModel.areAnyJobsActive())
-        })
-
-        viewModel.stateMessage.observe(viewLifecycleOwner, Observer { stateMessage ->
-
-            stateMessage?.let {
-
-                if(stateMessage.response.message.equals(SUCCESS_BLOG_UPDATED)){
-                    viewModel.updateListItem()
-                }
-
-                uiCommunicationListener.onResponseReceived(
-                    response = it.response,
-                    stateMessageCallback = object: StateMessageCallback {
-                        override fun removeMessageFromStack() {
-                            viewModel.clearStateMessage()
-                        }
-                    }
-                )
-            }
-        })
+        // TODO("Listen for if the BlogPost was updated. Then popBackStack()")
     }
 
     fun setBlogProperties(title: String?, body: String?, image: Uri?){
@@ -187,35 +130,7 @@ class UpdateBlogFragment : BaseBlogFragment(R.layout.fragment_update_blog)
     }
 
     private fun saveChanges(){
-        var multipartBody: MultipartBody.Part? = null
-        viewModel.getUpdatedBlogUri()?.let{ imageUri ->
-            imageUri.path?.let{filePath ->
-                val imageFile = File(filePath)
-                Log.d(TAG, "UpdateBlogFragment, imageFile: file: ${imageFile}")
-                if(imageFile.exists()){
-                    val requestBody =
-                        RequestBody.create(
-                            MediaType.parse("image/*"),
-                            imageFile
-                        )
-                    // name = field name in serializer
-                    // filename = name of the image file
-                    // requestBody = file with file type information
-                    multipartBody = MultipartBody.Part.createFormData(
-                        "image",
-                        imageFile.name,
-                        requestBody
-                    )
-                }
-            }
-        }
-        viewModel.setStateEvent(
-            BlogStateEvent.UpdateBlogPostEvent(
-                blog_title.text.toString(),
-                blog_body.text.toString(),
-                multipartBody
-            )
-        )
+        viewModel.onTriggerEvent(UpdateBlogEvents.Update)
         uiCommunicationListener.hideSoftKeyboard()
     }
 
@@ -233,10 +148,11 @@ class UpdateBlogFragment : BaseBlogFragment(R.layout.fragment_update_blog)
         return super.onOptionsItemSelected(item)
     }
 
+    // save any changes before rotate / go to background
     override fun onPause() {
         super.onPause()
-        viewModel.setUpdatedTitle(blog_title.text.toString())
-        viewModel.setUpdatedBody(blog_body.text.toString())
+        viewModel.onTriggerEvent(UpdateBlogEvents.OnUpdateTitle(blog_title.text.toString()))
+        viewModel.onTriggerEvent(UpdateBlogEvents.OnUpdateTitle(blog_body.text.toString()))
     }
 }
 

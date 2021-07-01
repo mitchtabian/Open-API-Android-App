@@ -29,20 +29,22 @@ class IsAuthorOfBlogPost(
                 )
             ))
         }
-        try {
-            service.isAuthorOfBlogPost(
-                "Token ${authToken!!.token!!}",
-                slug
-            )
-        }catch (e: Exception){
-            e.printStackTrace()
-            emit(DataState.error<Boolean>(
-                response = Response(
-                    message = e.message,
-                    uiComponentType = UIComponentType.Dialog(),
-                    messageType = MessageType.Error()
+        else{
+            try {
+                service.isAuthorOfBlogPost(
+                    "Token ${authToken.token!!}",
+                    slug
                 )
-            ))
+            }catch (e: Exception){
+                e.printStackTrace()
+                emit(DataState.error<Boolean>(
+                    response = Response(
+                        message = e.message,
+                        uiComponentType = UIComponentType.Dialog(),
+                        messageType = MessageType.Error()
+                    )
+                ))
+            }
         }
     }
 }

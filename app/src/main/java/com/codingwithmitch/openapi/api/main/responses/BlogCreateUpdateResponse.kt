@@ -41,7 +41,7 @@ class BlogCreateUpdateResponse(
 
 )
 
-fun BlogCreateUpdateResponse.List<BlogPost>(): BlogPost {
+fun BlogCreateUpdateResponse.toBlogPost(): BlogPost {
     return BlogPost(
         pk = pk,
         title = title,

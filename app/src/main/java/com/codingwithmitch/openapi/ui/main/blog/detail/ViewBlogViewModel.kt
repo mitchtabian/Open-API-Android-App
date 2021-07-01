@@ -103,7 +103,6 @@ constructor(
     private fun getBlog(pk: Int, callback: OnCompleteCallback){
         state.value?.let { state ->
             getBlogFromCache.execute(
-                authToken = sessionManager.cachedToken.value,
                 pk = pk
             ).onEach { dataState ->
                 this.state.value = state.copy(isLoading = dataState.isLoading)

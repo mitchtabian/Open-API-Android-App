@@ -1,6 +1,5 @@
 package com.codingwithmitch.openapi.interactors.blog
 
-import com.codingwithmitch.openapi.models.AuthToken
 import com.codingwithmitch.openapi.models.BlogPost
 import com.codingwithmitch.openapi.persistence.blog.BlogPostDao
 import com.codingwithmitch.openapi.persistence.blog.toBlogPost
@@ -17,19 +16,9 @@ class GetBlogFromCache(
 ) {
 
     fun execute(
-        authToken: AuthToken?,
         pk: Int,
     ): Flow<DataState<BlogPost>> = flow{
         emit(DataState.loading<BlogPost>())
-        if(authToken == null){
-            emit(DataState.error<BlogPost>(
-                response = Response(
-                    message = "Authentication token is invalid. Log out and log back in.",
-                    uiComponentType = UIComponentType.Dialog(),
-                    messageType = MessageType.Error()
-                )
-            ))
-        }
         try{
             val blogPost = cache.getBlogPost(pk)?.toBlogPost()
 

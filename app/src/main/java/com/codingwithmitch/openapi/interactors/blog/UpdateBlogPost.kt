@@ -2,24 +2,28 @@ package com.codingwithmitch.openapi.interactors.blog
 
 import com.codingwithmitch.openapi.api.main.OpenApiMainService
 import com.codingwithmitch.openapi.models.AuthToken
-import com.codingwithmitch.openapi.models.BlogPost
 import com.codingwithmitch.openapi.persistence.blog.BlogPostDao
-import com.codingwithmitch.openapi.persistence.blog.toEntity
 import com.codingwithmitch.openapi.util.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import java.lang.Exception
 
-class DeleteBlogPost(
+class UpdateBlogPost(
     private val service: OpenApiMainService,
     private val cache: BlogPostDao,
 ) {
+
     /**
-     * If successful this will emit a string saying: 'deleted'
+     * If successful this will emit a string saying: 'updated'
      */
     fun execute(
         authToken: AuthToken?,
-        blogPost: BlogPost,
+        slug: String,
+        title: RequestBody,
+        body: RequestBody,
+        image: MultipartBody.Part?,
     ): Flow<DataState<String>> = flow{
         if(authToken == null){
             emit(DataState.error<String>(
@@ -32,24 +36,33 @@ class DeleteBlogPost(
         }
         else{
             try {
-                // attempt delete from network
-                val response = service.deleteBlogPost(
+                // attempt update
+                val createUpdateResponse = service.updateBlog(
                     "Token ${authToken.token!!}",
-                    blogPost.slug
-                ).response
-                if(response != SuccessHandling.SUCCESS_BLOG_DELETED){ // failure
+                    slug,
+                    title,
+                    body,
+                    image
+                )
+
+                if(createUpdateResponse.response != SuccessHandling.SUCCESS_BLOG_DELETED){ // failure
                     emit(DataState.error<String>(
                         response = Response(
-                            message = response,
+                            message = createUpdateResponse.response,
                             uiComponentType = UIComponentType.Dialog(),
                             messageType = MessageType.Error()
                         )
                     ))
                 }else{ // success
-                    cache.deleteBlogPost(blogPost.toEntity()) // delete from cache
+                    cache.updateBlogPost(
+                        createUpdateResponse.pk,
+                        createUpdateResponse.title,
+                        createUpdateResponse.body,
+                        createUpdateResponse.image
+                    )
                     emit(DataState.data<String>(
                         response = Response(
-                            message = SuccessHandling.SUCCESS_BLOG_DELETED,
+                            message = SuccessHandling.SUCCESS_BLOG_UPDATED,
                             uiComponentType = UIComponentType.Toast(),
                             messageType = MessageType.Success()
                         ),
@@ -69,13 +82,6 @@ class DeleteBlogPost(
         }
     }
 }
-
-
-
-
-
-
-
 
 
 

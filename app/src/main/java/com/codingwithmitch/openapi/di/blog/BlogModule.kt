@@ -1,10 +1,7 @@
 package com.codingwithmitch.openapi.di.blog
 
 import com.codingwithmitch.openapi.api.main.OpenApiMainService
-import com.codingwithmitch.openapi.interactors.blog.DeleteBlogPost
-import com.codingwithmitch.openapi.interactors.blog.GetBlogFromCache
-import com.codingwithmitch.openapi.interactors.blog.IsAuthorOfBlogPost
-import com.codingwithmitch.openapi.interactors.blog.SearchBlogs
+import com.codingwithmitch.openapi.interactors.blog.*
 import com.codingwithmitch.openapi.persistence.blog.BlogPostDao
 import dagger.Module
 import dagger.Provides
@@ -48,6 +45,15 @@ object BlogModule {
         dao: BlogPostDao,
     ): DeleteBlogPost{
         return DeleteBlogPost(service, dao)
+    }
+
+    @Singleton
+    @Provides
+    fun provideUpdateBlog(
+        service: OpenApiMainService,
+        dao: BlogPostDao,
+    ): UpdateBlogPost{
+        return UpdateBlogPost(service, dao)
     }
 }
 
