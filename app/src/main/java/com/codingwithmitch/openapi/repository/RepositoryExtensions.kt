@@ -1,7 +1,6 @@
 package com.codingwithmitch.openapi.repository
 
 import com.codingwithmitch.openapi.util.*
-import com.codingwithmitch.openapi.util.ApiResult.*
 import com.codingwithmitch.openapi.util.Constants.Companion.CACHE_TIMEOUT
 import com.codingwithmitch.openapi.util.Constants.Companion.NETWORK_TIMEOUT
 import com.codingwithmitch.openapi.util.ErrorHandling.Companion.CACHE_ERROR_TIMEOUT

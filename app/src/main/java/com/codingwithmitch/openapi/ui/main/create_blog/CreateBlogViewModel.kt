@@ -3,7 +3,6 @@ package com.codingwithmitch.openapi.ui.main.create_blog
 import android.net.Uri
 import com.codingwithmitch.openapi.repository.main.CreateBlogRepositoryImpl
 import com.codingwithmitch.openapi.session.SessionManager
-import com.codingwithmitch.openapi.ui.BaseViewModel
 import com.codingwithmitch.openapi.ui.main.create_blog.state.CreateBlogStateEvent.*
 import com.codingwithmitch.openapi.ui.main.create_blog.state.CreateBlogViewState
 import com.codingwithmitch.openapi.ui.main.create_blog.state.CreateBlogViewState.*
