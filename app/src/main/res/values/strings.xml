@@ -1,83 +1,97 @@
 <resources>
-    <string name="app_name">OpenAPI</string>
+	<string name="app_name">OpenAPI</string>
 
-    <!-- Intent extras -->
-    <string name="auth_token">auth_token</string>
-    <string name="password_reset_info">We\'ve emailed you instructions for setting your password. If an account exists
+	<!-- Intent extras -->
+	<string name="auth_token">auth_token</string>
+	<string name="password_reset_info">We\'ve emailed you instructions for setting your password. If an account exists
         with the email you entered.
         You should receive them shortly.If you don\'t receive an email, please make sure you\'ve entered the address you
         registered with,
         and check your spam folder.
     </string>
-    <string name="password_reset_email_sent">Password reset email sent</string>
-    <string name="return_to_launcher_fragment">Return</string>
-    <string name="text_error">Error</string>
-    <string name="text_success">Success</string>
-    <string name="text_ok">OK</string>
-    <string name="text_cancel">Cancel</string>
-    <string name="email_field">Email</string>
-    <string name="field_password">Password</string>
-    <string name="field_login">Login</string>
-    <string name="field_username">Username</string>
-    <string name="field_confirm_password">Confirm password</string>
-    <string name="field_register">Register</string>
-    <string name="network_error_response">Error</string>
-    <string name="account">Account</string>
-    <string name="logout">Logout</string>
-    <string name="my_blogs">My Blogs</string>
-    <string name="home">Home</string>
-    <string name="create">Create</string>
+	<string name="password_reset_email_sent">Password reset email sent</string>
+	<string name="return_to_launcher_fragment">Return</string>
+	<string name="text_error">Error</string>
+	<string name="text_success">Success</string>
+	<string name="text_ok">OK</string>
+	<string name="text_cancel">Cancel</string>
+	<string name="email_field">Email</string>
+	<string name="field_password">Password</string>
+	<string name="field_login">Login</string>
+	<string name="field_username">Username</string>
+	<string name="field_confirm_password">Confirm password</string>
+	<string name="field_register">Register</string>
+	<string name="network_error_response">Error</string>
+	<string name="account">Account</string>
+	<string name="logout">Logout</string>
+	<string name="my_blogs">My Blogs</string>
+	<string name="home">Home</string>
+	<string name="create">Create</string>
 
-    <string name="fragment_create_blog">Create</string>
-    <string name="fragment_update_blog">Update</string>
-    <string name="fragment_view_blog">View</string>
-    <string name="fragment_account">Account</string>
-    <string name="fragment_change_password">Change password</string>
-    <string name="fragment_blog">Blog</string>
-    <string name="save_changes">Save changes</string>
-    <string name="fragment_update_account">Update account</string>
-    <string name="arg_email">arg_email</string>
-    <string name="arg_username">arg_username</string>
-    <string name="enter_a_username">Enter a username</string>
-    <string name="enter_your_email">Enter your email</string>
-    <string name="current_password">Current password</string>
-    <string name="confirm_new_password">Confirm new password</string>
-    <string name="new_password">New password</string>
-    <string name="change_password">Change password</string>
-    <string name="your_email">Your email</string>
-    <string name="your_username">Your username</string>
-    <string name="register">Register</string>
-    <string name="search">Search</string>
-    <string name="filter">Filter</string>
-    <string name="update_password">Update password</string>
-    <string name="filter_asc">ASC</string>
-    <string name="filter_desc">DESC</string>
-    <string name="filter_author">Author</string>
-    <string name="filter_date">Date</string>
-    <string name="asc_desc">Ascending or descending order</string>
-    <string name="author_or_date">Filter by author or date</string>
-    <string name="filter_options">Filter options</string>
-    <string name="publish">Publish</string>
-    <string name="are_you_sure">Are you sure?</string>
-    <string name="text_yes">yes</string>
-    <string name="are_you_sure_publish">Are you sure you want to publish this?</string>
-    <string name="are_you_sure_delete">Are you sure you want to delete this? This can\'t be un-done.</string>
-    <string name="text_info">Info</string>
-    <string name="delete">Delete</string>
+	<string name="fragment_create_blog">Create</string>
+	<string name="fragment_update_blog">Update</string>
+	<string name="fragment_view_blog">View</string>
+	<string name="fragment_account">Account</string>
+	<string name="fragment_change_password">Change password</string>
+	<string name="fragment_blog">Blog</string>
+	<string name="save_changes">Save changes</string>
+	<string name="fragment_update_account">Update account</string>
+	<string name="arg_email">arg_email</string>
+	<string name="arg_username">arg_username</string>
+	<string name="enter_a_username">Enter a username</string>
+	<string name="enter_your_email">Enter your email</string>
+	<string name="current_password">Current password</string>
+	<string name="confirm_new_password">Confirm new password</string>
+	<string name="new_password">New password</string>
+	<string name="change_password">Change password</string>
+	<string name="your_email">Your email</string>
+	<string name="your_username">Your username</string>
+	<string name="register">Register</string>
+	<string name="search">Search</string>
+	<string name="filter">Filter</string>
+	<string name="update_password">Update password</string>
+	<string name="filter_asc">ASC</string>
+	<string name="filter_desc">DESC</string>
+	<string name="filter_author">Author</string>
+	<string name="filter_date">Date</string>
+	<string name="asc_desc">Ascending or descending order</string>
+	<string name="author_or_date">Filter by author or date</string>
+	<string name="filter_options">Filter options</string>
+	<string name="publish">Publish</string>
+	<string name="are_you_sure">Are you sure?</string>
+	<string name="text_yes">yes</string>
+	<string name="are_you_sure_publish">Are you sure you want to publish this?</string>
+	<string name="are_you_sure_delete">Are you sure you want to delete this? This can\'t be un-done.</string>
+	<string name="text_info">Info</string>
+	<string name="delete">Delete</string>
 
-    <string name="AuthNavHost">AuthNavHost</string>
-    <string name="AccountFragmentFactory">AccountFragmentFactory</string>
-    <string name="BlogFragmentFactory">BlogFragmentFactory</string>
-    <string name="CreateBlogFragmentFactory">CreateBlogFragmentFactory</string>
+	<string name="AuthNavHost">AuthNavHost</string>
+	<string name="AccountFragmentFactory">AccountFragmentFactory</string>
+	<string name="BlogFragmentFactory">BlogFragmentFactory</string>
+	<string name="CreateBlogFragmentFactory">CreateBlogFragmentFactory</string>
 
-    <string name="forgot_password">Forgot Password</string>
-    <string name="launcher">Launcher</string>
-    <string name="login">Login</string>
-    <string name="text_login">Login</string>
-    <string name="text_register">Register</string>
-    <string name="text_forgot_password">Forgot password</string>
-    <string name="process_death_state">process_death_state</string>
-    <string name="invalid_login_credentials">Invalid login</string>
+	<string name="forgot_password">Forgot Password</string>
+	<string name="launcher">Launcher</string>
+	<string name="login">Login</string>
+	<string name="text_login">Login</string>
+	<string name="text_register">Register</string>
+	<string name="text_forgot_password">Forgot password</string>
+	<string name="process_death_state">process_death_state</string>
+	<string name="invalid_login_credentials">Invalid login</string>
+	<string name="splash_logo">Splash Logo</string>
+	<string name="version">Version</string>
+	<string name="edit">Edit</string>
+	<string name="save">Save</string>
+	<string name="no_more_results">No more results…</string>
+	<string name="blog_image">Blog Image</string>
+	<string name="the_title_of_a_blog">The Title of a Blog</string>
+	<string name="mitch_tabian">Mitch Tabian</string>
+	<string name="updated_on_july_23_2019">Updated on July 23, 2019</string>
+	<string name="touch_to_change_image">Touch to change image</string>
+	<string name="this_is_some_blog_content">This is some blog content</string>
+	<string name="write_a_blog_title">Write a blog title…</string>
+	<string name="write_some_content">Write some content…</string>
+	<string name="apply">Apply</string>
 
 </resources>
 

@@ -10,11 +10,11 @@ import okhttp3.RequestBody
 
 interface CreateBlogRepository {
 
-    fun createNewBlogPost(
-        authToken: AuthToken,
-        title: RequestBody,
-        body: RequestBody,
-        image: MultipartBody.Part?,
-        stateEvent: StateEvent
-    ): Flow<DataState<CreateBlogViewState>>
+	fun createNewBlogPost(
+		authToken: AuthToken,
+		title: RequestBody,
+		body: RequestBody,
+		image: MultipartBody.Part?,
+		stateEvent: StateEvent
+	): Flow<DataState<CreateBlogViewState>>
 }

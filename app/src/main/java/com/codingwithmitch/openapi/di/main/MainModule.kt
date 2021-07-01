@@ -22,49 +22,49 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object MainModule {
 
-    @Singleton
-    @Provides
-    fun provideOpenApiMainService(retrofitBuilder: Retrofit.Builder): OpenApiMainService {
-        return retrofitBuilder
-            .build()
-            .create(OpenApiMainService::class.java)
-    }
+	@Singleton
+	@Provides
+	fun provideOpenApiMainService(retrofitBuilder: Retrofit.Builder): OpenApiMainService {
+		return retrofitBuilder
+			.build()
+			.create(OpenApiMainService::class.java)
+	}
 
-    @Singleton
-    @Provides
-    fun provideAccountRepository(
-        openApiMainService: OpenApiMainService,
-        accountPropertiesDao: AccountPropertiesDao,
-        sessionManager: SessionManager
-    ): AccountRepository {
-        return AccountRepositoryImpl(openApiMainService, accountPropertiesDao, sessionManager)
-    }
+	@Singleton
+	@Provides
+	fun provideAccountRepository(
+		openApiMainService: OpenApiMainService,
+		accountPropertiesDao: AccountPropertiesDao,
+		sessionManager: SessionManager
+	): AccountRepository {
+		return AccountRepositoryImpl(openApiMainService, accountPropertiesDao, sessionManager)
+	}
 
-    @Singleton
-    @Provides
-    fun provideBlogPostDao(db: AppDatabase): BlogPostDao {
-        return db.getBlogPostDao()
-    }
+	@Singleton
+	@Provides
+	fun provideBlogPostDao(db: AppDatabase): BlogPostDao {
+		return db.getBlogPostDao()
+	}
 
-    @Singleton
-    @Provides
-    fun provideBlogRepository(
-        openApiMainService: OpenApiMainService,
-        blogPostDao: BlogPostDao,
-        sessionManager: SessionManager
-    ): BlogRepositoryImpl {
-        return BlogRepositoryImpl(openApiMainService, blogPostDao, sessionManager)
-    }
+	@Singleton
+	@Provides
+	fun provideBlogRepository(
+		openApiMainService: OpenApiMainService,
+		blogPostDao: BlogPostDao,
+		sessionManager: SessionManager
+	): BlogRepositoryImpl {
+		return BlogRepositoryImpl(openApiMainService, blogPostDao, sessionManager)
+	}
 
-    @Singleton
-    @Provides
-    fun provideCreateBlogRepository(
-        openApiMainService: OpenApiMainService,
-        blogPostDao: BlogPostDao,
-        sessionManager: SessionManager
-    ): CreateBlogRepositoryImpl {
-        return CreateBlogRepositoryImpl(openApiMainService, blogPostDao, sessionManager)
-    }
+	@Singleton
+	@Provides
+	fun provideCreateBlogRepository(
+		openApiMainService: OpenApiMainService,
+		blogPostDao: BlogPostDao,
+		sessionManager: SessionManager
+	): CreateBlogRepositoryImpl {
+		return CreateBlogRepositoryImpl(openApiMainService, blogPostDao, sessionManager)
+	}
 
 }
 

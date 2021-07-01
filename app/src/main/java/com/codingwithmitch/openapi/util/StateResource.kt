@@ -5,37 +5,37 @@ import com.codingwithmitch.openapi.ui.AreYouSureCallback
 data class StateMessage(val response: Response)
 
 data class Response(
-    val message: String?,
-    val uiComponentType: UIComponentType,
-    val messageType: MessageType
+	val message: String?,
+	val uiComponentType: UIComponentType,
+	val messageType: MessageType
 )
 
-sealed class UIComponentType{
+sealed class UIComponentType {
 
-    class Toast: UIComponentType()
+	object Toast : UIComponentType()
 
-    class Dialog: UIComponentType()
+	object Dialog : UIComponentType()
 
-    class AreYouSureDialog(
-        val callback: AreYouSureCallback
-    ): UIComponentType()
+	class AreYouSureDialog(
+		val callback: AreYouSureCallback
+	) : UIComponentType()
 
-    class None: UIComponentType()
+	object None : UIComponentType()
 }
 
-sealed class MessageType{
+sealed class MessageType {
 
-    class Success: MessageType()
+	object Success : MessageType()
 
-    class Error: MessageType()
+	object Error : MessageType()
 
-    class Info: MessageType()
+	class Info : MessageType()
 
-    class None: MessageType()
+	class None : MessageType()
 }
 
 
-interface StateMessageCallback{
+interface StateMessageCallback {
 
-    fun removeMessageFromStack()
+	fun removeMessageFromStack()
 }

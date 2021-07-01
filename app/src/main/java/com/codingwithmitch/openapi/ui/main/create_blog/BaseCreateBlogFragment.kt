@@ -18,41 +18,40 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 abstract class BaseCreateBlogFragment
 constructor(
-    @LayoutRes
-    private val layoutRes: Int,
-): Fragment(layoutRes)
-{
+	@LayoutRes
+	private val layoutRes: Int,
+) : Fragment(layoutRes) {
 
-    val TAG: String = "AppDebug"
+	val TAG: String = "AppDebug"
 
-    val viewModel: CreateBlogViewModel by activityViewModels()
+	val viewModel: CreateBlogViewModel by activityViewModels()
 
-    lateinit var uiCommunicationListener: UICommunicationListener
+	lateinit var uiCommunicationListener: UICommunicationListener
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        setupActionBarWithNavController(R.id.createBlogFragment, activity as AppCompatActivity)
-        setupChannel()
-    }
+	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+		super.onViewCreated(view, savedInstanceState)
+		setupActionBarWithNavController(R.id.createBlogFragment, activity as AppCompatActivity)
+		setupChannel()
+	}
 
-    private fun setupChannel() = viewModel.setupChannel()
+	private fun setupChannel() = viewModel.setupChannel()
 
-    fun setupActionBarWithNavController(fragmentId: Int, activity: AppCompatActivity){
-        val appBarConfiguration = AppBarConfiguration(setOf(fragmentId))
-        NavigationUI.setupActionBarWithNavController(
-            activity,
-            findNavController(),
-            appBarConfiguration
-        )
-    }
+	fun setupActionBarWithNavController(fragmentId: Int, activity: AppCompatActivity) {
+		val appBarConfiguration = AppBarConfiguration(setOf(fragmentId))
+		NavigationUI.setupActionBarWithNavController(
+			activity,
+			findNavController(),
+			appBarConfiguration
+		)
+	}
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        try{
-            uiCommunicationListener = context as UICommunicationListener
-        }catch(e: ClassCastException){
-            Log.e(TAG, "$context must implement UICommunicationListener" )
-        }
+	override fun onAttach(context: Context) {
+		super.onAttach(context)
+		try {
+			uiCommunicationListener = context as UICommunicationListener
+		} catch (e: ClassCastException) {
+			Log.e(TAG, "$context must implement UICommunicationListener")
+		}
 
-    }
+	}
 }

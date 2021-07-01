@@ -24,71 +24,71 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object AppModule{
+object AppModule {
 
-    @Singleton
-    @Provides
-    fun provideSharedPreferences(
-        application: Application
-    ): SharedPreferences {
-        return application
-            .getSharedPreferences(
-                PreferenceKeys.APP_PREFERENCES,
-                Context.MODE_PRIVATE
-            )
-    }
+	@Singleton
+	@Provides
+	fun provideSharedPreferences(
+		application: Application
+	): SharedPreferences {
+		return application
+			.getSharedPreferences(
+				PreferenceKeys.APP_PREFERENCES,
+				Context.MODE_PRIVATE
+			)
+	}
 
-    @Singleton
-    @Provides
-    fun provideSharedPrefsEditor(
-        sharedPreferences: SharedPreferences
-    ): SharedPreferences.Editor {
-        return sharedPreferences.edit()
-    }
+	@Singleton
+	@Provides
+	fun provideSharedPrefsEditor(
+		sharedPreferences: SharedPreferences
+	): SharedPreferences.Editor {
+		return sharedPreferences.edit()
+	}
 
-    @Singleton
-    @Provides
-    fun provideGsonBuilder(): Gson {
-        return GsonBuilder()
-            .excludeFieldsWithoutExposeAnnotation()
-            .create()
-    }
+	@Singleton
+	@Provides
+	fun provideGsonBuilder(): Gson {
+		return GsonBuilder()
+			.excludeFieldsWithoutExposeAnnotation()
+			.create()
+	}
 
-    @Singleton
-    @Provides
-    fun provideRetrofitBuilder(gsonBuilder:  Gson): Retrofit.Builder{
-        return Retrofit.Builder()
-            .baseUrl(Constants.BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create(gsonBuilder))
-    }
+	@Singleton
+	@Provides
+	fun provideRetrofitBuilder(gsonBuilder: Gson): Retrofit.Builder {
+		return Retrofit.Builder()
+			.baseUrl(Constants.BASE_URL)
+			.addConverterFactory(GsonConverterFactory.create(gsonBuilder))
+	}
 
-    @Singleton
-    @Provides
-    fun provideAppDb(app: Application): AppDatabase {
-        return Room
-            .databaseBuilder(app, AppDatabase::class.java, DATABASE_NAME)
-            .fallbackToDestructiveMigration() // get correct db version if schema changed
-            .build()
-    }
+	@Singleton
+	@Provides
+	fun provideAppDb(app: Application): AppDatabase {
+		return Room
+			.databaseBuilder(app, AppDatabase::class.java, DATABASE_NAME)
+			.fallbackToDestructiveMigration() // get correct db version if schema changed
+			.build()
+	}
 
-    @Singleton
-    @Provides
-    fun provideAuthTokenDao(db: AppDatabase): AuthTokenDao {
-        return db.getAuthTokenDao()
-    }
+	@Singleton
+	@Provides
+	fun provideAuthTokenDao(db: AppDatabase): AuthTokenDao {
+		return db.getAuthTokenDao()
+	}
 
-    @Singleton
-    @Provides
-    fun provideAccountPropertiesDao(db: AppDatabase): AccountPropertiesDao {
-        return db.getAccountPropertiesDao()
-    }
+	@Singleton
+	@Provides
+	fun provideAccountPropertiesDao(db: AppDatabase): AccountPropertiesDao {
+		return db.getAccountPropertiesDao()
+	}
 
-    @Singleton
-    @Provides
-    fun provideRequestOptions(): RequestOptions {
-        return RequestOptions
-            .placeholderOf(R.drawable.default_image)
-            .error(R.drawable.default_image)
-    }
+	@Singleton
+	@Provides
+	fun provideRequestOptions(): RequestOptions {
+		return RequestOptions
+			.placeholderOf(R.drawable.default_image)
+			.error(R.drawable.default_image)
+	}
 
 }

@@ -1,43 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<navigation
-        xmlns:tools="http://schemas.android.com/tools"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/nav_blog"
-        app:startDestination="@id/blogFragment"
-        >
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+		xmlns:app="http://schemas.android.com/apk/res-auto"
+		xmlns:tools="http://schemas.android.com/tools"
+		android:id="@+id/nav_blog"
+		app:startDestination="@id/blogFragment">
 
-    <fragment android:id="@+id/blogFragment"
-            android:name="com.codingwithmitch.openapi.ui.main.blog.BlogFragment"
-            android:label=""
-            tools:layout="@layout/fragment_blog"
-            >
+	<fragment
+			android:id="@+id/blogFragment"
+			android:name="com.codingwithmitch.openapi.ui.main.blog.BlogFragment"
+			android:label=""
+			tools:layout="@layout/fragment_blog">
 
-        <action
-                android:id="@+id/action_blogFragment_to_viewBlogFragment"
-                app:destination="@id/viewBlogFragment"
-                app:launchSingleTop="true"
-                />
+		<action
+				android:id="@+id/action_blogFragment_to_viewBlogFragment"
+				app:destination="@id/viewBlogFragment"
+				app:launchSingleTop="true" />
 
-    </fragment>
+	</fragment>
 
-    <fragment android:id="@+id/viewBlogFragment"
-            android:name="com.codingwithmitch.openapi.ui.main.blog.ViewBlogFragment"
-            android:label=""
-            tools:layout="@layout/fragment_view_blog">
+	<fragment
+			android:id="@+id/viewBlogFragment"
+			android:name="com.codingwithmitch.openapi.ui.main.blog.ViewBlogFragment"
+			android:label=""
+			tools:layout="@layout/fragment_view_blog">
 
-        <action android:id="@+id/action_viewBlogFragment_to_updateBlogFragment"
-                app:destination="@id/updateBlogFragment"
-                app:launchSingleTop="true"
-                />
+		<action
+				android:id="@+id/action_viewBlogFragment_to_updateBlogFragment"
+				app:destination="@id/updateBlogFragment"
+				app:launchSingleTop="true" />
 
-    </fragment>
+	</fragment>
 
-    <fragment android:id="@+id/updateBlogFragment"
-            android:name="com.codingwithmitch.openapi.ui.main.blog.UpdateBlogFragment"
-            android:label="@string/fragment_update_blog"
-            tools:layout="@layout/fragment_update_blog"
-            >
+	<fragment
+			android:id="@+id/updateBlogFragment"
+			android:name="com.codingwithmitch.openapi.ui.main.blog.UpdateBlogFragment"
+			android:label="@string/fragment_update_blog"
+			tools:layout="@layout/fragment_update_blog">
 
-    </fragment>
+	</fragment>
 </navigation>

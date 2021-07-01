@@ -11,33 +11,33 @@ import okhttp3.RequestBody
 
 interface BlogRepository {
 
-    fun searchBlogPosts(
-        authToken: AuthToken,
-        query: String,
-        filterAndOrder: String,
-        page: Int,
-        stateEvent: StateEvent
-    ): Flow<DataState<BlogViewState>>
+	fun searchBlogPosts(
+		authToken: AuthToken,
+		query: String,
+		filterAndOrder: String,
+		page: Int,
+		stateEvent: StateEvent
+	): Flow<DataState<out Any?>>
 
-    fun isAuthorOfBlogPost(
-        authToken: AuthToken,
-        slug: String,
-        stateEvent: StateEvent
-    ): Flow<DataState<BlogViewState>>
+	fun isAuthorOfBlogPost(
+		authToken: AuthToken,
+		slug: String,
+		stateEvent: StateEvent
+	): Flow<DataState<BlogViewState>>
 
-    fun deleteBlogPost(
-        authToken: AuthToken,
-        blogPost: BlogPost,
-        stateEvent: StateEvent
-    ): Flow<DataState<BlogViewState>>
+	fun deleteBlogPost(
+		authToken: AuthToken,
+		blogPost: BlogPost,
+		stateEvent: StateEvent
+	): Flow<DataState<BlogViewState>>
 
-    fun updateBlogPost(
-        authToken: AuthToken,
-        slug: String,
-        title: RequestBody,
-        body: RequestBody,
-        image: MultipartBody.Part?,
-        stateEvent: StateEvent
-    ): Flow<DataState<BlogViewState>>
+	fun updateBlogPost(
+		authToken: AuthToken,
+		slug: String,
+		title: RequestBody,
+		body: RequestBody,
+		image: MultipartBody.Part?,
+		stateEvent: StateEvent
+	): Flow<DataState<BlogViewState>>
 
 }

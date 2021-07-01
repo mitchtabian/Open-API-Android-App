@@ -21,28 +21,28 @@ import kotlinx.android.parcel.Parcelize
 const val AUTH_TOKEN_BUNDLE_KEY = "com.codingwithmitch.openapi.models.AuthToken"
 
 @Entity(
-    tableName = "auth_token",
-    foreignKeys = [
-        ForeignKey(
-            entity = AccountProperties::class,
-            parentColumns = ["pk"],
-            childColumns = ["account_pk"],
-            onDelete = CASCADE
-        )
-    ]
+	tableName = "auth_token",
+	foreignKeys = [
+		ForeignKey(
+			entity = AccountProperties::class,
+			parentColumns = ["pk"],
+			childColumns = ["account_pk"],
+			onDelete = CASCADE
+		)
+	]
 )
 @Parcelize
 data class AuthToken(
 
-    @PrimaryKey
-    @ColumnInfo(name = "account_pk")
-    var account_pk: Int? = -1,
+	@PrimaryKey
+	@ColumnInfo(name = "account_pk")
+	var account_pk: Int? = -1,
 
 
-    @ColumnInfo(name = "token")
-    @SerializedName("token")
-    @Expose
-    var token: String? = null
+	@ColumnInfo(name = "token")
+	@SerializedName("token")
+	@Expose
+	var token: String? = null
 ) : Parcelable
 
 

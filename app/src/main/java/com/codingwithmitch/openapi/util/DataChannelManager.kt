@@ -2,114 +2,119 @@ package com.codingwithmitch.openapi.util
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.withContext
 
 abstract class DataChannelManager<ViewState> {
 
-    private val TAG: String = "AppDebug"
+	companion object {
+		private const val TAG: String = "AppDebug"
+	}
 
-    private val _activeStateEvents: HashSet<String> = HashSet()
-    private val _numActiveJobs: MutableLiveData<Int> = MutableLiveData()
-    private var channelScope: CoroutineScope? = null
+	private val _activeStateEvents: HashSet<String> = HashSet()
+	private val _numActiveJobs: MutableLiveData<Int> = MutableLiveData()
+	private var channelScope: CoroutineScope? = null
 
-    val messageStack = MessageStack()
+	val messageStack = MessageStack()
 
-    val numActiveJobs: LiveData<Int>
-        get() = _numActiveJobs
+	val numActiveJobs: LiveData<Int>
+		get() = _numActiveJobs
 
-    fun setupChannel(){
-        cancelJobs()
-        setupNewChannelScope(CoroutineScope(IO))
-    }
+	fun setupChannel() {
+		cancelJobs()
+		setupNewChannelScope(CoroutineScope(IO))
+	}
 
-    abstract fun handleNewData(data: ViewState)
+	abstract fun handleNewData(data: ViewState)
 
-    fun launchJob(
-        stateEvent: StateEvent,
-        jobFunction: Flow<DataState<ViewState>?>
-    ){
-        if(!isStateEventActive(stateEvent) && messageStack.size == 0){
-            addStateEvent(stateEvent)
-            jobFunction
-                .onEach{ dataState ->
-                    withContext(Main){
-                        dataState?.data?.let { data ->
-                            handleNewData(data)
-                        }
-                        dataState?.stateMessage?.let { stateMessage ->
-                            handleNewStateMessage(stateMessage)
-                        }
-                        dataState?.stateEvent?.let { stateEvent ->
-                            removeStateEvent(stateEvent)
-                        }
-                    }
-                }
-                .launchIn(getChannelScope())
-        }
-    }
+	fun launchJob(
+		stateEvent: StateEvent,
+		jobFunction: Flow<DataState<ViewState>?>
+	) {
+		if (!isStateEventActive(stateEvent) && messageStack.size == 0) {
+			addStateEvent(stateEvent)
+			jobFunction
+				.onEach { dataState ->
+					withContext(Main) {
+						dataState?.data?.let { data ->
+							handleNewData(data)
+						}
+						dataState?.stateMessage?.let { stateMessage ->
+							handleNewStateMessage(stateMessage)
+						}
+						dataState?.stateEvent?.let { stateEvent ->
+							removeStateEvent(stateEvent)
+						}
+					}
+				}
+				.launchIn(getChannelScope())
+		}
+	}
 
-    private fun handleNewStateMessage(stateMessage: StateMessage){
-        appendStateMessage(stateMessage)
-    }
+	private fun handleNewStateMessage(stateMessage: StateMessage) {
+		appendStateMessage(stateMessage)
+	}
 
-    private fun appendStateMessage(stateMessage: StateMessage) {
-        messageStack.add(stateMessage)
-    }
+	private fun appendStateMessage(stateMessage: StateMessage) {
+		messageStack.add(stateMessage)
+	}
 
-    fun clearStateMessage(index: Int = 0){
-        messageStack.removeAt(index)
-    }
+	fun clearStateMessage(index: Int = 0) {
+		messageStack.removeAt(index)
+	}
 
-    private fun clearActiveStateEventCounter(){
-        _activeStateEvents.clear()
-        syncNumActiveStateEvents()
-    }
+	private fun clearActiveStateEventCounter() {
+		_activeStateEvents.clear()
+		syncNumActiveStateEvents()
+	}
 
-    private fun addStateEvent(stateEvent: StateEvent){
-        _activeStateEvents.add(stateEvent.toString())
-        syncNumActiveStateEvents()
-    }
+	private fun addStateEvent(stateEvent: StateEvent) {
+		_activeStateEvents.add(stateEvent.toString())
+		syncNumActiveStateEvents()
+	}
 
-    private fun removeStateEvent(stateEvent: StateEvent?){
-        _activeStateEvents.remove(stateEvent.toString())
-        syncNumActiveStateEvents()
-    }
+	private fun removeStateEvent(stateEvent: StateEvent?) {
+		_activeStateEvents.remove(stateEvent.toString())
+		syncNumActiveStateEvents()
+	}
 
-    fun isJobAlreadyActive(stateEvent: StateEvent): Boolean {
-        return isStateEventActive(stateEvent)
-    }
+	fun isJobAlreadyActive(stateEvent: StateEvent): Boolean {
+		return isStateEventActive(stateEvent)
+	}
 
-    private fun isStateEventActive(stateEvent: StateEvent): Boolean{
-        return _activeStateEvents.contains(stateEvent.toString())
-    }
+	private fun isStateEventActive(stateEvent: StateEvent): Boolean {
+		return _activeStateEvents.contains(stateEvent.toString())
+	}
 
-    fun getChannelScope(): CoroutineScope {
-        return channelScope?: setupNewChannelScope(CoroutineScope(IO))
-    }
+	private fun getChannelScope(): CoroutineScope {
+		return channelScope ?: setupNewChannelScope(CoroutineScope(IO))
+	}
 
-    private fun setupNewChannelScope(coroutineScope: CoroutineScope): CoroutineScope{
-        channelScope = coroutineScope
-        return channelScope as CoroutineScope
-    }
+	private fun setupNewChannelScope(coroutineScope: CoroutineScope): CoroutineScope {
+		channelScope = coroutineScope
+		return channelScope as CoroutineScope
+	}
 
-    fun cancelJobs(){
-        if(channelScope != null){
-            if(channelScope?.isActive == true){
-                channelScope?.cancel()
-            }
-            channelScope = null
-        }
-        clearActiveStateEventCounter()
-    }
+	fun cancelJobs() {
+		if (channelScope != null) {
+			if (channelScope?.isActive == true) {
+				channelScope?.cancel()
+			}
+			channelScope = null
+		}
+		clearActiveStateEventCounter()
+	}
 
-    private fun syncNumActiveStateEvents(){
-        _numActiveJobs.value = _activeStateEvents.size
-    }
+	private fun syncNumActiveStateEvents() {
+		_numActiveJobs.value = _activeStateEvents.size
+	}
 }
 
 

@@ -12,31 +12,38 @@ import kotlinx.android.parcel.Parcelize
 @Entity(tableName = "account_properties")
 data class AccountProperties(
 
-    @SerializedName("pk")
-    @Expose
-    @PrimaryKey(autoGenerate = false)
-    @ColumnInfo(name = "pk") var pk: Int,
+	@SerializedName("pk")
+	@Expose
+	@PrimaryKey(autoGenerate = false)
+	@ColumnInfo(name = "pk") var pk: Int,
 
-    @SerializedName("email")
-    @Expose
-    @ColumnInfo(name = "email") var email: String,
+	@SerializedName("email")
+	@Expose
+	@ColumnInfo(name = "email") var email: String,
 
-    @SerializedName("username")
-    @Expose
-    @ColumnInfo(name = "username") var username: String
+	@SerializedName("username")
+	@Expose
+	@ColumnInfo(name = "username") var username: String
 ) : Parcelable {
 
-    override fun equals(other: Any?): Boolean {
-        if (javaClass != other?.javaClass) return false
+	override fun equals(other: Any?): Boolean {
+		if (javaClass != other?.javaClass) return false
 
-        other as AccountProperties
+		other as AccountProperties
 
-        if (pk != other.pk) return false
-        if (email != other.email) return false
-        if (username != other.username) return false
+		if (pk != other.pk) return false
+		if (email != other.email) return false
+		if (username != other.username) return false
 
-        return true
-    }
+		return true
+	}
+
+	override fun hashCode(): Int {
+		var result = pk
+		result = 31 * result + email.hashCode()
+		result = 31 * result + username.hashCode()
+		return result
+	}
 
 }
 

@@ -7,28 +7,28 @@ import kotlinx.coroutines.flow.Flow
 
 interface AuthRepository {
 
-    fun attemptLogin(
-        stateEvent: StateEvent,
-        email: String,
-        password: String
-    ): Flow<DataState<AuthViewState>>
+	fun attemptLogin(
+		stateEvent: StateEvent,
+		email: String,
+		password: String
+	): Flow<DataState<AuthViewState>>
 
-    fun attemptRegistration(
-        stateEvent: StateEvent,
-        email: String,
-        username: String,
-        password: String,
-        confirmPassword: String
-    ): Flow<DataState<AuthViewState>>
+	fun attemptRegistration(
+		stateEvent: StateEvent,
+		email: String,
+		username: String,
+		password: String,
+		confirmPassword: String
+	): Flow<DataState<AuthViewState>>
 
-    fun checkPreviousAuthUser(
-        stateEvent: StateEvent
-    ): Flow<DataState<AuthViewState>>
+	fun checkPreviousAuthUser(
+		stateEvent: StateEvent
+	): Flow<DataState<AuthViewState>>
 
-    fun saveAuthenticatedUserToPrefs(email: String)
+	fun saveAuthenticatedUserToPrefs(email: String)
 
-    fun returnNoTokenFound(
-        stateEvent: StateEvent
-    ): DataState<AuthViewState>
+	fun returnNoTokenFound(
+		stateEvent: StateEvent
+	): DataState<AuthViewState>
 
 }

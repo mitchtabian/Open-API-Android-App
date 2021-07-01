@@ -7,88 +7,78 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 
 
-abstract class BaseViewModel<ViewState> : ViewModel()
-{
-    val TAG: String = "AppDebug"
+abstract class BaseViewModel<ViewState> : ViewModel() {
 
-    private val _viewState: MutableLiveData<ViewState> = MutableLiveData()
+	companion object {
+		private const val TAG: String = "AppDebug"
+	}
 
-    val dataChannelManager: DataChannelManager<ViewState>
-            = object: DataChannelManager<ViewState>(){
+	private val _viewState: MutableLiveData<ViewState?> = MutableLiveData()
 
-        override fun handleNewData(data: ViewState) {
-            this@BaseViewModel.handleNewData(data)
-        }
-    }
+	val dataChannelManager: DataChannelManager<ViewState> =
+		object : DataChannelManager<ViewState>() {
 
-    val viewState: LiveData<ViewState>
-        get() = _viewState
+			override fun handleNewData(data: ViewState) {
+				this@BaseViewModel.handleNewData(data)
+			}
+		}
 
-    val numActiveJobs: LiveData<Int>
-            = dataChannelManager.numActiveJobs
+	val viewState: MutableLiveData<ViewState?>
+		get() = _viewState
 
-    val stateMessage: LiveData<StateMessage?>
-        get() = dataChannelManager.messageStack.stateMessage
+	val numActiveJobs: LiveData<Int> = dataChannelManager.numActiveJobs
 
-    // FOR DEBUGGING
-    fun getMessageStackSize(): Int{
-        return dataChannelManager.messageStack.size
-    }
+	val stateMessage: LiveData<StateMessage?>
+		get() = dataChannelManager.messageStack.stateMessage
 
-    fun setupChannel() = dataChannelManager.setupChannel()
+	// FOR DEBUGGING
+	fun getMessageStackSize(): Int {
+		return dataChannelManager.messageStack.size
+	}
 
-    abstract fun handleNewData(data: ViewState)
+	fun setupChannel() = dataChannelManager.setupChannel()
 
-    abstract fun setStateEvent(stateEvent: StateEvent)
+	abstract fun handleNewData(data: ViewState)
 
-    fun launchJob(
-        stateEvent: StateEvent,
-        jobFunction: Flow<DataState<ViewState>>
-    ){
-        dataChannelManager.launchJob(stateEvent, jobFunction)
-    }
+	abstract fun setStateEvent(stateEvent: StateEvent)
 
-    fun areAnyJobsActive(): Boolean{
-        return dataChannelManager.numActiveJobs.value?.let {
-            it > 0
-        }?: false
-    }
+	fun launchJob(
+		stateEvent: StateEvent,
+		jobFunction: Flow<DataState<ViewState>>
+	) {
+		dataChannelManager.launchJob(stateEvent, jobFunction)
+	}
 
-    fun isJobAlreadyActive(stateEvent: StateEvent): Boolean {
-        Log.d(TAG, "isJobAlreadyActive?: ${dataChannelManager.isJobAlreadyActive(stateEvent)} ")
-        return dataChannelManager.isJobAlreadyActive(stateEvent)
-    }
+	fun areAnyJobsActive(): Boolean {
+		return dataChannelManager.numActiveJobs.value?.let {
+			it > 0
+		} ?: false
+	}
 
-    fun getCurrentViewStateOrNew(): ViewState{
-        val value = viewState.value?.let{
-            it
-        }?: initNewViewState()
-        return value
-    }
+	fun isJobAlreadyActive(stateEvent: StateEvent): Boolean {
+		Log.d(TAG, "isJobAlreadyActive?: ${dataChannelManager.isJobAlreadyActive(stateEvent)} ")
+		return dataChannelManager.isJobAlreadyActive(stateEvent)
+	}
 
-    fun setViewState(viewState: ViewState){
-        _viewState.value = viewState
-    }
+	fun getCurrentViewStateOrNew(): ViewState {
+		return viewState.value ?: initNewViewState()
+	}
 
-    fun clearStateMessage(index: Int = 0){
-        dataChannelManager.clearStateMessage(index)
-    }
+	fun setViewState(viewState: ViewState) {
+		_viewState.value = viewState
+	}
 
-    open fun cancelActiveJobs(){
-        if(areAnyJobsActive()){
-            Log.d(TAG, "cancel active jobs: ${dataChannelManager.numActiveJobs.value ?: 0}")
-            dataChannelManager.cancelJobs()
-        }
-    }
+	fun clearStateMessage(index: Int = 0) {
+		dataChannelManager.clearStateMessage(index)
+	}
 
-    abstract fun initNewViewState(): ViewState
+	open fun cancelActiveJobs() {
+		if (areAnyJobsActive()) {
+			Log.d(TAG, "cancel active jobs: ${dataChannelManager.numActiveJobs.value ?: 0}")
+			dataChannelManager.cancelJobs()
+		}
+	}
+
+	abstract fun initNewViewState(): ViewState
 
 }
-
-
-
-
-
-
-
-

@@ -18,35 +18,35 @@ import javax.inject.Singleton
 @FlowPreview
 @Module
 @InstallIn(SingletonComponent::class)
-object AuthModule{
+object AuthModule {
 
-    @Singleton
-    @Provides
-    fun provideOpenApiAuthService(retrofitBuilder: Retrofit.Builder): OpenApiAuthService {
-        return retrofitBuilder
-            .build()
-            .create(OpenApiAuthService::class.java)
-    }
+	@Singleton
+	@Provides
+	fun provideOpenApiAuthService(retrofitBuilder: Retrofit.Builder): OpenApiAuthService {
+		return retrofitBuilder
+			.build()
+			.create(OpenApiAuthService::class.java)
+	}
 
-    @Singleton
-    @Provides
-    fun provideAuthRepository(
-        sessionManager: SessionManager,
-        authTokenDao: AuthTokenDao,
-        accountPropertiesDao: AccountPropertiesDao,
-        openApiAuthService: OpenApiAuthService,
-        preferences: SharedPreferences,
-        editor: SharedPreferences.Editor
-        ): AuthRepository {
-        return AuthRepositoryImpl(
-            authTokenDao,
-            accountPropertiesDao,
-            openApiAuthService,
-            sessionManager,
-            preferences,
-            editor
-        )
-    }
+	@Singleton
+	@Provides
+	fun provideAuthRepository(
+		sessionManager: SessionManager,
+		authTokenDao: AuthTokenDao,
+		accountPropertiesDao: AccountPropertiesDao,
+		openApiAuthService: OpenApiAuthService,
+		preferences: SharedPreferences,
+		editor: SharedPreferences.Editor
+	): AuthRepository {
+		return AuthRepositoryImpl(
+			authTokenDao,
+			accountPropertiesDao,
+			openApiAuthService,
+			sessionManager,
+			preferences,
+			editor
+		)
+	}
 
 
 }

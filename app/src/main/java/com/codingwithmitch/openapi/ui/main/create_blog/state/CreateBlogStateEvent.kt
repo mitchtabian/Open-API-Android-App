@@ -4,25 +4,25 @@ import com.codingwithmitch.openapi.util.StateEvent
 import okhttp3.MultipartBody
 
 
-sealed class CreateBlogStateEvent: StateEvent {
+sealed class CreateBlogStateEvent : StateEvent {
 
-    data class CreateNewBlogEvent(
-        val title: String,
-        val body: String,
-        val image: MultipartBody.Part
-    ): CreateBlogStateEvent() {
-        override fun errorInfo(): String {
-            return "Unable to create a new blog post."
-        }
+	data class CreateNewBlogEvent(
+		val title: String,
+		val body: String,
+		val image: MultipartBody.Part
+	) : CreateBlogStateEvent() {
+		override fun errorInfo(): String {
+			return "Unable to create a new blog post."
+		}
 
-        override fun toString(): String {
-            return "CreateBlogStateEvent"
-        }
-    }
+		override fun toString(): String {
+			return "CreateBlogStateEvent"
+		}
+	}
 
-    class None: CreateBlogStateEvent() {
-        override fun errorInfo(): String {
-            return "None."
-        }
-    }
+	class None : CreateBlogStateEvent() {
+		override fun errorInfo(): String {
+			return "None."
+		}
+	}
 }

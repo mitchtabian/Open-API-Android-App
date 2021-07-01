@@ -9,14 +9,14 @@ import com.codingwithmitch.openapi.models.AuthToken
 @Dao
 interface AuthTokenDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(authToken: AuthToken): Long
+	@Insert(onConflict = OnConflictStrategy.REPLACE)
+	suspend fun insert(authToken: AuthToken): Long
 
-    @Query("UPDATE auth_token SET token = null WHERE account_pk = :pk")
-    suspend fun nullifyToken(pk: Int): Int
+	@Query("UPDATE auth_token SET token = null WHERE account_pk = :pk")
+	suspend fun nullifyToken(pk: Int): Int
 
-    @Query("SELECT * FROM auth_token WHERE account_pk = :pk")
-    suspend fun searchByPk(pk: Int): AuthToken?
+	@Query("SELECT * FROM auth_token WHERE account_pk = :pk")
+	suspend fun searchByPk(pk: Int): AuthToken?
 
 }
 

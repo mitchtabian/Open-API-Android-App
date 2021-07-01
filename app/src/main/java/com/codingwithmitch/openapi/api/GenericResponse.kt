@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 
 class GenericResponse(
 
-    @SerializedName("response")
-    @Expose
-    var response: String?
+	@SerializedName("response")
+	@Expose
+	var response: String?
 )

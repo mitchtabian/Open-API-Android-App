@@ -8,23 +8,23 @@ import kotlinx.coroutines.flow.Flow
 
 interface AccountRepository {
 
-    fun getAccountProperties(
-        authToken: AuthToken,
-        stateEvent: StateEvent
-    ): Flow<DataState<AccountViewState>>
+	fun getAccountProperties(
+		authToken: AuthToken,
+		stateEvent: StateEvent
+	): Flow<DataState<out Any?>>
 
-    fun saveAccountProperties(
-        authToken: AuthToken,
-        email: String,
-        username: String,
-        stateEvent: StateEvent
-    ): Flow<DataState<AccountViewState>>
+	fun saveAccountProperties(
+		authToken: AuthToken,
+		email: String,
+		username: String,
+		stateEvent: StateEvent
+	): Flow<DataState<AccountViewState>>
 
-    fun updatePassword(
-        authToken: AuthToken,
-        currentPassword: String,
-        newPassword: String,
-        confirmNewPassword: String,
-        stateEvent: StateEvent
-    ): Flow<DataState<AccountViewState>>
+	fun updatePassword(
+		authToken: AuthToken,
+		currentPassword: String,
+		newPassword: String,
+		confirmNewPassword: String,
+		stateEvent: StateEvent
+	): Flow<DataState<AccountViewState>>
 }
