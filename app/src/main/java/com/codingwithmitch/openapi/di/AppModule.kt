@@ -6,10 +6,12 @@ import android.content.SharedPreferences
 import androidx.room.Room
 import com.bumptech.glide.request.RequestOptions
 import com.codingwithmitch.openapi.R
+import com.codingwithmitch.openapi.api.main.OpenApiMainService
 import com.codingwithmitch.openapi.persistence.account.AccountPropertiesDao
 import com.codingwithmitch.openapi.persistence.AppDatabase
 import com.codingwithmitch.openapi.persistence.AppDatabase.Companion.DATABASE_NAME
 import com.codingwithmitch.openapi.persistence.auth.AuthTokenDao
+import com.codingwithmitch.openapi.persistence.blog.BlogPostDao
 import com.codingwithmitch.openapi.util.Constants
 import com.codingwithmitch.openapi.util.PreferenceKeys
 import com.google.gson.Gson
@@ -89,6 +91,20 @@ object AppModule{
         return RequestOptions
             .placeholderOf(R.drawable.default_image)
             .error(R.drawable.default_image)
+    }
+
+    @Singleton
+    @Provides
+    fun provideOpenApiMainService(retrofitBuilder: Retrofit.Builder): OpenApiMainService {
+        return retrofitBuilder
+            .build()
+            .create(OpenApiMainService::class.java)
+    }
+
+    @Singleton
+    @Provides
+    fun provideBlogPostDao(db: AppDatabase): BlogPostDao {
+        return db.getBlogPostDao()
     }
 
 }

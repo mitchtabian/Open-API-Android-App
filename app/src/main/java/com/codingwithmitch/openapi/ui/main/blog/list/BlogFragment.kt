@@ -11,6 +11,8 @@ import android.widget.RadioGroup
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
+import androidx.core.os.bundleOf
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -25,8 +27,9 @@ import com.codingwithmitch.openapi.persistence.blog.BlogQueryUtils.Companion.BLO
 import com.codingwithmitch.openapi.persistence.blog.BlogQueryUtils.Companion.BLOG_ORDER_ASC
 import com.codingwithmitch.openapi.persistence.blog.BlogQueryUtils.Companion.BLOG_ORDER_DESC
 import com.codingwithmitch.openapi.ui.main.blog.BaseBlogFragment
+import com.codingwithmitch.openapi.ui.main.blog.detail.ViewBlogEvents
 import com.codingwithmitch.openapi.ui.main.blog.viewmodel.*
-import com.codingwithmitch.openapi.util.TopSpacingItemDecoration
+import com.codingwithmitch.openapi.util.*
 import kotlinx.android.synthetic.main.fragment_blog.*
 import kotlinx.coroutines.*
 
@@ -37,6 +40,7 @@ class BlogFragment : BaseBlogFragment(R.layout.fragment_blog),
 
     private lateinit var searchView: SearchView
     private lateinit var recyclerAdapter: BlogListAdapter
+    private val viewModel: BlogViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -144,8 +148,24 @@ class BlogFragment : BaseBlogFragment(R.layout.fragment_blog),
     }
 
     override fun onItemSelected(position: Int, item: BlogPost) {
-        viewModel.setBlogPost(item)
-        findNavController().navigate(R.id.action_blogFragment_to_viewBlogFragment)
+        try{
+            viewModel.state.value?.let { state ->
+                    val bundle = bundleOf("blogPostPk" to item.pk)
+                    findNavController().navigate(R.id.action_blogFragment_to_viewBlogFragment, bundle)
+            }?: throw Exception("Null BlogPost")
+        }catch (e: Exception){
+            e.printStackTrace()
+            viewModel.onTriggerEvent(
+                BlogEvents.Error(
+                stateMessage = StateMessage(
+                    response = Response(
+                        message = e.message,
+                        uiComponentType = UIComponentType.Dialog(),
+                        messageType = MessageType.Error()
+                    )
+                )
+            ))
+        }
     }
 
     override fun onRefresh() {

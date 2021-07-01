@@ -1,8 +1,6 @@
 package com.codingwithmitch.openapi.persistence.blog
 
 import androidx.room.*
-import com.codingwithmitch.openapi.models.BlogPost
-import com.codingwithmitch.openapi.persistence.blog.BlogQueryUtils
 import com.codingwithmitch.openapi.util.Constants.Companion.PAGINATION_PAGE_SIZE
 
 @Dao
@@ -84,6 +82,8 @@ interface BlogPostDao {
         pageSize: Int = PAGINATION_PAGE_SIZE
     ): List<BlogPostEntity>
 
+    @Query("SELECT * FROM blog_post WHERE pk = :pk")
+    suspend fun getBlogPost(pk: Int): BlogPostEntity?
 }
 
 suspend fun BlogPostDao.returnOrderedBlogQuery(

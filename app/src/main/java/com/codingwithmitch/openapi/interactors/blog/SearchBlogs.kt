@@ -66,6 +66,7 @@ class SearchBlogs(
 
                 emit(DataState.data(response = null, data = cachedBlogs))
             }catch (e: Exception){
+                e.printStackTrace()
                 emit(DataState.error<List<BlogPost>>(
                     response = Response(
                         message = e.message,

@@ -4,17 +4,6 @@ import android.net.Uri
 import com.codingwithmitch.openapi.models.BlogPost
 import com.codingwithmitch.openapi.ui.main.blog.list.BlogViewModel
 
-fun BlogViewModel.setBlogPost(blogPost: BlogPost){
-    val update = getCurrentViewStateOrNew()
-    update.viewBlogFields.blogPost = blogPost
-    setViewState(update)
-}
-
-fun BlogViewModel.setIsAuthorOfBlogPost(isAuthorOfBlogPost: Boolean){
-    val update = getCurrentViewStateOrNew()
-    update.viewBlogFields.isAuthorOfBlogPost = isAuthorOfBlogPost
-    setViewState(update)
-}
 
 
 fun BlogViewModel.setUpdatedUri(uri: Uri){

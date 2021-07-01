@@ -58,14 +58,8 @@ constructor(
             is BlogEvents.UpdateOrder -> {
                 onUpdateOrder(event.order)
             }
-            else -> {
-//                DataState.error<BlogViewState>(
-//                    response = Response(
-//                        message = INVALID_STATE_EVENT,
-//                        uiComponentType = UIComponentType.None(),
-//                        messageType = MessageType.Error()
-//                    ),
-//                )
+            is BlogEvents.Error -> {
+                appendToMessageQueue(event.stateMessage)
             }
         }
     }

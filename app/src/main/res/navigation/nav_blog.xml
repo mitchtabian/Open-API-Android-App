@@ -26,6 +26,11 @@
             android:label=""
             tools:layout="@layout/fragment_view_blog">
 
+        <argument
+                android:name="blogPostPk"
+                app:argType="integer"
+                android:defaultValue="-1" />
+
         <action android:id="@+id/action_viewBlogFragment_to_updateBlogFragment"
                 app:destination="@id/updateBlogFragment"
                 app:launchSingleTop="true"
@@ -38,6 +43,11 @@
             android:label="@string/fragment_update_blog"
             tools:layout="@layout/fragment_update_blog"
             >
+
+        <argument
+                android:name="blogPostPk"
+                app:argType="integer"
+                android:defaultValue="-1" />
 
     </fragment>
 </navigation>
