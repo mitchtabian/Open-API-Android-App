@@ -1,4 +1,4 @@
-package com.codingwithmitch.openapi.ui.auth
+package com.codingwithmitch.openapi.ui.auth.forgot_password
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -10,7 +10,8 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.navigation.fragment.findNavController
 import com.codingwithmitch.openapi.R
-import com.codingwithmitch.openapi.ui.auth.ForgotPasswordFragment.WebAppInterface.*
+import com.codingwithmitch.openapi.ui.auth.BaseAuthFragment
+import com.codingwithmitch.openapi.ui.auth.forgot_password.ForgotPasswordFragment.WebAppInterface.*
 import com.codingwithmitch.openapi.util.*
 import kotlinx.android.synthetic.main.fragment_forgot_password.*
 import kotlinx.coroutines.CoroutineScope

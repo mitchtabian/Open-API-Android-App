@@ -4,26 +4,30 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.codingwithmitch.openapi.models.AccountProperties
 
 @Dao
-interface AccountPropertiesDao {
+interface AccountDao {
 
     @Query("SELECT * FROM account_properties WHERE email = :email")
-    suspend fun searchByEmail(email: String): AccountProperties?
+    suspend fun searchByEmail(email: String): AccountEntity?
 
     @Query("SELECT * FROM account_properties WHERE pk = :pk")
-    suspend fun searchByPk(pk: Int): AccountProperties
+    suspend fun searchByPk(pk: Int): AccountEntity
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAndReplace(accountProperties: AccountProperties): Long
+    suspend fun insertAndReplace(account: AccountEntity): Long
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertOrIgnore(accountProperties: AccountProperties): Long
+    suspend fun insertOrIgnore(account: AccountEntity): Long
 
     @Query("UPDATE account_properties SET email = :email, username = :username WHERE pk = :pk")
-    suspend fun updateAccountProperties(pk: Int, email: String, username: String)
+    suspend fun updateAccount(pk: Int, email: String, username: String)
 }
+
+
+
+
+
 
 
 

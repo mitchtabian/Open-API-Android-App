@@ -3,7 +3,6 @@ package com.codingwithmitch.openapi.api.main
 import com.codingwithmitch.openapi.api.GenericResponse
 import com.codingwithmitch.openapi.api.main.responses.BlogCreateUpdateResponse
 import com.codingwithmitch.openapi.api.main.responses.BlogListSearchResponse
-import com.codingwithmitch.openapi.models.AccountProperties
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.*
@@ -12,13 +11,13 @@ interface OpenApiMainService {
 
 
     @GET("account/properties")
-    suspend fun getAccountProperties(
+    suspend fun getAccount(
         @Header("Authorization") authorization: String
-    ): AccountProperties
+    ): AccountDto
 
     @PUT("account/properties/update")
     @FormUrlEncoded
-    suspend fun saveAccountProperties(
+    suspend fun updateAccount(
         @Header("Authorization") authorization: String,
         @Field("email") email: String,
         @Field("username") username: String

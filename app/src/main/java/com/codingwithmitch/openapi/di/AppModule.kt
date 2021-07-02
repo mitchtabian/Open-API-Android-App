@@ -7,7 +7,7 @@ import androidx.room.Room
 import com.bumptech.glide.request.RequestOptions
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.api.main.OpenApiMainService
-import com.codingwithmitch.openapi.persistence.account.AccountPropertiesDao
+import com.codingwithmitch.openapi.persistence.account.AccountDao
 import com.codingwithmitch.openapi.persistence.AppDatabase
 import com.codingwithmitch.openapi.persistence.AppDatabase.Companion.DATABASE_NAME
 import com.codingwithmitch.openapi.persistence.auth.AuthTokenDao
@@ -81,7 +81,7 @@ object AppModule{
 
     @Singleton
     @Provides
-    fun provideAccountPropertiesDao(db: AppDatabase): AccountPropertiesDao {
+    fun provideAccountPropertiesDao(db: AppDatabase): AccountDao {
         return db.getAccountPropertiesDao()
     }
 

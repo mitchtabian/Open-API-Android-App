@@ -13,6 +13,8 @@ class SuccessHandling {
         const val SUCCESS_BLOG_DELETED = "deleted"
         const val SUCCESS_BLOG_UPDATED = "updated"
 
+        const val SUCCESS_ACCOUNT_UPDATED = "Account update success"
+        const val SUCCESS_PASSWORD_UPDATED = "successfully changed password"
 
 
     }

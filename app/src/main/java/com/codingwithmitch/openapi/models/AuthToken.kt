@@ -24,7 +24,7 @@ const val AUTH_TOKEN_BUNDLE_KEY = "com.codingwithmitch.openapi.models.AuthToken"
     tableName = "auth_token",
     foreignKeys = [
         ForeignKey(
-            entity = AccountProperties::class,
+            entity = Account::class,
             parentColumns = ["pk"],
             childColumns = ["account_pk"],
             onDelete = CASCADE

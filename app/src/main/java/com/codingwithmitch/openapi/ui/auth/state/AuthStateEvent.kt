@@ -4,19 +4,6 @@ import com.codingwithmitch.openapi.util.StateEvent
 
 sealed class AuthStateEvent: StateEvent {
 
-    data class LoginAttemptEvent(
-        val email: String,
-        val password: String
-    ): AuthStateEvent() {
-
-        override fun errorInfo(): String {
-            return "Login attempt failed."
-        }
-
-        override fun toString(): String {
-            return "LoginStateEvent"
-        }
-    }
 
     data class RegisterAttemptEvent(
         val email: String,

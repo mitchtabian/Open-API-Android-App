@@ -175,60 +175,62 @@ class BlogFragment : BaseBlogFragment(R.layout.fragment_blog),
 
     fun showFilterDialog(){
         activity?.let {
-            val dialog = MaterialDialog(it)
-                .noAutoDismiss()
-                .customView(R.layout.layout_blog_filter)
+            viewModel.state.value?.let { state ->
+                val filter = state.filter.value
+                val order = state.order.value
 
-            val view = dialog.getCustomView()
+                val dialog = MaterialDialog(it)
+                    .noAutoDismiss()
+                    .customView(R.layout.layout_blog_filter)
 
-            val filter = viewModel.getFilter()
-            val order = viewModel.getOrder()
+                val view = dialog.getCustomView()
 
-            view.findViewById<RadioGroup>(R.id.filter_group).apply {
-                when (filter) {
-                    BLOG_FILTER_DATE_UPDATED -> check(R.id.filter_date)
-                    BLOG_FILTER_USERNAME -> check(R.id.filter_author)
+                view.findViewById<RadioGroup>(R.id.filter_group).apply {
+                    when (filter) {
+                        BLOG_FILTER_DATE_UPDATED -> check(R.id.filter_date)
+                        BLOG_FILTER_USERNAME -> check(R.id.filter_author)
+                    }
                 }
-            }
 
-            view.findViewById<RadioGroup>(R.id.order_group).apply {
-                when (order) {
-                    BLOG_ORDER_ASC -> check(R.id.filter_asc)
-                    BLOG_ORDER_DESC -> check(R.id.filter_desc)
+                view.findViewById<RadioGroup>(R.id.order_group).apply {
+                    when (order) {
+                        BLOG_ORDER_ASC -> check(R.id.filter_asc)
+                        BLOG_ORDER_DESC -> check(R.id.filter_desc)
+                    }
                 }
-            }
 
-            view.findViewById<TextView>(R.id.positive_button).setOnClickListener {
-                Log.d(TAG, "FilterDialog: apply filter.")
+                view.findViewById<TextView>(R.id.positive_button).setOnClickListener {
+                    Log.d(TAG, "FilterDialog: apply filter.")
 
-                val newFilter =
-                    when (view.findViewById<RadioGroup>(R.id.filter_group).checkedRadioButtonId) {
-                        R.id.filter_author -> BLOG_FILTER_USERNAME
-                        R.id.filter_date -> BLOG_FILTER_DATE_UPDATED
-                        else -> BLOG_FILTER_DATE_UPDATED
+                    val newFilter =
+                        when (view.findViewById<RadioGroup>(R.id.filter_group).checkedRadioButtonId) {
+                            R.id.filter_author -> BLOG_FILTER_USERNAME
+                            R.id.filter_date -> BLOG_FILTER_DATE_UPDATED
+                            else -> BLOG_FILTER_DATE_UPDATED
+                        }
+
+                    val newOrder =
+                        when (view.findViewById<RadioGroup>(R.id.order_group).checkedRadioButtonId) {
+                            R.id.filter_desc -> "-"
+                            else -> ""
+                        }
+
+                    viewModel.apply {
+                        onTriggerEvent(BlogEvents.UpdateFilter(getFilterFromValue(newFilter)))
+                        onTriggerEvent(BlogEvents.UpdateOrder(getOrderFromValue(newOrder)))
+                        onTriggerEvent(BlogEvents.NewSearch)
                     }
 
-                val newOrder =
-                    when (view.findViewById<RadioGroup>(R.id.order_group).checkedRadioButtonId) {
-                        R.id.filter_desc -> "-"
-                        else -> ""
-                    }
-
-                viewModel.apply {
-                    onTriggerEvent(BlogEvents.UpdateFilter(getFilterFromValue(newFilter)))
-                    onTriggerEvent(BlogEvents.UpdateOrder(getOrderFromValue(newOrder)))
-                    onTriggerEvent(BlogEvents.NewSearch)
+                    dialog.dismiss()
                 }
 
-                dialog.dismiss()
-            }
+                view.findViewById<TextView>(R.id.negative_button).setOnClickListener {
+                    Log.d(TAG, "FilterDialog: cancelling filter.")
+                    dialog.dismiss()
+                }
 
-            view.findViewById<TextView>(R.id.negative_button).setOnClickListener {
-                Log.d(TAG, "FilterDialog: cancelling filter.")
-                dialog.dismiss()
+                dialog.show()
             }
-
-            dialog.show()
         }
     }
 

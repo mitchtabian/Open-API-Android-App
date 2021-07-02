@@ -27,54 +27,46 @@ class SearchBlogs(
         order: BlogOrderOptions,
     ): Flow<DataState<List<BlogPost>>> = flow {
         emit(DataState.loading<List<BlogPost>>())
-        if(authToken == null){
+        try{
+            if(authToken == null){
+                throw Exception("Authentication token is invalid. Log out and log back in.")
+            }
+            // get Blogs from network
+            val filterAndOrder = filter.value + order.value // Ex: -date_updated
+            val blogs = service.searchListBlogPosts(
+                "Token ${authToken.token!!}",
+                query = query,
+                ordering = filterAndOrder,
+                page = page
+            ).results.map { it.toBlogPost() }
+
+            // Insert into cache
+            for(blog in blogs){
+                try{
+                    cache.insert(blog.toEntity())
+
+                }catch (e: Exception){
+                    e.printStackTrace()
+                }
+            }
+
+            // emit from cache
+            val cachedBlogs = cache.returnOrderedBlogQuery(
+                query = query,
+                filterAndOrder = filterAndOrder,
+                page = page
+            ).map { it.toBlogPost() }
+
+            emit(DataState.data(response = null, data = cachedBlogs))
+        }catch (e: Exception){
+            e.printStackTrace()
             emit(DataState.error<List<BlogPost>>(
                 response = Response(
-                    message = "Authentication token is invalid. Log out and log back in.",
+                    message = e.message,
                     uiComponentType = UIComponentType.Dialog(),
                     messageType = MessageType.Error()
                 )
             ))
-        }
-        else{
-            try{
-                // get Blogs from network
-                val filterAndOrder = filter.value + order.value // Ex: -date_updated
-                val blogs = service.searchListBlogPosts(
-                    "Token ${authToken.token!!}",
-                    query = query,
-                    ordering = filterAndOrder,
-                    page = page
-                ).results.map { it.toBlogPost() }
-
-                // Insert into cache
-                for(blog in blogs){
-                    try{
-                        cache.insert(blog.toEntity())
-
-                    }catch (e: Exception){
-                        e.printStackTrace()
-                    }
-                }
-
-                // emit from cache
-                val cachedBlogs = cache.returnOrderedBlogQuery(
-                    query = query,
-                    filterAndOrder = filterAndOrder,
-                    page = page
-                ).map { it.toBlogPost() }
-
-                emit(DataState.data(response = null, data = cachedBlogs))
-            }catch (e: Exception){
-                e.printStackTrace()
-                emit(DataState.error<List<BlogPost>>(
-                    response = Response(
-                        message = e.message,
-                        uiComponentType = UIComponentType.Dialog(),
-                        messageType = MessageType.Error()
-                    )
-                ))
-            }
         }
     }
 }

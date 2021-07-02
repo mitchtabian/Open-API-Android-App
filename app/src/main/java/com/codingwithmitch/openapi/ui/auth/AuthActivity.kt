@@ -8,6 +8,7 @@ import androidx.activity.viewModels
 import androidx.lifecycle.Observer
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.ui.BaseActivity
+import com.codingwithmitch.openapi.ui.auth.login.LoginViewModel
 import com.codingwithmitch.openapi.ui.auth.state.AuthStateEvent.*
 import com.codingwithmitch.openapi.ui.main.MainActivity
 import com.codingwithmitch.openapi.util.StateMessageCallback
@@ -18,7 +19,7 @@ import kotlinx.android.synthetic.main.activity_auth.*
 @AndroidEntryPoint
 class AuthActivity : BaseActivity()
 {
-    val viewModel: AuthViewModel by viewModels ()
+    val viewModel: LoginViewModel by viewModels ()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

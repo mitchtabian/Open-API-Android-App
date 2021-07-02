@@ -77,14 +77,10 @@ constructor(
                 ).onEach { dataState ->
                     this.state.value = state.copy(isLoading = dataState.isLoading)
 
-                    dataState.data?.let { message ->
+                    dataState.data?.let { response ->
                         appendToMessageQueue( // Tell the UI it was deleted
                             stateMessage = StateMessage(
-                                response = Response(
-                                    message = message,
-                                    uiComponentType = UIComponentType.None(),
-                                    messageType = MessageType.Success()
-                                )
+                                response = response
                             )
                         )
                     }

@@ -20,31 +20,23 @@ class IsAuthorOfBlogPost(
         slug: String,
     ): Flow<DataState<Boolean>> = flow{
         emit(DataState.loading<Boolean>())
-        if(authToken == null){
+        try {
+            if(authToken == null){
+                throw Exception("Authentication token is invalid. Log out and log back in.")
+            }
+            service.isAuthorOfBlogPost(
+                "Token ${authToken.token!!}",
+                slug
+            )
+        }catch (e: Exception){
+            e.printStackTrace()
             emit(DataState.error<Boolean>(
                 response = Response(
-                    message = "Authentication token is invalid. Log out and log back in.",
+                    message = e.message,
                     uiComponentType = UIComponentType.Dialog(),
                     messageType = MessageType.Error()
                 )
             ))
-        }
-        else{
-            try {
-                service.isAuthorOfBlogPost(
-                    "Token ${authToken.token!!}",
-                    slug
-                )
-            }catch (e: Exception){
-                e.printStackTrace()
-                emit(DataState.error<Boolean>(
-                    response = Response(
-                        message = e.message,
-                        uiComponentType = UIComponentType.Dialog(),
-                        messageType = MessageType.Error()
-                    )
-                ))
-            }
         }
     }
 }

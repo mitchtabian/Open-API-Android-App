@@ -152,7 +152,7 @@ class UpdateBlogFragment : BaseBlogFragment(R.layout.fragment_update_blog)
     override fun onPause() {
         super.onPause()
         viewModel.onTriggerEvent(UpdateBlogEvents.OnUpdateTitle(blog_title.text.toString()))
-        viewModel.onTriggerEvent(UpdateBlogEvents.OnUpdateTitle(blog_body.text.toString()))
+        viewModel.onTriggerEvent(UpdateBlogEvents.OnUpdateBody(blog_body.text.toString()))
     }
 }
 

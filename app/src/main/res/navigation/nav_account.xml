@@ -7,7 +7,7 @@
         app:startDestination="@id/accountFragment">
 
     <fragment android:id="@+id/accountFragment"
-            android:name="com.codingwithmitch.openapi.ui.main.account.AccountFragment"
+            android:name="com.codingwithmitch.openapi.ui.main.account.detail.AccountFragment"
             android:label="@string/fragment_account"
             tools:layout="@layout/fragment_account">
 
@@ -23,7 +23,7 @@
     </fragment>
 
     <fragment android:id="@+id/changePasswordFragment"
-            android:name="com.codingwithmitch.openapi.ui.main.account.ChangePasswordFragment"
+            android:name="com.codingwithmitch.openapi.ui.main.account.password.AccountPasswordFragment"
             android:label="@string/fragment_change_password"
             tools:layout="@layout/fragment_change_password">
 
@@ -31,9 +31,14 @@
 
 
     <fragment android:id="@+id/updateAccountFragment"
-            android:name="com.codingwithmitch.openapi.ui.main.account.UpdateAccountFragment"
+            android:name="com.codingwithmitch.openapi.ui.main.account.update.UpdateAccountFragment"
             android:label="@string/fragment_update_account"
             tools:layout="@layout/fragment_update_account">
+
+        <argument
+                android:name="accountPk"
+                app:argType="integer"
+                android:defaultValue="-1" />
     </fragment>
 
 </navigation>
