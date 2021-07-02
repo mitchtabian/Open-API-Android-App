@@ -120,7 +120,7 @@ constructor(
                     }
                 }
                 updateBlogPost.execute(
-                    authToken = sessionManager.cachedToken.value,
+                    authToken = sessionManager.state.value?.authToken,
                     slug = state.blogPost.slug,
                     title = title,
                     body = body,

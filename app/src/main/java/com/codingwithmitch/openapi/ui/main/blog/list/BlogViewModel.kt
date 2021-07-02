@@ -125,7 +125,7 @@ constructor(
             resetPage()
             clearList()
             searchBlogs.execute(
-                authToken = sessionManager.cachedToken.value,
+                authToken = sessionManager.state.value?.authToken,
                 query = state.query,
                 page = state.page,
                 filter = state.filter,
@@ -150,7 +150,7 @@ constructor(
             incrementPageNumber()
             resetPage()
             searchBlogs.execute(
-                authToken = sessionManager.cachedToken.value,
+                authToken = sessionManager.state.value?.authToken,
                 query = state.query,
                 page = state.page,
                 filter = state.filter,

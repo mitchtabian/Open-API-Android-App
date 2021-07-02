@@ -2,16 +2,12 @@ package com.codingwithmitch.openapi.ui.main
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
-import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.*
 import com.codingwithmitch.openapi.R
-import com.codingwithmitch.openapi.models.AUTH_TOKEN_BUNDLE_KEY
-import com.codingwithmitch.openapi.models.AuthToken
 import com.codingwithmitch.openapi.ui.BaseActivity
 import com.codingwithmitch.openapi.ui.auth.AuthActivity
 import com.google.android.material.appbar.AppBarLayout
@@ -45,7 +41,6 @@ class MainActivity : BaseActivity(){
         setupActionBar()
         setupBottomNavigationView()
 
-        restoreSession(savedInstanceState)
         subscribeObservers()
 
     }
@@ -64,25 +59,9 @@ class MainActivity : BaseActivity(){
         bottomNavigationView.setupWithNavController(navController)
     }
 
-    private fun restoreSession(savedInstanceState: Bundle?){
-        savedInstanceState?.get(AUTH_TOKEN_BUNDLE_KEY)?.let{ authToken ->
-            Log.d(TAG, "restoreSession: Restoring token: ${authToken}")
-            sessionManager.setValue(authToken as AuthToken)
-        }
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-
-        // save auth token
-        outState.putParcelable(AUTH_TOKEN_BUNDLE_KEY, sessionManager.cachedToken.value)
-    }
-
     fun subscribeObservers(){
-
-        sessionManager.cachedToken.observe(this, Observer{ authToken ->
-            Log.d(TAG, "MainActivity, subscribeObservers: ViewState: ${authToken}")
-            if(authToken == null || authToken.account_pk == -1 || authToken.token == null){
+        sessionManager.state.observe(this, { state ->
+            if(state.authToken == null || state.authToken.accountPk == -1){
                 navAuthActivity()
                 finish()
             }
@@ -99,8 +78,8 @@ class MainActivity : BaseActivity(){
         finish()
     }
 
-    override fun displayProgressBar(bool: Boolean){
-        if(bool){
+    override fun displayProgressBar(isLoading: Boolean){
+        if(isLoading){
             progress_bar.visibility = View.VISIBLE
         }
         else{

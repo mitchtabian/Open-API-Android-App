@@ -7,7 +7,6 @@ import androidx.lifecycle.viewModelScope
 import com.codingwithmitch.openapi.interactors.account.GetAccountFromCache
 import com.codingwithmitch.openapi.interactors.account.UpdateAccount
 import com.codingwithmitch.openapi.session.SessionManager
-import com.codingwithmitch.openapi.ui.main.blog.detail.ViewBlogEvents
 import com.codingwithmitch.openapi.util.StateMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
@@ -96,8 +95,8 @@ constructor(
     private fun update(email: String, username: String,){
         state.value?.let { state ->
             updateAccount.execute(
-                authToken = sessionManager.cachedToken.value,
-                pk = sessionManager.cachedToken.value?.account_pk,
+                authToken = sessionManager.state.value?.authToken,
+                pk = sessionManager.state.value?.authToken?.accountPk,
                 email = email,
                 username = username,
             ).onEach { dataState ->

@@ -2,24 +2,16 @@ package com.codingwithmitch.openapi.ui.auth
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import androidx.activity.viewModels
-import androidx.lifecycle.Observer
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.ui.BaseActivity
-import com.codingwithmitch.openapi.ui.auth.login.LoginViewModel
-import com.codingwithmitch.openapi.ui.auth.state.AuthStateEvent.*
 import com.codingwithmitch.openapi.ui.main.MainActivity
-import com.codingwithmitch.openapi.util.StateMessageCallback
-import com.codingwithmitch.openapi.util.SuccessHandling.Companion.RESPONSE_CHECK_PREVIOUS_AUTH_USER_DONE
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_auth.*
 
 @AndroidEntryPoint
 class AuthActivity : BaseActivity()
 {
-    val viewModel: LoginViewModel by viewModels ()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,47 +19,13 @@ class AuthActivity : BaseActivity()
         subscribeObservers()
     }
 
-    override fun onResume() {
-        super.onResume()
-        checkPreviousAuthUser()
-    }
-
     private fun subscribeObservers(){
-        viewModel.viewState.observe(this, Observer{ viewState ->
-            Log.d(TAG, "AuthActivity, subscribeObservers: AuthViewState: ${viewState}")
-            viewState.authToken?.let{
-                sessionManager.login(it)
+        sessionManager.state.observe(this, { state ->
+            if(state.didCheckForPreviousAuthUser){
+                onFinishCheckPreviousAuthUser()
             }
-        })
-
-        viewModel.numActiveJobs.observe(this, Observer { jobCounter ->
-            displayProgressBar(viewModel.areAnyJobsActive())
-        })
-
-        viewModel.stateMessage.observe(this, Observer { stateMessage ->
-
-            stateMessage?.let {
-
-                if(stateMessage.response.message.equals(RESPONSE_CHECK_PREVIOUS_AUTH_USER_DONE)){
-                    onFinishCheckPreviousAuthUser()
-                }
-
-                onResponseReceived(
-                    response = it.response,
-                    stateMessageCallback = object: StateMessageCallback{
-                        override fun removeMessageFromStack() {
-                            viewModel.clearStateMessage()
-                        }
-                    }
-                )
-            }
-        })
-
-        sessionManager.cachedToken.observe(this, Observer{ token ->
-            token.let{ authToken ->
-                if(authToken != null && authToken.account_pk != -1 && authToken.token != null){
-                    navMainActivity()
-                }
+            if(state.authToken != null && state.authToken.accountPk != -1){
+                navMainActivity()
             }
         })
     }
@@ -83,10 +41,6 @@ class AuthActivity : BaseActivity()
         finish()
     }
 
-    private fun checkPreviousAuthUser(){
-        viewModel.setStateEvent(CheckPreviousAuthEvent())
-    }
-
     override fun displayProgressBar(isLoading: Boolean){
         if(isLoading){
             progress_bar.visibility = View.VISIBLE
@@ -99,8 +53,6 @@ class AuthActivity : BaseActivity()
     override fun expandAppBar() {
         // ignore
     }
-
-
 
 }
 

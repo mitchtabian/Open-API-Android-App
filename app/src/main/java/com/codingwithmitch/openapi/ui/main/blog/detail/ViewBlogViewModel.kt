@@ -72,7 +72,7 @@ constructor(
         state.value?.let { state ->
             state.blogPost?.let { blogPost ->
                 deleteBlogPost.execute(
-                    authToken = sessionManager.cachedToken.value,
+                    authToken = sessionManager.state.value?.authToken,
                     blogPost = blogPost
                 ).onEach { dataState ->
                     this.state.value = state.copy(isLoading = dataState.isLoading)
@@ -118,7 +118,7 @@ constructor(
     private fun isAuthor(slug: String){
         state.value?.let { state ->
             isAuthorOfBlogPost.execute(
-                authToken = sessionManager.cachedToken.value,
+                authToken = sessionManager.state.value?.authToken,
                 slug = slug,
             ).onEach { dataState ->
                 this.state.value = state.copy(isLoading = dataState.isLoading)

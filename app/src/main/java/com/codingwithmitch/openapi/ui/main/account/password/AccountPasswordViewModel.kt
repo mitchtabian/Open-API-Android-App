@@ -64,7 +64,7 @@ constructor(
         // TODO("Should perform some simple validation client-side here")
         state.value?.let { state ->
             updatePassword.execute(
-                authToken = sessionManager.cachedToken.value,
+                authToken = sessionManager.state.value?.authToken,
                 currentPassword = state.currentPassword,
                 newPassword = state.newPassword,
                 confirmNewPassword = state.confirmNewPassword

@@ -8,6 +8,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Android Studio Projects/Open-API-Android-App/app/src/main/res/layout/activity_auth.xml" value="0.1" />
         <entry key="..\:/Android Studio Projects/Open-API-Android-App/app/src/main/res/layout/fragment_change_password.xml" value="0.25" />
       </map>
     </option>

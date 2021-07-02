@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.codingwithmitch.openapi.interactors.auth.Login
 import com.codingwithmitch.openapi.interactors.auth.Register
+import com.codingwithmitch.openapi.session.SessionEvents
 import com.codingwithmitch.openapi.session.SessionManager
 import com.codingwithmitch.openapi.util.PreferenceKeys
 import com.codingwithmitch.openapi.util.StateMessage
@@ -72,7 +73,7 @@ constructor(
 
                 dataState.data?.let { authToken ->
                     saveAuthUser(email)
-                    sessionManager.login(authToken)
+                    sessionManager.onTriggerEvent(SessionEvents.Login(authToken))
                 }
 
                 dataState.stateMessage?.let { stateMessage ->

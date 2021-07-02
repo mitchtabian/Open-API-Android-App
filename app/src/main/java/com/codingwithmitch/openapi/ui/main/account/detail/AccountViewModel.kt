@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.codingwithmitch.openapi.interactors.account.GetAccount
+import com.codingwithmitch.openapi.session.SessionEvents
 import com.codingwithmitch.openapi.session.SessionManager
 import com.codingwithmitch.openapi.util.StateMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -39,7 +40,7 @@ constructor(
     private fun getAccount(){
         state.value?.let { state ->
             getAccount.execute(
-                authToken = sessionManager.cachedToken.value,
+                authToken = sessionManager.state.value?.authToken,
             ).onEach { dataState ->
                 this.state.value = state.copy(isLoading = dataState.isLoading)
 
@@ -56,7 +57,7 @@ constructor(
     }
 
     private fun logout(){
-        sessionManager.logout()
+        sessionManager.onTriggerEvent(SessionEvents.Logout)
     }
 
     private fun appendToMessageQueue(stateMessage: StateMessage){

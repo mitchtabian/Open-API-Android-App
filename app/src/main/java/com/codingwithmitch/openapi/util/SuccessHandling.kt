@@ -16,6 +16,8 @@ class SuccessHandling {
         const val SUCCESS_ACCOUNT_UPDATED = "Account update success"
         const val SUCCESS_PASSWORD_UPDATED = "successfully changed password"
 
+        const val SUCCESS_LOGOUT = "Logout success."
+
 
     }
 }
