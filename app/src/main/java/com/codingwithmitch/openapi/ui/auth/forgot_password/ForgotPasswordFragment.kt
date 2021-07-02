@@ -20,9 +20,9 @@ import kotlinx.coroutines.launch
 
 class ForgotPasswordFragment : BaseAuthFragment(R.layout.fragment_forgot_password) {
 
-    lateinit var webView: WebView
+    private lateinit var webView: WebView
 
-    val webInteractionCallback = object: OnWebInteractionCallback {
+    private val webInteractionCallback = object: OnWebInteractionCallback {
 
         override fun onError(errorMessage: String) {
             Log.e(TAG, "onError: $errorMessage")
@@ -34,7 +34,7 @@ class ForgotPasswordFragment : BaseAuthFragment(R.layout.fragment_forgot_passwor
                 ),
                 stateMessageCallback = object: StateMessageCallback{
                     override fun removeMessageFromStack() {
-                        viewModel.clearStateMessage()
+                        // TODO("probably removing this")
                     }
                 }
             )
@@ -63,7 +63,7 @@ class ForgotPasswordFragment : BaseAuthFragment(R.layout.fragment_forgot_passwor
     }
 
     @SuppressLint("SetJavaScriptEnabled")
-    fun loadPasswordResetWebView(){
+    private fun loadPasswordResetWebView(){
         uiCommunicationListener.displayProgressBar(true)
         webView.webViewClient = object: WebViewClient(){
             override fun onPageFinished(view: WebView?, url: String?) {
@@ -78,7 +78,7 @@ class ForgotPasswordFragment : BaseAuthFragment(R.layout.fragment_forgot_passwor
 
 
 
-    class WebAppInterface
+    private class WebAppInterface
     constructor(
         private val callback: OnWebInteractionCallback
     ) {
@@ -110,7 +110,7 @@ class ForgotPasswordFragment : BaseAuthFragment(R.layout.fragment_forgot_passwor
         }
     }
 
-    fun onPasswordResetLinkSent(){
+    private fun onPasswordResetLinkSent(){
         CoroutineScope(Main).launch{
             parent_view.removeView(webView)
             webView.destroy()
