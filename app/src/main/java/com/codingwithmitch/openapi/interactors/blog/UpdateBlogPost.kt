@@ -32,7 +32,7 @@ class UpdateBlogPost(
             }
             // attempt update
             val createUpdateResponse = service.updateBlog(
-                "Token ${authToken.token!!}",
+                "Token ${authToken.token}",
                 slug,
                 title,
                 body,

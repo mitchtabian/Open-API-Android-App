@@ -92,7 +92,7 @@ class UpdateBlogFragment : BaseBlogFragment(R.layout.fragment_update_blog)
                     val result = CropImage.getActivityResult(data)
                     val resultUri = result.uri
                     Log.d(TAG, "CROP: CROP_IMAGE_ACTIVITY_REQUEST_CODE: uri: ${resultUri}")
-                    viewModel.onTriggerEvent(UpdateBlogEvents.OnUpdateImageUri(resultUri))
+                    viewModel.onTriggerEvent(UpdateBlogEvents.OnUpdateUri(resultUri))
                 }
 
                 CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE -> {

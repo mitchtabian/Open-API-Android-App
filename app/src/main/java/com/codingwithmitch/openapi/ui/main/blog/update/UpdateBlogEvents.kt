@@ -13,7 +13,7 @@ sealed class UpdateBlogEvents {
 
     data class OnUpdateBody(val body: String): UpdateBlogEvents()
 
-    data class OnUpdateImageUri(val uri: Uri): UpdateBlogEvents()
+    data class OnUpdateUri(val uri: Uri): UpdateBlogEvents()
 
     data class Error(val stateMessage: StateMessage): UpdateBlogEvents()
 }

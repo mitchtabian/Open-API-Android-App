@@ -55,6 +55,15 @@ object BlogModule {
     ): UpdateBlogPost{
         return UpdateBlogPost(service, dao)
     }
+
+    @Singleton
+    @Provides
+    fun providePublishBlog(
+        service: OpenApiMainService,
+        dao: BlogPostDao,
+    ): PublishBlog{
+        return PublishBlog(service, dao)
+    }
 }
 
 

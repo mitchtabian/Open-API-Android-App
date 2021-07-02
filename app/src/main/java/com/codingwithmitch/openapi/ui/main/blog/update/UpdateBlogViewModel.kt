@@ -8,10 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.codingwithmitch.openapi.interactors.blog.GetBlogFromCache
 import com.codingwithmitch.openapi.interactors.blog.UpdateBlogPost
 import com.codingwithmitch.openapi.session.SessionManager
-import com.codingwithmitch.openapi.util.MessageType
-import com.codingwithmitch.openapi.util.Response
 import com.codingwithmitch.openapi.util.StateMessage
-import com.codingwithmitch.openapi.util.UIComponentType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -44,7 +41,7 @@ constructor(
             is UpdateBlogEvents.getBlog -> {
                 getBlog(event.pk,)
             }
-            is UpdateBlogEvents.OnUpdateImageUri -> {
+            is UpdateBlogEvents.OnUpdateUri -> {
                 onUpdateImageUri(event.uri)
             }
             is UpdateBlogEvents.OnUpdateTitle -> {

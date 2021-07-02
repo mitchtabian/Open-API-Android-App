@@ -1,105 +1,147 @@
 package com.codingwithmitch.openapi.ui.main.create_blog
 
 import android.net.Uri
-import com.codingwithmitch.openapi.repository.main.CreateBlogRepositoryImpl
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.codingwithmitch.openapi.interactors.blog.PublishBlog
 import com.codingwithmitch.openapi.session.SessionManager
-import com.codingwithmitch.openapi.ui.main.create_blog.state.CreateBlogStateEvent.*
-import com.codingwithmitch.openapi.ui.main.create_blog.state.CreateBlogViewState
-import com.codingwithmitch.openapi.ui.main.create_blog.state.CreateBlogViewState.*
 import com.codingwithmitch.openapi.util.*
-import com.codingwithmitch.openapi.util.ErrorHandling.Companion.INVALID_STATE_EVENT
+import com.codingwithmitch.openapi.util.SuccessHandling.Companion.SUCCESS_BLOG_CREATED
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import okhttp3.MediaType
+import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
 class CreateBlogViewModel
 @Inject
 constructor(
-    val createBlogRepository: CreateBlogRepositoryImpl,
-    val sessionManager: SessionManager
-): BaseViewModel<CreateBlogViewState>() {
+    private val publishBlog: PublishBlog,
+    private val sessionManager: SessionManager
+): ViewModel() {
 
+    val state: MutableLiveData<CreateBlogState> = MutableLiveData(CreateBlogState())
 
-    override fun handleNewData(data: CreateBlogViewState) {
-
-        setNewBlogFields(
-            data.blogFields.newBlogTitle,
-            data.blogFields.newBlogBody,
-            data.blogFields.newImageUri
-        )
-    }
-
-    override fun setStateEvent(stateEvent: StateEvent) {
-        sessionManager.cachedToken.value?.let { authToken ->
-            val job: Flow<DataState<CreateBlogViewState>> = when(stateEvent){
-
-                is CreateNewBlogEvent -> {
-                    val title = RequestBody.create(
-                        MediaType.parse("text/plain"),
-                        stateEvent.title
-                    )
-                    val body = RequestBody.create(
-                        MediaType.parse("text/plain"),
-                        stateEvent.body
-                    )
-
-                    createBlogRepository.createNewBlogPost(
-                        stateEvent = stateEvent,
-                        authToken = authToken,
-                        title = title,
-                        body = body,
-                        image = stateEvent.image
-                    )
-                }
-
-                else -> {
-                    flow{
-                        emit(
-                            DataState.error<CreateBlogViewState>(
-                                response = Response(
-                                    message = INVALID_STATE_EVENT,
-                                    uiComponentType = UIComponentType.None(),
-                                    messageType = MessageType.Error()
-                                ),
-                                stateEvent = stateEvent
-                            )
-                        )
-                    }
-                }
+    fun onTriggerEvent(event: CreateBlogEvents){
+        when(event){
+            is CreateBlogEvents.OnUpdateTitle -> {
+                onUpdateTitle(event.title)
             }
-            launchJob(stateEvent, job)
+            is CreateBlogEvents.OnUpdateBody -> {
+                onUpdateBody(event.body)
+            }
+            is CreateBlogEvents.OnUpdateUri -> {
+                onUpdateUri(event.uri)
+            }
+            is CreateBlogEvents.PublishBlog -> {
+                publishBlog()
+            }
+            is CreateBlogEvents.OnPublishSuccess -> {
+                onPublishSuccess()
+            }
         }
     }
 
-    override fun initNewViewState(): CreateBlogViewState {
-        return CreateBlogViewState()
+    private fun appendToMessageQueue(stateMessage: StateMessage){
+        // TODO
     }
 
-    fun setNewBlogFields(title: String?, body: String?, uri: Uri?){
-        val update = getCurrentViewStateOrNew()
-        val newBlogFields = update.blogFields
-        title?.let{ newBlogFields.newBlogTitle = it }
-        body?.let{ newBlogFields.newBlogBody = it }
-        uri?.let{ newBlogFields.newImageUri = it }
-        update.blogFields = newBlogFields
-        setViewState(update)
+    // call after successfully publishing
+    private fun clearNewBlogFields(){
+        onUpdateTitle("")
+        onUpdateBody("")
+        onUpdateUri(null)
     }
 
-    fun clearNewBlogFields(){
-        val update = getCurrentViewStateOrNew()
-        update.blogFields = NewBlogFields()
-        setViewState(update)
+    private fun onPublishSuccess(){
+        clearNewBlogFields()
+        state.value?.let { state ->
+            this.state.value = state.copy(onPublishSuccess = true)
+        }
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        cancelActiveJobs()
+    private fun onUpdateUri(uri: Uri?){
+        state.value?.let { state ->
+            this.state.value = state.copy(uri = uri)
+        }
     }
 
+    private fun onUpdateTitle(title: String){
+        state.value?.let { state ->
+            this.state.value = state.copy(title = title)
+        }
+    }
+
+    private fun onUpdateBody(body: String){
+        state.value?.let { state ->
+            this.state.value = state.copy(body = body)
+        }
+    }
+
+    private fun publishBlog(){
+        state.value?.let { state ->
+            val title = RequestBody.create(
+                MediaType.parse("text/plain"),
+                state.title
+            )
+            val body = RequestBody.create(
+                MediaType.parse("text/plain"),
+                state.body
+            )
+            var multipartBody: MultipartBody.Part? = null
+            if(state.uri == null){
+                Response(
+                    message = ErrorHandling.ERROR_MUST_SELECT_IMAGE,
+                    uiComponentType = UIComponentType.Dialog(),
+                    messageType = MessageType.Error()
+                )
+            }
+            else{
+                state.uri.path?.let { filePath ->
+                    val imageFile = File(filePath)
+                    if(imageFile.exists()){
+                        val requestBody =
+                            RequestBody.create(
+                                MediaType.parse("image/*"),
+                                imageFile
+                            )
+                        multipartBody = MultipartBody.Part.createFormData(
+                            "image",
+                            imageFile.name,
+                            requestBody
+                        )
+                    }
+                }
+                publishBlog.execute(
+                    authToken = sessionManager.state.value?.authToken,
+                    title = title,
+                    body = body,
+                    image = multipartBody,
+                ).onEach { dataState ->
+                    this.state.value = state.copy(isLoading = dataState.isLoading)
+
+                    dataState.data?.let { response ->
+                        if(response.message == SUCCESS_BLOG_CREATED){
+                            onTriggerEvent(CreateBlogEvents.OnPublishSuccess)
+                        }else{
+                            appendToMessageQueue(
+                                stateMessage = StateMessage(response)
+                            )
+                        }
+                    }
+
+                    dataState.stateMessage?.let { stateMessage ->
+                        appendToMessageQueue(stateMessage)
+                    }
+                }.launchIn(viewModelScope)
+            }
+        }
+    }
 }
 
 
