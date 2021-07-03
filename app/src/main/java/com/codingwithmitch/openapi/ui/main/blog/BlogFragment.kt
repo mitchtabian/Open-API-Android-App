@@ -41,6 +41,7 @@ import kotlinx.coroutines.*
 class BlogFragment : BaseBlogFragment(R.layout.fragment_blog),
 	BlogListAdapter.Interaction,
 	SwipeRefreshLayout.OnRefreshListener {
+
 	companion object {
 		private const val TAG: String = "AppDebug"
 	}
@@ -331,14 +332,4 @@ class BlogFragment : BaseBlogFragment(R.layout.fragment_blog),
 			dialog.show()
 		}
 	}
-
-
 }
-
-
-
-
-
-
-
-

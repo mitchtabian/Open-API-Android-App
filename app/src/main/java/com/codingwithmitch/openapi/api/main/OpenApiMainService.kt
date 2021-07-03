@@ -10,7 +10,6 @@ import retrofit2.http.*
 
 interface OpenApiMainService {
 
-
 	@GET("account/properties")
 	suspend fun getAccountProperties(
 		@Header("Authorization") authorization: String
@@ -75,12 +74,3 @@ interface OpenApiMainService {
 		@Part image: MultipartBody.Part?
 	): BlogCreateUpdateResponse
 }
-
-
-
-
-
-
-
-
-

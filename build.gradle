@@ -1,7 +1,7 @@
 
 buildscript {
     ext {
-        hilt_version = "2.35"
+        hilt_version = "2.37"
         kotlin_version = "1.5.20"
         gradle_plugin_version = "2.3.4"
         fragment_version = '1.4.0-alpha04'
@@ -15,7 +15,7 @@ buildscript {
         maven { url "https://dl.bintray.com/kotlin/kotlin-eap" }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.2.1'
+        classpath 'com.android.tools.build:gradle:4.2.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "com.google.dagger:hilt-android-gradle-plugin:$hilt_version"
         classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$gradle_plugin_version"

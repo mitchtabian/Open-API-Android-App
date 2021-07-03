@@ -17,7 +17,7 @@ import kotlinx.coroutines.FlowPreview
 abstract class BaseBlogFragment
 constructor(
 	@LayoutRes
-	private val layoutRes: Int,
+	private val layoutRes: Int
 ) : Fragment(layoutRes) {
 
 	companion object {

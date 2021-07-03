@@ -16,6 +16,7 @@ import kotlinx.android.synthetic.main.activity_auth.*
 
 @AndroidEntryPoint
 class AuthActivity : BaseActivity() {
+
 	val viewModel: AuthViewModel by viewModels()
 
 	override fun onCreate(savedInstanceState: Bundle?) {

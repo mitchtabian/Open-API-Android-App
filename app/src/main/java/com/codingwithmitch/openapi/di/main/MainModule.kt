@@ -22,8 +22,8 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object MainModule {
 
-	@Singleton
 	@Provides
+	@Singleton
 	fun provideOpenApiMainService(retrofitBuilder: Retrofit.Builder): OpenApiMainService {
 		return retrofitBuilder
 			.build()
@@ -67,20 +67,3 @@ object MainModule {
 	}
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

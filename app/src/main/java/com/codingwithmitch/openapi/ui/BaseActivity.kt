@@ -22,7 +22,9 @@ import javax.inject.Inject
 abstract class BaseActivity : AppCompatActivity(),
 	UICommunicationListener {
 
-	val TAG: String = "AppDebug"
+	companion object {
+		const val TAG: String = "AppDebug"
+	}
 
 	private var dialogInView: MaterialDialog? = null
 
@@ -245,12 +247,3 @@ abstract class BaseActivity : AppCompatActivity(),
 			}
 	}
 }
-
-
-
-
-
-
-
-
-

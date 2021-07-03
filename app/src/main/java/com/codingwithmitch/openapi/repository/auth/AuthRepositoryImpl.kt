@@ -35,7 +35,7 @@ constructor(
 	val openApiAuthService: OpenApiAuthService,
 	val sessionManager: SessionManager,
 	val sharedPreferences: SharedPreferences,
-	val sharedPrefsEditor: SharedPreferences.Editor
+	private val sharedPrefsEditor: SharedPreferences.Editor
 ) : AuthRepository {
 	private val TAG: String = "AppDebug"
 
