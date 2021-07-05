@@ -4,15 +4,15 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
-import com.codingwithmitch.openapi.models.Account
 import com.codingwithmitch.openapi.models.AuthToken
+import com.codingwithmitch.openapi.persistence.account.AccountEntity
 import com.google.gson.annotations.Expose
 
 @Entity(
     tableName = "auth_token",
     foreignKeys = [
         ForeignKey(
-            entity = Account::class,
+            entity = AccountEntity::class,
             parentColumns = ["pk"],
             childColumns = ["account_pk"],
             onDelete = ForeignKey.CASCADE

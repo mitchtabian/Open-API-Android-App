@@ -24,21 +24,19 @@ class AccountPasswordFragment : BaseAccountFragment(R.layout.fragment_change_pas
         }
 
         subscribeObservers()
-    }
-
-    private fun subscribeObservers(){
-
-        viewModel.state.observe(viewLifecycleOwner, { state ->
-
-            uiCommunicationListener.displayProgressBar(state.isLoading)
-
+        viewModel.state.value?.let { state ->
             setPasswordFields(
                 currentPassword = state.currentPassword,
                 newPassword = state.newPassword,
                 confirmNewPassword = state.confirmNewPassword
             )
-        })
+        }
+    }
 
+    private fun subscribeObservers(){
+        viewModel.state.observe(viewLifecycleOwner, { state ->
+            uiCommunicationListener.displayProgressBar(state.isLoading)
+        })
         // TODO("Listen for when the password is successfully updated")
     }
 

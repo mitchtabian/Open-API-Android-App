@@ -1,6 +1,7 @@
 package com.codingwithmitch.openapi.ui.auth.login
 
 import android.content.SharedPreferences
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -23,18 +24,41 @@ constructor(
     private val sessionManager: SessionManager,
 ): ViewModel()
 {
-    val state: MutableLiveData<LoginState> = MutableLiveData()
+
+    private val TAG: String = "AppDebug"
+
+    val state: MutableLiveData<LoginState> = MutableLiveData(LoginState())
 
     fun onTriggerEvent(event: LoginEvents){
+        Log.d(TAG, "onTriggerEvent: ${event}")
         when(event){
             is LoginEvents.Login ->{
                 login(email = event.email, password = event.password)
+            }
+            is LoginEvents.OnUpdateEmail ->{
+                onUpdateEmail(event.email)
+            }
+            is LoginEvents.OnUpdatePassword ->{
+                onUpdatePassword(event.password)
             }
         }
     }
 
     private fun appendToMessageQueue(stateMessage: StateMessage){
+        Log.d(TAG, "appendToMessageQueue: ${stateMessage.response.message}")
         // TODO
+    }
+
+    private fun onUpdateEmail(email: String){
+        state.value?.let { state ->
+            this.state.value = state.copy(email = email)
+        }
+    }
+
+    private fun onUpdatePassword(password: String){
+        state.value?.let { state ->
+            this.state.value = state.copy(password = password)
+        }
     }
 
     private fun login(email: String, password: String){

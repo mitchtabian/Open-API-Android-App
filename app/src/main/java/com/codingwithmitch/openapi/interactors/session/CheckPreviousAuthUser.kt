@@ -19,6 +19,7 @@ class CheckPreviousAuthUser(
     fun execute(
         email: String,
     ): Flow<DataState<AuthToken>> = flow {
+        emit(DataState.loading<AuthToken>())
         var authToken: AuthToken? = null
         try{
             val entity = accountDao.searchByEmail(email)
@@ -33,21 +34,21 @@ class CheckPreviousAuthUser(
             }
         }catch (e: Exception){
             e.printStackTrace()
-            emitNoPreviousAuthUser()
+            emit(returnNoPreviousAuthUser())
         }
     }
 
     /**
      * If no user was previously authenticated then emit this error. The UI is waiting for it.
      */
-    private fun emitNoPreviousAuthUser(): Flow<DataState<AuthToken>> = flow{
-        emit(DataState.error<AuthToken>(
+    private fun returnNoPreviousAuthUser(): DataState<AuthToken> {
+        return DataState.error<AuthToken>(
             response = Response(
                 SuccessHandling.RESPONSE_CHECK_PREVIOUS_AUTH_USER_DONE,
                 UIComponentType.None(),
                 MessageType.Error()
             )
-        ))
+        )
     }
 }
 

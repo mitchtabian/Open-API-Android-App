@@ -2,6 +2,7 @@ package com.codingwithmitch.openapi.ui.auth
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.ui.BaseActivity
@@ -21,6 +22,7 @@ class AuthActivity : BaseActivity()
 
     private fun subscribeObservers(){
         sessionManager.state.observe(this, { state ->
+            displayProgressBar(state.isLoading)
             if(state.didCheckForPreviousAuthUser){
                 onFinishCheckPreviousAuthUser()
             }

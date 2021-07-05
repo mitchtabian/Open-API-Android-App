@@ -1,6 +1,7 @@
 package com.codingwithmitch.openapi.ui.auth.login
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.viewModels
 import com.codingwithmitch.openapi.R
@@ -18,14 +19,14 @@ class LoginFragment : BaseAuthFragment(R.layout.fragment_login) {
             cacheState()
             login()
         }
+        viewModel.state.value?.let { state ->
+            setLoginFields(email = state.email, password = state.password)
+        }
     }
 
     fun subscribeObservers(){
         viewModel.state.observe(viewLifecycleOwner, { state ->
-
             uiCommunicationListener.displayProgressBar(state.isLoading)
-
-            setLoginFields(email = state.email, password = state.password)
         })
     }
 

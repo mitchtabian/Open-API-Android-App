@@ -18,19 +18,21 @@ class RegisterFragment : BaseAuthFragment(R.layout.fragment_register) {
             register()
         }
         subscribeObservers()
-    }
-
-    private fun subscribeObservers() {
-        viewModel.state.observe(viewLifecycleOwner, { state ->
-
-            uiCommunicationListener.displayProgressBar(state.isLoading)
-
+        viewModel.state.value?.let { state ->
             setRegisterFields(
                 email = state.email,
                 username = state.username,
                 password = state.password,
                 confirmPassword = state.confirmPassword
             )
+        }
+        viewModel.state.value?.let { state ->
+        }
+    }
+
+    private fun subscribeObservers() {
+        viewModel.state.observe(viewLifecycleOwner, { state ->
+            uiCommunicationListener.displayProgressBar(state.isLoading)
         })
     }
 

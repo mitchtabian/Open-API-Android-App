@@ -17,11 +17,9 @@ import com.codingwithmitch.openapi.util.Constants.Companion.GALLERY_REQUEST_CODE
 import com.codingwithmitch.openapi.util.ErrorHandling.Companion.ERROR_SOMETHING_WRONG_WITH_IMAGE
 import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView
-import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_create_blog.*
 import javax.inject.Inject
 
-@AndroidEntryPoint
 class CreateBlogFragment : BaseCreateBlogFragment(R.layout.fragment_create_blog)
 {
 
@@ -47,6 +45,13 @@ class CreateBlogFragment : BaseCreateBlogFragment(R.layout.fragment_create_blog)
         }
 
         subscribeObservers()
+        viewModel.state.value?.let { state ->
+            setBlogProperties(
+                title = state.title,
+                body = state.body,
+                uri = state.uri,
+            )
+        }
     }
 
     private fun pickFromGallery() {
@@ -60,11 +65,6 @@ class CreateBlogFragment : BaseCreateBlogFragment(R.layout.fragment_create_blog)
 
     fun subscribeObservers(){
         viewModel.state.observe(viewLifecycleOwner, { state ->
-            setBlogProperties(
-                title = state.title,
-                body = state.body,
-                uri = state.uri,
-            )
             if(state.onPublishSuccess){
                 findNavController().popBackStack()
             }
@@ -146,7 +146,7 @@ class CreateBlogFragment : BaseCreateBlogFragment(R.layout.fragment_create_blog)
 
     private fun cacheState(){
         viewModel.onTriggerEvent(CreateBlogEvents.OnUpdateTitle(blog_title.text.toString()))
-        viewModel.onTriggerEvent(CreateBlogEvents.OnUpdateTitle(blog_body.text.toString()))
+        viewModel.onTriggerEvent(CreateBlogEvents.OnUpdateBody(blog_body.text.toString()))
     }
 
     override fun onPause() {

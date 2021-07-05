@@ -11,11 +11,9 @@ import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.models.BlogPost
 import com.codingwithmitch.openapi.ui.main.blog.BaseBlogFragment
 import com.codingwithmitch.openapi.util.*
-import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_view_blog.*
 import javax.inject.Inject
 
-@AndroidEntryPoint
 class ViewBlogFragment : BaseBlogFragment(R.layout.fragment_view_blog)
 {
     @Inject

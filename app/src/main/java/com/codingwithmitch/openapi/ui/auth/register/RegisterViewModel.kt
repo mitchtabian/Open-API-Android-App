@@ -24,7 +24,7 @@ constructor(
     private val sessionManager: SessionManager,
 ): ViewModel()
 {
-    val state: MutableLiveData<RegisterState> = MutableLiveData()
+    val state: MutableLiveData<RegisterState> = MutableLiveData(RegisterState())
 
     fun onTriggerEvent(event: RegisterEvents){
         when(event){

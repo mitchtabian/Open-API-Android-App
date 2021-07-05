@@ -39,7 +39,7 @@ constructor(
         // Check if a user was authenticated in a previous session
         preferences.getString(PreferenceKeys.PREVIOUS_AUTH_USER, null)?.let { email ->
             onTriggerEvent(SessionEvents.CheckPreviousAuthUser(email))
-        }
+        }?: onFinishCheckingPrevAuthUser()
     }
 
     fun onTriggerEvent(event: SessionEvents){
@@ -59,14 +59,15 @@ constructor(
     private fun checkPreviousAuthUser(email: String){
         state.value?.let { state ->
             checkPreviousAuthUser.execute(email).onEach { dataState ->
+                this.state.value = state.copy(isLoading = dataState.isLoading)
                 dataState.data?.let { authToken ->
                     this.state.value = state.copy(authToken = authToken)
                     onTriggerEvent(SessionEvents.Login(authToken))
                 }
 
                 dataState.stateMessage?.let { stateMessage ->
-                    if(stateMessage.response.equals(RESPONSE_CHECK_PREVIOUS_AUTH_USER_DONE)){
-                        this.state.value = state.copy(didCheckForPreviousAuthUser = true)
+                    if(stateMessage.response.message.equals(RESPONSE_CHECK_PREVIOUS_AUTH_USER_DONE)){
+                        onFinishCheckingPrevAuthUser()
                     }
                     else{
                         appendToMessageQueue(stateMessage)
@@ -87,6 +88,7 @@ constructor(
     private fun logout(){
         state.value?.let { state ->
             logout.execute().onEach { dataState ->
+                this.state.value = state.copy(isLoading = dataState.isLoading)
                 dataState.data?.let { response ->
                     if(response.message.equals(SUCCESS_LOGOUT)){
                         this.state.value = state.copy(authToken = null)
@@ -97,6 +99,12 @@ constructor(
                     appendToMessageQueue(stateMessage)
                 }
             }.launchIn(sessionScope)
+        }
+    }
+
+    private fun onFinishCheckingPrevAuthUser(){
+        state.value?.let { state ->
+            this.state.value = state.copy(didCheckForPreviousAuthUser = true)
         }
     }
 

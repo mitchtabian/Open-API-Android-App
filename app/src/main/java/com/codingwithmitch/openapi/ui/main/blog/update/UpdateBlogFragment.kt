@@ -17,11 +17,9 @@ import com.codingwithmitch.openapi.util.Constants.Companion.GALLERY_REQUEST_CODE
 import com.codingwithmitch.openapi.util.ErrorHandling.Companion.SOMETHING_WRONG_WITH_IMAGE
 import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView
-import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_update_blog.*
 import javax.inject.Inject
 
-@AndroidEntryPoint
 class UpdateBlogFragment : BaseBlogFragment(R.layout.fragment_update_blog)
 {
 
@@ -38,6 +36,16 @@ class UpdateBlogFragment : BaseBlogFragment(R.layout.fragment_update_blog)
         image_container.setOnClickListener {
             if(uiCommunicationListener.isStoragePermissionGranted()){
                 pickFromGallery()
+            }
+        }
+
+        viewModel.state.value?.let { state ->
+            state.blogPost?.let { blogPost ->
+                setBlogProperties(
+                    blogPost.title,
+                    blogPost.body,
+                    blogPost.image.toUri()
+                )
             }
         }
     }
@@ -104,17 +112,6 @@ class UpdateBlogFragment : BaseBlogFragment(R.layout.fragment_update_blog)
     }
 
     fun subscribeObservers(){
-
-        viewModel.state.observe(viewLifecycleOwner, { state ->
-            state.blogPost?.let { blogPost ->
-                setBlogProperties(
-                    blogPost.title,
-                    blogPost.body,
-                    blogPost.image.toUri()
-                )
-            }
-        })
-
         // TODO("Listen for if the BlogPost was updated. Then popBackStack()")
     }
 

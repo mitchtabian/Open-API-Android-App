@@ -4,10 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.codingwithmitch.openapi.models.BlogPost
-import com.codingwithmitch.openapi.util.DateUtils
-import kotlinx.android.parcel.Parcelize
 
-@Parcelize
 @Entity(tableName = "blog_post")
 data class BlogPostEntity(
 

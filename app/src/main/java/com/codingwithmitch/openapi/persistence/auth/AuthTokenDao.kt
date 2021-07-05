@@ -4,13 +4,12 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.codingwithmitch.openapi.models.AuthToken
 
 @Dao
 interface AuthTokenDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(authToken: AuthToken): Long
+    suspend fun insert(authToken: AuthTokenEntity): Long
 
     @Query("DELETE FROM auth_token")
     suspend fun clearTokens()

@@ -6,6 +6,7 @@ import com.codingwithmitch.openapi.models.AuthToken
 import com.codingwithmitch.openapi.persistence.account.AccountDao
 import com.codingwithmitch.openapi.persistence.account.toEntity
 import com.codingwithmitch.openapi.persistence.auth.AuthTokenDao
+import com.codingwithmitch.openapi.persistence.auth.toEntity
 import com.codingwithmitch.openapi.util.*
 import com.codingwithmitch.openapi.util.ErrorHandling.Companion.ERROR_SAVE_AUTH_TOKEN
 import kotlinx.coroutines.flow.Flow
@@ -24,6 +25,7 @@ class Register(
         confirmPassword: String,
     ): Flow<DataState<AuthToken>> = flow {
         try {
+            emit(DataState.loading<AuthToken>())
             if(password != confirmPassword){
                 throw Exception("Passwords must match")
             }
@@ -52,7 +54,7 @@ class Register(
                 registerResponse.pk,
                 registerResponse.token
             )
-            val result = authTokenDao.insert(authToken)
+            val result = authTokenDao.insert(authToken.toEntity())
             // can't proceed unless token can be cached
             if(result < 0){
                 throw Exception(ERROR_SAVE_AUTH_TOKEN)

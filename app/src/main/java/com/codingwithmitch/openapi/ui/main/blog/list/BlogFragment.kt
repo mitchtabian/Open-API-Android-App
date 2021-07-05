@@ -27,8 +27,6 @@ import com.codingwithmitch.openapi.persistence.blog.BlogQueryUtils.Companion.BLO
 import com.codingwithmitch.openapi.persistence.blog.BlogQueryUtils.Companion.BLOG_ORDER_ASC
 import com.codingwithmitch.openapi.persistence.blog.BlogQueryUtils.Companion.BLOG_ORDER_DESC
 import com.codingwithmitch.openapi.ui.main.blog.BaseBlogFragment
-import com.codingwithmitch.openapi.ui.main.blog.detail.ViewBlogEvents
-import com.codingwithmitch.openapi.ui.main.blog.viewmodel.*
 import com.codingwithmitch.openapi.util.*
 import kotlinx.android.synthetic.main.fragment_blog.*
 import kotlinx.coroutines.*

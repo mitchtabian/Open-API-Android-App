@@ -16,16 +16,16 @@ class UpdateAccountFragment : BaseAccountFragment(R.layout.fragment_update_accou
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
         subscribeObservers()
+        viewModel.state.value?.let { state ->
+            state.account?.let { account ->
+                setAccountDataFields(state.account)
+            }
+        }
     }
 
     private fun subscribeObservers(){
         viewModel.state.observe(viewLifecycleOwner, { state ->
-
-            uiCommunicationListener.displayProgressBar(state.isLoading
-            )
-            state.account?.let { account ->
-                setAccountDataFields(account)
-            }
+            uiCommunicationListener.displayProgressBar(state.isLoading)
         })
 
         // TODO("Listen for when successfully updated")
