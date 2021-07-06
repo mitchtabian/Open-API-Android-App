@@ -27,6 +27,7 @@ class AccountFragment : BaseAccountFragment(R.layout.fragment_account,) {
         }
 
         subscribeObservers()
+        viewModel.onTriggerEvent(AccountEvents.GetAccount)
     }
 
     private fun subscribeObservers(){

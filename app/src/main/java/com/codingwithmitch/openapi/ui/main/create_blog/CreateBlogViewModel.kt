@@ -1,6 +1,7 @@
 package com.codingwithmitch.openapi.ui.main.create_blog
 
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -25,6 +26,8 @@ constructor(
     private val sessionManager: SessionManager
 ): ViewModel() {
 
+    private val TAG: String = "AppDebug"
+
     val state: MutableLiveData<CreateBlogState> = MutableLiveData(CreateBlogState())
 
     fun onTriggerEvent(event: CreateBlogEvents){
@@ -44,10 +47,14 @@ constructor(
             is CreateBlogEvents.OnPublishSuccess -> {
                 onPublishSuccess()
             }
+            is CreateBlogEvents.Error -> {
+                appendToMessageQueue(event.stateMessage)
+            }
         }
     }
 
     private fun appendToMessageQueue(stateMessage: StateMessage){
+        Log.d(TAG, "appendToMessageQueue: ${stateMessage.response.message}")
         // TODO
     }
 
@@ -93,15 +100,19 @@ constructor(
                 MediaType.parse("text/plain"),
                 state.body
             )
-            var multipartBody: MultipartBody.Part? = null
             if(state.uri == null){
-                Response(
-                    message = ErrorHandling.ERROR_MUST_SELECT_IMAGE,
-                    uiComponentType = UIComponentType.Dialog(),
-                    messageType = MessageType.Error()
-                )
+                onTriggerEvent(CreateBlogEvents.Error(
+                    stateMessage = StateMessage(
+                        response = Response(
+                            message = ErrorHandling.ERROR_MUST_SELECT_IMAGE,
+                            uiComponentType = UIComponentType.Dialog(),
+                            messageType = MessageType.Error()
+                        )
+                    )
+                ))
             }
             else{
+                var multipartBody: MultipartBody.Part? = null
                 state.uri.path?.let { filePath ->
                     val imageFile = File(filePath)
                     if(imageFile.exists()){
@@ -117,28 +128,30 @@ constructor(
                         )
                     }
                 }
-                publishBlog.execute(
-                    authToken = sessionManager.state.value?.authToken,
-                    title = title,
-                    body = body,
-                    image = multipartBody,
-                ).onEach { dataState ->
-                    this.state.value = state.copy(isLoading = dataState.isLoading)
+                if(multipartBody != null){
+                    publishBlog.execute(
+                        authToken = sessionManager.state.value?.authToken,
+                        title = title,
+                        body = body,
+                        image = multipartBody,
+                    ).onEach { dataState ->
+                        this.state.value = state.copy(isLoading = dataState.isLoading)
 
-                    dataState.data?.let { response ->
-                        if(response.message == SUCCESS_BLOG_CREATED){
-                            onTriggerEvent(CreateBlogEvents.OnPublishSuccess)
-                        }else{
-                            appendToMessageQueue(
-                                stateMessage = StateMessage(response)
-                            )
+                        dataState.data?.let { response ->
+                            if(response.message == SUCCESS_BLOG_CREATED){
+                                onTriggerEvent(CreateBlogEvents.OnPublishSuccess)
+                            }else{
+                                appendToMessageQueue(
+                                    stateMessage = StateMessage(response)
+                                )
+                            }
                         }
-                    }
 
-                    dataState.stateMessage?.let { stateMessage ->
-                        appendToMessageQueue(stateMessage)
-                    }
-                }.launchIn(viewModelScope)
+                        dataState.stateMessage?.let { stateMessage ->
+                            appendToMessageQueue(stateMessage)
+                        }
+                    }.launchIn(viewModelScope)
+                }
             }
         }
     }

@@ -10,6 +10,7 @@ import com.codingwithmitch.openapi.persistence.auth.toEntity
 import com.codingwithmitch.openapi.util.*
 import com.codingwithmitch.openapi.util.ErrorHandling.Companion.ERROR_SAVE_AUTH_TOKEN
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import java.lang.Exception
 
@@ -24,52 +25,50 @@ class Register(
         password: String,
         confirmPassword: String,
     ): Flow<DataState<AuthToken>> = flow {
-        try {
-            emit(DataState.loading<AuthToken>())
-            if(password != confirmPassword){
-                throw Exception("Passwords must match")
-            }
-            val registerResponse = service.register(
-                email = email,
-                username = username,
-                password = password,
-                password2 = confirmPassword,
-            )
-            // Incorrect login credentials counts as a 200 response from server, so need to handle that
-            if(registerResponse.response.equals(ErrorHandling.GENERIC_AUTH_ERROR)){
-                throw Exception(registerResponse.errorMessage)
-            }
-
-            // cache account information
-            accountDao.insertAndReplace(
-                Account(
-                    registerResponse.pk,
-                    registerResponse.email,
-                    registerResponse.username
-                ).toEntity()
-            )
-
-            // cache the auth token
-            val authToken = AuthToken(
-                registerResponse.pk,
-                registerResponse.token
-            )
-            val result = authTokenDao.insert(authToken.toEntity())
-            // can't proceed unless token can be cached
-            if(result < 0){
-                throw Exception(ERROR_SAVE_AUTH_TOKEN)
-            }
-            emit(DataState.data(data = authToken, response = null))
-        }catch (e: Exception){
-            e.printStackTrace()
-            emit(DataState.error<AuthToken>(
-                response = Response(
-                    message = e.message,
-                    uiComponentType = UIComponentType.Dialog(),
-                    messageType = MessageType.Error()
-                )
-            ))
+        emit(DataState.loading<AuthToken>())
+        if(password != confirmPassword){
+            throw Exception("Passwords must match")
         }
+        val registerResponse = service.register(
+            email = email,
+            username = username,
+            password = password,
+            password2 = confirmPassword,
+        )
+        // Incorrect login credentials counts as a 200 response from server, so need to handle that
+        if(registerResponse.response.equals(ErrorHandling.GENERIC_AUTH_ERROR)){
+            throw Exception(registerResponse.errorMessage)
+        }
+
+        // cache account information
+        accountDao.insertAndReplace(
+            Account(
+                registerResponse.pk,
+                registerResponse.email,
+                registerResponse.username
+            ).toEntity()
+        )
+
+        // cache the auth token
+        val authToken = AuthToken(
+            registerResponse.pk,
+            registerResponse.token
+        )
+        val result = authTokenDao.insert(authToken.toEntity())
+        // can't proceed unless token can be cached
+        if(result < 0){
+            throw Exception(ERROR_SAVE_AUTH_TOKEN)
+        }
+        emit(DataState.data(data = authToken, response = null))
+    }.catch { e->
+        e.printStackTrace()
+        emit(DataState.error<AuthToken>(
+            response = Response(
+                message = e.message,
+                uiComponentType = UIComponentType.Dialog(),
+                messageType = MessageType.Error()
+            )
+        ))
     }
 }
 

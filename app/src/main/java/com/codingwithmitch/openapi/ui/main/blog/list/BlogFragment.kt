@@ -37,7 +37,7 @@ class BlogFragment : BaseBlogFragment(R.layout.fragment_blog),
 {
 
     private lateinit var searchView: SearchView
-    private lateinit var recyclerAdapter: BlogListAdapter
+    private var recyclerAdapter: BlogListAdapter? = null // can leak memory so need to null
     private val viewModel: BlogViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -51,12 +51,12 @@ class BlogFragment : BaseBlogFragment(R.layout.fragment_blog),
 
     private fun subscribeObservers(){
         viewModel.state.observe(viewLifecycleOwner, { state ->
-            recyclerAdapter.apply {
-                submitList(
-                    blogList = state.blogList,
-                )
-            }
+
             uiCommunicationListener.displayProgressBar(state.isLoading)
+
+            recyclerAdapter?.apply {
+                submitList(blogList = state.blogList)
+            }
         })
     }
 
@@ -104,7 +104,6 @@ class BlogFragment : BaseBlogFragment(R.layout.fragment_blog),
     }
 
     private fun initRecyclerView(){
-
         blog_post_recyclerview.apply {
             layoutManager = LinearLayoutManager(this@BlogFragment.context)
             val topSpacingDecorator = TopSpacingItemDecoration(30)
@@ -118,7 +117,10 @@ class BlogFragment : BaseBlogFragment(R.layout.fragment_blog),
                     super.onScrollStateChanged(recyclerView, newState)
                     val layoutManager = recyclerView.layoutManager as LinearLayoutManager
                     val lastPosition = layoutManager.findLastVisibleItemPosition()
-                    if (lastPosition == recyclerAdapter.itemCount.minus(1)) {
+                    if (
+                        lastPosition == recyclerAdapter?.itemCount?.minus(1)
+                        && viewModel.state.value?.isLoading == false
+                    ) {
                         Log.d(TAG, "BlogFragment: attempting to load next page...")
                         viewModel.onTriggerEvent(BlogEvents.NextPage)
                     }
@@ -232,8 +234,10 @@ class BlogFragment : BaseBlogFragment(R.layout.fragment_blog),
         }
     }
 
-
-
+    override fun onDestroyView() {
+        super.onDestroyView()
+        recyclerAdapter = null
+    }
 }
 
 

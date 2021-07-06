@@ -1,6 +1,7 @@
 package com.codingwithmitch.openapi.ui.main.blog.update
 
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -28,7 +29,9 @@ constructor(
     private val savedStateHandle: SavedStateHandle,
 ): ViewModel() {
 
-    val state: MutableLiveData<UpdateBlogState> = MutableLiveData()
+    private val TAG: String = "AppDebug"
+
+    val state: MutableLiveData<UpdateBlogState> = MutableLiveData(UpdateBlogState())
 
     init {
         savedStateHandle.get<Int>("blogPostPk")?.let { blogPostPk ->
@@ -142,13 +145,17 @@ constructor(
     }
 
     private fun getBlog(pk: Int){
+        Log.d(TAG, "getBlog: ${pk}")
         state.value?.let { state ->
             getBlogFromCache.execute(
                 pk = pk
             ).onEach { dataState ->
+                Log.d(TAG, "getBlog: ${dataState.isLoading}")
+                Log.d(TAG, "getBlog: ${dataState.data}")
                 this.state.value = state.copy(isLoading = dataState.isLoading)
 
                 dataState.data?.let { blogPost ->
+                    Log.d(TAG, "getBlog: ${blogPost}")
                     this.state.value = state.copy(blogPost = blogPost)
                 }
 

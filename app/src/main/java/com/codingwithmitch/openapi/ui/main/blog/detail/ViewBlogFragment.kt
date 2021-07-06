@@ -16,8 +16,9 @@ import javax.inject.Inject
 
 class ViewBlogFragment : BaseBlogFragment(R.layout.fragment_view_blog)
 {
-    @Inject
-    lateinit var options: RequestOptions
+    private val requestOptions = RequestOptions
+        .placeholderOf(R.drawable.default_image)
+        .error(R.drawable.default_image)
 
     private val viewModel: ViewBlogViewModel by viewModels()
 
@@ -54,7 +55,7 @@ class ViewBlogFragment : BaseBlogFragment(R.layout.fragment_view_blog)
 
     fun setBlogProperties(blogPost: BlogPost){
         Glide.with(this)
-            .setDefaultRequestOptions(options)
+            .setDefaultRequestOptions(requestOptions)
             .load(blogPost.image)
             .into(blog_image)
         blog_title.setText(blogPost.title)

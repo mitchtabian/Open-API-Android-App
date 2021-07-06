@@ -18,13 +18,13 @@ import com.codingwithmitch.openapi.util.ErrorHandling.Companion.SOMETHING_WRONG_
 import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView
 import kotlinx.android.synthetic.main.fragment_update_blog.*
-import javax.inject.Inject
 
 class UpdateBlogFragment : BaseBlogFragment(R.layout.fragment_update_blog)
 {
 
-    @Inject
-    lateinit var options: RequestOptions
+    private val requestOptions = RequestOptions
+        .placeholderOf(R.drawable.default_image)
+        .error(R.drawable.default_image)
 
     private val viewModel: UpdateBlogViewModel by viewModels()
 
@@ -36,16 +36,6 @@ class UpdateBlogFragment : BaseBlogFragment(R.layout.fragment_update_blog)
         image_container.setOnClickListener {
             if(uiCommunicationListener.isStoragePermissionGranted()){
                 pickFromGallery()
-            }
-        }
-
-        viewModel.state.value?.let { state ->
-            state.blogPost?.let { blogPost ->
-                setBlogProperties(
-                    blogPost.title,
-                    blogPost.body,
-                    blogPost.image.toUri()
-                )
             }
         }
     }
@@ -112,13 +102,22 @@ class UpdateBlogFragment : BaseBlogFragment(R.layout.fragment_update_blog)
     }
 
     fun subscribeObservers(){
+        viewModel.state.observe(viewLifecycleOwner, { state ->
+            state.blogPost?.let { blogPost ->
+                setBlogProperties(
+                    blogPost.title,
+                    blogPost.body,
+                    blogPost.image.toUri()
+                )
+            }
+        })
         // TODO("Listen for if the BlogPost was updated. Then popBackStack()")
     }
 
     fun setBlogProperties(title: String?, body: String?, image: Uri?){
         image?.let {
             Glide.with(this)
-                .setDefaultRequestOptions(options)
+                .setDefaultRequestOptions(requestOptions)
                 .load(it)
                 .into(blog_image)
         }
@@ -127,6 +126,7 @@ class UpdateBlogFragment : BaseBlogFragment(R.layout.fragment_update_blog)
     }
 
     private fun saveChanges(){
+        cacheState()
         viewModel.onTriggerEvent(UpdateBlogEvents.Update)
         uiCommunicationListener.hideSoftKeyboard()
     }
@@ -145,11 +145,16 @@ class UpdateBlogFragment : BaseBlogFragment(R.layout.fragment_update_blog)
         return super.onOptionsItemSelected(item)
     }
 
-    // save any changes before rotate / go to background
+    private fun cacheState(){
+        val title = blog_title.text.toString()
+        val body = blog_body.text.toString()
+        viewModel.onTriggerEvent(UpdateBlogEvents.OnUpdateTitle(title))
+        viewModel.onTriggerEvent(UpdateBlogEvents.OnUpdateBody(body))
+    }
+
     override fun onPause() {
         super.onPause()
-        viewModel.onTriggerEvent(UpdateBlogEvents.OnUpdateTitle(blog_title.text.toString()))
-        viewModel.onTriggerEvent(UpdateBlogEvents.OnUpdateBody(blog_body.text.toString()))
+        cacheState()
     }
 }
 

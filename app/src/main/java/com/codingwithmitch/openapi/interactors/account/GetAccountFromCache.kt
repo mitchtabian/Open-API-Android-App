@@ -8,6 +8,7 @@ import com.codingwithmitch.openapi.util.MessageType
 import com.codingwithmitch.openapi.util.Response
 import com.codingwithmitch.openapi.util.UIComponentType
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import java.lang.Exception
 
@@ -18,21 +19,19 @@ class GetAccountFromCache(
         pk: Int,
     ): Flow<DataState<Account>> = flow {
         emit(DataState.loading<Account>())
-        try {
-            // emit from cache
-            val cachedAccount = cache.searchByPk(pk).toAccount()
+        // emit from cache
+        val cachedAccount = cache.searchByPk(pk).toAccount()
 
-            emit(DataState.data(response = null, cachedAccount))
-        }catch (e: Exception){
-            e.printStackTrace()
-            emit(DataState.error<Account>(
-                response = Response(
-                    message = e.message,
-                    uiComponentType = UIComponentType.Dialog(),
-                    messageType = MessageType.Error()
-                )
-            ))
-        }
+        emit(DataState.data(response = null, cachedAccount))
+    }.catch { e ->
+        e.printStackTrace()
+        emit(DataState.error<Account>(
+            response = Response(
+                message = e.message,
+                uiComponentType = UIComponentType.Dialog(),
+                messageType = MessageType.Error()
+            )
+        ))
     }
 }
 

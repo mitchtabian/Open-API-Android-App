@@ -16,16 +16,14 @@ class UpdateAccountFragment : BaseAccountFragment(R.layout.fragment_update_accou
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
         subscribeObservers()
-        viewModel.state.value?.let { state ->
-            state.account?.let { account ->
-                setAccountDataFields(state.account)
-            }
-        }
     }
 
     private fun subscribeObservers(){
         viewModel.state.observe(viewLifecycleOwner, { state ->
             uiCommunicationListener.displayProgressBar(state.isLoading)
+            state.account?.let { account ->
+                setAccountDataFields(state.account)
+            }
         })
 
         // TODO("Listen for when successfully updated")
@@ -51,6 +49,7 @@ class UpdateAccountFragment : BaseAccountFragment(R.layout.fragment_update_accou
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
             R.id.save -> {
+                cacheState()
                 saveChanges()
                 return true
             }
@@ -58,11 +57,16 @@ class UpdateAccountFragment : BaseAccountFragment(R.layout.fragment_update_accou
         return super.onOptionsItemSelected(item)
     }
 
-    // save any changes before rotate / go to background
+    private fun cacheState(){
+        val email = input_email.text.toString()
+        val username = input_username.text.toString()
+        viewModel.onTriggerEvent(UpdateAccountEvents.OnUpdateEmail(email))
+        viewModel.onTriggerEvent(UpdateAccountEvents.OnUpdateUsername(username))
+    }
+
     override fun onPause() {
         super.onPause()
-        viewModel.onTriggerEvent(UpdateAccountEvents.OnUpdateEmail(input_email.text.toString()))
-        viewModel.onTriggerEvent(UpdateAccountEvents.OnUpdateUsername(input_username.text.toString()))
+        cacheState()
     }
 }
 

@@ -6,6 +6,7 @@ import com.codingwithmitch.openapi.persistence.auth.AuthTokenDao
 import com.codingwithmitch.openapi.persistence.auth.toAuthToken
 import com.codingwithmitch.openapi.util.*
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 
 /**
@@ -21,21 +22,19 @@ class CheckPreviousAuthUser(
     ): Flow<DataState<AuthToken>> = flow {
         emit(DataState.loading<AuthToken>())
         var authToken: AuthToken? = null
-        try{
-            val entity = accountDao.searchByEmail(email)
-            if(entity != null){
-                authToken = authTokenDao.searchByPk(entity.pk)?.toAuthToken()
-                if(authToken != null){
-                    emit(DataState.data(response = null, data = authToken))
-                }
+        val entity = accountDao.searchByEmail(email)
+        if(entity != null){
+            authToken = authTokenDao.searchByPk(entity.pk)?.toAuthToken()
+            if(authToken != null){
+                emit(DataState.data(response = null, data = authToken))
             }
-            if(authToken == null){
-                throw Exception("No previously authenticated user. This error can be ignored.")
-            }
-        }catch (e: Exception){
-            e.printStackTrace()
-            emit(returnNoPreviousAuthUser())
         }
+        if(authToken == null){
+            throw Exception("No previously authenticated user. This error can be ignored.")
+        }
+    }.catch{ e ->
+        e.printStackTrace()
+        emit(returnNoPreviousAuthUser())
     }
 
     /**

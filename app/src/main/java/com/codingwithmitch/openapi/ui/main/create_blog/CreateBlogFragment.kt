@@ -18,13 +18,13 @@ import com.codingwithmitch.openapi.util.ErrorHandling.Companion.ERROR_SOMETHING_
 import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView
 import kotlinx.android.synthetic.main.fragment_create_blog.*
-import javax.inject.Inject
 
 class CreateBlogFragment : BaseCreateBlogFragment(R.layout.fragment_create_blog)
 {
 
-    @Inject
-    lateinit var options: RequestOptions
+    private val requestOptions = RequestOptions
+        .placeholderOf(R.drawable.default_image)
+        .error(R.drawable.default_image)
 
     private val viewModel: CreateBlogViewModel by viewModels()
 
@@ -45,13 +45,6 @@ class CreateBlogFragment : BaseCreateBlogFragment(R.layout.fragment_create_blog)
         }
 
         subscribeObservers()
-        viewModel.state.value?.let { state ->
-            setBlogProperties(
-                title = state.title,
-                body = state.body,
-                uri = state.uri,
-            )
-        }
     }
 
     private fun pickFromGallery() {
@@ -65,6 +58,11 @@ class CreateBlogFragment : BaseCreateBlogFragment(R.layout.fragment_create_blog)
 
     fun subscribeObservers(){
         viewModel.state.observe(viewLifecycleOwner, { state ->
+            setBlogProperties(
+                title = state.title,
+                body = state.body,
+                uri = state.uri,
+            )
             if(state.onPublishSuccess){
                 findNavController().popBackStack()
             }
@@ -78,13 +76,13 @@ class CreateBlogFragment : BaseCreateBlogFragment(R.layout.fragment_create_blog)
     ){
         if(uri != null){
             Glide.with(this)
-                .setDefaultRequestOptions(options)
+                .setDefaultRequestOptions(requestOptions)
                 .load(uri)
                 .into(blog_image)
         }
         else{
             Glide.with(this)
-                .setDefaultRequestOptions(options)
+                .setDefaultRequestOptions(requestOptions)
                 .load(R.drawable.default_image)
                 .into(blog_image)
         }
@@ -145,8 +143,10 @@ class CreateBlogFragment : BaseCreateBlogFragment(R.layout.fragment_create_blog)
     }
 
     private fun cacheState(){
-        viewModel.onTriggerEvent(CreateBlogEvents.OnUpdateTitle(blog_title.text.toString()))
-        viewModel.onTriggerEvent(CreateBlogEvents.OnUpdateBody(blog_body.text.toString()))
+        val title = blog_title.text.toString()
+        val body = blog_body.text.toString()
+        viewModel.onTriggerEvent(CreateBlogEvents.OnUpdateTitle(title))
+        viewModel.onTriggerEvent(CreateBlogEvents.OnUpdateBody(body))
     }
 
     override fun onPause() {

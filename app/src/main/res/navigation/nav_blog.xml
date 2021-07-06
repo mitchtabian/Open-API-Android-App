@@ -16,7 +16,6 @@
         <action
                 android:id="@+id/action_blogFragment_to_viewBlogFragment"
                 app:destination="@id/viewBlogFragment"
-                app:launchSingleTop="true"
                 />
 
     </fragment>
@@ -33,7 +32,6 @@
 
         <action android:id="@+id/action_viewBlogFragment_to_updateBlogFragment"
                 app:destination="@id/updateBlogFragment"
-                app:launchSingleTop="true"
                 />
 
     </fragment>

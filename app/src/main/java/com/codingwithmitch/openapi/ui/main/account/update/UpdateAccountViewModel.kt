@@ -1,5 +1,6 @@
 package com.codingwithmitch.openapi.ui.main.account.update
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -22,6 +23,8 @@ constructor(
     private val getAccountFromCache: GetAccountFromCache,
     private val savedStateHandle: SavedStateHandle,
 ): ViewModel(){
+
+    private val TAG: String = "AppDebug"
 
     val state: MutableLiveData<UpdateAccountState> = MutableLiveData(UpdateAccountState())
 

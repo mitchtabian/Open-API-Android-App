@@ -2,6 +2,7 @@ package com.codingwithmitch.openapi.ui.main
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import androidx.navigation.NavController
@@ -61,6 +62,7 @@ class MainActivity : BaseActivity(){
 
     fun subscribeObservers(){
         sessionManager.state.observe(this, { state ->
+            Log.d(TAG, "subscribeObservers: TOKEN: ${state.authToken?.token}")
             if(state.authToken == null || state.authToken.accountPk == -1){
                 navAuthActivity()
                 finish()

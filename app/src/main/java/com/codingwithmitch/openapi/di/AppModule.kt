@@ -4,8 +4,6 @@ import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.room.Room
-import com.bumptech.glide.request.RequestOptions
-import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.api.main.OpenApiMainService
 import com.codingwithmitch.openapi.persistence.account.AccountDao
 import com.codingwithmitch.openapi.persistence.AppDatabase
@@ -52,7 +50,6 @@ object AppModule{
     @Provides
     fun provideGsonBuilder(): Gson {
         return GsonBuilder()
-            .excludeFieldsWithoutExposeAnnotation()
             .create()
     }
 
@@ -83,14 +80,6 @@ object AppModule{
     @Provides
     fun provideAccountPropertiesDao(db: AppDatabase): AccountDao {
         return db.getAccountPropertiesDao()
-    }
-
-    @Singleton
-    @Provides
-    fun provideRequestOptions(): RequestOptions {
-        return RequestOptions
-            .placeholderOf(R.drawable.default_image)
-            .error(R.drawable.default_image)
     }
 
     @Singleton

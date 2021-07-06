@@ -6,6 +6,7 @@ import com.codingwithmitch.openapi.persistence.blog.BlogPostDao
 import com.codingwithmitch.openapi.util.*
 import com.codingwithmitch.openapi.util.SuccessHandling.Companion.SUCCESS_BLOG_UPDATED
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -26,55 +27,52 @@ class UpdateBlogPost(
         body: RequestBody,
         image: MultipartBody.Part?,
     ): Flow<DataState<Response>> = flow{
-        try {
-            if(authToken == null){
-                throw Exception("Authentication token is invalid. Log out and log back in.")
-            }
-            // attempt update
-            val createUpdateResponse = service.updateBlog(
-                "Token ${authToken.token}",
-                slug,
-                title,
-                body,
-                image
-            )
+        if(authToken == null){
+            throw Exception("Authentication token is invalid. Log out and log back in.")
+        }
+        // attempt update
+        val createUpdateResponse = service.updateBlog(
+            "Token ${authToken.token}",
+            slug,
+            title,
+            body,
+            image
+        )
 
-            if(createUpdateResponse.response != SuccessHandling.SUCCESS_BLOG_DELETED){ // failure
-                emit(DataState.error<Response>(
-                    response = Response(
-                        message = createUpdateResponse.response,
-                        uiComponentType = UIComponentType.Dialog(),
-                        messageType = MessageType.Error()
-                    )
-                ))
-            }else{ // success
-                cache.updateBlogPost(
-                    createUpdateResponse.pk,
-                    createUpdateResponse.title,
-                    createUpdateResponse.body,
-                    createUpdateResponse.image
-                )
-                // Tell the UI it was successful
-                emit(DataState.data<Response>(
-                    data = Response(
-                        message = SUCCESS_BLOG_UPDATED,
-                        uiComponentType = UIComponentType.Toast(),
-                        messageType = MessageType.Success()
-                    ),
-                    response = null,
-                ))
-            }
-
-        }catch (e: Exception){
-            e.printStackTrace()
+        if(createUpdateResponse.response != SuccessHandling.SUCCESS_BLOG_DELETED){ // failure
             emit(DataState.error<Response>(
                 response = Response(
-                    message = e.message,
+                    message = createUpdateResponse.response,
                     uiComponentType = UIComponentType.Dialog(),
                     messageType = MessageType.Error()
                 )
             ))
+        }else{ // success
+            cache.updateBlogPost(
+                createUpdateResponse.pk,
+                createUpdateResponse.title,
+                createUpdateResponse.body,
+                createUpdateResponse.image
+            )
+            // Tell the UI it was successful
+            emit(DataState.data<Response>(
+                data = Response(
+                    message = SUCCESS_BLOG_UPDATED,
+                    uiComponentType = UIComponentType.Toast(),
+                    messageType = MessageType.Success()
+                ),
+                response = null,
+            ))
         }
+    }.catch{ e ->
+        e.printStackTrace()
+        emit(DataState.error<Response>(
+            response = Response(
+                message = e.message,
+                uiComponentType = UIComponentType.Dialog(),
+                messageType = MessageType.Error()
+            )
+        ))
     }
 }
 

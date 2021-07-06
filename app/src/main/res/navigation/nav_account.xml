@@ -13,12 +13,10 @@
 
         <action android:id="@+id/action_accountFragment_to_changePasswordFragment"
                 app:destination="@id/changePasswordFragment"
-                app:launchSingleTop="true"
                 />
 
         <action android:id="@+id/action_accountFragment_to_updateAccountFragment"
                 app:destination="@id/updateAccountFragment"
-                app:launchSingleTop="true"
                 />
     </fragment>
 

@@ -27,6 +27,7 @@ constructor(
     private val checkPreviousAuthUser: CheckPreviousAuthUser,
     private val logout: Logout,
     private val preferences: SharedPreferences,
+    private val editor: SharedPreferences.Editor,
 ) {
 
     private val TAG: String = "AppDebug"
@@ -92,6 +93,8 @@ constructor(
                 dataState.data?.let { response ->
                     if(response.message.equals(SUCCESS_LOGOUT)){
                         this.state.value = state.copy(authToken = null)
+                        clearAuthUser()
+                        onFinishCheckingPrevAuthUser()
                     }
                 }
 
@@ -106,6 +109,11 @@ constructor(
         state.value?.let { state ->
             this.state.value = state.copy(didCheckForPreviousAuthUser = true)
         }
+    }
+
+    private fun clearAuthUser() {
+        editor.putString(PreferenceKeys.PREVIOUS_AUTH_USER, "")
+        editor.apply()
     }
 
     private fun appendToMessageQueue(stateMessage: StateMessage){

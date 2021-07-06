@@ -22,10 +22,6 @@ constructor(
 
     val state: MutableLiveData<AccountState> = MutableLiveData(AccountState())
 
-    init {
-        onTriggerEvent(AccountEvents.GetAccount)
-    }
-
     fun onTriggerEvent(event: AccountEvents){
         when(event){
             is AccountEvents.GetAccount -> {

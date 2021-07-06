@@ -1,6 +1,7 @@
 package com.codingwithmitch.openapi.ui.main.blog.list
 
 import android.content.SharedPreferences
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -24,6 +25,8 @@ constructor(
     private val sharedPreferences: SharedPreferences,
     private val editor: SharedPreferences.Editor
 ): ViewModel(){
+
+    private val TAG: String = "AppDebug"
 
     val state: MutableLiveData<BlogState> = MutableLiveData(BlogState())
 
@@ -77,15 +80,6 @@ constructor(
         // TODO
     }
 
-    private fun appendBlogPosts(blogs: List<BlogPost>){
-        state.value?.let { state ->
-            val curr: MutableList<BlogPost> = mutableListOf()
-            curr.addAll(state.blogList)
-            curr.addAll(blogs)
-            this.state.value = state.copy(blogList = curr)
-        }
-    }
-
     private fun clearList(){
         state.value?.let { state ->
             this.state.value = state.copy(blogList = listOf())
@@ -121,9 +115,9 @@ constructor(
     }
 
     private fun search() {
+        resetPage()
+        clearList()
         state.value?.let { state ->
-            resetPage()
-            clearList()
             searchBlogs.execute(
                 authToken = sessionManager.state.value?.authToken,
                 query = state.query,
@@ -146,9 +140,8 @@ constructor(
     }
 
     private fun nextPage(){
+        incrementPageNumber()
         state.value?.let { state ->
-            incrementPageNumber()
-            resetPage()
             searchBlogs.execute(
                 authToken = sessionManager.state.value?.authToken,
                 query = state.query,
@@ -159,7 +152,7 @@ constructor(
                 this.state.value = state.copy(isLoading = dataState.isLoading)
 
                 dataState.data?.let { list ->
-                    appendBlogPosts(list)
+                    this.state.value = state.copy(blogList = list)
                 }
 
                 dataState.stateMessage?.let { stateMessage ->
