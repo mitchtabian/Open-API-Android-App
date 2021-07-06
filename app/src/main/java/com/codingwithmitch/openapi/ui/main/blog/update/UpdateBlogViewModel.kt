@@ -63,6 +63,7 @@ constructor(
     }
 
     private fun appendToMessageQueue(stateMessage: StateMessage){
+        Log.d(TAG, "appendToMessageQueue: ${stateMessage.response.message}")
         // TODO
     }
 
@@ -145,17 +146,13 @@ constructor(
     }
 
     private fun getBlog(pk: Int){
-        Log.d(TAG, "getBlog: ${pk}")
         state.value?.let { state ->
             getBlogFromCache.execute(
                 pk = pk
             ).onEach { dataState ->
-                Log.d(TAG, "getBlog: ${dataState.isLoading}")
-                Log.d(TAG, "getBlog: ${dataState.data}")
                 this.state.value = state.copy(isLoading = dataState.isLoading)
 
                 dataState.data?.let { blogPost ->
-                    Log.d(TAG, "getBlog: ${blogPost}")
                     this.state.value = state.copy(blogPost = blogPost)
                 }
 

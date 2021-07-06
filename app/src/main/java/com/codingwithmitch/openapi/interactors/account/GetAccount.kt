@@ -1,5 +1,6 @@
 package com.codingwithmitch.openapi.interactors.account
 
+import com.codingwithmitch.openapi.api.handleUseCaseException
 import com.codingwithmitch.openapi.api.main.OpenApiMainService
 import com.codingwithmitch.openapi.api.main.toAccount
 import com.codingwithmitch.openapi.models.Account
@@ -40,14 +41,7 @@ class GetAccount(
 
         emit(DataState.data(response = null, cachedAccount))
     }.catch { e ->
-        e.printStackTrace()
-        emit(DataState.error<Account>(
-            response = Response(
-                message = e.message,
-                uiComponentType = UIComponentType.Dialog(),
-                messageType = MessageType.Error()
-            )
-        ))
+        emit(handleUseCaseException(e))
     }
 }
 

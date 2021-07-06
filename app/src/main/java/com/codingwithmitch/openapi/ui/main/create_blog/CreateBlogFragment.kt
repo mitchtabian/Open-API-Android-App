@@ -64,7 +64,7 @@ class CreateBlogFragment : BaseCreateBlogFragment(R.layout.fragment_create_blog)
                 uri = state.uri,
             )
             if(state.onPublishSuccess){
-                findNavController().popBackStack()
+                findNavController().popBackStack(R.id.blogFragment, false)
             }
         })
     }
@@ -161,6 +161,7 @@ class CreateBlogFragment : BaseCreateBlogFragment(R.layout.fragment_create_blog)
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
             R.id.publish -> {
+                cacheState()
                 viewModel.onTriggerEvent(CreateBlogEvents.PublishBlog)
                 return true
             }

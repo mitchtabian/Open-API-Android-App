@@ -1,5 +1,6 @@
 package com.codingwithmitch.openapi.interactors.blog
 
+import com.codingwithmitch.openapi.api.handleUseCaseException
 import com.codingwithmitch.openapi.api.main.OpenApiMainService
 import com.codingwithmitch.openapi.models.AuthToken
 import com.codingwithmitch.openapi.persistence.blog.BlogPostDao
@@ -27,6 +28,7 @@ class UpdateBlogPost(
         body: RequestBody,
         image: MultipartBody.Part?,
     ): Flow<DataState<Response>> = flow{
+        emit(DataState.loading<Response>())
         if(authToken == null){
             throw Exception("Authentication token is invalid. Log out and log back in.")
         }
@@ -64,15 +66,8 @@ class UpdateBlogPost(
                 response = null,
             ))
         }
-    }.catch{ e ->
-        e.printStackTrace()
-        emit(DataState.error<Response>(
-            response = Response(
-                message = e.message,
-                uiComponentType = UIComponentType.Dialog(),
-                messageType = MessageType.Error()
-            )
-        ))
+    }.catch { e ->
+        emit(handleUseCaseException(e))
     }
 }
 

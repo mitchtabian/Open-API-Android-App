@@ -1,5 +1,6 @@
 package com.codingwithmitch.openapi.interactors.blog
 
+import com.codingwithmitch.openapi.api.handleUseCaseException
 import com.codingwithmitch.openapi.models.BlogPost
 import com.codingwithmitch.openapi.persistence.blog.BlogPostDao
 import com.codingwithmitch.openapi.persistence.blog.toBlogPost
@@ -35,13 +36,7 @@ class GetBlogFromCache(
             ))
         }
     }.catch { e ->
-        emit(DataState.error<BlogPost>(
-            response = Response(
-                message = e.message,
-                uiComponentType = UIComponentType.Dialog(),
-                messageType = MessageType.Error()
-            )
-        ))
+        emit(handleUseCaseException(e))
     }
 }
 

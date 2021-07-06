@@ -1,5 +1,6 @@
 package com.codingwithmitch.openapi.ui.main.account.password
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -19,7 +20,9 @@ constructor(
     private val sessionManager: SessionManager,
 ): ViewModel(){
 
-    val state: MutableLiveData<AccountPasswordState> = MutableLiveData()
+    private val TAG: String = "AppDebug"
+
+    val state: MutableLiveData<AccountPasswordState> = MutableLiveData(AccountPasswordState())
 
     fun onTriggerEvent(event: AccountPasswordEvents){
         when(event){
@@ -39,6 +42,7 @@ constructor(
     }
 
     private fun appendToMessageQueue(stateMessage: StateMessage){
+        Log.d(TAG, "appendToMessageQueue: ${stateMessage.response.message}")
         // TODO
     }
 

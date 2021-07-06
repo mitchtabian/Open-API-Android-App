@@ -29,6 +29,7 @@ class PublishBlog(
         body: RequestBody,
         image: MultipartBody.Part?,
     ): Flow<DataState<Response>> = flow {
+        emit(DataState.loading<Response>())
         if(authToken == null){
             throw Exception("Authentication token is invalid. Log out and log back in.")
         }

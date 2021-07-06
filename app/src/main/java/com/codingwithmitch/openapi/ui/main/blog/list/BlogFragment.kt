@@ -200,8 +200,6 @@ class BlogFragment : BaseBlogFragment(R.layout.fragment_blog),
                 }
 
                 view.findViewById<TextView>(R.id.positive_button).setOnClickListener {
-                    Log.d(TAG, "FilterDialog: apply filter.")
-
                     val newFilter =
                         when (view.findViewById<RadioGroup>(R.id.filter_group).checkedRadioButtonId) {
                             R.id.filter_author -> BLOG_FILTER_USERNAME

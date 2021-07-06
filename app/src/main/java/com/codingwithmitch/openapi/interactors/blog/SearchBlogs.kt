@@ -1,5 +1,6 @@
 package com.codingwithmitch.openapi.interactors.blog
 
+import com.codingwithmitch.openapi.api.handleUseCaseException
 import com.codingwithmitch.openapi.api.main.OpenApiMainService
 import com.codingwithmitch.openapi.api.main.toBlogPost
 import com.codingwithmitch.openapi.models.AuthToken
@@ -8,9 +9,6 @@ import com.codingwithmitch.openapi.persistence.blog.*
 import com.codingwithmitch.openapi.ui.main.blog.list.BlogFilterOptions
 import com.codingwithmitch.openapi.ui.main.blog.list.BlogOrderOptions
 import com.codingwithmitch.openapi.util.DataState
-import com.codingwithmitch.openapi.util.MessageType
-import com.codingwithmitch.openapi.util.Response
-import com.codingwithmitch.openapi.util.UIComponentType
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
@@ -19,6 +17,8 @@ class SearchBlogs(
     private val service: OpenApiMainService,
     private val cache: BlogPostDao,
 ) {
+
+    private val TAG: String = "AppDebug"
 
     fun execute(
         authToken: AuthToken?,
@@ -32,9 +32,9 @@ class SearchBlogs(
             throw Exception("Authentication token is invalid. Log out and log back in.")
         }
         // get Blogs from network
-        val filterAndOrder = filter.value + order.value // Ex: -date_updated
+        val filterAndOrder = order.value + filter.value // Ex: -date_updated
         val blogs = service.searchListBlogPosts(
-            "Token ${authToken.token!!}",
+            "Token ${authToken.token}",
             query = query,
             ordering = filterAndOrder,
             page = page
@@ -44,7 +44,6 @@ class SearchBlogs(
         for(blog in blogs){
             try{
                 cache.insert(blog.toEntity())
-
             }catch (e: Exception){
                 e.printStackTrace()
             }
@@ -58,15 +57,8 @@ class SearchBlogs(
         ).map { it.toBlogPost() }
 
         emit(DataState.data(response = null, data = cachedBlogs))
-    }.catch{ e ->
-        e.printStackTrace()
-        emit(DataState.error<List<BlogPost>>(
-            response = Response(
-                message = e.message,
-                uiComponentType = UIComponentType.Dialog(),
-                messageType = MessageType.Error()
-            )
-        ))
+    }.catch { e ->
+        emit(handleUseCaseException(e))
     }
 }
 

@@ -1,5 +1,6 @@
 package com.codingwithmitch.openapi.interactors.account
 
+import com.codingwithmitch.openapi.api.handleUseCaseException
 import com.codingwithmitch.openapi.api.main.OpenApiMainService
 import com.codingwithmitch.openapi.models.AuthToken
 import com.codingwithmitch.openapi.util.*
@@ -44,13 +45,6 @@ class UpdatePassword(
             response = null
         ))
     }.catch { e ->
-        e.printStackTrace()
-        emit(DataState.error<Response>(
-            response = Response(
-                message = e.message,
-                uiComponentType = UIComponentType.Dialog(),
-                messageType = MessageType.Error()
-            )
-        ))
+        emit(handleUseCaseException(e))
     }
 }

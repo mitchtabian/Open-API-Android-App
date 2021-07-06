@@ -1,6 +1,7 @@
 package com.codingwithmitch.openapi.interactors.auth
 
 import com.codingwithmitch.openapi.api.auth.OpenApiAuthService
+import com.codingwithmitch.openapi.api.handleUseCaseException
 import com.codingwithmitch.openapi.models.Account
 import com.codingwithmitch.openapi.models.AuthToken
 import com.codingwithmitch.openapi.persistence.account.AccountDao
@@ -50,15 +51,8 @@ class Login(
             throw Exception(ERROR_SAVE_AUTH_TOKEN)
         }
         emit(DataState.data(data = authToken, response = null))
-    }.catch{ e->
-        e.printStackTrace()
-        emit(DataState.error<AuthToken>(
-            response = Response(
-                message = e.message,
-                uiComponentType = UIComponentType.Dialog(),
-                messageType = MessageType.Error()
-            )
-        ))
+    }.catch { e ->
+        emit(handleUseCaseException(e))
     }
 }
 

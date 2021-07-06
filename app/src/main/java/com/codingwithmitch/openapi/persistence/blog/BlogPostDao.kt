@@ -93,7 +93,6 @@ suspend fun BlogPostDao.returnOrderedBlogQuery(
 ): List<BlogPostEntity> {
 
     when{
-
         filterAndOrder.contains(BlogQueryUtils.ORDER_BY_DESC_DATE_UPDATED) ->{
             return searchBlogPostsOrderByDateDESC(
                 query = query,
