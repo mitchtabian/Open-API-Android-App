@@ -3,16 +3,18 @@ package com.codingwithmitch.openapi.presentation.auth.forgot_password
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
-import android.view.*
+import android.view.View
 import android.view.animation.TranslateAnimation
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.codingwithmitch.openapi.R
-import com.codingwithmitch.openapi.presentation.auth.BaseAuthFragment
-import com.codingwithmitch.openapi.presentation.auth.forgot_password.ForgotPasswordFragment.WebAppInterface.*
 import com.codingwithmitch.openapi.business.domain.util.*
+import com.codingwithmitch.openapi.presentation.auth.BaseAuthFragment
+import com.codingwithmitch.openapi.presentation.auth.forgot_password.ForgotPasswordFragment.WebAppInterface.OnWebInteractionCallback
+import com.codingwithmitch.openapi.presentation.util.processQueue
 import kotlinx.android.synthetic.main.fragment_forgot_password.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.Main
@@ -22,32 +24,36 @@ class ForgotPasswordFragment : BaseAuthFragment(R.layout.fragment_forgot_passwor
 
     private lateinit var webView: WebView
 
-    private val webInteractionCallback = object: OnWebInteractionCallback {
+    private val viewModel: ForgotPasswordViewModel by viewModels()
+
+    private val webInteractionCallback = object : OnWebInteractionCallback {
 
         override fun onError(errorMessage: String) {
-            Log.e(TAG, "onError: $errorMessage")
-//            uiCommunicationListener.onResponseReceived(
-//                response = Response(
-//                    message = errorMessage,
-//                    uiComponentType = UIComponentType.Dialog(),
-//                    messageType = MessageType.Error()
-//                ),
-//                stateMessageCallback = object: StateMessageCallback{
-//                    override fun removeMessageFromStack() {
-//                        // TODO("probably removing this")
-//                    }
-//                }
-//            )
+            CoroutineScope(Main).launch {
+                viewModel.onTriggerEvent(
+                    ForgotPasswordEvents.Error(
+                        stateMessage = StateMessage(
+                            response = Response(
+                                message = errorMessage,
+                                uiComponentType = UIComponentType.Dialog(),
+                                messageType = MessageType.Error()
+                            )
+                        )
+                    )
+                )
+            }
         }
 
         override fun onSuccess(email: String) {
-            Log.d(TAG, "onSuccess: a reset link will be sent to $email.")
-            onPasswordResetLinkSent()
+            CoroutineScope(Main).launch {
+                viewModel.onTriggerEvent(ForgotPasswordEvents.OnPasswordResetLinkSent)
+            }
         }
 
         override fun onLoading(isLoading: Boolean) {
-            Log.d(TAG, "onLoading... ")
-            uiCommunicationListener.displayProgressBar(isLoading)
+            CoroutineScope(Main).launch {
+                uiCommunicationListener.displayProgressBar(isLoading)
+            }
         }
     }
 
@@ -60,12 +66,32 @@ class ForgotPasswordFragment : BaseAuthFragment(R.layout.fragment_forgot_passwor
         return_to_launcher_fragment.setOnClickListener {
             findNavController().popBackStack()
         }
+
+        subscribeObservers()
+    }
+
+    private fun subscribeObservers() {
+        viewModel.state.observe(viewLifecycleOwner, { state ->
+            uiCommunicationListener.displayProgressBar(state.isLoading)
+            processQueue(
+                context = context,
+                queue = state.queue,
+                stateMessageCallback = object : StateMessageCallback {
+                    override fun removeMessageFromStack() {
+                        viewModel.onTriggerEvent(ForgotPasswordEvents.OnRemoveHeadFromQueue)
+                    }
+                }
+            )
+            if (state.isPasswordResetLinkSent) {
+                onPasswordResetLinkSent()
+            }
+        })
     }
 
     @SuppressLint("SetJavaScriptEnabled")
-    private fun loadPasswordResetWebView(){
+    private fun loadPasswordResetWebView() {
         uiCommunicationListener.displayProgressBar(true)
-        webView.webViewClient = object: WebViewClient(){
+        webView.webViewClient = object : WebViewClient() {
             override fun onPageFinished(view: WebView?, url: String?) {
                 super.onPageFinished(view, url)
                 uiCommunicationListener.displayProgressBar(false)
@@ -73,10 +99,11 @@ class ForgotPasswordFragment : BaseAuthFragment(R.layout.fragment_forgot_passwor
         }
         webView.loadUrl(Constants.PASSWORD_RESET_URL)
         webView.settings.javaScriptEnabled = true
-        webView.addJavascriptInterface(WebAppInterface(webInteractionCallback), "AndroidTextListener")
+        webView.addJavascriptInterface(
+            WebAppInterface(webInteractionCallback),
+            "AndroidTextListener"
+        )
     }
-
-
 
     private class WebAppInterface
     constructor(
@@ -100,7 +127,7 @@ class ForgotPasswordFragment : BaseAuthFragment(R.layout.fragment_forgot_passwor
             callback.onLoading(isLoading)
         }
 
-        interface OnWebInteractionCallback{
+        interface OnWebInteractionCallback {
 
             fun onSuccess(email: String)
 
@@ -110,22 +137,19 @@ class ForgotPasswordFragment : BaseAuthFragment(R.layout.fragment_forgot_passwor
         }
     }
 
-    private fun onPasswordResetLinkSent(){
-        CoroutineScope(Main).launch{
-            parent_view.removeView(webView)
-            webView.destroy()
+    private fun onPasswordResetLinkSent() {
+        parent_view.removeView(webView)
+        webView.destroy()
 
-            val animation = TranslateAnimation(
-                password_reset_done_container.width.toFloat(),
-                0f,
-                0f,
-                0f
-            )
-            animation.duration = 500
-            password_reset_done_container.startAnimation(animation)
-            password_reset_done_container.visibility = View.VISIBLE
-        }
+        val animation = TranslateAnimation(
+            password_reset_done_container.width.toFloat(),
+            0f,
+            0f,
+            0f
+        )
+        animation.duration = 500
+        password_reset_done_container.startAnimation(animation)
+        password_reset_done_container.visibility = View.VISIBLE
     }
-
 }
 
