@@ -15,6 +15,8 @@ sealed class UpdateBlogEvents {
 
     data class OnUpdateUri(val uri: Uri): UpdateBlogEvents()
 
+    object OnUpdateComplete: UpdateBlogEvents()
+
     data class Error(val stateMessage: StateMessage): UpdateBlogEvents()
 
     object OnRemoveHeadFromQueue: UpdateBlogEvents()

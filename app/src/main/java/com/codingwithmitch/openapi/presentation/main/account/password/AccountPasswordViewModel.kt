@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.codingwithmitch.openapi.business.domain.util.StateMessage
+import com.codingwithmitch.openapi.business.domain.util.SuccessHandling
 import com.codingwithmitch.openapi.business.domain.util.doesMessageAlreadyExistInQueue
 import com.codingwithmitch.openapi.business.interactors.account.UpdatePassword
 import com.codingwithmitch.openapi.presentation.session.SessionManager
@@ -42,6 +43,9 @@ constructor(
             is AccountPasswordEvents.OnRemoveHeadFromQueue ->{
                 removeHeadFromQueue()
             }
+            is AccountPasswordEvents.OnPasswordChanged ->{
+                onPasswordChangeComplete()
+            }
         }
     }
 
@@ -64,6 +68,12 @@ constructor(
                 queue.add(stateMessage)
                 this.state.value = state.copy(queue = queue)
             }
+        }
+    }
+
+    private fun onPasswordChangeComplete(){
+        state.value?.let { state ->
+            this.state.value = state.copy(isPasswordChangeComplete = true)
         }
     }
 
@@ -97,11 +107,15 @@ constructor(
                 this.state.value = state.copy(isLoading = dataState.isLoading)
 
                 dataState.data?.let { response ->
-                    appendToMessageQueue( // Tell the UI it was updated
-                        stateMessage = StateMessage(
-                            response = response
+                    if(response.message == SuccessHandling.SUCCESS_PASSWORD_UPDATED){
+                        onTriggerEvent(AccountPasswordEvents.OnPasswordChanged)
+                    }else{
+                        appendToMessageQueue( // Tell the UI it was updated
+                            stateMessage = StateMessage(
+                                response = response
+                            )
                         )
-                    )
+                    }
                 }
 
                 dataState.stateMessage?.let { stateMessage ->

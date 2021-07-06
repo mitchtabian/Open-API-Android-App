@@ -7,6 +7,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.codingwithmitch.openapi.business.domain.util.StateMessage
+import com.codingwithmitch.openapi.business.domain.util.SuccessHandling.Companion.SUCCESS_BLOG_UPDATED
 import com.codingwithmitch.openapi.business.domain.util.doesMessageAlreadyExistInQueue
 import com.codingwithmitch.openapi.business.interactors.blog.GetBlogFromCache
 import com.codingwithmitch.openapi.business.interactors.blog.UpdateBlogPost
@@ -57,6 +58,9 @@ constructor(
             is UpdateBlogEvents.Update -> {
                 update()
             }
+            is UpdateBlogEvents.OnUpdateComplete ->{
+                onUpdateComplete()
+            }
             is UpdateBlogEvents.Error -> {
                 appendToMessageQueue(event.stateMessage)
             }
@@ -85,6 +89,12 @@ constructor(
                 queue.add(stateMessage)
                 this.state.value = state.copy(queue = queue)
             }
+        }
+    }
+
+    private fun onUpdateComplete(){
+        state.value?.let { state ->
+            this.state.value = state.copy(isUpdateComplete = true)
         }
     }
 
@@ -151,11 +161,15 @@ constructor(
                     this.state.value = state.copy(isLoading = dataState.isLoading)
 
                     dataState.data?.let { response ->
-                        appendToMessageQueue( // Tell the UI it was updated
-                            stateMessage = StateMessage(
-                                response = response
+                        if(response.message == SUCCESS_BLOG_UPDATED){
+                            onTriggerEvent(UpdateBlogEvents.OnUpdateComplete)
+                        }else{
+                            appendToMessageQueue(
+                                stateMessage = StateMessage(
+                                    response = response
+                                )
                             )
-                        )
+                        }
                     }
 
                     dataState.stateMessage?.let { stateMessage ->

@@ -6,6 +6,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.codingwithmitch.openapi.business.domain.util.StateMessage
+import com.codingwithmitch.openapi.business.domain.util.SuccessHandling
 import com.codingwithmitch.openapi.business.domain.util.doesMessageAlreadyExistInQueue
 import com.codingwithmitch.openapi.business.interactors.account.GetAccountFromCache
 import com.codingwithmitch.openapi.business.interactors.account.UpdateAccount
@@ -55,6 +56,9 @@ constructor(
             is UpdateAccountEvents.OnRemoveHeadFromQueue -> {
                 removeHeadFromQueue()
             }
+            is UpdateAccountEvents.OnUpdateComplete -> {
+                onUpdateComplete()
+            }
         }
     }
 
@@ -77,6 +81,12 @@ constructor(
                 queue.add(stateMessage)
                 this.state.value = state.copy(queue = queue)
             }
+        }
+    }
+
+    private fun onUpdateComplete(){
+        state.value?.let { state ->
+            this.state.value = state.copy(isUpdateComplete = true)
         }
     }
 
@@ -128,11 +138,15 @@ constructor(
                 this.state.value = state.copy(isLoading = dataState.isLoading)
 
                 dataState.data?.let { response ->
-                    appendToMessageQueue( // Tell the UI it was updated
-                        stateMessage = StateMessage(
-                            response = response
+                    if(response.message == SuccessHandling.SUCCESS_ACCOUNT_UPDATED){
+                        onTriggerEvent(UpdateAccountEvents.OnUpdateComplete)
+                    }else{
+                        appendToMessageQueue(
+                            stateMessage = StateMessage(
+                                response = response
+                            )
                         )
-                    )
+                    }
                 }
 
                 dataState.stateMessage?.let { stateMessage ->

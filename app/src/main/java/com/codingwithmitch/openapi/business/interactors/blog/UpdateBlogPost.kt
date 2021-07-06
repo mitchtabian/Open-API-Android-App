@@ -41,14 +41,8 @@ class UpdateBlogPost(
             image
         )
 
-        if(createUpdateResponse.response != SuccessHandling.SUCCESS_BLOG_DELETED){ // failure
-            emit(DataState.error<Response>(
-                response = Response(
-                    message = createUpdateResponse.response,
-                    uiComponentType = UIComponentType.Dialog(),
-                    messageType = MessageType.Error()
-                )
-            ))
+        if(createUpdateResponse.response != SuccessHandling.SUCCESS_BLOG_UPDATED){ // failure
+            throw Exception(createUpdateResponse.response)
         }else{ // success
             cache.updateBlogPost(
                 createUpdateResponse.pk,
@@ -60,7 +54,7 @@ class UpdateBlogPost(
             emit(DataState.data<Response>(
                 data = Response(
                     message = SUCCESS_BLOG_UPDATED,
-                    uiComponentType = UIComponentType.Toast(),
+                    uiComponentType = UIComponentType.None(),
                     messageType = MessageType.Success()
                 ),
                 response = null,

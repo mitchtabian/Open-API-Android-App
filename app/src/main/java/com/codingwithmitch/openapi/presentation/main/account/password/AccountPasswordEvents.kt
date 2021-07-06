@@ -21,5 +21,7 @@ sealed class AccountPasswordEvents {
         val confirmNewPassword: String
     ): AccountPasswordEvents()
 
+    object OnPasswordChanged: AccountPasswordEvents()
+
     object OnRemoveHeadFromQueue: AccountPasswordEvents()
 }

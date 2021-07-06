@@ -11,6 +11,8 @@ sealed class ViewBlogEvents {
 
     object DeleteBlog: ViewBlogEvents()
 
+    object OnDeleteComplete: ViewBlogEvents()
+
     data class Error(val stateMessage: StateMessage): ViewBlogEvents()
 
     object OnRemoveHeadFromQueue: ViewBlogEvents()

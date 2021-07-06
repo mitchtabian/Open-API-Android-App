@@ -5,6 +5,7 @@ import com.codingwithmitch.openapi.business.domain.util.StateMessage
 
 data class AccountPasswordState(
     val isLoading: Boolean = false,
+    val isPasswordChangeComplete: Boolean = false,
     val currentPassword: String = "",
     val newPassword: String = "",
     val confirmNewPassword: String = "",

@@ -20,5 +20,7 @@ sealed class UpdateAccountEvents{
         val username: String
     ): UpdateAccountEvents()
 
+    object OnUpdateComplete: UpdateAccountEvents()
+
     object OnRemoveHeadFromQueue: UpdateAccountEvents()
 }

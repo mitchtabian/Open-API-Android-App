@@ -55,9 +55,11 @@ class ViewBlogFragment : BaseBlogFragment(R.layout.fragment_view_blog)
             if(state.isAuthor == true){
                 adaptViewToAuthorMode()
             }
-        })
 
-        // TODO("If blog post was deleted, popBackStack()")
+            if(state.isDeleteComplete){
+                findNavController().popBackStack(R.id.blogFragment, false)
+            }
+        })
     }
 
     fun adaptViewToAuthorMode(){

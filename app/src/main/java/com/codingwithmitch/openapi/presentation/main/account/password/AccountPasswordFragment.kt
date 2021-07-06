@@ -3,6 +3,7 @@ package com.codingwithmitch.openapi.presentation.main.account.password
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.business.domain.util.StateMessageCallback
 import com.codingwithmitch.openapi.presentation.main.account.BaseAccountFragment
@@ -46,8 +47,10 @@ class AccountPasswordFragment : BaseAccountFragment(R.layout.fragment_change_pas
                         viewModel.onTriggerEvent(AccountPasswordEvents.OnRemoveHeadFromQueue)
                     }
                 })
+            if(state.isPasswordChangeComplete){
+                findNavController().popBackStack(R.id.accountFragment, false)
+            }
         })
-        // TODO("Listen for when the password is successfully updated")
     }
 
     private fun setPasswordFields(currentPassword: String, newPassword: String, confirmNewPassword: String){

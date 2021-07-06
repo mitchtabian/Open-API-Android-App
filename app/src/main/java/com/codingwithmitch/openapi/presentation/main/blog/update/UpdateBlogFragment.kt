@@ -11,6 +11,7 @@ import android.view.MenuItem
 import android.view.View
 import androidx.core.net.toUri
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.codingwithmitch.openapi.R
@@ -123,12 +124,10 @@ class UpdateBlogFragment : BaseBlogFragment(R.layout.fragment_update_blog)
                     blogPost.image.toUri()
                 )
             }
+            if(state.isUpdateComplete){
+                findNavController().popBackStack(R.id.viewBlogFragment, false)
+            }
         })
-        // TODO("Listen for if the BlogPost was updated. Then popBackStack()")
-        // SUCCESS_BLOG_UPDATED
-        // findNavController().popBackStack(R.id.blogFragment, false)
-        // SUCCESS_BLOG_DELETED
-        // findNavController().popBackStack(R.id.blogFragment, false)
     }
 
     fun setBlogProperties(title: String?, body: String?, image: Uri?){

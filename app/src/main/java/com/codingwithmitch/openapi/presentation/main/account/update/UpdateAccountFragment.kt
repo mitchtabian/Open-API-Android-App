@@ -6,6 +6,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.business.domain.models.Account
 import com.codingwithmitch.openapi.business.domain.util.*
@@ -35,12 +36,14 @@ class UpdateAccountFragment : BaseAccountFragment(R.layout.fragment_update_accou
                     }
                 }
             )
+            if(state.isUpdateComplete){
+                findNavController().popBackStack(R.id.accountFragment, false)
+            }
             state.account?.let { account ->
                 setAccountDataFields(state.account)
             }
         })
 
-        // TODO("Listen for when successfully updated")
     }
 
     private fun setAccountDataFields(account: Account){

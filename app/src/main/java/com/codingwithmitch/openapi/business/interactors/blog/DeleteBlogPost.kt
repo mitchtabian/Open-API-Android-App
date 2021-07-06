@@ -30,17 +30,11 @@ class DeleteBlogPost(
         }
         // attempt delete from network
         val response = service.deleteBlogPost(
-            "Token ${authToken.token!!}",
+            "Token ${authToken.token}",
             blogPost.slug
         ).response
         if(response != SUCCESS_BLOG_DELETED){ // failure
-            emit(DataState.error<Response>(
-                response = Response(
-                    message = response,
-                    uiComponentType = UIComponentType.Dialog(),
-                    messageType = MessageType.Error()
-                )
-            ))
+            throw Exception(response)
         }else{
             // delete from cache
             cache.deleteBlogPost(blogPost.toEntity())
@@ -48,7 +42,7 @@ class DeleteBlogPost(
             emit(DataState.data<Response>(
                 data = Response(
                     message = SUCCESS_BLOG_DELETED,
-                    uiComponentType = UIComponentType.Toast(),
+                    uiComponentType = UIComponentType.None(),
                     messageType = MessageType.Success()
                 ),
                 response = null

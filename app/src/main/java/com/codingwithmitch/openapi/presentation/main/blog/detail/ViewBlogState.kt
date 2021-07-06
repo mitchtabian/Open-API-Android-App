@@ -6,6 +6,7 @@ import com.codingwithmitch.openapi.business.domain.util.StateMessage
 
 data class ViewBlogState(
     val isLoading: Boolean = false,
+    val isDeleteComplete: Boolean = false,
     val blogPost: BlogPost? = null,
     val isAuthor: Boolean = false,
     val queue: Queue<StateMessage> = Queue(mutableListOf()),
