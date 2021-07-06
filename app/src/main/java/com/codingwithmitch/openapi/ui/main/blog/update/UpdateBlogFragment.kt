@@ -114,6 +114,8 @@ class UpdateBlogFragment : BaseBlogFragment(R.layout.fragment_update_blog)
         // TODO("Listen for if the BlogPost was updated. Then popBackStack()")
         // SUCCESS_BLOG_UPDATED
         // findNavController().popBackStack(R.id.blogFragment, false)
+        // SUCCESS_BLOG_DELETED
+        // findNavController().popBackStack(R.id.blogFragment, false)
     }
 
     fun setBlogProperties(title: String?, body: String?, image: Uri?){

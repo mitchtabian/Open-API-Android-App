@@ -80,9 +80,7 @@ constructor(
 
     private fun login(authToken: AuthToken){
         state.value?.let { state ->
-            if(state.authToken?.token != authToken.token){
-                this.state.value = state.copy(authToken = authToken)
-            }
+            this.state.value = state.copy(authToken = authToken)
         }
     }
 

@@ -24,6 +24,7 @@ class DeleteBlogPost(
         authToken: AuthToken?,
         blogPost: BlogPost,
     ): Flow<DataState<Response>> = flow{
+        emit(DataState.loading<Response>())
         if(authToken == null){
             throw Exception("Authentication token is invalid. Log out and log back in.")
         }
