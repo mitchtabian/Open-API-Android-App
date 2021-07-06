@@ -8,8 +8,10 @@ import com.codingwithmitch.openapi.business.datasource.cache.account.AccountDao
 import com.codingwithmitch.openapi.business.datasource.cache.account.toEntity
 import com.codingwithmitch.openapi.business.datasource.cache.auth.AuthTokenDao
 import com.codingwithmitch.openapi.business.datasource.cache.auth.toEntity
+import com.codingwithmitch.openapi.business.datasource.datastore.DataStoreManager
 import com.codingwithmitch.openapi.business.domain.util.*
 import com.codingwithmitch.openapi.business.domain.util.ErrorHandling.Companion.ERROR_SAVE_AUTH_TOKEN
+import com.codingwithmitch.openapi.presentation.util.DataStoreKeys
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
@@ -19,6 +21,7 @@ class Login(
     private val service: OpenApiAuthService,
     private val accountDao: AccountDao,
     private val authTokenDao: AuthTokenDao,
+    private val dataStoreManager: DataStoreManager,
 ){
     fun execute(
         email: String,
@@ -50,6 +53,8 @@ class Login(
         if(result < 0){
             throw Exception(ERROR_SAVE_AUTH_TOKEN)
         }
+        // save authenticated user to datastore for auto-login next time
+        dataStoreManager.setValue(DataStoreKeys.PREVIOUS_AUTH_USER, email)
         emit(DataState.data(data = authToken, response = null))
     }.catch { e ->
         emit(handleUseCaseException(e))

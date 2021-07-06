@@ -125,5 +125,8 @@ dependencies {
     // Android-Image-Cropper
     def android_image_cropper_version = "2.8.+"
     api "com.theartofdev.edmodo:android-image-cropper:$android_image_cropper_version"
+
+    def dataStore = "1.0.0-rc01"
+    implementation "androidx.datastore:datastore-preferences:$dataStore"
 }
 

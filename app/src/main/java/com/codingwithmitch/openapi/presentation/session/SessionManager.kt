@@ -1,8 +1,8 @@
 package com.codingwithmitch.openapi.presentation.session
 
-import android.content.SharedPreferences
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import com.codingwithmitch.openapi.business.datasource.datastore.DataStoreManager
 import com.codingwithmitch.openapi.business.domain.models.AuthToken
 import com.codingwithmitch.openapi.business.domain.util.StateMessage
 import com.codingwithmitch.openapi.business.domain.util.SuccessHandling.Companion.RESPONSE_CHECK_PREVIOUS_AUTH_USER_DONE
@@ -10,11 +10,12 @@ import com.codingwithmitch.openapi.business.domain.util.SuccessHandling.Companio
 import com.codingwithmitch.openapi.business.domain.util.doesMessageAlreadyExistInQueue
 import com.codingwithmitch.openapi.business.interactors.session.CheckPreviousAuthUser
 import com.codingwithmitch.openapi.business.interactors.session.Logout
-import com.codingwithmitch.openapi.presentation.util.PreferenceKeys
+import com.codingwithmitch.openapi.presentation.util.DataStoreKeys
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -28,8 +29,7 @@ class SessionManager
 constructor(
     private val checkPreviousAuthUser: CheckPreviousAuthUser,
     private val logout: Logout,
-    private val preferences: SharedPreferences,
-    private val editor: SharedPreferences.Editor,
+    private val dataStoreManager: DataStoreManager,
 ) {
 
     private val TAG: String = "AppDebug"
@@ -40,9 +40,13 @@ constructor(
 
     init {
         // Check if a user was authenticated in a previous session
-        preferences.getString(PreferenceKeys.PREVIOUS_AUTH_USER, null)?.let { email ->
-            onTriggerEvent(SessionEvents.CheckPreviousAuthUser(email))
-        }?: onFinishCheckingPrevAuthUser()
+        dataStoreManager.readValue(DataStoreKeys.PREVIOUS_AUTH_USER).onEach { email ->
+            if(email != null){
+                onTriggerEvent(SessionEvents.CheckPreviousAuthUser(email))
+            }else{
+                onFinishCheckingPrevAuthUser()
+            }
+        }.launchIn(sessionScope)
     }
 
     fun onTriggerEvent(event: SessionEvents){
@@ -137,8 +141,9 @@ constructor(
     }
 
     private fun clearAuthUser() {
-        editor.putString(PreferenceKeys.PREVIOUS_AUTH_USER, "")
-        editor.apply()
+        sessionScope.launch {
+            dataStoreManager.setValue(DataStoreKeys.PREVIOUS_AUTH_USER, "")
+        }
     }
 
 }

@@ -1,17 +1,14 @@
 package com.codingwithmitch.openapi.presentation.auth.login
 
-import android.content.SharedPreferences
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.codingwithmitch.openapi.business.domain.util.Queue
+import com.codingwithmitch.openapi.business.domain.util.StateMessage
+import com.codingwithmitch.openapi.business.domain.util.doesMessageAlreadyExistInQueue
 import com.codingwithmitch.openapi.business.interactors.auth.Login
 import com.codingwithmitch.openapi.presentation.session.SessionEvents
 import com.codingwithmitch.openapi.presentation.session.SessionManager
-import com.codingwithmitch.openapi.presentation.util.PreferenceKeys
-import com.codingwithmitch.openapi.business.domain.util.StateMessage
-import com.codingwithmitch.openapi.business.domain.util.doesMessageAlreadyExistInQueue
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -21,7 +18,6 @@ import javax.inject.Inject
 class LoginViewModel
 @Inject
 constructor(
-    private val editor: SharedPreferences.Editor,
     private val login: Login,
     private val sessionManager: SessionManager,
 ): ViewModel()
@@ -92,7 +88,6 @@ constructor(
                 this.state.value = state.copy(isLoading = dataState.isLoading)
 
                 dataState.data?.let { authToken ->
-                    saveAuthUser(email)
                     sessionManager.onTriggerEvent(SessionEvents.Login(authToken))
                 }
 
@@ -103,10 +98,6 @@ constructor(
         }
     }
 
-    private fun saveAuthUser(email: String) {
-        editor.putString(PreferenceKeys.PREVIOUS_AUTH_USER, email)
-        editor.apply()
-    }
 }
 
 

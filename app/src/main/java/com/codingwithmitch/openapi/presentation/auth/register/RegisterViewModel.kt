@@ -1,16 +1,14 @@
 package com.codingwithmitch.openapi.presentation.auth.register
 
-import android.content.SharedPreferences
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.codingwithmitch.openapi.business.domain.util.StateMessage
+import com.codingwithmitch.openapi.business.domain.util.doesMessageAlreadyExistInQueue
 import com.codingwithmitch.openapi.business.interactors.auth.Register
 import com.codingwithmitch.openapi.presentation.session.SessionEvents
 import com.codingwithmitch.openapi.presentation.session.SessionManager
-import com.codingwithmitch.openapi.presentation.util.PreferenceKeys
-import com.codingwithmitch.openapi.business.domain.util.StateMessage
-import com.codingwithmitch.openapi.business.domain.util.doesMessageAlreadyExistInQueue
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -20,18 +18,16 @@ import javax.inject.Inject
 class RegisterViewModel
 @Inject
 constructor(
-    private val editor: SharedPreferences.Editor,
     private val register: Register,
     private val sessionManager: SessionManager,
-): ViewModel()
-{
+) : ViewModel() {
     private val TAG: String = "AppDebug"
 
     val state: MutableLiveData<RegisterState> = MutableLiveData(RegisterState())
 
-    fun onTriggerEvent(event: RegisterEvents){
-        when(event){
-            is RegisterEvents.Register ->{
+    fun onTriggerEvent(event: RegisterEvents) {
+        when (event) {
+            is RegisterEvents.Register -> {
                 register(
                     email = event.email,
                     username = event.username,
@@ -51,28 +47,28 @@ constructor(
             is RegisterEvents.OnUpdateConfirmPassword -> {
                 onUpdateConfirmPassword(event.confirmPassword)
             }
-            is RegisterEvents.OnRemoveHeadFromQueue ->{
+            is RegisterEvents.OnRemoveHeadFromQueue -> {
                 removeHeadFromQueue()
             }
         }
     }
 
-    private fun removeHeadFromQueue(){
+    private fun removeHeadFromQueue() {
         state.value?.let { state ->
             try {
                 val queue = state.queue
                 queue.remove() // can throw exception if empty
                 this.state.value = state.copy(queue = queue)
-            }catch (e: Exception){
+            } catch (e: Exception) {
                 Log.d(TAG, "removeHeadFromQueue: Nothing to remove from DialogQueue")
             }
         }
     }
 
-    private fun appendToMessageQueue(stateMessage: StateMessage){
+    private fun appendToMessageQueue(stateMessage: StateMessage) {
         state.value?.let { state ->
             val queue = state.queue
-            if(!stateMessage.doesMessageAlreadyExistInQueue(queue = queue)){
+            if (!stateMessage.doesMessageAlreadyExistInQueue(queue = queue)) {
                 queue.add(stateMessage)
                 this.state.value = state.copy(queue = queue)
             }
@@ -84,7 +80,7 @@ constructor(
         username: String,
         password: String,
         confirmPassword: String
-    ){
+    ) {
         // TODO("Perform some simple form validation?")
         state.value?.let { state ->
             register.execute(
@@ -96,7 +92,6 @@ constructor(
                 this.state.value = state.copy(isLoading = dataState.isLoading)
 
                 dataState.data?.let { authToken ->
-                    saveAuthUser(email)
                     sessionManager.onTriggerEvent(SessionEvents.Login(authToken))
                 }
 
@@ -131,10 +126,6 @@ constructor(
         }
     }
 
-    private fun saveAuthUser(email: String) {
-        editor.putString(PreferenceKeys.PREVIOUS_AUTH_USER, email)
-        editor.apply()
-    }
 }
 
 

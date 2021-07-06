@@ -1,17 +1,15 @@
 package com.codingwithmitch.openapi.di
 
 import android.app.Application
-import android.content.Context
-import android.content.SharedPreferences
 import androidx.room.Room
-import com.codingwithmitch.openapi.business.datasource.network.main.OpenApiMainService
-import com.codingwithmitch.openapi.business.datasource.cache.account.AccountDao
 import com.codingwithmitch.openapi.business.datasource.cache.AppDatabase
 import com.codingwithmitch.openapi.business.datasource.cache.AppDatabase.Companion.DATABASE_NAME
+import com.codingwithmitch.openapi.business.datasource.cache.account.AccountDao
 import com.codingwithmitch.openapi.business.datasource.cache.auth.AuthTokenDao
 import com.codingwithmitch.openapi.business.datasource.cache.blog.BlogPostDao
+import com.codingwithmitch.openapi.business.datasource.datastore.DataStoreManager
+import com.codingwithmitch.openapi.business.datasource.network.main.OpenApiMainService
 import com.codingwithmitch.openapi.business.domain.util.Constants
-import com.codingwithmitch.openapi.presentation.util.PreferenceKeys
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dagger.Module
@@ -28,22 +26,10 @@ object AppModule{
 
     @Singleton
     @Provides
-    fun provideSharedPreferences(
+    fun provideDataStoreManager(
         application: Application
-    ): SharedPreferences {
-        return application
-            .getSharedPreferences(
-                PreferenceKeys.APP_PREFERENCES,
-                Context.MODE_PRIVATE
-            )
-    }
-
-    @Singleton
-    @Provides
-    fun provideSharedPrefsEditor(
-        sharedPreferences: SharedPreferences
-    ): SharedPreferences.Editor {
-        return sharedPreferences.edit()
+    ): DataStoreManager {
+        return DataStoreManager(application)
     }
 
     @Singleton

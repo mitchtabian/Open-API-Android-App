@@ -7,6 +7,7 @@ import com.codingwithmitch.openapi.business.interactors.session.CheckPreviousAut
 import com.codingwithmitch.openapi.business.interactors.session.Logout
 import com.codingwithmitch.openapi.business.datasource.cache.account.AccountDao
 import com.codingwithmitch.openapi.business.datasource.cache.auth.AuthTokenDao
+import com.codingwithmitch.openapi.business.datasource.datastore.DataStoreManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -46,11 +47,13 @@ object AuthModule{
         service: OpenApiAuthService,
         accountDao: AccountDao,
         authTokenDao: AuthTokenDao,
+        dataStoreManager: DataStoreManager,
     ): Login {
         return Login(
             service,
             accountDao,
-            authTokenDao
+            authTokenDao,
+            dataStoreManager
         )
     }
 
@@ -70,11 +73,13 @@ object AuthModule{
         service: OpenApiAuthService,
         accountDao: AccountDao,
         authTokenDao: AuthTokenDao,
+        dataStoreManager: DataStoreManager,
     ): Register {
         return Register(
             service,
             accountDao,
-            authTokenDao
+            authTokenDao,
+            dataStoreManager
         )
     }
 }
