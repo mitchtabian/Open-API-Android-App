@@ -1,8 +1,8 @@
 package com.codingwithmitch.openapi.di.blog
 
-import com.codingwithmitch.openapi.api.main.OpenApiMainService
-import com.codingwithmitch.openapi.interactors.blog.*
-import com.codingwithmitch.openapi.persistence.blog.BlogPostDao
+import com.codingwithmitch.openapi.business.datasource.network.main.OpenApiMainService
+import com.codingwithmitch.openapi.business.interactors.blog.*
+import com.codingwithmitch.openapi.business.datasource.cache.blog.BlogPostDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

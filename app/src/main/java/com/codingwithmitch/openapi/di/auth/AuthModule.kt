@@ -1,12 +1,12 @@
 package com.codingwithmitch.openapi.di.auth
 
-import com.codingwithmitch.openapi.api.auth.OpenApiAuthService
-import com.codingwithmitch.openapi.interactors.auth.Login
-import com.codingwithmitch.openapi.interactors.auth.Register
-import com.codingwithmitch.openapi.interactors.session.CheckPreviousAuthUser
-import com.codingwithmitch.openapi.interactors.session.Logout
-import com.codingwithmitch.openapi.persistence.account.AccountDao
-import com.codingwithmitch.openapi.persistence.auth.AuthTokenDao
+import com.codingwithmitch.openapi.business.datasource.network.auth.OpenApiAuthService
+import com.codingwithmitch.openapi.business.interactors.auth.Login
+import com.codingwithmitch.openapi.business.interactors.auth.Register
+import com.codingwithmitch.openapi.business.interactors.session.CheckPreviousAuthUser
+import com.codingwithmitch.openapi.business.interactors.session.Logout
+import com.codingwithmitch.openapi.business.datasource.cache.account.AccountDao
+import com.codingwithmitch.openapi.business.datasource.cache.auth.AuthTokenDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

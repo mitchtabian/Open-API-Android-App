@@ -1,11 +1,11 @@
 package com.codingwithmitch.openapi.di.account
 
-import com.codingwithmitch.openapi.api.main.OpenApiMainService
-import com.codingwithmitch.openapi.interactors.account.GetAccount
-import com.codingwithmitch.openapi.interactors.account.GetAccountFromCache
-import com.codingwithmitch.openapi.interactors.account.UpdateAccount
-import com.codingwithmitch.openapi.interactors.account.UpdatePassword
-import com.codingwithmitch.openapi.persistence.account.AccountDao
+import com.codingwithmitch.openapi.business.datasource.network.main.OpenApiMainService
+import com.codingwithmitch.openapi.business.interactors.account.GetAccount
+import com.codingwithmitch.openapi.business.interactors.account.GetAccountFromCache
+import com.codingwithmitch.openapi.business.interactors.account.UpdateAccount
+import com.codingwithmitch.openapi.business.interactors.account.UpdatePassword
+import com.codingwithmitch.openapi.business.datasource.cache.account.AccountDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
