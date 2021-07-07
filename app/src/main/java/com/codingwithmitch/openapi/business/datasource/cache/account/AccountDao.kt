@@ -12,7 +12,7 @@ interface AccountDao {
     suspend fun searchByEmail(email: String): AccountEntity?
 
     @Query("SELECT * FROM account_properties WHERE pk = :pk")
-    suspend fun searchByPk(pk: Int): AccountEntity
+    suspend fun searchByPk(pk: Int): AccountEntity?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAndReplace(account: AccountEntity): Long

@@ -3,6 +3,7 @@ plugins {
     id 'kotlin-android'
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
+    id 'de.mannodermaus.android-junit5'
 }
 
 android {
@@ -126,5 +127,15 @@ dependencies {
 
     def dataStore = "1.0.0-rc01"
     implementation "androidx.datastore:datastore-preferences:$dataStore"
+
+    // Junit5
+    def junit5 = "5.7.0"
+    testImplementation "org.junit.jupiter:junit-jupiter-api:$junit5"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit5"
+
+    // MockWebServer
+    def mockWebServer = "4.9.0"
+    testImplementation "com.squareup.okhttp3:mockwebserver:$mockWebServer"
+
 }
 
