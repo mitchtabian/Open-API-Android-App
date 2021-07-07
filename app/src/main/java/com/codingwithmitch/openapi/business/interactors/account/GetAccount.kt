@@ -34,7 +34,11 @@ class GetAccount(
         cache.insertOrIgnore(account.toEntity())
 
         // emit from cache
-        val cachedAccount = cache.searchByPk(account.pk).toAccount()
+        val cachedAccount = cache.searchByPk(account.pk)?.toAccount()
+
+        if(cachedAccount == null){
+            throw Exception("Unable to retrieve account details. Try logging out.")
+        }
 
         emit(DataState.data(response = null, cachedAccount))
     }.catch { e ->

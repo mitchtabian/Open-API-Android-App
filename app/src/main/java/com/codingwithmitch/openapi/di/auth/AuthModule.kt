@@ -1,13 +1,13 @@
 package com.codingwithmitch.openapi.di.auth
 
+import com.codingwithmitch.openapi.business.datasource.cache.account.AccountDao
+import com.codingwithmitch.openapi.business.datasource.cache.auth.AuthTokenDao
+import com.codingwithmitch.openapi.business.datasource.datastore.AppDataStore
 import com.codingwithmitch.openapi.business.datasource.network.auth.OpenApiAuthService
 import com.codingwithmitch.openapi.business.interactors.auth.Login
 import com.codingwithmitch.openapi.business.interactors.auth.Register
 import com.codingwithmitch.openapi.business.interactors.session.CheckPreviousAuthUser
 import com.codingwithmitch.openapi.business.interactors.session.Logout
-import com.codingwithmitch.openapi.business.datasource.cache.account.AccountDao
-import com.codingwithmitch.openapi.business.datasource.cache.auth.AuthTokenDao
-import com.codingwithmitch.openapi.business.datasource.datastore.DataStoreManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -47,21 +47,19 @@ object AuthModule{
         service: OpenApiAuthService,
         accountDao: AccountDao,
         authTokenDao: AuthTokenDao,
-        dataStoreManager: DataStoreManager,
+        appDataStoreManager: AppDataStore,
     ): Login {
         return Login(
             service,
             accountDao,
             authTokenDao,
-            dataStoreManager
+            appDataStoreManager
         )
     }
 
     @Singleton
     @Provides
     fun provideLogout(
-        service: OpenApiAuthService,
-        accountDao: AccountDao,
         authTokenDao: AuthTokenDao,
     ): Logout {
         return Logout(authTokenDao)
@@ -73,13 +71,13 @@ object AuthModule{
         service: OpenApiAuthService,
         accountDao: AccountDao,
         authTokenDao: AuthTokenDao,
-        dataStoreManager: DataStoreManager,
+        appDataStoreManager: AppDataStore,
     ): Register {
         return Register(
             service,
             accountDao,
             authTokenDao,
-            dataStoreManager
+            appDataStoreManager
         )
     }
 }

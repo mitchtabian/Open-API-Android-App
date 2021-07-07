@@ -8,7 +8,7 @@ class LoginResponse(
     var response: String,
 
     @SerializedName("error_message")
-    var errorMessage: String,
+    var errorMessage: String?,
 
     @SerializedName("token")
     var token: String,
@@ -19,8 +19,3 @@ class LoginResponse(
     @SerializedName("email")
     var email: String
 )
-{
-    override fun toString(): String {
-        return "LoginResponse(response='$response', errorMessage='$errorMessage', token='$token', pk=$pk, email='$email')"
-    }
-}

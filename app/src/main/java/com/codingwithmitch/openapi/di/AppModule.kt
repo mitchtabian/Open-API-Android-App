@@ -7,7 +7,8 @@ import com.codingwithmitch.openapi.business.datasource.cache.AppDatabase.Compani
 import com.codingwithmitch.openapi.business.datasource.cache.account.AccountDao
 import com.codingwithmitch.openapi.business.datasource.cache.auth.AuthTokenDao
 import com.codingwithmitch.openapi.business.datasource.cache.blog.BlogPostDao
-import com.codingwithmitch.openapi.business.datasource.datastore.DataStoreManager
+import com.codingwithmitch.openapi.business.datasource.datastore.AppDataStore
+import com.codingwithmitch.openapi.business.datasource.datastore.AppDataStoreManager
 import com.codingwithmitch.openapi.business.datasource.network.main.OpenApiMainService
 import com.codingwithmitch.openapi.business.domain.util.Constants
 import com.google.gson.Gson
@@ -28,8 +29,8 @@ object AppModule{
     @Provides
     fun provideDataStoreManager(
         application: Application
-    ): DataStoreManager {
-        return DataStoreManager(application)
+    ): AppDataStore {
+        return AppDataStoreManager(application)
     }
 
     @Singleton

@@ -20,8 +20,7 @@ class LoginViewModel
 constructor(
     private val login: Login,
     private val sessionManager: SessionManager,
-): ViewModel()
-{
+): ViewModel() {
 
     private val TAG: String = "AppDebug"
 

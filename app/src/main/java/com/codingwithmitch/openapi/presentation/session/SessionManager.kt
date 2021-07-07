@@ -2,7 +2,7 @@ package com.codingwithmitch.openapi.presentation.session
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
-import com.codingwithmitch.openapi.business.datasource.datastore.DataStoreManager
+import com.codingwithmitch.openapi.business.datasource.datastore.AppDataStore
 import com.codingwithmitch.openapi.business.domain.models.AuthToken
 import com.codingwithmitch.openapi.business.domain.util.StateMessage
 import com.codingwithmitch.openapi.business.domain.util.SuccessHandling.Companion.RESPONSE_CHECK_PREVIOUS_AUTH_USER_DONE
@@ -29,7 +29,7 @@ class SessionManager
 constructor(
     private val checkPreviousAuthUser: CheckPreviousAuthUser,
     private val logout: Logout,
-    private val dataStoreManager: DataStoreManager,
+    private val appDataStoreManager: AppDataStore,
 ) {
 
     private val TAG: String = "AppDebug"
@@ -40,13 +40,11 @@ constructor(
 
     init {
         // Check if a user was authenticated in a previous session
-        dataStoreManager.readValueAsFlow(DataStoreKeys.PREVIOUS_AUTH_USER).onEach { email ->
-            if(email != null){
+        sessionScope.launch {
+            appDataStoreManager.readValue(DataStoreKeys.PREVIOUS_AUTH_USER)?.let { email ->
                 onTriggerEvent(SessionEvents.CheckPreviousAuthUser(email))
-            }else{
-                onFinishCheckingPrevAuthUser()
-            }
-        }.launchIn(sessionScope)
+            }?: onFinishCheckingPrevAuthUser()
+        }
     }
 
     fun onTriggerEvent(event: SessionEvents){
@@ -142,7 +140,7 @@ constructor(
 
     private fun clearAuthUser() {
         sessionScope.launch {
-            dataStoreManager.setValue(DataStoreKeys.PREVIOUS_AUTH_USER, "")
+            appDataStoreManager.setValue(DataStoreKeys.PREVIOUS_AUTH_USER, "")
         }
     }
 

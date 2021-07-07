@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.codingwithmitch.openapi.business.datasource.datastore.DataStoreManager
+import com.codingwithmitch.openapi.business.datasource.datastore.AppDataStore
 import com.codingwithmitch.openapi.business.domain.util.ErrorHandling
 import com.codingwithmitch.openapi.business.domain.util.StateMessage
 import com.codingwithmitch.openapi.business.domain.util.doesMessageAlreadyExistInQueue
@@ -26,7 +26,7 @@ constructor(
     private val sessionManager: SessionManager,
     private val searchBlogs: SearchBlogs,
     private val getOrderAndFilter: GetOrderAndFilter,
-    private val dataStoreManager: DataStoreManager,
+    private val appDataStoreManager: AppDataStore,
 ) : ViewModel() {
 
     private val TAG: String = "AppDebug"
@@ -91,8 +91,8 @@ constructor(
 
     private fun saveFilterOptions(filter: String, order: String) {
         viewModelScope.launch {
-            dataStoreManager.setValue(BLOG_FILTER, filter)
-            dataStoreManager.setValue(BLOG_ORDER, order)
+            appDataStoreManager.setValue(BLOG_FILTER, filter)
+            appDataStoreManager.setValue(BLOG_ORDER, order)
         }
     }
 

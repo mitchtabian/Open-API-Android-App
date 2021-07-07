@@ -1,9 +1,9 @@
 package com.codingwithmitch.openapi.di.blog
 
+import com.codingwithmitch.openapi.business.datasource.cache.blog.BlogPostDao
+import com.codingwithmitch.openapi.business.datasource.datastore.AppDataStore
 import com.codingwithmitch.openapi.business.datasource.network.main.OpenApiMainService
 import com.codingwithmitch.openapi.business.interactors.blog.*
-import com.codingwithmitch.openapi.business.datasource.cache.blog.BlogPostDao
-import com.codingwithmitch.openapi.business.datasource.datastore.DataStoreManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -69,9 +69,9 @@ object BlogModule {
     @Singleton
     @Provides
     fun provideGetOrderAndFilter(
-        dataStoreManager: DataStoreManager
+        appDataStoreManager: AppDataStore
     ): GetOrderAndFilter{
-        return GetOrderAndFilter(dataStoreManager)
+        return GetOrderAndFilter(appDataStoreManager)
     }
 }
 
