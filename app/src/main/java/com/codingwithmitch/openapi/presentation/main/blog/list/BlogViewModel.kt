@@ -34,17 +34,6 @@ constructor(
 
     init {
         onTriggerEvent(BlogEvents.GetOrderAndFilter)
-//        viewModelScope.launch {
-//            val currentFilter = dataStoreManager.readValue(BLOG_FILTER)?.let { filter ->
-//                getFilterFromValue(filter)
-//            }?: getFilterFromValue(BlogFilterOptions.DATE_UPDATED.value)
-//            state.value = state.value?.copy(filter = currentFilter)
-//            val currentOrder = dataStoreManager.readValue(BLOG_ORDER)?.let { order ->
-//                getOrderFromValue(order)
-//            }?: getOrderFromValue(BlogOrderOptions.DESC.value)
-//            state.value = state.value?.copy(order = currentOrder)
-//            onTriggerEvent(BlogEvents.NewSearch)
-//        }
     }
 
     fun onTriggerEvent(event: BlogEvents) {
