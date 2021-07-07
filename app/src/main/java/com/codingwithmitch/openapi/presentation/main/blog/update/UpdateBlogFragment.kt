@@ -5,10 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import androidx.core.net.toUri
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -18,13 +15,13 @@ import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.business.domain.util.*
 import com.codingwithmitch.openapi.business.domain.util.Constants.Companion.GALLERY_REQUEST_CODE
 import com.codingwithmitch.openapi.business.domain.util.ErrorHandling.Companion.SOMETHING_WRONG_WITH_IMAGE
+import com.codingwithmitch.openapi.databinding.FragmentUpdateBlogBinding
 import com.codingwithmitch.openapi.presentation.main.blog.BaseBlogFragment
 import com.codingwithmitch.openapi.presentation.util.processQueue
 import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView
-import kotlinx.android.synthetic.main.fragment_update_blog.*
 
-class UpdateBlogFragment : BaseBlogFragment(R.layout.fragment_update_blog)
+class UpdateBlogFragment : BaseBlogFragment()
 {
 
     private val requestOptions = RequestOptions
@@ -33,12 +30,24 @@ class UpdateBlogFragment : BaseBlogFragment(R.layout.fragment_update_blog)
 
     private val viewModel: UpdateBlogViewModel by viewModels()
 
+    private var _binding: FragmentUpdateBlogBinding? = null
+    private val binding get() = _binding!!
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentUpdateBlogBinding.inflate(layoutInflater)
+        return binding.root
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
         subscribeObservers()
 
-        image_container.setOnClickListener {
+        binding.imageContainer.setOnClickListener {
             if(uiCommunicationListener.isStoragePermissionGranted()){
                 pickFromGallery()
             }
@@ -135,10 +144,10 @@ class UpdateBlogFragment : BaseBlogFragment(R.layout.fragment_update_blog)
             Glide.with(this)
                 .setDefaultRequestOptions(requestOptions)
                 .load(it)
-                .into(blog_image)
+                .into(binding.blogImage)
         }
-        blog_title.setText(title)
-        blog_body.setText(body)
+        binding.blogTitle.setText(title)
+        binding.blogBody.setText(body)
     }
 
     private fun saveChanges(){
@@ -162,8 +171,8 @@ class UpdateBlogFragment : BaseBlogFragment(R.layout.fragment_update_blog)
     }
 
     private fun cacheState(){
-        val title = blog_title.text.toString()
-        val body = blog_body.text.toString()
+        val title = binding.blogTitle.text.toString()
+        val body = binding.blogBody.text.toString()
         viewModel.onTriggerEvent(UpdateBlogEvents.OnUpdateTitle(title))
         viewModel.onTriggerEvent(UpdateBlogEvents.OnUpdateBody(body))
     }
@@ -171,6 +180,11 @@ class UpdateBlogFragment : BaseBlogFragment(R.layout.fragment_update_blog)
     override fun onPause() {
         super.onPause()
         cacheState()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
 

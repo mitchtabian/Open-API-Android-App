@@ -1,10 +1,7 @@
 package com.codingwithmitch.openapi.presentation.main.blog.detail
 
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -13,11 +10,11 @@ import com.bumptech.glide.request.RequestOptions
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.business.domain.models.BlogPost
 import com.codingwithmitch.openapi.business.domain.util.*
+import com.codingwithmitch.openapi.databinding.FragmentViewBlogBinding
 import com.codingwithmitch.openapi.presentation.main.blog.BaseBlogFragment
 import com.codingwithmitch.openapi.presentation.util.processQueue
-import kotlinx.android.synthetic.main.fragment_view_blog.*
 
-class ViewBlogFragment : BaseBlogFragment(R.layout.fragment_view_blog)
+class ViewBlogFragment : BaseBlogFragment()
 {
     private val requestOptions = RequestOptions
         .placeholderOf(R.drawable.default_image)
@@ -25,18 +22,30 @@ class ViewBlogFragment : BaseBlogFragment(R.layout.fragment_view_blog)
 
     private val viewModel: ViewBlogViewModel by viewModels()
 
+    private var _binding: FragmentViewBlogBinding? = null
+    private val binding get() = _binding!!
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentViewBlogBinding.inflate(layoutInflater)
+        return binding.root
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
         subscribeObservers()
         uiCommunicationListener.expandAppBar()
 
-        delete_button.setOnClickListener {
+        binding.deleteButton.setOnClickListener {
             viewModel.onTriggerEvent(ViewBlogEvents.DeleteBlog)
         }
     }
 
-    fun subscribeObservers(){
+    private fun subscribeObservers(){
         viewModel.state.observe(viewLifecycleOwner, { state ->
 
             uiCommunicationListener.displayProgressBar(state.isLoading)
@@ -62,20 +71,20 @@ class ViewBlogFragment : BaseBlogFragment(R.layout.fragment_view_blog)
         })
     }
 
-    fun adaptViewToAuthorMode(){
+    private fun adaptViewToAuthorMode(){
         activity?.invalidateOptionsMenu()
-        delete_button.visibility = View.VISIBLE
+        binding.deleteButton.visibility = View.VISIBLE
     }
 
-    fun setBlogProperties(blogPost: BlogPost){
+    private fun setBlogProperties(blogPost: BlogPost){
         Glide.with(this)
             .setDefaultRequestOptions(requestOptions)
             .load(blogPost.image)
-            .into(blog_image)
-        blog_title.setText(blogPost.title)
-        blog_author.setText(blogPost.username)
-        blog_update_date.setText(DateUtils.convertLongToStringDate(blogPost.date_updated))
-        blog_body.setText(blogPost.body)
+            .into(binding.blogImage)
+        binding.blogTitle.setText(blogPost.title)
+        binding.blogAuthor.setText(blogPost.username)
+        binding.blogUpdateDate.setText(DateUtils.convertLongToStringDate(blogPost.date_updated))
+        binding.blogBody.setText(blogPost.body)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -116,6 +125,11 @@ class ViewBlogFragment : BaseBlogFragment(R.layout.fragment_view_blog)
                 )
             ))
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
 

@@ -27,13 +27,13 @@ import com.codingwithmitch.openapi.business.datasource.cache.blog.BlogQueryUtils
 import com.codingwithmitch.openapi.business.datasource.cache.blog.BlogQueryUtils.Companion.BLOG_ORDER_DESC
 import com.codingwithmitch.openapi.business.domain.models.BlogPost
 import com.codingwithmitch.openapi.business.domain.util.*
+import com.codingwithmitch.openapi.databinding.FragmentBlogBinding
 import com.codingwithmitch.openapi.presentation.main.blog.BaseBlogFragment
 import com.codingwithmitch.openapi.presentation.util.TopSpacingItemDecoration
 import com.codingwithmitch.openapi.presentation.util.processQueue
-import kotlinx.android.synthetic.main.fragment_blog.*
 import kotlinx.coroutines.*
 
-class BlogFragment : BaseBlogFragment(R.layout.fragment_blog),
+class BlogFragment : BaseBlogFragment(),
     BlogListAdapter.Interaction,
     SwipeRefreshLayout.OnRefreshListener
 {
@@ -42,11 +42,23 @@ class BlogFragment : BaseBlogFragment(R.layout.fragment_blog),
     private var recyclerAdapter: BlogListAdapter? = null // can leak memory so need to null
     private val viewModel: BlogViewModel by viewModels()
 
+    private var _binding: FragmentBlogBinding? = null
+    private val binding get() = _binding!!
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentBlogBinding.inflate(layoutInflater)
+        return binding.root
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (activity as AppCompatActivity).supportActionBar?.setDisplayShowTitleEnabled(false)
         setHasOptionsMenu(true)
-        swipe_refresh.setOnRefreshListener(this)
+        binding.swipeRefresh.setOnRefreshListener(this)
         initRecyclerView()
         subscribeObservers()
     }
@@ -111,11 +123,11 @@ class BlogFragment : BaseBlogFragment(R.layout.fragment_blog),
 
     private  fun resetUI(){
         uiCommunicationListener.hideSoftKeyboard()
-        focusable_view.requestFocus()
+        binding.focusableView.requestFocus()
     }
 
     private fun initRecyclerView(){
-        blog_post_recyclerview.apply {
+        binding.blogPostRecyclerview.apply {
             layoutManager = LinearLayoutManager(this@BlogFragment.context)
             val topSpacingDecorator = TopSpacingItemDecoration(30)
             removeItemDecoration(topSpacingDecorator) // does nothing if not applied already
@@ -128,9 +140,11 @@ class BlogFragment : BaseBlogFragment(R.layout.fragment_blog),
                     super.onScrollStateChanged(recyclerView, newState)
                     val layoutManager = recyclerView.layoutManager as LinearLayoutManager
                     val lastPosition = layoutManager.findLastVisibleItemPosition()
+                    Log.d(TAG, "onScrollStateChanged: exhausted? ${viewModel.state.value?.isQueryExhausted}")
                     if (
                         lastPosition == recyclerAdapter?.itemCount?.minus(1)
                         && viewModel.state.value?.isLoading == false
+                        && viewModel.state.value?.isQueryExhausted == false
                     ) {
                         Log.d(TAG, "BlogFragment: attempting to load next page...")
                         viewModel.onTriggerEvent(BlogEvents.NextPage)
@@ -181,7 +195,7 @@ class BlogFragment : BaseBlogFragment(R.layout.fragment_blog),
 
     override fun onRefresh() {
         viewModel.onTriggerEvent(BlogEvents.NewSearch)
-        swipe_refresh.isRefreshing = false
+        binding.swipeRefresh.isRefreshing = false
     }
 
     fun showFilterDialog(){
@@ -246,6 +260,7 @@ class BlogFragment : BaseBlogFragment(R.layout.fragment_blog),
     override fun onDestroyView() {
         super.onDestroyView()
         recyclerAdapter = null
+        _binding = null
     }
 }
 

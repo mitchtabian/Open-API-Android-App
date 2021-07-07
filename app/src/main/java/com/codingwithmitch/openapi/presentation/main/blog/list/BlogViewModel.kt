@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.codingwithmitch.openapi.business.datasource.datastore.DataStoreManager
+import com.codingwithmitch.openapi.business.domain.util.ErrorHandling
 import com.codingwithmitch.openapi.business.domain.util.StateMessage
 import com.codingwithmitch.openapi.business.domain.util.doesMessageAlreadyExistInQueue
 import com.codingwithmitch.openapi.business.interactors.blog.GetOrderAndFilter
@@ -13,9 +14,9 @@ import com.codingwithmitch.openapi.presentation.session.SessionManager
 import com.codingwithmitch.openapi.presentation.util.DataStoreKeys.Companion.BLOG_FILTER
 import com.codingwithmitch.openapi.presentation.util.DataStoreKeys.Companion.BLOG_ORDER
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -117,6 +118,12 @@ constructor(
         }
     }
 
+    private fun onUpdateQueryExhausted(isExhausted: Boolean) {
+        state.value?.let { state ->
+            this.state.value = state.copy(isQueryExhausted = isExhausted)
+        }
+    }
+
     private fun clearList() {
         state.value?.let { state ->
             this.state.value = state.copy(blogList = listOf())
@@ -125,6 +132,7 @@ constructor(
 
     private fun resetPage() {
         state.value = state.value?.copy(page = 1)
+        onUpdateQueryExhausted(false)
     }
 
     private fun incrementPageNumber() {
@@ -169,7 +177,11 @@ constructor(
                 }
 
                 dataState.stateMessage?.let { stateMessage ->
-                    appendToMessageQueue(stateMessage)
+                    if(stateMessage.response.message?.contains(ErrorHandling.INVALID_PAGE) == true){
+                        onUpdateQueryExhausted(true)
+                    }else{
+                        appendToMessageQueue(stateMessage)
+                    }
                 }
 
             }.launchIn(viewModelScope)
@@ -193,7 +205,11 @@ constructor(
                 }
 
                 dataState.stateMessage?.let { stateMessage ->
-                    appendToMessageQueue(stateMessage)
+                    if(stateMessage.response.message?.contains(ErrorHandling.INVALID_PAGE) == true){
+                        onUpdateQueryExhausted(true)
+                    }else{
+                        appendToMessageQueue(stateMessage)
+                    }
                 }
 
             }.launchIn(viewModelScope)

@@ -5,20 +5,23 @@ import android.os.Bundle
 import android.view.View
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.business.domain.util.StateMessageCallback
+import com.codingwithmitch.openapi.databinding.ActivityAuthBinding
 import com.codingwithmitch.openapi.presentation.BaseActivity
 import com.codingwithmitch.openapi.presentation.main.MainActivity
 import com.codingwithmitch.openapi.presentation.session.SessionEvents
 import com.codingwithmitch.openapi.presentation.util.processQueue
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.activity_auth.*
 
 @AndroidEntryPoint
 class AuthActivity : BaseActivity()
 {
 
+    private lateinit var binding: ActivityAuthBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_auth)
+        binding = ActivityAuthBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         subscribeObservers()
     }
 
@@ -44,8 +47,8 @@ class AuthActivity : BaseActivity()
     }
 
     private fun onFinishCheckPreviousAuthUser(){
-        fragment_container.visibility = View.VISIBLE
-        splash_logo.visibility = View.INVISIBLE
+        binding.fragmentContainer.visibility = View.VISIBLE
+        binding.splashLogo.visibility = View.INVISIBLE
     }
 
     fun navMainActivity(){
@@ -56,10 +59,10 @@ class AuthActivity : BaseActivity()
 
     override fun displayProgressBar(isLoading: Boolean){
         if(isLoading){
-            progress_bar.visibility = View.VISIBLE
+            binding.progressBar.visibility = View.VISIBLE
         }
         else{
-            progress_bar.visibility = View.GONE
+            binding.progressBar.visibility = View.GONE
         }
     }
 

@@ -1,28 +1,42 @@
 package com.codingwithmitch.openapi.presentation.main.account.password
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.business.domain.util.StateMessageCallback
+import com.codingwithmitch.openapi.databinding.FragmentChangePasswordBinding
 import com.codingwithmitch.openapi.presentation.main.account.BaseAccountFragment
 import com.codingwithmitch.openapi.presentation.util.processQueue
-import kotlinx.android.synthetic.main.fragment_change_password.*
 
-class AccountPasswordFragment : BaseAccountFragment(R.layout.fragment_change_password) {
+class AccountPasswordFragment : BaseAccountFragment() {
 
     private val viewModel: AccountPasswordViewModel by viewModels()
+
+    private var _binding: FragmentChangePasswordBinding? = null
+    private val binding get() = _binding!!
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentChangePasswordBinding.inflate(layoutInflater)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        update_password_button.setOnClickListener {
+        binding.updatePasswordButton.setOnClickListener {
             cacheState()
             viewModel.onTriggerEvent(AccountPasswordEvents.ChangePassword(
-                currentPassword = input_current_password.text.toString(),
-                newPassword = input_new_password.text.toString(),
-                confirmNewPassword = input_confirm_password.text.toString()
+                currentPassword = binding.inputCurrentPassword.text.toString(),
+                newPassword = binding.inputNewPassword.text.toString(),
+                confirmNewPassword = binding.inputConfirmPassword.text.toString()
             ))
         }
 
@@ -54,9 +68,9 @@ class AccountPasswordFragment : BaseAccountFragment(R.layout.fragment_change_pas
     }
 
     private fun setPasswordFields(currentPassword: String, newPassword: String, confirmNewPassword: String){
-        input_current_password.setText(currentPassword)
-        input_new_password.setText(newPassword)
-        input_confirm_password.setText(confirmNewPassword)
+        binding.inputCurrentPassword.setText(currentPassword)
+        binding.inputNewPassword.setText(newPassword)
+        binding.inputConfirmPassword.setText(confirmNewPassword)
     }
 
     override fun onPause() {
@@ -65,9 +79,14 @@ class AccountPasswordFragment : BaseAccountFragment(R.layout.fragment_change_pas
     }
 
     private fun cacheState(){
-        viewModel.onTriggerEvent(AccountPasswordEvents.OnUpdateCurrentPassword(input_current_password.text.toString()))
-        viewModel.onTriggerEvent(AccountPasswordEvents.OnUpdateNewPassword(input_new_password.text.toString()))
-        viewModel.onTriggerEvent(AccountPasswordEvents.OnUpdateConfirmNewPassword(input_confirm_password.text.toString()))
+        viewModel.onTriggerEvent(AccountPasswordEvents.OnUpdateCurrentPassword(binding.inputCurrentPassword.text.toString()))
+        viewModel.onTriggerEvent(AccountPasswordEvents.OnUpdateNewPassword(binding.inputNewPassword.text.toString()))
+        viewModel.onTriggerEvent(AccountPasswordEvents.OnUpdateConfirmNewPassword(binding.inputConfirmPassword.text.toString()))
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
 

@@ -2,8 +2,9 @@ package com.codingwithmitch.openapi.presentation.auth.forgot_password
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.animation.TranslateAnimation
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
@@ -12,15 +13,18 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.business.domain.util.*
+import com.codingwithmitch.openapi.databinding.FragmentForgotPasswordBinding
 import com.codingwithmitch.openapi.presentation.auth.BaseAuthFragment
 import com.codingwithmitch.openapi.presentation.auth.forgot_password.ForgotPasswordFragment.WebAppInterface.OnWebInteractionCallback
 import com.codingwithmitch.openapi.presentation.util.processQueue
-import kotlinx.android.synthetic.main.fragment_forgot_password.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
 
-class ForgotPasswordFragment : BaseAuthFragment(R.layout.fragment_forgot_password) {
+class ForgotPasswordFragment : BaseAuthFragment() {
+
+    private var _binding: FragmentForgotPasswordBinding? = null
+    private val binding get() = _binding!!
 
     private lateinit var webView: WebView
 
@@ -57,13 +61,22 @@ class ForgotPasswordFragment : BaseAuthFragment(R.layout.fragment_forgot_passwor
         }
     }
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentForgotPasswordBinding.inflate(layoutInflater)
+        return binding.root
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         webView = view.findViewById(R.id.webview)
 
         loadPasswordResetWebView()
 
-        return_to_launcher_fragment.setOnClickListener {
+        binding.returnToLauncherFragment.setOnClickListener {
             findNavController().popBackStack()
         }
 
@@ -138,18 +151,23 @@ class ForgotPasswordFragment : BaseAuthFragment(R.layout.fragment_forgot_passwor
     }
 
     private fun onPasswordResetLinkSent() {
-        parent_view.removeView(webView)
+        binding.parentView.removeView(webView)
         webView.destroy()
 
         val animation = TranslateAnimation(
-            password_reset_done_container.width.toFloat(),
+            binding.passwordResetDoneContainer.width.toFloat(),
             0f,
             0f,
             0f
         )
         animation.duration = 500
-        password_reset_done_container.startAnimation(animation)
-        password_reset_done_container.visibility = View.VISIBLE
+        binding.passwordResetDoneContainer.startAnimation(animation)
+        binding.passwordResetDoneContainer.visibility = View.VISIBLE
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
 

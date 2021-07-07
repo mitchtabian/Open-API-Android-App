@@ -1,22 +1,31 @@
 package com.codingwithmitch.openapi.presentation.main.account.update
 
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.business.domain.models.Account
-import com.codingwithmitch.openapi.business.domain.util.*
+import com.codingwithmitch.openapi.business.domain.util.StateMessageCallback
+import com.codingwithmitch.openapi.databinding.FragmentUpdateAccountBinding
 import com.codingwithmitch.openapi.presentation.main.account.BaseAccountFragment
 import com.codingwithmitch.openapi.presentation.util.processQueue
-import kotlinx.android.synthetic.main.fragment_update_account.*
 
-class UpdateAccountFragment : BaseAccountFragment(R.layout.fragment_update_account) {
+class UpdateAccountFragment : BaseAccountFragment() {
 
     private val viewModel: UpdateAccountViewModel by viewModels()
+
+    private var _binding: FragmentUpdateAccountBinding? = null
+    private val binding get() = _binding!!
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentUpdateAccountBinding.inflate(layoutInflater)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -47,14 +56,14 @@ class UpdateAccountFragment : BaseAccountFragment(R.layout.fragment_update_accou
     }
 
     private fun setAccountDataFields(account: Account){
-        input_email.setText(account.email)
-        input_username.setText(account.username)
+        binding.inputEmail.setText(account.email)
+        binding.inputUsername.setText(account.username)
     }
 
     private fun saveChanges(){
         viewModel.onTriggerEvent(UpdateAccountEvents.Update(
-            email = input_email.text.toString(),
-            username = input_username.text.toString()
+            email = binding.inputEmail.text.toString(),
+            username = binding.inputUsername.text.toString()
         ))
         uiCommunicationListener.hideSoftKeyboard()
     }
@@ -75,8 +84,8 @@ class UpdateAccountFragment : BaseAccountFragment(R.layout.fragment_update_accou
     }
 
     private fun cacheState(){
-        val email = input_email.text.toString()
-        val username = input_username.text.toString()
+        val email = binding.inputEmail.text.toString()
+        val username = binding.inputUsername.text.toString()
         viewModel.onTriggerEvent(UpdateAccountEvents.OnUpdateEmail(email))
         viewModel.onTriggerEvent(UpdateAccountEvents.OnUpdateUsername(username))
     }
@@ -84,6 +93,11 @@ class UpdateAccountFragment : BaseAccountFragment(R.layout.fragment_update_accou
     override fun onPause() {
         super.onPause()
         cacheState()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
 

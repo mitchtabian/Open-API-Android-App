@@ -10,6 +10,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.business.domain.util.StateMessageCallback
+import com.codingwithmitch.openapi.databinding.ActivityMainBinding
 import com.codingwithmitch.openapi.presentation.BaseActivity
 import com.codingwithmitch.openapi.presentation.auth.AuthActivity
 import com.codingwithmitch.openapi.presentation.session.SessionEvents
@@ -17,7 +18,6 @@ import com.codingwithmitch.openapi.presentation.util.processQueue
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.activity_main.*
 
 @AndroidEntryPoint
 class MainActivity : BaseActivity() {
@@ -27,6 +27,8 @@ class MainActivity : BaseActivity() {
 
     private lateinit var bottomNavigationView: BottomNavigationView
 
+    private lateinit var binding: ActivityMainBinding
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> onBackPressed()
@@ -34,10 +36,11 @@ class MainActivity : BaseActivity() {
         return super.onOptionsItemSelected(item)
     }
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.main_fragments_container) as NavHostFragment
         navController = navHostFragment.navController
@@ -48,13 +51,12 @@ class MainActivity : BaseActivity() {
         subscribeObservers()
     }
 
-
     private fun setupActionBar() {
-        setSupportActionBar(tool_bar)
+        setSupportActionBar(binding.toolBar)
         appBarConfiguration = AppBarConfiguration(
             setOf(R.id.blogFragment, R.id.createBlogFragment, R.id.accountFragment)
         )
-        tool_bar.setupWithNavController(navController, appBarConfiguration)
+        binding.toolBar.setupWithNavController(navController, appBarConfiguration)
     }
 
     private fun setupBottomNavigationView() {
@@ -92,9 +94,9 @@ class MainActivity : BaseActivity() {
 
     override fun displayProgressBar(isLoading: Boolean) {
         if (isLoading) {
-            progress_bar.visibility = View.VISIBLE
+            binding.progressBar.visibility = View.VISIBLE
         } else {
-            progress_bar.visibility = View.GONE
+            binding.progressBar.visibility = View.GONE
         }
     }
 

@@ -6,10 +6,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
@@ -18,12 +15,13 @@ import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.business.domain.util.*
 import com.codingwithmitch.openapi.business.domain.util.Constants.Companion.GALLERY_REQUEST_CODE
 import com.codingwithmitch.openapi.business.domain.util.ErrorHandling.Companion.ERROR_SOMETHING_WRONG_WITH_IMAGE
+import com.codingwithmitch.openapi.databinding.FragmentCreateBlogBinding
+import com.codingwithmitch.openapi.databinding.FragmentRegisterBinding
 import com.codingwithmitch.openapi.presentation.util.processQueue
 import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView
-import kotlinx.android.synthetic.main.fragment_create_blog.*
 
-class CreateBlogFragment : BaseCreateBlogFragment(R.layout.fragment_create_blog)
+class CreateBlogFragment : BaseCreateBlogFragment()
 {
 
     private val requestOptions = RequestOptions
@@ -32,17 +30,29 @@ class CreateBlogFragment : BaseCreateBlogFragment(R.layout.fragment_create_blog)
 
     private val viewModel: CreateBlogViewModel by viewModels()
 
+    private var _binding: FragmentCreateBlogBinding? = null
+    private val binding get() = _binding!!
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentCreateBlogBinding.inflate(layoutInflater)
+        return binding.root
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
 
-        blog_image.setOnClickListener {
+        binding.blogImage.setOnClickListener {
             if(uiCommunicationListener.isStoragePermissionGranted()){
                 pickFromGallery()
             }
         }
 
-        update_textview.setOnClickListener {
+        binding.updateTextview.setOnClickListener {
             if(uiCommunicationListener.isStoragePermissionGranted()){
                 pickFromGallery()
             }
@@ -91,17 +101,17 @@ class CreateBlogFragment : BaseCreateBlogFragment(R.layout.fragment_create_blog)
             Glide.with(this)
                 .setDefaultRequestOptions(requestOptions)
                 .load(uri)
-                .into(blog_image)
+                .into(binding.blogImage)
         }
         else{
             Glide.with(this)
                 .setDefaultRequestOptions(requestOptions)
                 .load(R.drawable.default_image)
-                .into(blog_image)
+                .into(binding.blogImage)
         }
 
-        blog_title.setText(title)
-        blog_body.setText(body)
+        binding.blogTitle.setText(title)
+        binding.blogBody.setText(body)
     }
 
 
@@ -156,8 +166,8 @@ class CreateBlogFragment : BaseCreateBlogFragment(R.layout.fragment_create_blog)
     }
 
     private fun cacheState(){
-        val title = blog_title.text.toString()
-        val body = blog_body.text.toString()
+        val title = binding.blogTitle.text.toString()
+        val body = binding.blogBody.text.toString()
         viewModel.onTriggerEvent(CreateBlogEvents.OnUpdateTitle(title))
         viewModel.onTriggerEvent(CreateBlogEvents.OnUpdateBody(body))
     }
@@ -180,6 +190,11 @@ class CreateBlogFragment : BaseCreateBlogFragment(R.layout.fragment_create_blog)
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
 

@@ -1,7 +1,6 @@
 package com.codingwithmitch.openapi.presentation.main.blog.list
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.*
 import com.bumptech.glide.Glide
@@ -10,7 +9,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.business.domain.models.BlogPost
 import com.codingwithmitch.openapi.business.domain.util.DateUtils
-import kotlinx.android.synthetic.main.layout_blog_list_item.view.*
+import com.codingwithmitch.openapi.databinding.LayoutBlogListItemBinding
 
 class BlogListAdapter(
     private val interaction: Interaction? = null
@@ -21,7 +20,6 @@ class BlogListAdapter(
         .error(R.drawable.default_image)
 
     private val TAG: String = "AppDebug"
-    private val BLOG_ITEM = 0
 
     val DIFF_CALLBACK = object : DiffUtil.ItemCallback<BlogPost>() {
 
@@ -43,8 +41,8 @@ class BlogListAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return BlogViewHolder(
-            LayoutInflater.from(parent.context).inflate(
-                R.layout.layout_blog_list_item,
+            LayoutBlogListItemBinding.inflate(
+                LayoutInflater.from(parent.context),
                 parent,
                 false
             ),
@@ -82,13 +80,6 @@ class BlogListAdapter(
         }
     }
 
-    override fun getItemViewType(position: Int): Int {
-        if(differ.currentList.get(position).pk > -1){
-            return BLOG_ITEM
-        }
-        return differ.currentList.get(position).pk
-    }
-
     override fun getItemCount(): Int {
         return differ.currentList.size
     }
@@ -100,24 +91,24 @@ class BlogListAdapter(
 
     class BlogViewHolder
     constructor(
-        itemView: View,
+        private val binding: LayoutBlogListItemBinding,
         private val requestOptions: RequestOptions,
         private val interaction: Interaction?
-    ) : RecyclerView.ViewHolder(itemView) {
+    ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: BlogPost) = with(itemView) {
-            itemView.setOnClickListener {
+        fun bind(item: BlogPost) {
+            binding.root.setOnClickListener {
                 interaction?.onItemSelected(adapterPosition, item)
             }
 
-            Glide.with(itemView.context)
+            Glide.with(binding.root)
                 .setDefaultRequestOptions(requestOptions)
                 .load(item.image)
                 .transition(withCrossFade())
-                .into(itemView.blog_image)
-            itemView.blog_title.text = item.title
-            itemView.blog_author.text = item.username
-            itemView.blog_update_date.text = DateUtils.convertLongToStringDate(item.date_updated)
+                .into(binding.blogImage)
+            binding.blogTitle.text = item.title
+            binding.blogAuthor.text = item.username
+            binding.blogUpdateDate.text = DateUtils.convertLongToStringDate(item.date_updated)
         }
     }
 

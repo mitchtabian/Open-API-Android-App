@@ -1,22 +1,35 @@
 package com.codingwithmitch.openapi.presentation.auth.register
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.viewModels
-import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.business.domain.util.StateMessageCallback
+import com.codingwithmitch.openapi.databinding.FragmentRegisterBinding
 import com.codingwithmitch.openapi.presentation.auth.BaseAuthFragment
 import com.codingwithmitch.openapi.presentation.util.processQueue
-import kotlinx.android.synthetic.main.fragment_register.*
 
-class RegisterFragment : BaseAuthFragment(R.layout.fragment_register) {
+class RegisterFragment : BaseAuthFragment() {
 
     private val viewModel: RegisterViewModel by viewModels()
+
+    private var _binding: FragmentRegisterBinding? = null
+    private val binding get() = _binding!!
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentRegisterBinding.inflate(layoutInflater)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        register_button.setOnClickListener {
+        binding.registerButton.setOnClickListener {
             register()
         }
         subscribeObservers()
@@ -52,31 +65,36 @@ class RegisterFragment : BaseAuthFragment(R.layout.fragment_register) {
         password: String,
         confirmPassword: String
     ){
-        input_email.setText(email)
-        input_username.setText(username)
-        input_password.setText(password)
-        input_password_confirm.setText(confirmPassword)
+        binding.inputEmail.setText(email)
+        binding.inputUsername.setText(username)
+        binding.inputPassword.setText(password)
+        binding.inputPasswordConfirm.setText(confirmPassword)
     }
 
     private fun cacheState(){
-        viewModel.onTriggerEvent(RegisterEvents.OnUpdateEmail(input_email.text.toString()))
-        viewModel.onTriggerEvent(RegisterEvents.OnUpdateUsername(input_username.text.toString()))
-        viewModel.onTriggerEvent(RegisterEvents.OnUpdatePassword(input_password.text.toString()))
-        viewModel.onTriggerEvent(RegisterEvents.OnUpdateConfirmPassword(input_password_confirm.text.toString()))
+        viewModel.onTriggerEvent(RegisterEvents.OnUpdateEmail(binding.inputEmail.text.toString()))
+        viewModel.onTriggerEvent(RegisterEvents.OnUpdateUsername(binding.inputUsername.text.toString()))
+        viewModel.onTriggerEvent(RegisterEvents.OnUpdatePassword(binding.inputPassword.text.toString()))
+        viewModel.onTriggerEvent(RegisterEvents.OnUpdateConfirmPassword(binding.inputPasswordConfirm.text.toString()))
     }
 
     private fun register() {
         cacheState()
         viewModel.onTriggerEvent(RegisterEvents.Register(
-            email = input_email.text.toString(),
-            username = input_username.text.toString(),
-            password = input_password.text.toString(),
-            confirmPassword = input_password_confirm.text.toString(),
+            email = binding.inputEmail.text.toString(),
+            username = binding.inputUsername.text.toString(),
+            password = binding.inputPassword.text.toString(),
+            confirmPassword = binding.inputPasswordConfirm.text.toString(),
         ))
     }
 
     override fun onPause() {
         super.onPause()
         cacheState()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

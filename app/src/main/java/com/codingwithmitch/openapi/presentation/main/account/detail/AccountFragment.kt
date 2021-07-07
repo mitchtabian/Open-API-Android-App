@@ -1,33 +1,42 @@
 package com.codingwithmitch.openapi.presentation.main.account.detail
 
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.business.domain.models.Account
 import com.codingwithmitch.openapi.business.domain.util.StateMessageCallback
+import com.codingwithmitch.openapi.databinding.FragmentAccountBinding
 import com.codingwithmitch.openapi.presentation.main.account.BaseAccountFragment
 import com.codingwithmitch.openapi.presentation.util.processQueue
-import kotlinx.android.synthetic.main.fragment_account.*
 
-class AccountFragment : BaseAccountFragment(R.layout.fragment_account,) {
+class AccountFragment : BaseAccountFragment() {
 
     private val viewModel: AccountViewModel by viewModels()
+
+    private var _binding: FragmentAccountBinding? = null
+    private val binding get() = _binding!!
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentAccountBinding.inflate(layoutInflater)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
 
-        change_password.setOnClickListener{
+        binding.changePassword.setOnClickListener{
             findNavController().navigate(R.id.action_accountFragment_to_changePasswordFragment)
         }
 
-        logout_button.setOnClickListener {
+        binding.logoutButton.setOnClickListener {
             viewModel.onTriggerEvent(AccountEvents.Logout)
         }
 
@@ -56,8 +65,8 @@ class AccountFragment : BaseAccountFragment(R.layout.fragment_account,) {
     }
 
     private fun setAccountDataFields(account: Account){
-        email.text = account.email
-        username.text = account.username
+        binding.email.text = account.email
+        binding.username.text = account.username
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -79,4 +88,8 @@ class AccountFragment : BaseAccountFragment(R.layout.fragment_account,) {
         return super.onOptionsItemSelected(item)
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 }

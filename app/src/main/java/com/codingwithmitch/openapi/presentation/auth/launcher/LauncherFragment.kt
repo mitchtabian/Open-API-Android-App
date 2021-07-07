@@ -1,30 +1,44 @@
 package com.codingwithmitch.openapi.presentation.auth.launcher
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.codingwithmitch.openapi.R
+import com.codingwithmitch.openapi.databinding.FragmentLauncherBinding
 import com.codingwithmitch.openapi.presentation.auth.BaseAuthFragment
-import kotlinx.android.synthetic.main.fragment_launcher.*
 
-class LauncherFragment : BaseAuthFragment(R.layout.fragment_launcher) {
+class LauncherFragment : BaseAuthFragment() {
+
+    private var _binding: FragmentLauncherBinding? = null
+    private val binding get() = _binding!!
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentLauncherBinding.inflate(layoutInflater)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        register.setOnClickListener {
+        binding.register.setOnClickListener {
             navRegistration()
         }
 
-        login.setOnClickListener {
+        binding.login.setOnClickListener {
             navLogin()
         }
 
-        forgot_password.setOnClickListener {
+        binding.forgotPassword.setOnClickListener {
             navForgotPassword()
         }
 
-        focusable_view.requestFocus() // reset focus
+        binding.focusableView.requestFocus() // reset focus
     }
 
     fun navLogin(){
@@ -39,6 +53,10 @@ class LauncherFragment : BaseAuthFragment(R.layout.fragment_launcher) {
         findNavController().navigate(R.id.action_launcherFragment_to_forgotPasswordFragment)
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 }
 
 

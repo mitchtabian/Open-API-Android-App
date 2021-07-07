@@ -1,22 +1,35 @@
 package com.codingwithmitch.openapi.presentation.auth.login
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.viewModels
-import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.business.domain.util.StateMessageCallback
+import com.codingwithmitch.openapi.databinding.FragmentLoginBinding
 import com.codingwithmitch.openapi.presentation.auth.BaseAuthFragment
 import com.codingwithmitch.openapi.presentation.util.processQueue
-import kotlinx.android.synthetic.main.fragment_login.*
 
-class LoginFragment : BaseAuthFragment(R.layout.fragment_login) {
+class LoginFragment : BaseAuthFragment() {
 
     private val viewModel: LoginViewModel by viewModels()
+
+    private var _binding: FragmentLoginBinding? = null
+    private val binding get() = _binding!!
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentLoginBinding.inflate(layoutInflater)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         subscribeObservers()
-        login_button.setOnClickListener {
+        binding.loginButton.setOnClickListener {
             cacheState()
             login()
         }
@@ -40,25 +53,30 @@ class LoginFragment : BaseAuthFragment(R.layout.fragment_login) {
     }
 
     private fun setLoginFields(email: String, password: String){
-        input_email.setText(email)
-        input_password.setText(password)
+        binding.inputEmail.setText(email)
+        binding.inputPassword.setText(password)
     }
 
     private fun login(){
         viewModel.onTriggerEvent(LoginEvents.Login(
-            email = input_email.text.toString(),
-            password = input_password.text.toString()
+            email = binding.inputEmail.text.toString(),
+            password = binding.inputPassword.text.toString()
         ))
     }
 
     private fun cacheState(){
-        viewModel.onTriggerEvent(LoginEvents.OnUpdateEmail(input_email.text.toString()))
-        viewModel.onTriggerEvent(LoginEvents.OnUpdatePassword(input_password.text.toString()))
+        viewModel.onTriggerEvent(LoginEvents.OnUpdateEmail(binding.inputEmail.text.toString()))
+        viewModel.onTriggerEvent(LoginEvents.OnUpdatePassword(binding.inputPassword.text.toString()))
     }
 
     override fun onPause() {
         super.onPause()
         cacheState()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
 
