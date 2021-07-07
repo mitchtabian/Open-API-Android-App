@@ -41,6 +41,7 @@ class BlogFragment : BaseBlogFragment(),
     private lateinit var searchView: SearchView
     private var recyclerAdapter: BlogListAdapter? = null // can leak memory so need to null
     private val viewModel: BlogViewModel by viewModels()
+    private lateinit var menu: Menu
 
     private var _binding: FragmentBlogBinding? = null
     private val binding get() = _binding!!
@@ -83,7 +84,7 @@ class BlogFragment : BaseBlogFragment(),
         })
     }
 
-    private fun initSearchView(menu: Menu){
+    private fun initSearchView(){
         activity?.apply {
             val searchManager: SearchManager = getSystemService(SEARCH_SERVICE) as SearchManager
             searchView = menu.findItem(R.id.action_search).actionView as SearchView
@@ -95,6 +96,15 @@ class BlogFragment : BaseBlogFragment(),
 
         // ENTER ON COMPUTER KEYBOARD OR ARROW ON VIRTUAL KEYBOARD
         val searchPlate = searchView.findViewById(R.id.search_src_text) as EditText
+
+        // set initial value of query text after rotation/navigation
+        viewModel.state.value?.let { state ->
+            if(state.query.isNotBlank()){
+                searchPlate.setText(state.query)
+                searchView.isIconified = false
+                binding.focusableView.requestFocus()
+            }
+        }
         searchPlate.setOnEditorActionListener { v, actionId, event ->
 
             if (actionId == EditorInfo.IME_ACTION_UNSPECIFIED
@@ -113,6 +123,7 @@ class BlogFragment : BaseBlogFragment(),
             Log.e(TAG, "SearchView: (button) executing search...: ${searchQuery}")
             executeNewQuery(searchQuery)
         }
+
     }
 
     private fun executeNewQuery(query: String){
@@ -157,8 +168,9 @@ class BlogFragment : BaseBlogFragment(),
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.search_menu, menu)
-        initSearchView(menu)
+        this.menu = menu
+        inflater.inflate(R.menu.search_menu, this.menu)
+        initSearchView()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
