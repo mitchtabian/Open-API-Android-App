@@ -20,10 +20,5 @@ class RegistrationResponse(
     var pk: Int,
 
     @SerializedName("token")
-    var token: String)
-{
-
-    override fun toString(): String {
-        return "RegistrationResponse(response='$response', errorMessage='$errorMessage', email='$email', username='$username', token='$token')"
-    }
-}
+    var token: String
+)

@@ -11,6 +11,7 @@ import com.codingwithmitch.openapi.business.datasource.cache.auth.toEntity
 import com.codingwithmitch.openapi.business.datasource.datastore.AppDataStore
 import com.codingwithmitch.openapi.business.datasource.datastore.AppDataStoreManager
 import com.codingwithmitch.openapi.business.domain.util.*
+import com.codingwithmitch.openapi.business.domain.util.ErrorHandling.Companion.ERROR_PASSWORDS_MUST_MATCH
 import com.codingwithmitch.openapi.business.domain.util.ErrorHandling.Companion.ERROR_SAVE_AUTH_TOKEN
 import com.codingwithmitch.openapi.presentation.util.DataStoreKeys
 import kotlinx.coroutines.flow.Flow
@@ -31,9 +32,6 @@ class Register(
         confirmPassword: String,
     ): Flow<DataState<AuthToken>> = flow {
         emit(DataState.loading<AuthToken>())
-        if(password != confirmPassword){
-            throw Exception("Passwords must match")
-        }
         val registerResponse = service.register(
             email = email,
             username = username,

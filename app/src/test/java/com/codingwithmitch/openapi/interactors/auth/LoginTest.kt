@@ -9,7 +9,7 @@ import com.codingwithmitch.openapi.datasource.cache.AccountDaoFake
 import com.codingwithmitch.openapi.datasource.cache.AppDatabaseFake
 import com.codingwithmitch.openapi.datasource.cache.AuthTokenDaoFake
 import com.codingwithmitch.openapi.datasource.datastore.AppDataStoreManagerFake
-import com.codingwithmitch.openapi.datasource.network.LoginResponses
+import com.codingwithmitch.openapi.datasource.network.auth.LoginResponses
 import com.codingwithmitch.openapi.presentation.util.DataStoreKeys
 import com.google.gson.GsonBuilder
 import kotlinx.coroutines.flow.toList
