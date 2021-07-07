@@ -15,6 +15,8 @@ sealed class BlogEvents {
 
     data class UpdateOrder(val order: BlogOrderOptions): BlogEvents()
 
+    object GetOrderAndFilter: BlogEvents()
+
     data class Error(val stateMessage: StateMessage): BlogEvents()
 
     object OnRemoveHeadFromQueue: BlogEvents()

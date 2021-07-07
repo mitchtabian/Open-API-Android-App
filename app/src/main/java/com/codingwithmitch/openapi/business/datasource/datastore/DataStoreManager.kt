@@ -7,7 +7,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 private const val APP_DATASTORE = "app"
@@ -25,7 +25,13 @@ class DataStoreManager(val context: Application) {
         }
     }
 
-    fun <T> readValue(
+    suspend fun <T> readValue(
+        key: Preferences.Key<T>,
+    ): T? {
+        return context.dataStore.data.first()[key]
+    }
+
+    fun <T> readValueAsFlow(
         key: Preferences.Key<T>,
     ): Flow<T?> {
         return context.dataStore.data

@@ -40,7 +40,7 @@ constructor(
 
     init {
         // Check if a user was authenticated in a previous session
-        dataStoreManager.readValue(DataStoreKeys.PREVIOUS_AUTH_USER).onEach { email ->
+        dataStoreManager.readValueAsFlow(DataStoreKeys.PREVIOUS_AUTH_USER).onEach { email ->
             if(email != null){
                 onTriggerEvent(SessionEvents.CheckPreviousAuthUser(email))
             }else{

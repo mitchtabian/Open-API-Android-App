@@ -7,18 +7,15 @@ import androidx.lifecycle.viewModelScope
 import com.codingwithmitch.openapi.business.datasource.datastore.DataStoreManager
 import com.codingwithmitch.openapi.business.domain.util.StateMessage
 import com.codingwithmitch.openapi.business.domain.util.doesMessageAlreadyExistInQueue
+import com.codingwithmitch.openapi.business.interactors.blog.GetOrderAndFilter
 import com.codingwithmitch.openapi.business.interactors.blog.SearchBlogs
 import com.codingwithmitch.openapi.presentation.session.SessionManager
 import com.codingwithmitch.openapi.presentation.util.DataStoreKeys.Companion.BLOG_FILTER
 import com.codingwithmitch.openapi.presentation.util.DataStoreKeys.Companion.BLOG_ORDER
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -27,6 +24,7 @@ class BlogViewModel
 constructor(
     private val sessionManager: SessionManager,
     private val searchBlogs: SearchBlogs,
+    private val getOrderAndFilter: GetOrderAndFilter,
     private val dataStoreManager: DataStoreManager,
 ) : ViewModel() {
 
@@ -35,31 +33,18 @@ constructor(
     val state: MutableLiveData<BlogState> = MutableLiveData(BlogState())
 
     init {
-        viewModelScope.launch {
-            Log.d(TAG, "getting filter: ")
-            dataStoreManager.readValue(BLOG_FILTER).collect { savedFilter ->
-                val filter = if (savedFilter != null) {
-                    getFilterFromValue(savedFilter)
-                } else {
-                    getFilterFromValue(BlogFilterOptions.DATE_UPDATED.value)
-                }
-                state.value = state.value?.copy(filter = filter)
-            }
-            Log.d(TAG, "getting order: ")
-            dataStoreManager.readValue(BLOG_ORDER).collect { savedOrder ->
-                val order = if (savedOrder != null) {
-                    getOrderFromValue(savedOrder)
-                } else {
-                    getOrderFromValue(BlogOrderOptions.DESC.value)
-                }
-                state.value = state.value?.copy(order = order)
-            }
-            Log.d(TAG, "launching search: ")
-            onTriggerEvent(BlogEvents.NewSearch)
-        }.invokeOnCompletion { cause: Throwable? ->
-            cause?.printStackTrace()
-            Log.d(TAG, "ERROR: ${cause?.message}")
-        }
+        onTriggerEvent(BlogEvents.GetOrderAndFilter)
+//        viewModelScope.launch {
+//            val currentFilter = dataStoreManager.readValue(BLOG_FILTER)?.let { filter ->
+//                getFilterFromValue(filter)
+//            }?: getFilterFromValue(BlogFilterOptions.DATE_UPDATED.value)
+//            state.value = state.value?.copy(filter = currentFilter)
+//            val currentOrder = dataStoreManager.readValue(BLOG_ORDER)?.let { order ->
+//                getOrderFromValue(order)
+//            }?: getOrderFromValue(BlogOrderOptions.DESC.value)
+//            state.value = state.value?.copy(order = currentOrder)
+//            onTriggerEvent(BlogEvents.NewSearch)
+//        }
     }
 
     fun onTriggerEvent(event: BlogEvents) {
@@ -79,12 +64,37 @@ constructor(
             is BlogEvents.UpdateOrder -> {
                 onUpdateOrder(event.order)
             }
+            is BlogEvents.GetOrderAndFilter -> {
+                getOrderAndFilter()
+            }
             is BlogEvents.Error -> {
                 appendToMessageQueue(event.stateMessage)
             }
             is BlogEvents.OnRemoveHeadFromQueue -> {
                 removeHeadFromQueue()
             }
+        }
+    }
+
+    private fun getOrderAndFilter() {
+        state.value?.let { state ->
+            getOrderAndFilter.execute().onEach { dataState ->
+                this.state.value = state.copy(isLoading = dataState.isLoading)
+
+                dataState.data?.let { orderAndFilter ->
+                    val order = orderAndFilter.order
+                    val filter = orderAndFilter.filter
+                    this.state.value = state.copy(
+                        order = order,
+                        filter = filter
+                    )
+                    onTriggerEvent(BlogEvents.NewSearch)
+                }
+
+                dataState.stateMessage?.let { stateMessage ->
+                    appendToMessageQueue(stateMessage)
+                }
+            }.launchIn(viewModelScope)
         }
     }
 
