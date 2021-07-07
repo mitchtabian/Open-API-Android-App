@@ -23,20 +23,20 @@ class UpdateAccount(
     ): Flow<DataState<Response>> = flow {
         emit(DataState.loading<Response>())
         if(authToken == null){
-            throw Exception("Authentication token is invalid. Log out and log back in.")
+            throw Exception(ErrorHandling.ERROR_AUTH_TOKEN_INVALID)
         }
         if(pk == null){
-            throw Exception("Account PK is invalid. Log out and log back in.")
+            throw Exception(ErrorHandling.ERROR_PK_INVALID)
         }
         // Update network
         val response = service.updateAccount(
-            authorization = "Token ${authToken.token!!}",
+            authorization = "Token ${authToken.token}",
             email = email,
             username = username
         )
 
         if(response.response != SUCCESS_ACCOUNT_UPDATED){
-            throw Exception("Unable to update account. Try logging out and logging back in.")
+            throw Exception(ErrorHandling.ERROR_UPDATE_ACCOUNT)
         }
 
         // update cache

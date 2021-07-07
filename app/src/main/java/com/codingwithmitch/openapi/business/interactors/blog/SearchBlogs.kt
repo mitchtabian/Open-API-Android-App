@@ -9,6 +9,7 @@ import com.codingwithmitch.openapi.business.datasource.cache.blog.*
 import com.codingwithmitch.openapi.presentation.main.blog.list.BlogFilterOptions
 import com.codingwithmitch.openapi.presentation.main.blog.list.BlogOrderOptions
 import com.codingwithmitch.openapi.business.domain.util.DataState
+import com.codingwithmitch.openapi.business.domain.util.ErrorHandling.Companion.ERROR_AUTH_TOKEN_INVALID
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
@@ -29,7 +30,7 @@ class SearchBlogs(
     ): Flow<DataState<List<BlogPost>>> = flow {
         emit(DataState.loading<List<BlogPost>>())
         if(authToken == null){
-            throw Exception("Authentication token is invalid. Log out and log back in.")
+            throw Exception(ERROR_AUTH_TOKEN_INVALID)
         }
         // get Blogs from network
         val filterAndOrder = order.value + filter.value // Ex: -date_updated

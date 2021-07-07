@@ -4,6 +4,7 @@ import com.codingwithmitch.openapi.api.handleUseCaseException
 import com.codingwithmitch.openapi.business.datasource.network.main.OpenApiMainService
 import com.codingwithmitch.openapi.business.domain.models.AuthToken
 import com.codingwithmitch.openapi.business.domain.util.*
+import com.codingwithmitch.openapi.business.domain.util.ErrorHandling.Companion.ERROR_UPDATE_PASSWORD
 import com.codingwithmitch.openapi.business.domain.util.SuccessHandling.Companion.SUCCESS_PASSWORD_UPDATED
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -21,18 +22,18 @@ class UpdatePassword(
     ): Flow<DataState<Response>> = flow {
         emit(DataState.loading<Response>())
         if(authToken == null){
-            throw Exception("Authentication token is invalid. Log out and log back in.")
+            throw Exception(ErrorHandling.ERROR_AUTH_TOKEN_INVALID)
         }
         // Update network
         val response = service.updatePassword(
-            authorization = "Token ${authToken.token!!}",
+            authorization = "Token ${authToken.token}",
             currentPassword = currentPassword,
             newPassword = newPassword,
             confirmNewPassword = confirmNewPassword
         )
 
         if(response.response != SUCCESS_PASSWORD_UPDATED){
-            throw Exception("Unable to update password. Try logging out and logging back in.")
+            throw Exception(ERROR_UPDATE_PASSWORD)
         }
 
         // Tell the UI it was successful

@@ -7,6 +7,7 @@ import com.codingwithmitch.openapi.business.domain.models.AuthToken
 import com.codingwithmitch.openapi.business.datasource.cache.blog.BlogPostDao
 import com.codingwithmitch.openapi.business.datasource.cache.blog.toEntity
 import com.codingwithmitch.openapi.business.domain.util.*
+import com.codingwithmitch.openapi.business.domain.util.ErrorHandling.Companion.ERROR_AUTH_TOKEN_INVALID
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
@@ -28,7 +29,7 @@ class PublishBlog(
     ): Flow<DataState<Response>> = flow {
         emit(DataState.loading<Response>())
         if(authToken == null){
-            throw Exception("Authentication token is invalid. Log out and log back in.")
+            throw Exception(ERROR_AUTH_TOKEN_INVALID)
         }
         // attempt update
         val createResponse = service.createBlog(

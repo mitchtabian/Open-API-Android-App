@@ -5,6 +5,7 @@ import com.codingwithmitch.openapi.business.domain.models.BlogPost
 import com.codingwithmitch.openapi.business.datasource.cache.blog.BlogPostDao
 import com.codingwithmitch.openapi.business.datasource.cache.blog.toBlogPost
 import com.codingwithmitch.openapi.business.domain.util.DataState
+import com.codingwithmitch.openapi.business.domain.util.ErrorHandling.Companion.ERROR_BLOG_UNABLE_TO_RETRIEVE
 import com.codingwithmitch.openapi.business.domain.util.MessageType
 import com.codingwithmitch.openapi.business.domain.util.Response
 import com.codingwithmitch.openapi.business.domain.util.UIComponentType
@@ -28,7 +29,7 @@ class GetBlogFromCache(
         else{
             emit(DataState.error<BlogPost>(
                 response = Response(
-                    message = "Unable to retrieve the blog post. Try reselecting it from the list.",
+                    message = ERROR_BLOG_UNABLE_TO_RETRIEVE,
                     uiComponentType = UIComponentType.Dialog(),
                     messageType = MessageType.Error()
                 )

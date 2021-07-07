@@ -5,6 +5,7 @@ import com.codingwithmitch.openapi.business.datasource.cache.account.AccountDao
 import com.codingwithmitch.openapi.business.datasource.cache.auth.AuthTokenDao
 import com.codingwithmitch.openapi.business.datasource.cache.auth.toAuthToken
 import com.codingwithmitch.openapi.business.domain.util.*
+import com.codingwithmitch.openapi.business.domain.util.ErrorHandling.Companion.ERROR_NO_PREVIOUS_AUTH_USER
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
@@ -30,7 +31,7 @@ class CheckPreviousAuthUser(
             }
         }
         if(authToken == null){
-            throw Exception("No previously authenticated user. This error can be ignored.")
+            throw Exception(ERROR_NO_PREVIOUS_AUTH_USER)
         }
     }.catch{ e ->
         e.printStackTrace()

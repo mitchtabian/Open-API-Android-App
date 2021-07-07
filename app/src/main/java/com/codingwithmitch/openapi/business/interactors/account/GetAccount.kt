@@ -9,6 +9,8 @@ import com.codingwithmitch.openapi.business.datasource.cache.account.AccountDao
 import com.codingwithmitch.openapi.business.datasource.cache.account.toAccount
 import com.codingwithmitch.openapi.business.datasource.cache.account.toEntity
 import com.codingwithmitch.openapi.business.domain.util.DataState
+import com.codingwithmitch.openapi.business.domain.util.ErrorHandling.Companion.ERROR_AUTH_TOKEN_INVALID
+import com.codingwithmitch.openapi.business.domain.util.ErrorHandling.Companion.ERROR_UNABLE_TO_RETRIEVE_ACCOUNT_DETAILS
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
@@ -25,7 +27,7 @@ class GetAccount(
     ): Flow<DataState<Account>> = flow {
         emit(DataState.loading<Account>())
         if(authToken == null){
-            throw Exception("Authentication token is invalid. Log out and log back in.")
+            throw Exception(ERROR_AUTH_TOKEN_INVALID)
         }
         // get from network
         val account = service.getAccount("Token ${authToken.token}").toAccount()
@@ -37,7 +39,7 @@ class GetAccount(
         val cachedAccount = cache.searchByPk(account.pk)?.toAccount()
 
         if(cachedAccount == null){
-            throw Exception("Unable to retrieve account details. Try logging out.")
+            throw Exception(ERROR_UNABLE_TO_RETRIEVE_ACCOUNT_DETAILS)
         }
 
         emit(DataState.data(response = null, cachedAccount))

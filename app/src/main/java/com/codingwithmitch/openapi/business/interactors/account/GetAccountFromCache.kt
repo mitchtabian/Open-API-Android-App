@@ -5,6 +5,7 @@ import com.codingwithmitch.openapi.business.domain.models.Account
 import com.codingwithmitch.openapi.business.datasource.cache.account.AccountDao
 import com.codingwithmitch.openapi.business.datasource.cache.account.toAccount
 import com.codingwithmitch.openapi.business.domain.util.DataState
+import com.codingwithmitch.openapi.business.domain.util.ErrorHandling
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
@@ -21,7 +22,7 @@ class GetAccountFromCache(
         val cachedAccount = cache.searchByPk(pk)?.toAccount()
 
         if(cachedAccount == null){
-            throw Exception("Unable to retrieve account details. Try logging out.")
+            throw Exception(ErrorHandling.ERROR_UNABLE_TO_RETRIEVE_ACCOUNT_DETAILS)
         }
 
         emit(DataState.data(response = null, cachedAccount))

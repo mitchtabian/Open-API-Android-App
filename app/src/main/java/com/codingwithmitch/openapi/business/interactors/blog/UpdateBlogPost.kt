@@ -5,6 +5,7 @@ import com.codingwithmitch.openapi.business.datasource.network.main.OpenApiMainS
 import com.codingwithmitch.openapi.business.domain.models.AuthToken
 import com.codingwithmitch.openapi.business.datasource.cache.blog.BlogPostDao
 import com.codingwithmitch.openapi.business.domain.util.*
+import com.codingwithmitch.openapi.business.domain.util.ErrorHandling.Companion.ERROR_AUTH_TOKEN_INVALID
 import com.codingwithmitch.openapi.business.domain.util.SuccessHandling.Companion.SUCCESS_BLOG_UPDATED
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -30,7 +31,7 @@ class UpdateBlogPost(
     ): Flow<DataState<Response>> = flow{
         emit(DataState.loading<Response>())
         if(authToken == null){
-            throw Exception("Authentication token is invalid. Log out and log back in.")
+            throw Exception(ERROR_AUTH_TOKEN_INVALID)
         }
         // attempt update
         val createUpdateResponse = service.updateBlog(
@@ -41,7 +42,7 @@ class UpdateBlogPost(
             image
         )
 
-        if(createUpdateResponse.response != SuccessHandling.SUCCESS_BLOG_UPDATED){ // failure
+        if(createUpdateResponse.response != SUCCESS_BLOG_UPDATED){ // failure
             throw Exception(createUpdateResponse.response)
         }else{ // success
             cache.updateBlogPost(

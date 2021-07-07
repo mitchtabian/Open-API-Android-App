@@ -7,6 +7,7 @@ import com.codingwithmitch.openapi.business.domain.models.BlogPost
 import com.codingwithmitch.openapi.business.datasource.cache.blog.BlogPostDao
 import com.codingwithmitch.openapi.business.datasource.cache.blog.toEntity
 import com.codingwithmitch.openapi.business.domain.util.*
+import com.codingwithmitch.openapi.business.domain.util.ErrorHandling.Companion.ERROR_AUTH_TOKEN_INVALID
 import com.codingwithmitch.openapi.business.domain.util.SuccessHandling.Companion.SUCCESS_BLOG_DELETED
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -26,7 +27,7 @@ class DeleteBlogPost(
     ): Flow<DataState<Response>> = flow{
         emit(DataState.loading<Response>())
         if(authToken == null){
-            throw Exception("Authentication token is invalid. Log out and log back in.")
+            throw Exception(ERROR_AUTH_TOKEN_INVALID)
         }
         // attempt delete from network
         val response = service.deleteBlogPost(

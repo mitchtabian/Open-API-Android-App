@@ -4,6 +4,7 @@ import com.codingwithmitch.openapi.api.handleUseCaseException
 import com.codingwithmitch.openapi.business.datasource.network.main.OpenApiMainService
 import com.codingwithmitch.openapi.business.domain.models.AuthToken
 import com.codingwithmitch.openapi.business.domain.util.DataState
+import com.codingwithmitch.openapi.business.domain.util.ErrorHandling.Companion.ERROR_AUTH_TOKEN_INVALID
 import com.codingwithmitch.openapi.business.domain.util.SuccessHandling.Companion.RESPONSE_HAS_PERMISSION_TO_EDIT
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -20,7 +21,7 @@ class IsAuthorOfBlogPost(
     ): Flow<DataState<Boolean>> = flow {
         emit(DataState.loading<Boolean>())
         if(authToken == null){
-            throw Exception("Authentication token is invalid. Log out and log back in.")
+            throw Exception(ERROR_AUTH_TOKEN_INVALID)
         }
         val response = service.isAuthorOfBlogPost(
             "Token ${authToken.token}",
