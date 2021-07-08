@@ -1,17 +1,12 @@
 package com.codingwithmitch.openapi.interactors.account
 
-import com.codingwithmitch.openapi.business.datasource.cache.account.toEntity
 import com.codingwithmitch.openapi.business.datasource.network.main.OpenApiMainService
-import com.codingwithmitch.openapi.business.domain.models.Account
 import com.codingwithmitch.openapi.business.domain.models.AuthToken
 import com.codingwithmitch.openapi.business.domain.util.ErrorHandling
 import com.codingwithmitch.openapi.business.domain.util.MessageType
 import com.codingwithmitch.openapi.business.domain.util.SuccessHandling
 import com.codingwithmitch.openapi.business.domain.util.UIComponentType
-import com.codingwithmitch.openapi.business.interactors.account.UpdateAccount
 import com.codingwithmitch.openapi.business.interactors.account.UpdatePassword
-import com.codingwithmitch.openapi.datasource.cache.AccountDaoFake
-import com.codingwithmitch.openapi.datasource.cache.AppDatabaseFake
 import com.codingwithmitch.openapi.datasource.network.account.AccountResponses
 import com.google.gson.GsonBuilder
 import kotlinx.coroutines.flow.toList
