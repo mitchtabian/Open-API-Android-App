@@ -25,6 +25,7 @@ import java.net.HttpURLConnection
  * 2. Update password failure (incorrect password)
  * 3. Update password failure (passwords must match)
  * 4. Update password failure (Random malformed unknown error is returned)
+ * 5. Update password failure (blank field)
  */
 class ChangePasswordTest {
 
@@ -203,6 +204,45 @@ class ChangePasswordTest {
 
         // confirm second emission is an error dialog
         assert(emissions[1].stateMessage?.response?.message == ErrorHandling.ERROR_UPDATE_PASSWORD)
+        assert(emissions[1].stateMessage?.response?.uiComponentType is UIComponentType.Dialog)
+        assert(emissions[1].stateMessage?.response?.messageType is MessageType.Error)
+
+        // loading done
+        assert(!emissions[1].isLoading)
+    }
+
+    @Test
+    fun updatePasswordFail_blankField() = runBlocking {
+        // condition the response
+        mockWebServer.enqueue(
+            MockResponse()
+                .setResponseCode(HttpURLConnection.HTTP_OK)
+                .setBody(AccountResponses.updatePasswordFail_blankField)
+        )
+
+        // User Information
+        val pk = AccountResponses.pk
+        val currentPassword = AccountResponses.password
+        val newPassword = AccountResponses.newPassword
+        val confirmNewPassword = AccountResponses.newPassword
+        val token = AccountResponses.token
+        val authToken = AuthToken(
+            accountPk = pk,
+            token = token,
+        )
+
+        val emissions = updatePassword.execute(
+            authToken = authToken,
+            currentPassword = currentPassword,
+            newPassword = newPassword,
+            confirmNewPassword = confirmNewPassword
+        ).toList()
+
+        // first emission should be `loading`
+        assert(emissions[0].isLoading)
+
+        // confirm second emission is an error dialog
+        assert(emissions[1].stateMessage?.response?.message == ErrorHandling.ERROR_BLANK_FIELD)
         assert(emissions[1].stateMessage?.response?.uiComponentType is UIComponentType.Dialog)
         assert(emissions[1].stateMessage?.response?.messageType is MessageType.Error)
 

@@ -25,7 +25,9 @@ object AccountResponses {
     val updateAccountFail_usernameInUse = "{ \"response\": \"Error\", \"error_message\": \"${ErrorHandling.ERROR_USERNAME_IN_USE}\" }"
     val updatePasswordFail_incorrectPassword = "{ \"response\": \"Error\", \"error_message\": \"${ErrorHandling.ERROR_INCORRECT_PASSWORD}\" }"
     val updatePasswordFail_passwordsMustMatch = "{ \"response\": \"Error\", \"error_message\": \"${ErrorHandling.ERROR_PASSWORDS_MUST_MATCH}\" }"
+    val updatePasswordFail_blankField= "{ \"response\": \"Error\", \"error_message\": \"${ErrorHandling.ERROR_BLANK_FIELD}\" }"
     val updatePasswordFail_random = "{ \"random_response\": \"Error\", \"error_message\": \"SOME RANDOM ERROR WHO KNOWS\" }"
+
 
 }
 
