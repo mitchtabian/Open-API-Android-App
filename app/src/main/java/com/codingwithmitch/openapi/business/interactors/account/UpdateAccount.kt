@@ -5,6 +5,7 @@ import com.codingwithmitch.openapi.business.datasource.network.main.OpenApiMainS
 import com.codingwithmitch.openapi.business.domain.models.AuthToken
 import com.codingwithmitch.openapi.business.datasource.cache.account.AccountDao
 import com.codingwithmitch.openapi.business.domain.util.*
+import com.codingwithmitch.openapi.business.domain.util.ErrorHandling.Companion.GENERIC_ERROR
 import com.codingwithmitch.openapi.business.domain.util.SuccessHandling.Companion.SUCCESS_ACCOUNT_UPDATED
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -28,6 +29,7 @@ class UpdateAccount(
         if(pk == null){
             throw Exception(ErrorHandling.ERROR_PK_INVALID)
         }
+
         // Update network
         val response = service.updateAccount(
             authorization = "Token ${authToken.token}",
@@ -35,7 +37,10 @@ class UpdateAccount(
             username = username
         )
 
-        if(response.response != SUCCESS_ACCOUNT_UPDATED){
+        if(response.response == GENERIC_ERROR){
+            throw Exception(response.errorMessage)
+        }
+        else if(response.response != SUCCESS_ACCOUNT_UPDATED){
             throw Exception(ErrorHandling.ERROR_UPDATE_ACCOUNT)
         }
 

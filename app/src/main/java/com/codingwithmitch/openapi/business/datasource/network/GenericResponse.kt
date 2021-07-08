@@ -7,5 +7,8 @@ class GenericResponse(
 
     @SerializedName("response")
     @Expose
-    var response: String?
+    val response: String?,
+
+    @SerializedName("error_message")
+    val errorMessage: String?,
 )

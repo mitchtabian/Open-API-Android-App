@@ -5,6 +5,7 @@ import com.codingwithmitch.openapi.business.datasource.network.main.OpenApiMainS
 import com.codingwithmitch.openapi.business.domain.models.AuthToken
 import com.codingwithmitch.openapi.business.domain.util.*
 import com.codingwithmitch.openapi.business.domain.util.ErrorHandling.Companion.ERROR_UPDATE_PASSWORD
+import com.codingwithmitch.openapi.business.domain.util.ErrorHandling.Companion.GENERIC_ERROR
 import com.codingwithmitch.openapi.business.domain.util.SuccessHandling.Companion.SUCCESS_PASSWORD_UPDATED
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -32,7 +33,10 @@ class UpdatePassword(
             confirmNewPassword = confirmNewPassword
         )
 
-        if(response.response != SUCCESS_PASSWORD_UPDATED){
+        if(response.response == GENERIC_ERROR){
+            throw Exception(response.errorMessage)
+        }
+        else if(response.response != SUCCESS_PASSWORD_UPDATED){
             throw Exception(ERROR_UPDATE_PASSWORD)
         }
 
@@ -40,7 +44,7 @@ class UpdatePassword(
         emit(DataState.data<Response>(
             data = Response(
                 message = SUCCESS_PASSWORD_UPDATED,
-                uiComponentType = UIComponentType.Toast(),
+                uiComponentType = UIComponentType.None(),
                 messageType = MessageType.Success()
             ),
             response = null
