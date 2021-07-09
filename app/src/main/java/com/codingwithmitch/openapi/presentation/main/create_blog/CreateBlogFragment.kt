@@ -16,7 +16,6 @@ import com.codingwithmitch.openapi.business.domain.util.*
 import com.codingwithmitch.openapi.business.domain.util.Constants.Companion.GALLERY_REQUEST_CODE
 import com.codingwithmitch.openapi.business.domain.util.ErrorHandling.Companion.ERROR_SOMETHING_WRONG_WITH_IMAGE
 import com.codingwithmitch.openapi.databinding.FragmentCreateBlogBinding
-import com.codingwithmitch.openapi.databinding.FragmentRegisterBinding
 import com.codingwithmitch.openapi.presentation.util.processQueue
 import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView

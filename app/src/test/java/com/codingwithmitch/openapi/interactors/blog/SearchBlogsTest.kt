@@ -188,13 +188,6 @@ class SearchBlogsTest {
 
     @Test
     fun failure_authTokenNull() = runBlocking {
-        // condition the response
-        mockWebServer.enqueue(
-            MockResponse()
-                .setResponseCode(HttpURLConnection.HTTP_OK)
-                .setBody(SearchBlogsResponses.successEmptyList)
-        )
-
         // User Information
         val authToken = null
 

@@ -39,7 +39,10 @@ object UpdateBlogResponses {
         username = username
     )
 
-    val updateSuccess = "{ \"response\": \"${SuccessHandling.SUCCESS_BLOG_UPDATED}\", \"pk\": $pk, \"title\": \"$title\", \"body\": \"$body\", \"slug\": \"$slug\", \"date_updated\": \"$dateUpdated\", \"image\": \"$image\", \"username\": \"$username\" }"
+    val updatedTitle = "Hey look a new title"
+    val updatedBody = "I don't know I just need to make sure this is 50 characters long for testing."
+
+    val updateSuccess = "{ \"response\": \"${SuccessHandling.SUCCESS_BLOG_UPDATED}\", \"pk\": $blogPk, \"title\": \"$updatedTitle\", \"body\": \"$updatedBody\", \"slug\": \"$slug\", \"date_updated\": \"$dateUpdated\", \"image\": \"$image\", \"username\": \"$username\" }"
 
     val updateFail_dontHavePermission = "{ \"response\": \"Error\", \"error_message\": \"${ErrorHandling.ERROR_EDIT_BLOG_NEED_PERMISSION}\" }"
 
