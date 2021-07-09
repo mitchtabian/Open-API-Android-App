@@ -28,10 +28,10 @@ import java.net.HttpURLConnection
  * 2. Register Failure (Email already in use)
  * 3. Register Failure (Username already in use)
  * 4. Register Failure (Passwords must match)
- * 5. Register Failure (Missing Email)
- * 5. Register Failure (Missing Username)
- * 5. Register Failure (Missing password)
- * 5. Register Failure (Missing password2)
+ * 6. Register Failure (Missing Email)
+ * 7. Register Failure (Missing Username)
+ * 8. Register Failure (Missing password)
+ * 9. Register Failure (Missing password2)
  */
 class RegisterTest {
 
