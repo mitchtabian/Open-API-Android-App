@@ -4,7 +4,7 @@ import com.codingwithmitch.openapi.business.domain.models.AuthToken
 import com.codingwithmitch.openapi.business.domain.models.BlogPost
 import com.codingwithmitch.openapi.business.domain.util.DateUtils
 
-object GetBlogFromCacheResponses {
+object ConfirmBlogExistsOnServerResponses {
 
     // account info
     val email = "mitch_test@gmail.com"
@@ -27,26 +27,12 @@ object GetBlogFromCacheResponses {
     val dateUpdated = "2021-07-09T16:26:23.121544Z"
 
     val blogPost = BlogPost(
-        pk = blogPk,
-        title = title,
-        body = body,
-        image = image,
-        slug = slug,
+        pk = CreateResponses.blogPk,
+        title = CreateResponses.title,
+        body = CreateResponses.body,
+        image = CreateResponses.image,
+        slug = CreateResponses.slug,
         dateUpdated = DateUtils.convertServerStringDateToLong(CreateResponses.dateUpdated),
-        username = username
+        username = CreateResponses.username
     )
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
