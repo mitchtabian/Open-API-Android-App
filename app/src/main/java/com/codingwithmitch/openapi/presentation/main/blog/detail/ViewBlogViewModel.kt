@@ -19,6 +19,8 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
+const val SHOULD_REFRESH = "should_refresh"
+
 @HiltViewModel
 class ViewBlogViewModel
 @Inject
@@ -72,6 +74,9 @@ constructor(
                     }
                 )
             }
+            is ViewBlogEvents.Refresh ->{
+                refresh()
+            }
             is ViewBlogEvents.IsAuthor -> {
                 isAuthor(event.slug)
             }
@@ -116,6 +121,21 @@ constructor(
                     queue.add(stateMessage)
                     this.state.value = state.copy(queue = queue)
                 }
+            }
+        }
+    }
+
+    private fun refresh(){
+        state.value?.let { state ->
+            state.blogPost?.let { blogPost ->
+                getBlog(
+                    pk = blogPost.pk,
+                    callback = object: OnCompleteCallback{
+                        override fun done() {
+                            // do nothing
+                        }
+                    }
+                )
             }
         }
     }

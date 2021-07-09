@@ -17,6 +17,7 @@ import com.codingwithmitch.openapi.business.domain.util.Constants.Companion.GALL
 import com.codingwithmitch.openapi.business.domain.util.ErrorHandling.Companion.SOMETHING_WRONG_WITH_IMAGE
 import com.codingwithmitch.openapi.databinding.FragmentUpdateBlogBinding
 import com.codingwithmitch.openapi.presentation.main.blog.BaseBlogFragment
+import com.codingwithmitch.openapi.presentation.main.blog.detail.SHOULD_REFRESH
 import com.codingwithmitch.openapi.presentation.util.processQueue
 import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView
@@ -135,6 +136,7 @@ class UpdateBlogFragment : BaseBlogFragment()
                 )
             }
             if(state.isUpdateComplete){
+                findNavController().previousBackStackEntry?.savedStateHandle?.set(SHOULD_REFRESH, true)
                 findNavController().popBackStack(R.id.viewBlogFragment, false)
             }
         })

@@ -44,6 +44,14 @@ class ViewBlogFragment : BaseBlogFragment()
         binding.deleteButton.setOnClickListener {
             viewModel.onTriggerEvent(ViewBlogEvents.DeleteBlog)
         }
+
+        // If an update occurred from UpdateBlogFragment, refresh the BlogPost
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>(SHOULD_REFRESH)?.observe(viewLifecycleOwner) { shouldRefresh ->
+            shouldRefresh?.run {
+                viewModel.onTriggerEvent(ViewBlogEvents.Refresh)
+                findNavController().currentBackStackEntry?.savedStateHandle?.set(SHOULD_REFRESH, null)
+            }
+        }
     }
 
     private fun subscribeObservers(){

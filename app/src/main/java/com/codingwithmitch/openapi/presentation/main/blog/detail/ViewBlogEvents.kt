@@ -9,6 +9,8 @@ sealed class ViewBlogEvents {
 
     data class GetBlog(val pk: Int): ViewBlogEvents()
 
+    object Refresh: ViewBlogEvents()
+
     data class ConfirmBlogExistsOnServer(
         val pk: Int,
         val slug: String
