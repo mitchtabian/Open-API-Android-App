@@ -38,7 +38,7 @@ fun BlogPostEntity.toBlogPost(): BlogPost{
         slug = slug,
         body = body,
         image = image,
-        date_updated = date_updated,
+        dateUpdated = date_updated,
         username = username
     )
 }
@@ -50,7 +50,7 @@ fun BlogPost.toEntity(): BlogPostEntity{
         slug = slug,
         body = body,
         image = image,
-        date_updated = date_updated,
+        date_updated = dateUpdated,
         username = username
     )
 }

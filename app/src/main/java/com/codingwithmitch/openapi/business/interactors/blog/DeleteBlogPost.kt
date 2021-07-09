@@ -8,6 +8,8 @@ import com.codingwithmitch.openapi.business.datasource.cache.blog.BlogPostDao
 import com.codingwithmitch.openapi.business.datasource.cache.blog.toEntity
 import com.codingwithmitch.openapi.business.domain.util.*
 import com.codingwithmitch.openapi.business.domain.util.ErrorHandling.Companion.ERROR_AUTH_TOKEN_INVALID
+import com.codingwithmitch.openapi.business.domain.util.ErrorHandling.Companion.ERROR_DELETE_BLOG_DOES_NOT_EXIST
+import com.codingwithmitch.openapi.business.domain.util.ErrorHandling.Companion.GENERIC_ERROR
 import com.codingwithmitch.openapi.business.domain.util.SuccessHandling.Companion.SUCCESS_BLOG_DELETED
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -33,9 +35,10 @@ class DeleteBlogPost(
         val response = service.deleteBlogPost(
             "Token ${authToken.token}",
             blogPost.slug
-        ).response
-        if(response != SUCCESS_BLOG_DELETED){ // failure
-            throw Exception(response)
+        )
+        if(response.response == GENERIC_ERROR
+            && response.errorMessage != ERROR_DELETE_BLOG_DOES_NOT_EXIST){ // failure
+            throw Exception(response.errorMessage)
         }else{
             // delete from cache
             cache.deleteBlogPost(blogPost.toEntity())

@@ -6,6 +6,6 @@ data class BlogPost(
     val slug: String,
     val body: String,
     val image: String,
-    val date_updated: Long,
+    val dateUpdated: Long,
     val username: String
 )

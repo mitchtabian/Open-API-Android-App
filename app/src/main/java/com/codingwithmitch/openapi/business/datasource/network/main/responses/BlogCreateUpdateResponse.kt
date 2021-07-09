@@ -39,7 +39,7 @@ fun BlogCreateUpdateResponse.toBlogPost(): BlogPost {
         slug = slug,
         body = body,
         image = image,
-        date_updated = DateUtils.convertServerStringDateToLong(
+        dateUpdated = DateUtils.convertServerStringDateToLong(
             date_updated
         ),
         username = username

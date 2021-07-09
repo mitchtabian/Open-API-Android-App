@@ -38,12 +38,15 @@ class ErrorHandling{
         const val ERROR_BLANK_FIELD = "This field may not be blank."
         const val SOMETHING_WRONG_WITH_IMAGE = "Something went wrong with the image."
         const val ERROR_SOMETHING_WENT_WRONG = "Something went wrong."
+        const val ERROR_DELETE_BLOG_DOES_NOT_EXIST = "That blog post does not exist."
+        const val ERROR_DELETE_BLOG_NEED_PERMISSION = "You don't have permission to delete that."
         const val INVALID_STATE_EVENT = "Invalid state event"
         const val CANNOT_BE_UNDONE = "This can't be undone."
         const val NETWORK_ERROR = "Network error"
         const val NETWORK_ERROR_TIMEOUT = "Network timeout"
         const val CACHE_ERROR_TIMEOUT = "Cache timeout"
         const val UNKNOWN_ERROR = "Unknown error"
+        const val ERROR_NOT_CWM_MEMBER = "You must become a member on Codingwithmitch.com to access the API. Visit https://codingwithmitch.com/enroll/"
 
 
         fun isNetworkError(msg: String): Boolean{

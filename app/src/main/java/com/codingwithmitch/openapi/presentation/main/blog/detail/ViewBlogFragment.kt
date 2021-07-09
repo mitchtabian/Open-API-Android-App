@@ -83,7 +83,7 @@ class ViewBlogFragment : BaseBlogFragment()
             .into(binding.blogImage)
         binding.blogTitle.setText(blogPost.title)
         binding.blogAuthor.setText(blogPost.username)
-        binding.blogUpdateDate.setText(DateUtils.convertLongToStringDate(blogPost.date_updated))
+        binding.blogUpdateDate.setText(DateUtils.convertLongToStringDate(blogPost.dateUpdated))
         binding.blogBody.setText(blogPost.body)
     }
 

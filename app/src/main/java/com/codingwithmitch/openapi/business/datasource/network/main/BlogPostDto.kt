@@ -37,7 +37,7 @@ fun BlogPostDto.toBlogPost(): BlogPost{
             slug = slug,
             body = body,
             image = image,
-            date_updated = DateUtils.convertServerStringDateToLong(
+            dateUpdated = DateUtils.convertServerStringDateToLong(
                 date_updated
             ),
             username = username
@@ -52,7 +52,7 @@ fun BlogPost.toDto(): BlogPostDto {
         slug = slug,
         body = body,
         image = image,
-        date_updated = DateUtils.convertLongToStringDate(date_updated),
+        date_updated = DateUtils.convertLongToStringDate(dateUpdated),
         username = username
     )
 }
