@@ -27,12 +27,32 @@ object ConfirmBlogExistsOnServerResponses {
     val dateUpdated = "2021-07-09T16:26:23.121544Z"
 
     val blogPost = BlogPost(
-        pk = CreateResponses.blogPk,
-        title = CreateResponses.title,
-        body = CreateResponses.body,
-        image = CreateResponses.image,
-        slug = CreateResponses.slug,
+        pk = blogPk,
+        title = title,
+        body = body,
+        image = image,
+        slug = slug,
         dateUpdated = DateUtils.convertServerStringDateToLong(CreateResponses.dateUpdated),
-        username = CreateResponses.username
+        username = username
     )
+
+    val success_blogExists = "{ \"pk\": $pk, \"title\": \"$title\", \"slug\": \"$slug\", \"body\": \"$body\", \"image\": \"$image\", \"date_updated\": \"$dateUpdated\", \"username\": \"$username\" }"
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

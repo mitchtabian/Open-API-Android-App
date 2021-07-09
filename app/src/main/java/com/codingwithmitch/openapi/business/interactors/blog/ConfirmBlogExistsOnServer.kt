@@ -31,11 +31,12 @@ class ConfirmBlogExistsOnServer(
         if(cachedBlog == null){
             // It doesn't exist in cache. Finish.
             emit(DataState.data<Response>(
-                response = Response(
+                data = Response(
                     message = SUCCESS_BLOG_DOES_NOT_EXIST_IN_CACHE,
                     uiComponentType = UIComponentType.None(),
                     messageType = MessageType.Success()
-                )
+                ),
+                response = null,
             ))
         }else{
             if(authToken == null){
@@ -72,7 +73,6 @@ class ConfirmBlogExistsOnServer(
                 ))
             }
         }
-
     }.catch { e ->
         emit(handleUseCaseException(e))
     }
