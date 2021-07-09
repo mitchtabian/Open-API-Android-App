@@ -49,6 +49,7 @@ object DeleteResponses {
 
     // If you are not a member you can't interact with the api
     val deleteFail_notCwmMember = "{ \"response\": \"Error\", \"error_message\": \"${ErrorHandling.ERROR_NOT_CWM_MEMBER}\" }"
+
 }
 
 

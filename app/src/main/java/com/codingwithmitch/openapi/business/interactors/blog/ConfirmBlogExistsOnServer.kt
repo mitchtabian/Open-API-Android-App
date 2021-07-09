@@ -41,7 +41,7 @@ class ConfirmBlogExistsOnServer(
             if(authToken == null){
                 throw Exception(ErrorHandling.ERROR_AUTH_TOKEN_INVALID)
             }
-            // confirm it exists on server
+            // confirm it exists on server (throws 404 if does not exist)
             val blogPost = try {
                 service.getBlog(
                     authorization = "Token ${authToken.token}",

@@ -9,6 +9,9 @@ class BlogCreateUpdateResponse(
     @SerializedName("response")
     val response: String,
 
+    @SerializedName("error_message")
+    val errorMessage: String,
+
     @SerializedName("pk")
     val pk: Int,
 

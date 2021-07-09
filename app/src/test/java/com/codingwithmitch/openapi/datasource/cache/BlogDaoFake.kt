@@ -18,6 +18,15 @@ class BlogDaoFake(
         db.blogs.remove(blogPost)
     }
 
+    override suspend fun deleteBlogPost(pk: Int) {
+        for(blog in db.blogs){
+            if(blog.pk == pk){
+                db.blogs.remove(blog)
+                break
+            }
+        }
+    }
+
     override suspend fun updateBlogPost(pk: Int, title: String, body: String, image: String) {
         for(blog in db.blogs){
             if(blog.pk == pk){

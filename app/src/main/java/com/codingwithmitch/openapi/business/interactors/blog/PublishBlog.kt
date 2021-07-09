@@ -45,6 +45,10 @@ class PublishBlog(
             throw Exception(SuccessHandling.RESPONSE_MUST_BECOME_CODINGWITHMITCH_MEMBER)
         }
 
+        if(createResponse.response == ErrorHandling.GENERIC_ERROR){
+            throw Exception(createResponse.errorMessage)
+        }
+
         // insert the new blog into the cache
         cache.insert(createResponse.toBlogPost().toEntity())
 
@@ -52,7 +56,7 @@ class PublishBlog(
         emit(DataState.data<Response>(
             data = Response(
                 message = SuccessHandling.SUCCESS_BLOG_CREATED,
-                uiComponentType = UIComponentType.Toast(),
+                uiComponentType = UIComponentType.None(),
                 messageType = MessageType.Success()
             ),
             response = null,
