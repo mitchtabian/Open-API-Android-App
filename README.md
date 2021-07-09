@@ -7,19 +7,19 @@ In July 2021 I did a major refactor. Here's what I did:
 	- Avoid sharing viewmodels. It makes unit testing easier when I can test fragments in isolation.
 1. Splitting business models into Entities and Dto's. This way I have a clear [business model](https://github.com/mitchtabian/Open-API-Android-App/blob/master/app/src/main/java/com/codingwithmitch/openapi/business/domain/models/BlogPost.kt), [network model](https://github.com/mitchtabian/Open-API-Android-App/blob/master/app/src/main/java/com/codingwithmitch/openapi/business/datasource/network/main/BlogPostDto.kt), and [caching model](https://github.com/mitchtabian/Open-API-Android-App/blob/master/app/src/main/java/com/codingwithmitch/openapi/business/datasource/cache/blog/BlogPostEntity.kt).
 1. Writing use cases.
-	- Unidirectional data flow with MVI and kotlin sealed classes.
-	- See [Interactors](https://github.com/mitchtabian/Open-API-Android-App/tree/master/app/src/main/java/com/codingwithmitch/openapi/business/interactors)
+	- Unidirectional data flow with MVI and kotlin sealed classes. (See [Interactors](https://github.com/mitchtabian/Open-API-Android-App/tree/master/app/src/main/java/com/codingwithmitch/openapi/business/interactors))
 1. Refactor message handling system to a [Queue](https://github.com/mitchtabian/Open-API-Android-App/blob/master/app/src/main/java/com/codingwithmitch/openapi/business/domain/util/Queue.kt).
 1. Migrate from Shared Preferences to [DataStore](https://developer.android.com/topic/libraries/architecture/datastore).
 1. Migrate from Kotlin synthetics to [ViewBinding](https://developer.android.com/topic/libraries/view-binding).
 1. Write [Unit tests](https://github.com/mitchtabian/Open-API-Android-App/tree/master/app/src/test/java/com/codingwithmitch/openapi/interactors) for use-cases.
 
 # TODO
-1. Check out the new splash screen APIs
+1. Check out the new [splash screen APIs](https://developer.android.com/about/versions/12/features/splash-screen)
 1. Update Dependencies to newest versions
-1. Do a Compose refactor
+1. Do a [Compose](https://developer.android.com/jetpack/compose) refactor
 	- I will create a new repo for this
 
+<hr>
 
 <a href='https://codingwithmitch.com/courses/powerful-android-apps-with-jetpack-architecture/' target='_blank'><img class='header-img' src='https://codingwithmitch.s3.amazonaws.com/static/powerful-android-apps-with-jetpack-architecture/images/powerful_android_apps_1.png' /></a>
 
