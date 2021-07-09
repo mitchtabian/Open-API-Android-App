@@ -5,6 +5,7 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.first
 
@@ -17,18 +18,17 @@ class AppDataStoreManager(
     private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(APP_DATASTORE)
 
     override suspend fun setValue(
-        key: Preferences.Key<String>,
+        key: String,
         value: String
     ) {
         context.dataStore.edit {
-            it[key] = value
+            it[stringPreferencesKey(key)] = value
         }
     }
 
     override suspend fun readValue(
-        key: Preferences.Key<String>,
+        key: String,
     ): String? {
-        return context.dataStore.data.first()[key]
+        return context.dataStore.data.first()[stringPreferencesKey(key)]
     }
-
 }
