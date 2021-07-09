@@ -21,3 +21,17 @@ object CreateResponses {
 
     val createSuccess = "{ \"response\": \"${SuccessHandling.SUCCESS_BLOG_CREATED}\", \"pk\": ${blogPk}, \"title\": \"${title}\", \"body\": \"${body}\", \"slug\": \"${slug}\", \"date_updated\": \"${dateUpdated}\", \"image\": \"${image}\", \"username\": \"${username}\" }"
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+

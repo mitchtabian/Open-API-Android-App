@@ -40,6 +40,7 @@ class ErrorHandling{
         const val ERROR_SOMETHING_WENT_WRONG = "Something went wrong."
         const val ERROR_DELETE_BLOG_DOES_NOT_EXIST = "That blog post does not exist."
         const val ERROR_DELETE_BLOG_NEED_PERMISSION = "You don't have permission to delete that."
+        const val ERROR_BLOG_DOES_NOT_EXIST = "That BlogPost does not exist on the server."
         const val INVALID_STATE_EVENT = "Invalid state event"
         const val CANNOT_BE_UNDONE = "This can't be undone."
         const val NETWORK_ERROR = "Network error"

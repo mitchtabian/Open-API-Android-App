@@ -73,6 +73,15 @@ object BlogModule {
     ): GetOrderAndFilter{
         return GetOrderAndFilter(appDataStoreManager)
     }
+
+    @Singleton
+    @Provides
+    fun provideConfirmBlogExistsOnServer(
+        service: OpenApiMainService,
+        cache: BlogPostDao,
+    ): ConfirmBlogExistsOnServer{
+        return ConfirmBlogExistsOnServer(service = service, cache = cache)
+    }
 }
 
 

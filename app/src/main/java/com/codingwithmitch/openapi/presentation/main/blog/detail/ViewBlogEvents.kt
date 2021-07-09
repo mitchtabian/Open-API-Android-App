@@ -5,9 +5,14 @@ import com.codingwithmitch.openapi.business.domain.util.StateMessage
 
 sealed class ViewBlogEvents {
 
-    data class isAuthor(val slug: String): ViewBlogEvents()
+    data class IsAuthor(val slug: String): ViewBlogEvents()
 
-    data class getBlog(val pk: Int): ViewBlogEvents()
+    data class GetBlog(val pk: Int): ViewBlogEvents()
+
+    data class ConfirmBlogExistsOnServer(
+        val pk: Int,
+        val slug: String
+    ): ViewBlogEvents()
 
     object DeleteBlog: ViewBlogEvents()
 

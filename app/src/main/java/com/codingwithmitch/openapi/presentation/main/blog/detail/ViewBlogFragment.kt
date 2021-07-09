@@ -10,6 +10,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.business.domain.models.BlogPost
 import com.codingwithmitch.openapi.business.domain.util.*
+import com.codingwithmitch.openapi.business.domain.util.ErrorHandling.Companion.ERROR_BLOG_DOES_NOT_EXIST
 import com.codingwithmitch.openapi.databinding.FragmentViewBlogBinding
 import com.codingwithmitch.openapi.presentation.main.blog.BaseBlogFragment
 import com.codingwithmitch.openapi.presentation.util.processQueue
@@ -50,14 +51,18 @@ class ViewBlogFragment : BaseBlogFragment()
 
             uiCommunicationListener.displayProgressBar(state.isLoading)
 
-            processQueue(
-                context = context,
-                queue = state.queue,
-                stateMessageCallback = object: StateMessageCallback {
-                    override fun removeMessageFromStack() {
-                        viewModel.onTriggerEvent(ViewBlogEvents.OnRemoveHeadFromQueue)
-                    }
-                })
+            if(state.queue.peek()?.response?.message == ERROR_BLOG_DOES_NOT_EXIST){
+                 findNavController().popBackStack(R.id.blogFragment, false)
+            }else{
+                processQueue(
+                    context = context,
+                    queue = state.queue,
+                    stateMessageCallback = object: StateMessageCallback {
+                        override fun removeMessageFromStack() {
+                            viewModel.onTriggerEvent(ViewBlogEvents.OnRemoveHeadFromQueue)
+                        }
+                    })
+            }
 
             state.blogPost?.let { setBlogProperties(it) }
 

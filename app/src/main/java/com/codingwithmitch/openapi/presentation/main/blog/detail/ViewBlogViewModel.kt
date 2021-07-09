@@ -7,7 +7,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.codingwithmitch.openapi.business.domain.util.StateMessage
 import com.codingwithmitch.openapi.business.domain.util.SuccessHandling
+import com.codingwithmitch.openapi.business.domain.util.UIComponentType
 import com.codingwithmitch.openapi.business.domain.util.doesMessageAlreadyExistInQueue
+import com.codingwithmitch.openapi.business.interactors.blog.ConfirmBlogExistsOnServer
 import com.codingwithmitch.openapi.business.interactors.blog.DeleteBlogPost
 import com.codingwithmitch.openapi.business.interactors.blog.GetBlogFromCache
 import com.codingwithmitch.openapi.business.interactors.blog.IsAuthorOfBlogPost
@@ -23,6 +25,7 @@ class ViewBlogViewModel
 constructor(
     private val sessionManager: SessionManager,
     private val getBlogFromCache: GetBlogFromCache,
+    private val confirmBlogExistsOnServer: ConfirmBlogExistsOnServer,
     private val isAuthorOfBlogPost: IsAuthorOfBlogPost,
     private val deleteBlogPost: DeleteBlogPost,
     private val savedStateHandle: SavedStateHandle,
@@ -34,27 +37,42 @@ constructor(
 
     init {
         savedStateHandle.get<Int>("blogPostPk")?.let { blogPostPk ->
-            onTriggerEvent(ViewBlogEvents.getBlog(blogPostPk))
+            onTriggerEvent(ViewBlogEvents.GetBlog(blogPostPk))
         }
     }
 
     fun onTriggerEvent(event: ViewBlogEvents){
         when(event){
-            is ViewBlogEvents.getBlog -> {
+            is ViewBlogEvents.GetBlog -> {
                 getBlog(
                     event.pk,
-                    object: OnCompleteCallback { // Determine if they are the author
+                    object: OnCompleteCallback { // Determine if blog exists on server
                         override fun done() {
                             state.value?.let { state ->
                                 state.blogPost?.let { blog ->
-                                    onTriggerEvent(ViewBlogEvents.isAuthor(slug = blog.slug))
+                                    onTriggerEvent(ViewBlogEvents.ConfirmBlogExistsOnServer(pk = event.pk, blog.slug))
                                 }
                             }
                         }
                     }
                 )
             }
-            is ViewBlogEvents.isAuthor -> {
+            is ViewBlogEvents.ConfirmBlogExistsOnServer -> {
+                confirmBlogExistsOnServer(
+                    event.pk,
+                    event.slug,
+                    object: OnCompleteCallback { // Determine if they are the author
+                        override fun done() {
+                            state.value?.let { state ->
+                                state.blogPost?.let { blog ->
+                                    onTriggerEvent(ViewBlogEvents.IsAuthor(slug = blog.slug))
+                                }
+                            }
+                        }
+                    }
+                )
+            }
+            is ViewBlogEvents.IsAuthor -> {
                 isAuthor(event.slug)
             }
             is ViewBlogEvents.DeleteBlog -> {
@@ -94,9 +112,42 @@ constructor(
         state.value?.let { state ->
             val queue = state.queue
             if(!stateMessage.doesMessageAlreadyExistInQueue(queue = queue)){
-                queue.add(stateMessage)
-                this.state.value = state.copy(queue = queue)
+                if(!(stateMessage.response.uiComponentType is UIComponentType.None)){
+                    queue.add(stateMessage)
+                    this.state.value = state.copy(queue = queue)
+                }
             }
+        }
+    }
+
+    private fun confirmBlogExistsOnServer(pk: Int, slug: String, callback: OnCompleteCallback){
+        state.value?.let { state ->
+            confirmBlogExistsOnServer.execute(
+                authToken = sessionManager.state.value?.authToken,
+                pk = pk,
+                slug = slug,
+            ).onEach { dataState ->
+                this.state.value = state.copy(isLoading = dataState.isLoading)
+
+                dataState.data?.let { response ->
+                    if(response.message == SuccessHandling.SUCCESS_BLOG_DOES_NOT_EXIST_IN_CACHE
+                        || response.message == SuccessHandling.SUCCESS_BLOG_EXISTS_ON_SERVER
+                    ){
+                        // Blog exists in cache and on server. All is good.
+                        callback.done()
+                    }else{
+                        appendToMessageQueue(
+                            stateMessage = StateMessage(
+                                response = response
+                            )
+                        )
+                    }
+                }
+
+                dataState.stateMessage?.let { stateMessage ->
+                    appendToMessageQueue(stateMessage)
+                }
+            }.launchIn(viewModelScope)
         }
     }
 
