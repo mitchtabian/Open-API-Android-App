@@ -1,18 +1,14 @@
 package com.codingwithmitch.openapi.interactors.blog
 
 import com.codingwithmitch.openapi.business.datasource.cache.blog.BlogPostDao
-import com.codingwithmitch.openapi.business.datasource.cache.blog.BlogPostEntity
-import com.codingwithmitch.openapi.business.datasource.cache.blog.toBlogPost
 import com.codingwithmitch.openapi.business.datasource.network.main.OpenApiMainService
 import com.codingwithmitch.openapi.business.domain.models.BlogPost
 import com.codingwithmitch.openapi.business.domain.util.ErrorHandling
 import com.codingwithmitch.openapi.business.domain.util.MessageType
-import com.codingwithmitch.openapi.business.domain.util.SuccessHandling
 import com.codingwithmitch.openapi.business.domain.util.UIComponentType
 import com.codingwithmitch.openapi.business.interactors.blog.SearchBlogs
 import com.codingwithmitch.openapi.datasource.cache.AppDatabaseFake
 import com.codingwithmitch.openapi.datasource.cache.BlogDaoFake
-import com.codingwithmitch.openapi.datasource.network.blog.CreateResponses
 import com.codingwithmitch.openapi.datasource.network.blog.SearchBlogsResponses
 import com.codingwithmitch.openapi.presentation.main.blog.list.BlogFilterOptions
 import com.codingwithmitch.openapi.presentation.main.blog.list.BlogOrderOptions
@@ -20,9 +16,6 @@ import com.google.gson.GsonBuilder
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
 import okhttp3.HttpUrl
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.MultipartBody
-import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.jupiter.api.BeforeEach
