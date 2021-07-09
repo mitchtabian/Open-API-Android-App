@@ -127,10 +127,11 @@ class UpdateBlogFragment : BaseBlogFragment()
                     }
                 })
             state.blogPost?.let { blogPost ->
+                val image = state.newImageUri
                 setBlogProperties(
                     blogPost.title,
                     blogPost.body,
-                    blogPost.image.toUri()
+                    image ?: blogPost.image.toUri()
                 )
             }
             if(state.isUpdateComplete){
