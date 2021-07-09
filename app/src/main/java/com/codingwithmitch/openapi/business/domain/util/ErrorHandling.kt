@@ -40,6 +40,7 @@ class ErrorHandling{
         const val ERROR_SOMETHING_WENT_WRONG = "Something went wrong."
         const val ERROR_DELETE_BLOG_DOES_NOT_EXIST = "That blog post does not exist."
         const val ERROR_DELETE_BLOG_NEED_PERMISSION = "You don't have permission to delete that."
+        const val ERROR_EDIT_BLOG_NEED_PERMISSION = "You don't have permission to edit that."
         const val ERROR_BLOG_DOES_NOT_EXIST = "That BlogPost does not exist on the server."
         const val ERROR_BLOG_TITLE_LENGTH = "Enter a title longer than 5 characters."
         const val ERROR_BLOG_BODY_LENGTH = "Enter a body longer than 50 characters."

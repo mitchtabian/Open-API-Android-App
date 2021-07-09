@@ -7,6 +7,7 @@ import com.codingwithmitch.openapi.business.domain.models.AuthToken
 import com.codingwithmitch.openapi.business.domain.util.StateMessage
 import com.codingwithmitch.openapi.business.domain.util.SuccessHandling.Companion.RESPONSE_CHECK_PREVIOUS_AUTH_USER_DONE
 import com.codingwithmitch.openapi.business.domain.util.SuccessHandling.Companion.SUCCESS_LOGOUT
+import com.codingwithmitch.openapi.business.domain.util.UIComponentType
 import com.codingwithmitch.openapi.business.domain.util.doesMessageAlreadyExistInQueue
 import com.codingwithmitch.openapi.business.interactors.session.CheckPreviousAuthUser
 import com.codingwithmitch.openapi.business.interactors.session.Logout
@@ -80,8 +81,10 @@ constructor(
         state.value?.let { state ->
             val queue = state.queue
             if(!stateMessage.doesMessageAlreadyExistInQueue(queue = queue)){
-                queue.add(stateMessage)
-                this.state.value = state.copy(queue = queue)
+                if(!(stateMessage.response.uiComponentType is UIComponentType.None)){
+                    queue.add(stateMessage)
+                    this.state.value = state.copy(queue = queue)
+                }
             }
         }
     }

@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.codingwithmitch.openapi.business.domain.util.StateMessage
 import com.codingwithmitch.openapi.business.domain.util.SuccessHandling
+import com.codingwithmitch.openapi.business.domain.util.UIComponentType
 import com.codingwithmitch.openapi.business.domain.util.doesMessageAlreadyExistInQueue
 import com.codingwithmitch.openapi.business.interactors.account.GetAccountFromCache
 import com.codingwithmitch.openapi.business.interactors.account.UpdateAccount
@@ -78,8 +79,10 @@ constructor(
         state.value?.let { state ->
             val queue = state.queue
             if(!stateMessage.doesMessageAlreadyExistInQueue(queue = queue)){
-                queue.add(stateMessage)
-                this.state.value = state.copy(queue = queue)
+                if(!(stateMessage.response.uiComponentType is UIComponentType.None)){
+                    queue.add(stateMessage)
+                    this.state.value = state.copy(queue = queue)
+                }
             }
         }
     }

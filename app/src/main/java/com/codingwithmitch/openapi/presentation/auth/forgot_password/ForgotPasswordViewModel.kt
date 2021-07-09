@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.codingwithmitch.openapi.business.domain.util.StateMessage
+import com.codingwithmitch.openapi.business.domain.util.UIComponentType
 import com.codingwithmitch.openapi.business.domain.util.doesMessageAlreadyExistInQueue
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -49,8 +50,10 @@ constructor(
         state.value?.let { state ->
             val queue = state.queue
             if(!stateMessage.doesMessageAlreadyExistInQueue(queue = queue)){
-                queue.add(stateMessage)
-                this.state.value = state.copy(queue = queue)
+                if(!(stateMessage.response.uiComponentType is UIComponentType.None)){
+                    queue.add(stateMessage)
+                    this.state.value = state.copy(queue = queue)
+                }
             }
         }
     }

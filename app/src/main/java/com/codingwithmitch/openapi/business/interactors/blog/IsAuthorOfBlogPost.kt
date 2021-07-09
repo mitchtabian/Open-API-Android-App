@@ -5,7 +5,12 @@ import com.codingwithmitch.openapi.business.datasource.network.main.OpenApiMainS
 import com.codingwithmitch.openapi.business.domain.models.AuthToken
 import com.codingwithmitch.openapi.business.domain.util.DataState
 import com.codingwithmitch.openapi.business.domain.util.ErrorHandling.Companion.ERROR_AUTH_TOKEN_INVALID
+import com.codingwithmitch.openapi.business.domain.util.ErrorHandling.Companion.ERROR_EDIT_BLOG_NEED_PERMISSION
+import com.codingwithmitch.openapi.business.domain.util.ErrorHandling.Companion.GENERIC_ERROR
+import com.codingwithmitch.openapi.business.domain.util.MessageType
+import com.codingwithmitch.openapi.business.domain.util.Response
 import com.codingwithmitch.openapi.business.domain.util.SuccessHandling.Companion.RESPONSE_HAS_PERMISSION_TO_EDIT
+import com.codingwithmitch.openapi.business.domain.util.UIComponentType
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
@@ -29,7 +34,18 @@ class IsAuthorOfBlogPost(
         )
         if(response.response == RESPONSE_HAS_PERMISSION_TO_EDIT){
             emit(DataState.data(response = null, true))
-        }else{
+        }
+        else if(response.response == GENERIC_ERROR){
+            emit(DataState.data(
+                response = Response(
+                    message = response.errorMessage,
+                    uiComponentType = UIComponentType.Dialog(),
+                    messageType = MessageType.Error()
+                ),
+                data = false
+            ))
+        }
+        else{
             emit(DataState.data(response = null, false))
         }
     }.catch { e ->
