@@ -15,9 +15,15 @@ In July 2021 I did a major refactor. Here's what I did:
 
 # TODO
 1. Check out the new [splash screen APIs](https://developer.android.com/about/versions/12/features/splash-screen)
-1. Update Dependencies to newest versions
 1. Do a [Compose](https://developer.android.com/jetpack/compose) refactor
 	- I will create a new repo for this
+
+# Test Account
+
+email: `blake@tabian.ca`
+
+password: `password`
+
 
 <hr>
 
