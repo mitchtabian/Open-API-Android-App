@@ -42,31 +42,6 @@ jobs:
           name: test-reports
           path: '**/build/reports/tests/'
 
-  run_android_tests:
-    name: Android UI Test
-    runs-on: macos-latest # more reliable for ui tests
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      # make gradlew executable
-      - name: Make gradlew executable
-        run: chmod +x ./gradlew
-
-      - name: Run Android UI Tests
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: 29
-          script: ./gradlew connectedDebugAndroidTest
-
-      - name: Upload Android Test Reports
-        if: ${{ always() }}
-        uses: actions/upload-artifact@v2
-        with:
-          name: android-test-reports
-          path: '**/build/reports/androidTests/'
-
-
   assemble_debug_apk:
     name: Assemble debug APK
     runs-on: ubuntu-latest # virtual machine that this will run on
