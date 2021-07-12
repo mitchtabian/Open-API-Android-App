@@ -22,7 +22,7 @@ import java.net.HttpURLConnection
 
 /**
  * 1. Success (They are the author)
- * 2. Failure (They are not the author)
+ * 2. Success (They are not the author)
  * 3. Failure (AuthToken is null)
  * 4. Failure (Some random error)
  */
@@ -87,7 +87,7 @@ class IsAuthorOfBlogPostTest {
     }
 
     @Test
-    fun failure_notTheAuthor() = runBlocking {
+    fun success_notTheAuthor() = runBlocking {
         // condition the response
         mockWebServer.enqueue(
             MockResponse()
@@ -109,11 +109,11 @@ class IsAuthorOfBlogPostTest {
         // first emission should be `loading`
         assert(emissions[0].isLoading)
 
-        // confirm second emission is boolean with error dialog
+        // confirm second emission is boolean with success message
         assert(emissions[1].data == false)
         assert(emissions[1].stateMessage?.response?.message == ErrorHandling.ERROR_EDIT_BLOG_NEED_PERMISSION)
-        assert(emissions[1].stateMessage?.response?.uiComponentType is UIComponentType.Dialog)
-        assert(emissions[1].stateMessage?.response?.messageType is MessageType.Error)
+        assert(emissions[1].stateMessage?.response?.uiComponentType is UIComponentType.None)
+        assert(emissions[1].stateMessage?.response?.messageType is MessageType.Success)
 
 
         // loading done
