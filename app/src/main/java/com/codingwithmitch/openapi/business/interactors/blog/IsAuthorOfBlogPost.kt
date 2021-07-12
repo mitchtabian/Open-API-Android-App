@@ -10,6 +10,7 @@ import com.codingwithmitch.openapi.business.domain.util.ErrorHandling.Companion.
 import com.codingwithmitch.openapi.business.domain.util.MessageType
 import com.codingwithmitch.openapi.business.domain.util.Response
 import com.codingwithmitch.openapi.business.domain.util.SuccessHandling.Companion.RESPONSE_HAS_PERMISSION_TO_EDIT
+import com.codingwithmitch.openapi.business.domain.util.SuccessHandling.Companion.RESPONSE_NO_PERMISSION_TO_EDIT
 import com.codingwithmitch.openapi.business.domain.util.UIComponentType
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -34,6 +35,17 @@ class IsAuthorOfBlogPost(
         )
         if(response.response == RESPONSE_HAS_PERMISSION_TO_EDIT){
             emit(DataState.data(response = null, true))
+        }
+        else if(response.response == GENERIC_ERROR
+            && response.errorMessage == RESPONSE_NO_PERMISSION_TO_EDIT){
+            emit(DataState.data(
+                response = Response(
+                    message = response.errorMessage,
+                    uiComponentType = UIComponentType.None(),
+                    messageType = MessageType.Success()
+                ),
+                data = false
+            ))
         }
         else if(response.response == GENERIC_ERROR){
             emit(DataState.data(
