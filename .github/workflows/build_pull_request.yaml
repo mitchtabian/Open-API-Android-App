@@ -1,0 +1,83 @@
+name: Build Pull Request
+
+on:
+  pull_request:
+    branches: [master]
+
+jobs:
+  run_unit_tests:
+    name: Run Unit Tests
+    runs-on: ubuntu-latest # virtual machine that this will run on
+    continue-on-error: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Restore Cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+      - name: Run Debug Tests
+        run: ./gradlew testDebugUnitTest
+
+      - name: Assemble Debug
+        run: ./gradlew assembleDebug
+
+      - name: Upload Test Reports
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: test-reports
+          path: '**/build/reports/tests/'
+
+  run_android_tests:
+    name: Android UI Test
+    runs-on: macos-latest # more reliable for ui tests
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Run Android UI Tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 29
+          script: ./gradlew connectedDebugAndroidTest
+
+      - name: Upload Android Test Reports
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: android-test-reports
+          path: '**/build/reports/androidTests/'
+
+
+  assemble_debug_apk:
+    name: Assemble debug APK
+    runs-on: ubuntu-latest # virtual machine that this will run on
+    continue-on-error: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Restore Cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+      - name: Assemble Debug
+        run: ./gradlew assembleDebug
+
+      - name: Upload DEBUG APK
+        uses: actions/upload-artifact@v2
+        with:
+          name: apk
+          path: app/build/outputs/apk/debug/**.apk
