@@ -24,6 +24,11 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
+
+      # make gradlew executable
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
       - name: Run Debug Tests
         run: ./gradlew testDebugUnitTest
 
@@ -43,6 +48,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+
+      # make gradlew executable
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
 
       - name: Run Android UI Tests
         uses: reactivecircus/android-emulator-runner@v2
@@ -75,6 +84,11 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
+
+      # make gradlew executable
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
       - name: Assemble Debug
         run: ./gradlew assembleDebug
 
