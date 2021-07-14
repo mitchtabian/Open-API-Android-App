@@ -10,6 +10,7 @@
       <map>
         <entry key="..\:/Android Studio Projects/Open-API-Android-App/app/src/main/res/layout/activity_auth.xml" value="0.1" />
         <entry key="..\:/Android Studio Projects/Open-API-Android-App/app/src/main/res/layout/fragment_change_password.xml" value="0.25" />
+        <entry key="..\:/Android Studio Projects/Open-API-Android-App/app/src/main/res/layout/fragment_update_account.xml" value="0.25" />
         <entry key="..\:/Android Studio Projects/Open-API-Android-App/app/src/main/res/layout/layout_blog_list_item.xml" value="0.1" />
       </map>
     </option>
