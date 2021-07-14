@@ -33,7 +33,7 @@ class GetAccount(
         val account = service.getAccount("Token ${authToken.token}").toAccount()
 
         // update/insert into the cache
-        cache.insertOrIgnore(account.toEntity())
+        cache.insertAndReplace(account.toEntity())
 
         // emit from cache
         val cachedAccount = cache.searchByPk(account.pk)?.toAccount()

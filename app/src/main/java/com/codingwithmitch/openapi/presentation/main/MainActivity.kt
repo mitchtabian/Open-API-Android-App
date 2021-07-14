@@ -36,7 +36,6 @@ class MainActivity : BaseActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -65,7 +64,7 @@ class MainActivity : BaseActivity() {
     }
 
     fun subscribeObservers() {
-        sessionManager.state.observe(this, { state ->
+        sessionManager.state.observe(this) { state ->
             displayProgressBar(state.isLoading)
             processQueue(
                 context = this,
@@ -79,7 +78,7 @@ class MainActivity : BaseActivity() {
                 navAuthActivity()
                 finish()
             }
-        })
+        }
     }
 
     override fun expandAppBar() {
