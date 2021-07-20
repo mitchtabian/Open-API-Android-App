@@ -76,7 +76,6 @@ class MainActivity : BaseActivity() {
                 })
             if (state.authToken == null || state.authToken.accountPk == -1) {
                 navAuthActivity()
-                finish()
             }
         }
     }
@@ -87,6 +86,8 @@ class MainActivity : BaseActivity() {
 
     private fun navAuthActivity() {
         val intent = Intent(this, AuthActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(intent)
         finish()
     }

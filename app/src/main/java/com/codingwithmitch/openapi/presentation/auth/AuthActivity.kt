@@ -26,24 +26,24 @@ class AuthActivity : BaseActivity()
     }
 
     private fun subscribeObservers(){
-        sessionManager.state.observe(this, { state ->
+        sessionManager.state.observe(this) { state ->
             displayProgressBar(state.isLoading)
             processQueue(
                 context = this,
                 queue = state.queue,
-                stateMessageCallback = object: StateMessageCallback {
+                stateMessageCallback = object : StateMessageCallback {
                     override fun removeMessageFromStack() {
                         sessionManager.onTriggerEvent(SessionEvents.OnRemoveHeadFromQueue)
                     }
                 }
             )
-            if(state.didCheckForPreviousAuthUser){
+            if (state.didCheckForPreviousAuthUser) {
                 onFinishCheckPreviousAuthUser()
             }
-            if(state.authToken != null && state.authToken.accountPk != -1){
+            if (state.authToken != null && state.authToken.accountPk != -1) {
                 navMainActivity()
             }
-        })
+        }
     }
 
     private fun onFinishCheckPreviousAuthUser(){
@@ -51,8 +51,10 @@ class AuthActivity : BaseActivity()
         binding.splashLogo.visibility = View.INVISIBLE
     }
 
-    fun navMainActivity(){
+    private fun navMainActivity(){
         val intent = Intent(this, MainActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(intent)
         finish()
     }
