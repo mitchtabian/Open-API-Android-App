@@ -10,6 +10,9 @@ import com.codingwithmitch.openapi.presentation.main.blog.list.BlogFilterOptions
 import com.codingwithmitch.openapi.presentation.main.blog.list.BlogOrderOptions
 import com.codingwithmitch.openapi.business.domain.util.DataState
 import com.codingwithmitch.openapi.business.domain.util.ErrorHandling.Companion.ERROR_AUTH_TOKEN_INVALID
+import com.codingwithmitch.openapi.business.domain.util.MessageType
+import com.codingwithmitch.openapi.business.domain.util.Response
+import com.codingwithmitch.openapi.business.domain.util.UIComponentType
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
@@ -34,20 +37,33 @@ class SearchBlogs(
         }
         // get Blogs from network
         val filterAndOrder = order.value + filter.value // Ex: -date_updated
-        val blogs = service.searchListBlogPosts(
-            "Token ${authToken.token}",
-            query = query,
-            ordering = filterAndOrder,
-            page = page
-        ).results.map { it.toBlogPost() }
 
-        // Insert into cache
-        for(blog in blogs){
-            try{
-                cache.insert(blog.toEntity())
-            }catch (e: Exception){
-                e.printStackTrace()
+        try{ // catch network exception
+            val blogs = service.searchListBlogPosts(
+                "Token ${authToken.token}",
+                query = query,
+                ordering = filterAndOrder,
+                page = page
+            ).results.map { it.toBlogPost() }
+
+            // Insert into cache
+            for(blog in blogs){
+                try{
+                    cache.insert(blog.toEntity())
+                }catch (e: Exception){
+                    e.printStackTrace()
+                }
             }
+        }catch (e: Exception){
+            emit(
+                DataState.error<List<BlogPost>>(
+                    response = Response(
+                        message = "Unable to update the cache.",
+                        uiComponentType = UIComponentType.None(),
+                        messageType = MessageType.Error()
+                    )
+                )
+            )
         }
 
         // emit from cache
