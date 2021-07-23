@@ -84,8 +84,8 @@ dependencies {
     implementation "com.google.android.material:material:$material_version"
 
     // material dialogs
-    def matieral_dialogs_version = "3.1.0"
-    implementation "com.afollestad.material-dialogs:core:$matieral_dialogs_version"
+    def material_dialogs_version = "3.1.0"
+    implementation "com.afollestad.material-dialogs:core:$material_dialogs_version"
 
     // Leak Canary
     def leak_canary_version = "2.7"
@@ -97,8 +97,8 @@ dependencies {
     kapt "com.github.bumptech.glide:compiler:$glide_version"
 
     // Android-Image-Cropper
-    def android_image_cropper_version = "2.8.+"
-    api "com.theartofdev.edmodo:android-image-cropper:$android_image_cropper_version"
+    def android_image_cropper_version = "3.1.1"
+    api "com.github.CanHub:Android-Image-Cropper:$android_image_cropper_version"
 
     def dataStore = "1.0.0-rc01"
     implementation "androidx.datastore:datastore-preferences:$dataStore"

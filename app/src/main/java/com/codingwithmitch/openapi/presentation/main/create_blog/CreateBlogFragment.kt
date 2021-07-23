@@ -1,27 +1,24 @@
 package com.codingwithmitch.openapi.presentation.main.create_blog
 
-import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
-import android.util.Log
 import android.view.*
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContract
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.canhub.cropper.CropImage
+import com.canhub.cropper.CropImageView
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.business.domain.util.*
-import com.codingwithmitch.openapi.business.domain.util.Constants.Companion.GALLERY_REQUEST_CODE
-import com.codingwithmitch.openapi.business.domain.util.ErrorHandling.Companion.ERROR_SOMETHING_WRONG_WITH_IMAGE
 import com.codingwithmitch.openapi.databinding.FragmentCreateBlogBinding
 import com.codingwithmitch.openapi.presentation.util.processQueue
-import com.theartofdev.edmodo.cropper.CropImage
-import com.theartofdev.edmodo.cropper.CropImageView
 
-class CreateBlogFragment : BaseCreateBlogFragment()
-{
+class CreateBlogFragment : BaseCreateBlogFragment() {
 
     private val requestOptions = RequestOptions
         .placeholderOf(R.drawable.default_image)
@@ -31,6 +28,28 @@ class CreateBlogFragment : BaseCreateBlogFragment()
 
     private var _binding: FragmentCreateBlogBinding? = null
     private val binding get() = _binding!!
+
+    private val cropActivityResultContract = object : ActivityResultContract<Any?, Uri>() {
+        override fun createIntent(context: Context, input: Any?): Intent {
+            return CropImage
+                .activity()
+                .setGuidelines(CropImageView.Guidelines.ON)
+                .getIntent(context)
+        }
+
+        override fun parseResult(resultCode: Int, intent: Intent?): Uri? {
+            return CropImage.getActivityResult(intent)?.uriContent
+        }
+    }
+
+    private lateinit var cropActivityResultLauncher: ActivityResultLauncher<Any?>
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        cropActivityResultLauncher = registerForActivityResult(cropActivityResultContract) { uri ->
+                viewModel.onTriggerEvent(CreateBlogEvents.OnUpdateUri(uri))
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,36 +65,27 @@ class CreateBlogFragment : BaseCreateBlogFragment()
         setHasOptionsMenu(true)
 
         binding.blogImage.setOnClickListener {
-            if(uiCommunicationListener.isStoragePermissionGranted()){
-                pickFromGallery()
+            if (uiCommunicationListener.isStoragePermissionGranted()) {
+                cropActivityResultLauncher.launch(null)
             }
         }
 
         binding.updateTextview.setOnClickListener {
-            if(uiCommunicationListener.isStoragePermissionGranted()){
-                pickFromGallery()
+            if (uiCommunicationListener.isStoragePermissionGranted()) {
+                cropActivityResultLauncher.launch(null)
             }
         }
 
         subscribeObservers()
     }
 
-    private fun pickFromGallery() {
-        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-        intent.type = "image/*"
-        val mimeTypes = arrayOf("image/jpeg", "image/png", "image/jpg")
-        intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes)
-        intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        startActivityForResult(intent, GALLERY_REQUEST_CODE)
-    }
-
-    fun subscribeObservers(){
+    fun subscribeObservers() {
         viewModel.state.observe(viewLifecycleOwner, { state ->
             uiCommunicationListener.displayProgressBar(state.isLoading)
             processQueue(
                 context = context,
                 queue = state.queue,
-                stateMessageCallback = object: StateMessageCallback {
+                stateMessageCallback = object : StateMessageCallback {
                     override fun removeMessageFromStack() {
                         viewModel.onTriggerEvent(CreateBlogEvents.OnRemoveHeadFromQueue)
                     }
@@ -85,24 +95,23 @@ class CreateBlogFragment : BaseCreateBlogFragment()
                 body = state.body,
                 uri = state.uri,
             )
-            if(state.onPublishSuccess){
+            if (state.onPublishSuccess) {
                 findNavController().popBackStack(R.id.blogFragment, false)
             }
         })
     }
 
-    fun setBlogProperties(
+    private fun setBlogProperties(
         title: String,
         body: String,
         uri: Uri?
-    ){
-        if(uri != null){
+    ) {
+        if (uri != null) {
             Glide.with(this)
                 .setDefaultRequestOptions(requestOptions)
                 .load(uri)
                 .into(binding.blogImage)
-        }
-        else{
+        } else {
             Glide.with(this)
                 .setDefaultRequestOptions(requestOptions)
                 .load(R.drawable.default_image)
@@ -113,58 +122,7 @@ class CreateBlogFragment : BaseCreateBlogFragment()
         binding.blogBody.setText(body)
     }
 
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK) {
-            Log.d(TAG, "CROP: RESULT OK")
-            when (requestCode) {
-
-                GALLERY_REQUEST_CODE -> {
-                    data?.data?.let { uri ->
-                        activity?.let{
-                            launchImageCrop(uri)
-                        }
-                    }?: showErrorDialog(ERROR_SOMETHING_WRONG_WITH_IMAGE)
-                }
-
-                CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE -> {
-                    Log.d(TAG, "CROP: CROP_IMAGE_ACTIVITY_REQUEST_CODE")
-                    val result = CropImage.getActivityResult(data)
-                    val resultUri = result.uri
-                    Log.d(TAG, "CROP: CROP_IMAGE_ACTIVITY_REQUEST_CODE: uri: ${resultUri}")
-                    viewModel.onTriggerEvent(CreateBlogEvents.OnUpdateUri(resultUri))
-                }
-
-                CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE -> {
-                    Log.d(TAG, "CROP: ERROR")
-                    showErrorDialog(ERROR_SOMETHING_WRONG_WITH_IMAGE)
-                }
-            }
-        }
-    }
-
-    private fun showErrorDialog(message: String){
-        viewModel.onTriggerEvent(CreateBlogEvents.Error(
-            stateMessage = StateMessage(
-                response = Response(
-                    message = message,
-                    uiComponentType = UIComponentType.Dialog(),
-                    messageType = MessageType.Error()
-                )
-            )
-        ))
-    }
-
-    private fun launchImageCrop(uri: Uri){
-        context?.let{
-            CropImage.activity(uri)
-                .setGuidelines(CropImageView.Guidelines.ON)
-                .start(it, this)
-        }
-    }
-
-    private fun cacheState(){
+    private fun cacheState() {
         val title = binding.blogTitle.text.toString()
         val body = binding.blogBody.text.toString()
         viewModel.onTriggerEvent(CreateBlogEvents.OnUpdateTitle(title))
@@ -181,7 +139,7 @@ class CreateBlogFragment : BaseCreateBlogFragment()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId){
+        when (item.itemId) {
             R.id.publish -> {
                 cacheState()
                 viewModel.onTriggerEvent(CreateBlogEvents.PublishBlog)

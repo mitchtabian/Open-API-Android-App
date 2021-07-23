@@ -27,7 +27,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
+        <activity android:name="com.canhub.cropper.CropImageActivity"
                 android:theme="@style/Base.Theme.AppCompat"/> <!-- optional (needed if default theme has no action bar) -->
 
     </application>
