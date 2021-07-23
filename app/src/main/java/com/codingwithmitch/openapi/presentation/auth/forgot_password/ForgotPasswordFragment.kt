@@ -84,7 +84,7 @@ class ForgotPasswordFragment : BaseAuthFragment() {
     }
 
     private fun subscribeObservers() {
-        viewModel.state.observe(viewLifecycleOwner, { state ->
+        viewModel.state.observe(viewLifecycleOwner) { state ->
             uiCommunicationListener.displayProgressBar(state.isLoading)
             processQueue(
                 context = context,
@@ -98,7 +98,7 @@ class ForgotPasswordFragment : BaseAuthFragment() {
             if (state.isPasswordResetLinkSent) {
                 onPasswordResetLinkSent()
             }
-        })
+        }
     }
 
     @SuppressLint("SetJavaScriptEnabled")

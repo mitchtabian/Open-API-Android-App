@@ -45,14 +45,14 @@ class AccountFragment : BaseAccountFragment() {
     }
 
     private fun subscribeObservers(){
-        viewModel.state.observe(viewLifecycleOwner, { state ->
+        viewModel.state.observe(viewLifecycleOwner) { state ->
 
             uiCommunicationListener.displayProgressBar(state.isLoading)
 
             processQueue(
                 context = context,
                 queue = state.queue,
-                stateMessageCallback = object: StateMessageCallback {
+                stateMessageCallback = object : StateMessageCallback {
                     override fun removeMessageFromStack() {
                         viewModel.onTriggerEvent(AccountEvents.OnRemoveHeadFromQueue)
                     }
@@ -61,7 +61,7 @@ class AccountFragment : BaseAccountFragment() {
             state.account?.let { account ->
                 setAccountDataFields(account)
             }
-        })
+        }
     }
 
     private fun setAccountDataFields(account: Account){

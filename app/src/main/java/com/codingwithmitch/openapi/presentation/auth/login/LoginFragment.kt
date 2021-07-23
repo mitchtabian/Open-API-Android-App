@@ -33,28 +33,20 @@ class LoginFragment : BaseAuthFragment() {
             cacheState()
             login()
         }
-        viewModel.state.value?.let { state ->
-            setLoginFields(email = state.email, password = state.password)
-        }
     }
 
     fun subscribeObservers(){
-        viewModel.state.observe(viewLifecycleOwner, { state ->
+        viewModel.state.observe(viewLifecycleOwner) { state ->
             uiCommunicationListener.displayProgressBar(state.isLoading)
             processQueue(
                 context = context,
                 queue = state.queue,
-                stateMessageCallback = object: StateMessageCallback {
+                stateMessageCallback = object : StateMessageCallback {
                     override fun removeMessageFromStack() {
                         viewModel.onTriggerEvent(LoginEvents.OnRemoveHeadFromQueue)
                     }
-            })
-        })
-    }
-
-    private fun setLoginFields(email: String, password: String){
-        binding.inputEmail.setText(email)
-        binding.inputPassword.setText(password)
+                })
+        }
     }
 
     private fun login(){
