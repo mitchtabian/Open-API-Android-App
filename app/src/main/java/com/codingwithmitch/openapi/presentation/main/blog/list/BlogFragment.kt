@@ -29,14 +29,15 @@ import com.codingwithmitch.openapi.business.domain.models.BlogPost
 import com.codingwithmitch.openapi.business.domain.util.*
 import com.codingwithmitch.openapi.databinding.FragmentBlogBinding
 import com.codingwithmitch.openapi.presentation.main.blog.BaseBlogFragment
+import com.codingwithmitch.openapi.presentation.main.blog.detail.SHOULD_REFRESH
+import com.codingwithmitch.openapi.presentation.main.blog.detail.ViewBlogEvents
 import com.codingwithmitch.openapi.presentation.util.TopSpacingItemDecoration
 import com.codingwithmitch.openapi.presentation.util.processQueue
 import kotlinx.coroutines.*
 
 class BlogFragment : BaseBlogFragment(),
     BlogListAdapter.Interaction,
-    SwipeRefreshLayout.OnRefreshListener
-{
+    SwipeRefreshLayout.OnRefreshListener {
 
     private lateinit var searchView: SearchView
     private var recyclerAdapter: BlogListAdapter? = null // can leak memory so need to null
@@ -60,11 +61,23 @@ class BlogFragment : BaseBlogFragment(),
         (activity as AppCompatActivity).supportActionBar?.setDisplayShowTitleEnabled(false)
         setHasOptionsMenu(true)
         binding.swipeRefresh.setOnRefreshListener(this)
+        // If an update occurred from UpdateBlogFragment, refresh the BlogPost
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>(
+            SHOULD_REFRESH
+        )?.observe(viewLifecycleOwner) { shouldRefresh ->
+            shouldRefresh?.run {
+                viewModel.onTriggerEvent(BlogEvents.GetOrderAndFilter)
+                findNavController().currentBackStackEntry?.savedStateHandle?.set(
+                    SHOULD_REFRESH,
+                    null
+                )
+            }
+        }
         initRecyclerView()
         subscribeObservers()
     }
 
-    private fun subscribeObservers(){
+    private fun subscribeObservers() {
         viewModel.state.observe(viewLifecycleOwner, { state ->
 
             uiCommunicationListener.displayProgressBar(state.isLoading)
@@ -72,7 +85,7 @@ class BlogFragment : BaseBlogFragment(),
             processQueue(
                 context = context,
                 queue = state.queue,
-                stateMessageCallback = object: StateMessageCallback {
+                stateMessageCallback = object : StateMessageCallback {
                     override fun removeMessageFromStack() {
                         viewModel.onTriggerEvent(BlogEvents.OnRemoveHeadFromQueue)
                     }
@@ -84,7 +97,7 @@ class BlogFragment : BaseBlogFragment(),
         })
     }
 
-    private fun initSearchView(){
+    private fun initSearchView() {
         activity?.apply {
             val searchManager: SearchManager = getSystemService(SEARCH_SERVICE) as SearchManager
             searchView = menu.findItem(R.id.action_search).actionView as SearchView
@@ -99,7 +112,7 @@ class BlogFragment : BaseBlogFragment(),
 
         // set initial value of query text after rotation/navigation
         viewModel.state.value?.let { state ->
-            if(state.query.isNotBlank()){
+            if (state.query.isNotBlank()) {
                 searchPlate.setText(state.query)
                 searchView.isIconified = false
                 binding.focusableView.requestFocus()
@@ -108,7 +121,8 @@ class BlogFragment : BaseBlogFragment(),
         searchPlate.setOnEditorActionListener { v, actionId, event ->
 
             if (actionId == EditorInfo.IME_ACTION_UNSPECIFIED
-                || actionId == EditorInfo.IME_ACTION_SEARCH ) {
+                || actionId == EditorInfo.IME_ACTION_SEARCH
+            ) {
                 val searchQuery = v.text.toString()
                 Log.e(TAG, "SearchView: (keyboard or arrow) executing search...: ${searchQuery}")
                 executeNewQuery(searchQuery)
@@ -126,18 +140,18 @@ class BlogFragment : BaseBlogFragment(),
 
     }
 
-    private fun executeNewQuery(query: String){
+    private fun executeNewQuery(query: String) {
         viewModel.onTriggerEvent(BlogEvents.UpdateQuery(query))
         viewModel.onTriggerEvent(BlogEvents.NewSearch)
         resetUI()
     }
 
-    private  fun resetUI(){
+    private fun resetUI() {
         uiCommunicationListener.hideSoftKeyboard()
         binding.focusableView.requestFocus()
     }
 
-    private fun initRecyclerView(){
+    private fun initRecyclerView() {
         binding.blogPostRecyclerview.apply {
             layoutManager = LinearLayoutManager(this@BlogFragment.context)
             val topSpacingDecorator = TopSpacingItemDecoration(30)
@@ -145,13 +159,16 @@ class BlogFragment : BaseBlogFragment(),
             addItemDecoration(topSpacingDecorator)
 
             recyclerAdapter = BlogListAdapter(this@BlogFragment)
-            addOnScrollListener(object: RecyclerView.OnScrollListener(){
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
 
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                     super.onScrollStateChanged(recyclerView, newState)
                     val layoutManager = recyclerView.layoutManager as LinearLayoutManager
                     val lastPosition = layoutManager.findLastVisibleItemPosition()
-                    Log.d(TAG, "onScrollStateChanged: exhausted? ${viewModel.state.value?.isQueryExhausted}")
+                    Log.d(
+                        TAG,
+                        "onScrollStateChanged: exhausted? ${viewModel.state.value?.isQueryExhausted}"
+                    )
                     if (
                         lastPosition == recyclerAdapter?.itemCount?.minus(1)
                         && viewModel.state.value?.isLoading == false
@@ -175,7 +192,7 @@ class BlogFragment : BaseBlogFragment(),
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
-        when(item.itemId){
+        when (item.itemId) {
             R.id.action_filter_settings -> {
                 showFilterDialog()
                 return true
@@ -185,23 +202,24 @@ class BlogFragment : BaseBlogFragment(),
     }
 
     override fun onItemSelected(position: Int, item: BlogPost) {
-        try{
+        try {
             viewModel.state.value?.let { state ->
-                    val bundle = bundleOf("blogPostPk" to item.pk)
-                    findNavController().navigate(R.id.action_blogFragment_to_viewBlogFragment, bundle)
-            }?: throw Exception("Null BlogPost")
-        }catch (e: Exception){
+                val bundle = bundleOf("blogPostPk" to item.pk)
+                findNavController().navigate(R.id.action_blogFragment_to_viewBlogFragment, bundle)
+            } ?: throw Exception("Null BlogPost")
+        } catch (e: Exception) {
             e.printStackTrace()
             viewModel.onTriggerEvent(
                 BlogEvents.Error(
-                stateMessage = StateMessage(
-                    response = Response(
-                        message = e.message,
-                        uiComponentType = UIComponentType.Dialog(),
-                        messageType = MessageType.Error()
+                    stateMessage = StateMessage(
+                        response = Response(
+                            message = e.message,
+                            uiComponentType = UIComponentType.Dialog(),
+                            messageType = MessageType.Error()
+                        )
                     )
                 )
-            ))
+            )
         }
     }
 
@@ -210,7 +228,7 @@ class BlogFragment : BaseBlogFragment(),
         binding.swipeRefresh.isRefreshing = false
     }
 
-    fun showFilterDialog(){
+    fun showFilterDialog() {
         activity?.let {
             viewModel.state.value?.let { state ->
                 val filter = state.filter.value
