@@ -29,6 +29,7 @@ import com.codingwithmitch.openapi.business.domain.models.BlogPost
 import com.codingwithmitch.openapi.business.domain.util.*
 import com.codingwithmitch.openapi.databinding.FragmentBlogBinding
 import com.codingwithmitch.openapi.presentation.main.blog.BaseBlogFragment
+import com.codingwithmitch.openapi.presentation.main.blog.detail.SHOULD_REFRESH
 import com.codingwithmitch.openapi.presentation.util.TopSpacingItemDecoration
 import com.codingwithmitch.openapi.presentation.util.processQueue
 import kotlinx.coroutines.*
@@ -60,6 +61,16 @@ class BlogFragment : BaseBlogFragment(),
         (activity as AppCompatActivity).supportActionBar?.setDisplayShowTitleEnabled(false)
         setHasOptionsMenu(true)
         binding.swipeRefresh.setOnRefreshListener(this)
+
+        // If an update occurred from UpdateBlogFragment, refresh the Blog
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>(SHOULD_REFRESH)
+            ?.observe(viewLifecycleOwner) { shouldRefresh ->
+                shouldRefresh?.run {
+                    viewModel.onTriggerEvent(BlogEvents.GetOrderAndFilter)
+                    findNavController().currentBackStackEntry?.savedStateHandle?.set(SHOULD_REFRESH, null)
+                }
+            }
+
         initRecyclerView()
         subscribeObservers()
     }

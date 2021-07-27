@@ -16,6 +16,7 @@ import com.canhub.cropper.CropImageView
 import com.codingwithmitch.openapi.R
 import com.codingwithmitch.openapi.business.domain.util.*
 import com.codingwithmitch.openapi.databinding.FragmentCreateBlogBinding
+import com.codingwithmitch.openapi.presentation.main.blog.detail.SHOULD_REFRESH
 import com.codingwithmitch.openapi.presentation.util.processQueue
 
 class CreateBlogFragment : BaseCreateBlogFragment() {
@@ -96,6 +97,7 @@ class CreateBlogFragment : BaseCreateBlogFragment() {
                 uri = state.uri,
             )
             if (state.onPublishSuccess) {
+                findNavController().previousBackStackEntry?.savedStateHandle?.set(SHOULD_REFRESH, true)
                 findNavController().popBackStack(R.id.blogFragment, false)
             }
         })
