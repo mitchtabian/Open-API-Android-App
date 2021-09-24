@@ -9,7 +9,7 @@
 
     <fragment
             android:id="@+id/launcherFragment"
-            android:name="com.codingwithmitch.openapi.presentation.auth.launcher.LauncherFragment"
+            android:name="com.templateapp.cloudapi.presentation.auth.launcher.LauncherFragment"
             android:label="fragment_launcher"
             tools:layout="@layout/fragment_launcher" >
 
@@ -33,20 +33,20 @@
 
     <fragment
             android:id="@+id/forgotPasswordFragment"
-            android:name="com.codingwithmitch.openapi.presentation.auth.forgot_password.ForgotPasswordFragment"
+            android:name="com.templateapp.cloudapi.presentation.auth.forgot_password.ForgotPasswordFragment"
             android:label="fragment_forgot_password"
             tools:layout="@layout/fragment_forgot_password" />
 
     <fragment
             android:id="@+id/loginFragment"
-            android:name="com.codingwithmitch.openapi.presentation.auth.login.LoginFragment"
+            android:name="com.templateapp.cloudapi.presentation.auth.login.LoginFragment"
             android:label="fragment_login"
             tools:layout="@layout/fragment_login" />
 
 
     <fragment
             android:id="@+id/registerFragment"
-            android:name="com.codingwithmitch.openapi.presentation.auth.register.RegisterFragment"
+            android:name="com.templateapp.cloudapi.presentation.auth.register.RegisterFragment"
             android:label="fragment_register"
             tools:layout="@layout/fragment_register" />
 </navigation>

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">OpenAPI</string>
+    <string name="app_name">CloudAPI</string>
 
     <!-- Intent extras -->
     <string name="auth_token">auth_token</string>
