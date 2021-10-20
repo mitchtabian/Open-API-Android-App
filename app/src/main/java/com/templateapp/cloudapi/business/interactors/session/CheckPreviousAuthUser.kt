@@ -25,7 +25,7 @@ class CheckPreviousAuthUser(
         var authToken: AuthToken? = null
         val entity = accountDao.searchByEmail(email)
         if(entity != null){
-            authToken = authTokenDao.searchByPk(entity.pk)?.toAuthToken()
+            authToken = authTokenDao.searchById(entity._id)?.toAuthToken()
             if(authToken != null){
                 emit(DataState.data(response = null, data = authToken))
             }

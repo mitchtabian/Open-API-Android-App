@@ -64,7 +64,7 @@ class AccountTest {
         )
 
         // User Information
-        val pk = AccountResponses.pk
+        val id = AccountResponses.id
         val email = AccountResponses.email
         val username = AccountResponses.username
         val password = AccountResponses.password
@@ -76,7 +76,7 @@ class AccountTest {
 
         val emissions = getAccount.execute(
             authToken = AuthToken(
-                accountPk = pk,
+                accountId = id,
                 token = token,
             )
         ).toList()
@@ -85,13 +85,13 @@ class AccountTest {
         assert(emissions[0].isLoading)
 
         // confirm Account is cached
-        cachedAccount = cache.searchByPk(pk)
+        cachedAccount = cache.searchByPk(id)
         assert(cachedAccount?.email == email)
         assert(cachedAccount?.username == username)
-        assert(cachedAccount?.pk == pk)
+        assert(cachedAccount?._id == id)
 
         // confirm second emission is the cached Account
-        assert(emissions[1].data?.pk == pk)
+        assert(emissions[1].data?.id == id)
         assert(emissions[1].data?.email == email)
         assert(emissions[1].data?.username == username)
 

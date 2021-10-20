@@ -6,20 +6,20 @@ import retrofit2.http.*
 
 interface OpenApiAuthService {
 
-    @POST("account/login")
+    @POST("users/login")
     @FormUrlEncoded
     suspend fun login(
-        @Field("username") email: String,
+        @Field("email") email: String,
         @Field("password") password: String
     ): LoginResponse
 
-    @POST("account/register")
+    @POST("users")
     @FormUrlEncoded
     suspend fun register(
         @Field("email") email: String,
-        @Field("username") username: String,
+        @Field("name") name: String,
         @Field("password") password: String,
-        @Field("password2") password2: String
+        @Field("confirm_password") confirm_password: String
     ): RegistrationResponse
 
 }

@@ -7,12 +7,12 @@ sealed class ViewBlogEvents {
 
     data class IsAuthor(val slug: String): ViewBlogEvents()
 
-    data class GetBlog(val pk: Int): ViewBlogEvents()
+    data class GetBlog(val id: String): ViewBlogEvents()
 
     object Refresh: ViewBlogEvents()
 
     data class ConfirmBlogExistsOnServer(
-        val pk: Int,
+        val id: String,
         val slug: String
     ): ViewBlogEvents()
 

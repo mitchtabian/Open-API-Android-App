@@ -49,7 +49,7 @@ class UpdateBlogPost(
             throw Exception(createUpdateResponse.errorMessage)
         }else{ // success
             cache.updateBlogPost(
-                pk = createUpdateResponse.pk,
+                id = createUpdateResponse.id,
                 title = createUpdateResponse.title,
                 body = createUpdateResponse.body,
                 image = createUpdateResponse.image

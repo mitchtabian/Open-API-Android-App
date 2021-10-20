@@ -37,15 +37,15 @@ class Login(
         // cache the Account information (don't know the username yet)
         accountDao.insertOrIgnore(
             Account(
-                pk = loginResponse.pk,
-                email = loginResponse.email,
+                id = loginResponse.user._id,
+                email = loginResponse.user.email,
                 username = ""
             ).toEntity()
         )
 
         // cache the auth token
         val authToken = AuthToken(
-            loginResponse.pk,
+            loginResponse.user._id,
             loginResponse.token
         )
         val result = authTokenDao.insert(authToken.toEntity())

@@ -82,7 +82,7 @@ class RegisterTest {
         )
 
         // User Information
-        val pk = RegisterResponses.pk
+        val id = RegisterResponses.id
         val email = RegisterResponses.email
         val username = RegisterResponses.username
         val password = RegisterResponses.password
@@ -90,7 +90,7 @@ class RegisterTest {
         val token = RegisterResponses.token
 
         // confirm no AuthToken is stored in cache
-        var cachedToken = authTokenDao.searchByPk(pk)
+        var cachedToken = authTokenDao.searchById(id)
         assert(cachedToken == null)
 
         // confirm no Account is stored in cache
@@ -112,22 +112,22 @@ class RegisterTest {
         assert(emissions[0].isLoading)
 
         // confirm AuthToken is cached
-        cachedToken = authTokenDao.searchByPk(pk)
-        assert(cachedToken?.account_pk == pk)
+        cachedToken = authTokenDao.searchById(id)
+        assert(cachedToken?.account_id == id)
         assert(cachedToken?.token == token)
 
         // confirm Account is cached
-        cachedAccount = accountDao.searchByPk(pk)
+        cachedAccount = accountDao.searchByPk(id)
         assert(cachedAccount?.email == email)
         assert(cachedAccount?.username == username)
-        assert(cachedAccount?.pk == pk)
+        assert(cachedAccount?._id == id)
 
         // confirm email is saved to DataStore
         storedEmail = dataStore.readValue(DataStoreKeys.PREVIOUS_AUTH_USER)
         assert(storedEmail == email)
 
         // confirm second emission is the cached AuthToken
-        assert(emissions[1].data?.accountPk == pk)
+        assert(emissions[1].data?.accountId == id)
         assert(emissions[1].data?.token == token)
 
         // loading done
@@ -144,14 +144,14 @@ class RegisterTest {
         )
 
         // User Information
-        val pk = RegisterResponses.pk
+        val id = RegisterResponses.id
         val email = RegisterResponses.email
         val username = RegisterResponses.username
         val password = RegisterResponses.password
         val password2 = RegisterResponses.password
 
         // confirm no AuthToken is stored in cache
-        var cachedToken = authTokenDao.searchByPk(pk)
+        var cachedToken = authTokenDao.searchById(id)
         assert(cachedToken == null)
 
         // confirm no Account is stored in cache
@@ -173,11 +173,11 @@ class RegisterTest {
         assert(emissions[0].isLoading)
 
         // confirm AuthToken is NOT cached
-        cachedToken = authTokenDao.searchByPk(pk)
+        cachedToken = authTokenDao.searchById(id)
         assert(cachedToken == null)
 
         // confirm Account is NOT cached
-        cachedAccount = accountDao.searchByPk(pk)
+        cachedAccount = accountDao.searchByPk(id)
         assert(cachedAccount == null)
 
         // confirm email is NOT saved to DataStore
@@ -204,14 +204,14 @@ class RegisterTest {
         )
 
         // User Information
-        val pk = RegisterResponses.pk
+        val id = RegisterResponses.id
         val email = RegisterResponses.email
         val username = RegisterResponses.username
         val password = RegisterResponses.password
         val password2 = RegisterResponses.password
 
         // confirm no AuthToken is stored in cache
-        var cachedToken = authTokenDao.searchByPk(pk)
+        var cachedToken = authTokenDao.searchById(id)
         assert(cachedToken == null)
 
         // confirm no Account is stored in cache
@@ -233,11 +233,11 @@ class RegisterTest {
         assert(emissions[0].isLoading)
 
         // confirm AuthToken is NOT cached
-        cachedToken = authTokenDao.searchByPk(pk)
+        cachedToken = authTokenDao.searchById(id)
         assert(cachedToken == null)
 
         // confirm Account is NOT cached
-        cachedAccount = accountDao.searchByPk(pk)
+        cachedAccount = accountDao.searchByPk(id)
         assert(cachedAccount == null)
 
         // confirm email is NOT saved to DataStore
@@ -264,14 +264,14 @@ class RegisterTest {
         )
 
         // User Information
-        val pk = RegisterResponses.pk
+        val id = RegisterResponses.id
         val email = RegisterResponses.email
         val username = RegisterResponses.username
         val password = RegisterResponses.password
         val password2 = RegisterResponses.password
 
         // confirm no AuthToken is stored in cache
-        var cachedToken = authTokenDao.searchByPk(pk)
+        var cachedToken = authTokenDao.searchById(id)
         assert(cachedToken == null)
 
         // confirm no Account is stored in cache
@@ -293,11 +293,11 @@ class RegisterTest {
         assert(emissions[0].isLoading)
 
         // confirm AuthToken is NOT cached
-        cachedToken = authTokenDao.searchByPk(pk)
+        cachedToken = authTokenDao.searchById(id)
         assert(cachedToken == null)
 
         // confirm Account is NOT cached
-        cachedAccount = accountDao.searchByPk(pk)
+        cachedAccount = accountDao.searchByPk(id)
         assert(cachedAccount == null)
 
         // confirm email is NOT saved to DataStore
@@ -324,14 +324,14 @@ class RegisterTest {
         )
 
         // User Information
-        val pk = RegisterResponses.pk
+        val id = RegisterResponses.id
         val email = RegisterResponses.email
         val username = RegisterResponses.username
         val password = RegisterResponses.password
         val password2 = RegisterResponses.password
 
         // confirm no AuthToken is stored in cache
-        var cachedToken = authTokenDao.searchByPk(pk)
+        var cachedToken = authTokenDao.searchById(id)
         assert(cachedToken == null)
 
         // confirm no Account is stored in cache
@@ -353,11 +353,11 @@ class RegisterTest {
         assert(emissions[0].isLoading)
 
         // confirm AuthToken is NOT cached
-        cachedToken = authTokenDao.searchByPk(pk)
+        cachedToken = authTokenDao.searchById(id)
         assert(cachedToken == null)
 
         // confirm Account is NOT cached
-        cachedAccount = accountDao.searchByPk(pk)
+        cachedAccount = accountDao.searchByPk(id)
         assert(cachedAccount == null)
 
         // confirm email is NOT saved to DataStore
@@ -384,14 +384,14 @@ class RegisterTest {
         )
 
         // User Information
-        val pk = RegisterResponses.pk
+        val id = RegisterResponses.id
         val email = RegisterResponses.email
         val username = RegisterResponses.username
         val password = RegisterResponses.password
         val password2 = RegisterResponses.password
 
         // confirm no AuthToken is stored in cache
-        var cachedToken = authTokenDao.searchByPk(pk)
+        var cachedToken = authTokenDao.searchById(id)
         assert(cachedToken == null)
 
         // confirm no Account is stored in cache
@@ -413,11 +413,11 @@ class RegisterTest {
         assert(emissions[0].isLoading)
 
         // confirm AuthToken is NOT cached
-        cachedToken = authTokenDao.searchByPk(pk)
+        cachedToken = authTokenDao.searchById(id)
         assert(cachedToken == null)
 
         // confirm Account is NOT cached
-        cachedAccount = accountDao.searchByPk(pk)
+        cachedAccount = accountDao.searchByPk(id)
         assert(cachedAccount == null)
 
         // confirm email is NOT saved to DataStore
@@ -444,14 +444,14 @@ class RegisterTest {
         )
 
         // User Information
-        val pk = RegisterResponses.pk
+        val id = RegisterResponses.id
         val email = RegisterResponses.email
         val username = RegisterResponses.username
         val password = RegisterResponses.password
         val password2 = RegisterResponses.password
 
         // confirm no AuthToken is stored in cache
-        var cachedToken = authTokenDao.searchByPk(pk)
+        var cachedToken = authTokenDao.searchById(id)
         assert(cachedToken == null)
 
         // confirm no Account is stored in cache
@@ -473,11 +473,11 @@ class RegisterTest {
         assert(emissions[0].isLoading)
 
         // confirm AuthToken is NOT cached
-        cachedToken = authTokenDao.searchByPk(pk)
+        cachedToken = authTokenDao.searchById(id)
         assert(cachedToken == null)
 
         // confirm Account is NOT cached
-        cachedAccount = accountDao.searchByPk(pk)
+        cachedAccount = accountDao.searchByPk(id)
         assert(cachedAccount == null)
 
         // confirm email is NOT saved to DataStore
@@ -504,14 +504,14 @@ class RegisterTest {
         )
 
         // User Information
-        val pk = RegisterResponses.pk
+        val id = RegisterResponses.id
         val email = RegisterResponses.email
         val username = RegisterResponses.username
         val password = RegisterResponses.password
         val password2 = RegisterResponses.password
 
         // confirm no AuthToken is stored in cache
-        var cachedToken = authTokenDao.searchByPk(pk)
+        var cachedToken = authTokenDao.searchById(id)
         assert(cachedToken == null)
 
         // confirm no Account is stored in cache
@@ -533,11 +533,11 @@ class RegisterTest {
         assert(emissions[0].isLoading)
 
         // confirm AuthToken is NOT cached
-        cachedToken = authTokenDao.searchByPk(pk)
+        cachedToken = authTokenDao.searchById(id)
         assert(cachedToken == null)
 
         // confirm Account is NOT cached
-        cachedAccount = accountDao.searchByPk(pk)
+        cachedAccount = accountDao.searchByPk(id)
         assert(cachedAccount == null)
 
         // confirm email is NOT saved to DataStore

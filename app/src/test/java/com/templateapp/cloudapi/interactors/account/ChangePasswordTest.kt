@@ -65,13 +65,13 @@ class ChangePasswordTest {
         )
 
         // User Information
-        val pk = AccountResponses.pk
+        val id = AccountResponses.id
         val currentPassword = AccountResponses.password
         val newPassword = AccountResponses.newPassword
         val confirmNewPassword = AccountResponses.newPassword
         val token = AccountResponses.token
         val authToken = AuthToken(
-            accountPk = pk,
+            accountId = id,
             token = token,
         )
 
@@ -104,13 +104,13 @@ class ChangePasswordTest {
         )
 
         // User Information
-        val pk = AccountResponses.pk
+        val id = AccountResponses.id
         val currentPassword = AccountResponses.password
         val newPassword = AccountResponses.newPassword
         val confirmNewPassword = AccountResponses.newPassword
         val token = AccountResponses.token
         val authToken = AuthToken(
-            accountPk = pk,
+            accountId = id,
             token = token,
         )
 
@@ -143,13 +143,13 @@ class ChangePasswordTest {
         )
 
         // User Information
-        val pk = AccountResponses.pk
+        val id = AccountResponses.id
         val currentPassword = AccountResponses.password
         val newPassword = AccountResponses.newPassword
         val confirmNewPassword = AccountResponses.newPassword
         val token = AccountResponses.token
         val authToken = AuthToken(
-            accountPk = pk,
+            accountId = id,
             token = token,
         )
 
@@ -182,13 +182,13 @@ class ChangePasswordTest {
         )
 
         // User Information
-        val pk = AccountResponses.pk
+        val id = AccountResponses.id
         val currentPassword = AccountResponses.password
         val newPassword = AccountResponses.newPassword
         val confirmNewPassword = AccountResponses.newPassword
         val token = AccountResponses.token
         val authToken = AuthToken(
-            accountPk = pk,
+            accountId = id,
             token = token,
         )
 
@@ -221,13 +221,13 @@ class ChangePasswordTest {
         )
 
         // User Information
-        val pk = AccountResponses.pk
+        val id = AccountResponses.id
         val currentPassword = AccountResponses.password
         val newPassword = AccountResponses.newPassword
         val confirmNewPassword = AccountResponses.newPassword
         val token = AccountResponses.token
         val authToken = AuthToken(
-            accountPk = pk,
+            accountId = id,
             token = token,
         )
 

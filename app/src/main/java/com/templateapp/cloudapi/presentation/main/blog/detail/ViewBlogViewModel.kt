@@ -38,8 +38,8 @@ constructor(
     val state: MutableLiveData<ViewBlogState> = MutableLiveData(ViewBlogState())
 
     init {
-        savedStateHandle.get<Int>("blogPostPk")?.let { blogPostPk ->
-            onTriggerEvent(ViewBlogEvents.GetBlog(blogPostPk))
+        savedStateHandle.get<String>("blogPostId")?.let { blogPostId ->
+            onTriggerEvent(ViewBlogEvents.GetBlog(blogPostId))
         }
     }
 
@@ -47,12 +47,12 @@ constructor(
         when(event){
             is ViewBlogEvents.GetBlog -> {
                 getBlog(
-                    event.pk,
+                    event.id,
                     object: OnCompleteCallback { // Determine if blog exists on server
                         override fun done() {
                             state.value?.let { state ->
                                 state.blogPost?.let { blog ->
-                                    onTriggerEvent(ViewBlogEvents.ConfirmBlogExistsOnServer(pk = event.pk, blog.slug))
+                                    onTriggerEvent(ViewBlogEvents.ConfirmBlogExistsOnServer(id = event.id, blog.slug))
                                 }
                             }
                         }
@@ -61,7 +61,7 @@ constructor(
             }
             is ViewBlogEvents.ConfirmBlogExistsOnServer -> {
                 confirmBlogExistsOnServer(
-                    event.pk,
+                    event.id,
                     event.slug,
                     object: OnCompleteCallback { // Determine if they are the author
                         override fun done() {
@@ -129,7 +129,7 @@ constructor(
         state.value?.let { state ->
             state.blogPost?.let { blogPost ->
                 getBlog(
-                    pk = blogPost.pk,
+                    id = blogPost.id,
                     callback = object: OnCompleteCallback{
                         override fun done() {
                             // do nothing
@@ -140,11 +140,11 @@ constructor(
         }
     }
 
-    private fun confirmBlogExistsOnServer(pk: Int, slug: String, callback: OnCompleteCallback){
+    private fun confirmBlogExistsOnServer(id: String, slug: String, callback: OnCompleteCallback){
         state.value?.let { state ->
             confirmBlogExistsOnServer.execute(
                 authToken = sessionManager.state.value?.authToken,
-                pk = pk,
+                id = id,
                 slug = slug,
             ).onEach { dataState ->
                 this.state.value = state.copy(isLoading = dataState.isLoading)
@@ -203,10 +203,10 @@ constructor(
     /**
      * @param callback: If the blog post is successfully retrieved from cache, execute to determine if the authenticated user is the author.
      */
-    private fun getBlog(pk: Int, callback: OnCompleteCallback){
+    private fun getBlog(id: String, callback: OnCompleteCallback){
         state.value?.let { state ->
             getBlogFromCache.execute(
-                pk = pk
+                id = id
             ).onEach { dataState ->
                 this.state.value = state.copy(isLoading = dataState.isLoading)
 

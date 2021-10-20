@@ -82,13 +82,13 @@ class ConfirmBlogExistsOnServerTest {
         cache.insert(blogPost.toEntity())
 
         // Confirm the blog exists in the cache
-        val cachedBlog = cache.getBlogPost(blogPost.pk)
+        val cachedBlog = cache.getBlogPost(blogPost.id)
         assert(cachedBlog?.toBlogPost() == blogPost)
 
         // Execute the use case
         val emissions = confirmBlogExistsOnServer.execute(
             authToken = authToken,
-            pk = blogPost.pk,
+            id = blogPost.id,
             slug = blogPost.slug,
         ).toList()
 
@@ -114,13 +114,13 @@ class ConfirmBlogExistsOnServerTest {
         val blogPost = ConfirmBlogExistsOnServerResponses.blogPost
 
         // Confirm the blog does NOT exist in the cache
-        val cachedBlog = cache.getBlogPost(blogPost.pk)
+        val cachedBlog = cache.getBlogPost(blogPost.id)
         assert(cachedBlog == null)
 
         // Execute the use case
         val emissions = confirmBlogExistsOnServer.execute(
             authToken = authToken,
-            pk = blogPost.pk,
+            id = blogPost.id,
             slug = blogPost.slug,
         ).toList()
 
@@ -149,13 +149,13 @@ class ConfirmBlogExistsOnServerTest {
         cache.insert(blogPost.toEntity())
 
         // Confirm the blog exists in the cache
-        val cachedBlog = cache.getBlogPost(blogPost.pk)
+        val cachedBlog = cache.getBlogPost(blogPost.id)
         assert(cachedBlog?.toBlogPost() == blogPost)
 
         // Execute the use case
         val emissions = confirmBlogExistsOnServer.execute(
             authToken = authToken,
-            pk = blogPost.pk,
+            id = blogPost.id,
             slug = blogPost.slug,
         ).toList()
 
@@ -187,13 +187,13 @@ class ConfirmBlogExistsOnServerTest {
         cache.insert(blogPost.toEntity())
 
         // Confirm the blog exists in the cache
-        var cachedBlog = cache.getBlogPost(blogPost.pk)
+        var cachedBlog = cache.getBlogPost(blogPost.id)
         assert(cachedBlog?.toBlogPost() == blogPost)
 
         // Execute the use case
         val emissions = confirmBlogExistsOnServer.execute(
             authToken = authToken,
-            pk = blogPost.pk,
+            id = blogPost.id,
             slug = blogPost.slug,
         ).toList()
 
@@ -201,7 +201,7 @@ class ConfirmBlogExistsOnServerTest {
         assert(emissions[0].isLoading)
 
         // Confirm it was removed from the cache
-        cachedBlog = cache.getBlogPost(blogPost.pk)
+        cachedBlog = cache.getBlogPost(blogPost.id)
         assert(cachedBlog == null)
 
         // confirm second emission is an error dialog

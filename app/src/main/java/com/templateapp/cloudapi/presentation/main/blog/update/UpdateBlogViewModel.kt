@@ -37,15 +37,15 @@ constructor(
     val state: MutableLiveData<UpdateBlogState> = MutableLiveData(UpdateBlogState())
 
     init {
-        savedStateHandle.get<Int>("blogPostPk")?.let { blogPostPk ->
-            onTriggerEvent(UpdateBlogEvents.getBlog(blogPostPk))
+        savedStateHandle.get<String>("blogPostId")?.let { blogPostId ->
+            onTriggerEvent(UpdateBlogEvents.getBlog(blogPostId))
         }
     }
 
     fun onTriggerEvent(event: UpdateBlogEvents) {
         when(event){
             is UpdateBlogEvents.getBlog -> {
-                getBlog(event.pk,)
+                getBlog(event.id,)
             }
             is UpdateBlogEvents.OnUpdateUri -> {
                 onUpdateImageUri(event.uri)
@@ -183,10 +183,10 @@ constructor(
         }
     }
 
-    private fun getBlog(pk: Int){
+    private fun getBlog(id: String){
         state.value?.let { state ->
             getBlogFromCache.execute(
-                pk = pk
+                id = id
             ).onEach { dataState ->
                 this.state.value = state.copy(isLoading = dataState.isLoading)
 

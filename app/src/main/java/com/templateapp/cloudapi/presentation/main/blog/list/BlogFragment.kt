@@ -187,7 +187,7 @@ class BlogFragment : BaseBlogFragment(),
     override fun onItemSelected(position: Int, item: BlogPost) {
         try{
             viewModel.state.value?.let { state ->
-                    val bundle = bundleOf("blogPostPk" to item.pk)
+                    val bundle = bundleOf("blogPostId" to item.id)
                     findNavController().navigate(R.id.action_blogFragment_to_viewBlogFragment, bundle)
             }?: throw Exception("Null BlogPost")
         }catch (e: Exception){

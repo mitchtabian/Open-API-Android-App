@@ -74,7 +74,7 @@ class UpdateAccountTest {
         )
 
         // User Information
-        val pk = AccountResponses.pk
+        val id = AccountResponses.id
         val updatedEmail = AccountResponses.email
         val updatedUsername = AccountResponses.username
         val password = AccountResponses.password
@@ -84,36 +84,36 @@ class UpdateAccountTest {
         val initialEmail = "someEmail@gmail.com"
         val initialUsername = "someusername"
         val account = Account(
-            pk = pk,
+            id = id,
             email = initialEmail,
             username = initialUsername
         )
         cache.insertAndReplace(account.toEntity())
 
         // confirm Account is cached
-        var cachedAccount = cache.searchByPk(pk)
+        var cachedAccount = cache.searchByPk(id)
         assert(cachedAccount?.email == initialEmail)
         assert(cachedAccount?.username == initialUsername)
-        assert(cachedAccount?.pk == pk)
+        assert(cachedAccount?._id == id)
 
         val emissions = updateAccount.execute(
             authToken = AuthToken(
-                accountPk = pk,
+                accountId = id,
                 token = token,
             ),
-            pk = pk,
+            _id = id,
             email = updatedEmail,
-            username = updatedUsername,
+            name = updatedUsername,
         ).toList()
 
         // first emission should be `loading`
         assert(emissions[0].isLoading)
 
         // confirm Account is updated in the cache
-        cachedAccount = cache.searchByPk(pk)
+        cachedAccount = cache.searchByPk(id)
         assert(cachedAccount?.email == updatedEmail)
         assert(cachedAccount?.username == updatedUsername)
-        assert(cachedAccount?.pk == pk)
+        assert(cachedAccount?._id == id)
 
         // confirm second emission is a success response
         assert(emissions[1].data?.message == SuccessHandling.SUCCESS_ACCOUNT_UPDATED)
@@ -132,7 +132,7 @@ class UpdateAccountTest {
         )
 
         // User Information
-        val pk = AccountResponses.pk
+        val id = AccountResponses.id
         val updatedEmail = AccountResponses.email
         val updatedUsername = AccountResponses.username
         val password = AccountResponses.password
@@ -142,36 +142,36 @@ class UpdateAccountTest {
         val initialEmail = "someEmail@gmail.com"
         val initialUsername = "someusername"
         val account = Account(
-            pk = pk,
+            id = id,
             email = initialEmail,
             username = initialUsername
         )
         cache.insertAndReplace(account.toEntity())
 
         // confirm Account is cached
-        var cachedAccount = cache.searchByPk(pk)
+        var cachedAccount = cache.searchByPk(id)
         assert(cachedAccount?.email == initialEmail)
         assert(cachedAccount?.username == initialUsername)
-        assert(cachedAccount?.pk == pk)
+        assert(cachedAccount?._id == id)
 
         val emissions = updateAccount.execute(
             authToken = AuthToken(
-                accountPk = pk,
+                accountId = id,
                 token = token,
             ),
-            pk = pk,
+            _id = id,
             email = updatedEmail,
-            username = updatedUsername,
+            name = updatedUsername,
         ).toList()
 
         // first emission should be `loading`
         assert(emissions[0].isLoading)
 
         // confirm Account is NOT updated in the cache
-        cachedAccount = cache.searchByPk(pk)
+        cachedAccount = cache.searchByPk(id)
         assert(cachedAccount?.email == initialEmail)
         assert(cachedAccount?.username == initialUsername)
-        assert(cachedAccount?.pk == pk)
+        assert(cachedAccount?._id == id)
 
         // confirm second emission is an error dialog
         assert(emissions[1].stateMessage?.response?.message == ErrorHandling.ERROR_EMAIL_IN_USE)
@@ -192,7 +192,7 @@ class UpdateAccountTest {
         )
 
         // User Information
-        val pk = AccountResponses.pk
+        val id = AccountResponses.id
         val updatedEmail = AccountResponses.email
         val updatedUsername = AccountResponses.username
         val password = AccountResponses.password
@@ -202,36 +202,36 @@ class UpdateAccountTest {
         val initialEmail = "someEmail@gmail.com"
         val initialUsername = "someusername"
         val account = Account(
-            pk = pk,
+            id = id,
             email = initialEmail,
             username = initialUsername
         )
         cache.insertAndReplace(account.toEntity())
 
         // confirm Account is cached
-        var cachedAccount = cache.searchByPk(pk)
+        var cachedAccount = cache.searchByPk(id)
         assert(cachedAccount?.email == initialEmail)
         assert(cachedAccount?.username == initialUsername)
-        assert(cachedAccount?.pk == pk)
+        assert(cachedAccount?._id == id)
 
         val emissions = updateAccount.execute(
             authToken = AuthToken(
-                accountPk = pk,
+                accountId = id,
                 token = token,
             ),
-            pk = pk,
+            _id = id,
             email = updatedEmail,
-            username = updatedUsername,
+            name = updatedUsername,
         ).toList()
 
         // first emission should be `loading`
         assert(emissions[0].isLoading)
 
         // confirm Account is NOT updated in the cache
-        cachedAccount = cache.searchByPk(pk)
+        cachedAccount = cache.searchByPk(id)
         assert(cachedAccount?.email == initialEmail)
         assert(cachedAccount?.username == initialUsername)
-        assert(cachedAccount?.pk == pk)
+        assert(cachedAccount?._id == id)
 
         // confirm second emission is an error dialog
         assert(emissions[1].stateMessage?.response?.message == ErrorHandling.ERROR_USERNAME_IN_USE)
@@ -252,7 +252,7 @@ class UpdateAccountTest {
         )
 
         // User Information
-        val pk = AccountResponses.pk
+        val id = AccountResponses.id
         val updatedEmail = AccountResponses.email
         val updatedUsername = AccountResponses.username
         val password = AccountResponses.password
@@ -262,36 +262,36 @@ class UpdateAccountTest {
         val initialEmail = "someEmail@gmail.com"
         val initialUsername = "someusername"
         val account = Account(
-            pk = pk,
+            id = id,
             email = initialEmail,
             username = initialUsername
         )
         cache.insertAndReplace(account.toEntity())
 
         // confirm Account is cached
-        var cachedAccount = cache.searchByPk(pk)
+        var cachedAccount = cache.searchByPk(id)
         assert(cachedAccount?.email == initialEmail)
         assert(cachedAccount?.username == initialUsername)
-        assert(cachedAccount?.pk == pk)
+        assert(cachedAccount?._id == id)
 
         val emissions = updateAccount.execute(
             authToken = AuthToken(
-                accountPk = pk,
+                accountId = id,
                 token = token,
             ),
-            pk = pk,
+            _id = id,
             email = updatedEmail,
-            username = updatedUsername,
+            name = updatedUsername,
         ).toList()
 
         // first emission should be `loading`
         assert(emissions[0].isLoading)
 
         // confirm Account is NOT updated in the cache
-        cachedAccount = cache.searchByPk(pk)
+        cachedAccount = cache.searchByPk(id)
         assert(cachedAccount?.email == initialEmail)
         assert(cachedAccount?.username == initialUsername)
-        assert(cachedAccount?.pk == pk)
+        assert(cachedAccount?._id == id)
 
         // confirm second emission is an error dialog
         assert(emissions[1].stateMessage?.response?.message == ErrorHandling.ERROR_SOMETHING_WENT_WRONG)
@@ -312,7 +312,7 @@ class UpdateAccountTest {
         )
 
         // User Information
-        val pk = AccountResponses.pk
+        val id = AccountResponses.id
         val updatedEmail = AccountResponses.email
         val updatedUsername = AccountResponses.username
         val password = AccountResponses.password
@@ -322,36 +322,36 @@ class UpdateAccountTest {
         val initialEmail = "someEmail@gmail.com"
         val initialUsername = "someusername"
         val account = Account(
-            pk = pk,
+            id = id,
             email = initialEmail,
             username = initialUsername
         )
         cache.insertAndReplace(account.toEntity())
 
         // confirm Account is cached
-        var cachedAccount = cache.searchByPk(pk)
+        var cachedAccount = cache.searchByPk(id)
         assert(cachedAccount?.email == initialEmail)
         assert(cachedAccount?.username == initialUsername)
-        assert(cachedAccount?.pk == pk)
+        assert(cachedAccount?._id == id)
 
         val emissions = updateAccount.execute(
             authToken = AuthToken(
-                accountPk = pk,
+                accountId = id,
                 token = token,
             ),
-            pk = pk,
+            _id = id,
             email = updatedEmail,
-            username = updatedUsername,
+            name = updatedUsername,
         ).toList()
 
         // first emission should be `loading`
         assert(emissions[0].isLoading)
 
         // confirm Account is NOT updated in the cache
-        cachedAccount = cache.searchByPk(pk)
+        cachedAccount = cache.searchByPk(id)
         assert(cachedAccount?.email == initialEmail)
         assert(cachedAccount?.username == initialUsername)
-        assert(cachedAccount?.pk == pk)
+        assert(cachedAccount?._id == id)
 
         // confirm second emission is an error dialog
         assert(emissions[1].stateMessage?.response?.message == ErrorHandling.ERROR_UPDATE_ACCOUNT)

@@ -122,7 +122,7 @@ class ViewBlogFragment : BaseBlogFragment()
         try{
             viewModel.state.value?.let { state ->
                 state.blogPost?.let { blogPost ->
-                    val bundle = bundleOf("blogPostPk" to blogPost.pk)
+                    val bundle = bundleOf("blogPostId" to blogPost.id)
                     findNavController().navigate(R.id.action_viewBlogFragment_to_updateBlogFragment, bundle)
                 } ?: throw Exception("Null BlogPost")
             }?: throw Exception("Null BlogPost")

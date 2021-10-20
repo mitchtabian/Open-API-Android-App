@@ -9,12 +9,12 @@ object ConfirmBlogExistsOnServerResponses {
     // account info
     val email = "mitch_test@gmail.com"
     val password = "password"
-    val pk = 1
+    val id = 1
     val username = "mitch_test"
     val token = "de803edc9ebefa3dee77faea8f34fff3e6b217b5"
 
     val authToken = AuthToken(
-        accountPk = pk,
+        accountId = id,
         token = token,
     )
 
@@ -27,7 +27,7 @@ object ConfirmBlogExistsOnServerResponses {
     val dateUpdated = "2021-07-09T16:26:23.121544Z"
 
     val blogPost = BlogPost(
-        pk = blogPk,
+        id = blogPk,
         title = title,
         body = body,
         image = image,
@@ -36,7 +36,7 @@ object ConfirmBlogExistsOnServerResponses {
         username = username
     )
 
-    val success_blogExists = "{ \"pk\": $pk, \"title\": \"$title\", \"slug\": \"$slug\", \"body\": \"$body\", \"image\": \"$image\", \"date_updated\": \"$dateUpdated\", \"username\": \"$username\" }"
+    val success_blogExists = "{ \"id\": $id, \"title\": \"$title\", \"slug\": \"$slug\", \"body\": \"$body\", \"image\": \"$image\", \"date_updated\": \"$dateUpdated\", \"username\": \"$username\" }"
 
 }
 

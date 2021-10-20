@@ -14,8 +14,8 @@ interface AuthTokenDao {
     @Query("DELETE FROM auth_token")
     suspend fun clearTokens()
 
-    @Query("SELECT * FROM auth_token WHERE account_pk = :pk")
-    suspend fun searchByPk(pk: Int): AuthTokenEntity?
+    @Query("SELECT * FROM auth_token WHERE account_id = :id")
+    suspend fun searchById(id: String): AuthTokenEntity?
 
 }
 

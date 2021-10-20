@@ -74,7 +74,7 @@ class MainActivity : BaseActivity() {
                         sessionManager.onTriggerEvent(SessionEvents.OnRemoveHeadFromQueue)
                     }
                 })
-            if (state.authToken == null || state.authToken.accountPk == -1) {
+            if (state.authToken == null || "-1".equals(state.authToken.accountId)) {
                 navAuthActivity()
             }
         }

@@ -8,13 +8,13 @@ object AccountResponses {
     val email = "mitch_test@gmail.com"
     val password = "password"
     val newPassword = "password1234"
-    val pk = 1
+    val id = "1"
     val username = "mitch_test"
     val token = "de803edc9ebefa3dee77faea8f34fff3e6b217b5"
 
 
     // Success
-    val getAccountSuccess = "{ \"pk\": $pk, \"email\": \"$email\", \"username\": \"$username\" }"
+    val getAccountSuccess = "{ \"id\": $id, \"email\": \"$email\", \"username\": \"$username\" }"
     val updateAccountSuccess = "{ \"response\": \"${SuccessHandling.SUCCESS_ACCOUNT_UPDATED}\" }"
     val updatePasswordSuccess = "{ \"response\": \"${SuccessHandling.RESPONSE_PASSWORD_UPDATE_SUCCESS}\" }"
 

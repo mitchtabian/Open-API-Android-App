@@ -83,7 +83,7 @@ class DeleteTest {
         cache.insert(blogPost = blogPost.toEntity())
 
         // confirm it exists in the cache
-        var cachedBlog = cache.getBlogPost(blogPost.pk)
+        var cachedBlog = cache.getBlogPost(blogPost.id)
         assert(cachedBlog?.toBlogPost() == blogPost)
 
         // delete the blog
@@ -96,7 +96,7 @@ class DeleteTest {
         assert(emissions[0].isLoading)
 
         // confirm it was deleted from the cache
-        cachedBlog = cache.getBlogPost(blogPost.pk)
+        cachedBlog = cache.getBlogPost(blogPost.id)
         assert(cachedBlog == null)
 
         // confirm second emission is a success message
@@ -127,7 +127,7 @@ class DeleteTest {
         cache.insert(blogPost = blogPost.toEntity())
 
         // confirm it exists in the cache
-        var cachedBlog = cache.getBlogPost(blogPost.pk)
+        var cachedBlog = cache.getBlogPost(blogPost.id)
         assert(cachedBlog?.toBlogPost() == blogPost)
 
         // attempt to delete the blog
@@ -140,7 +140,7 @@ class DeleteTest {
         assert(emissions[0].isLoading)
 
         // confirm it was NOT deleted from the cache
-        cachedBlog = cache.getBlogPost(blogPost.pk)
+        cachedBlog = cache.getBlogPost(blogPost.id)
         assert(cachedBlog?.toBlogPost() == blogPost)
 
         // confirm second emission is an error dialog
@@ -176,7 +176,7 @@ class DeleteTest {
         cache.insert(blogPost = blogPost.toEntity())
 
         // confirm it exists in the cache
-        var cachedBlog = cache.getBlogPost(blogPost.pk)
+        var cachedBlog = cache.getBlogPost(blogPost.id)
         assert(cachedBlog?.toBlogPost() == blogPost)
 
         // attempt to delete the blog
@@ -189,7 +189,7 @@ class DeleteTest {
         assert(emissions[0].isLoading)
 
         // confirm it was deleted from the cache
-        cachedBlog = cache.getBlogPost(blogPost.pk)
+        cachedBlog = cache.getBlogPost(blogPost.id)
         assert(cachedBlog == null)
 
         // confirm second emission is a success message
@@ -224,7 +224,7 @@ class DeleteTest {
         cache.insert(blogPost = blogPost.toEntity())
 
         // confirm it exists in the cache
-        var cachedBlog = cache.getBlogPost(blogPost.pk)
+        var cachedBlog = cache.getBlogPost(blogPost.id)
         assert(cachedBlog?.toBlogPost() == blogPost)
 
         // attempt to delete the blog
@@ -237,7 +237,7 @@ class DeleteTest {
         assert(emissions[0].isLoading)
 
         // confirm it was NOT deleted from the cache
-        cachedBlog = cache.getBlogPost(blogPost.pk)
+        cachedBlog = cache.getBlogPost(blogPost.id)
         assert(cachedBlog?.toBlogPost() == blogPost)
 
         // confirm second emission is an error dialog

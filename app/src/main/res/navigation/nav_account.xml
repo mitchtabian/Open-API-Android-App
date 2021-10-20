@@ -34,7 +34,7 @@
             tools:layout="@layout/fragment_update_account">
 
         <argument
-                android:name="accountPk"
+                android:name="accountId"
                 app:argType="integer"
                 android:defaultValue="-1" />
     </fragment>

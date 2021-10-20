@@ -12,8 +12,8 @@ class BlogCreateUpdateResponse(
     @SerializedName("error_message")
     val errorMessage: String,
 
-    @SerializedName("pk")
-    val pk: Int,
+    @SerializedName("id")
+    val id: String,
 
     @SerializedName("title")
     val title: String,
@@ -37,7 +37,7 @@ class BlogCreateUpdateResponse(
 
 fun BlogCreateUpdateResponse.toBlogPost(): BlogPost {
     return BlogPost(
-        pk = pk,
+        id = id,
         title = title,
         slug = slug,
         body = body,

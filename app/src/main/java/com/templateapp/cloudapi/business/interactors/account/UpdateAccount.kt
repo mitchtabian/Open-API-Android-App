@@ -18,15 +18,15 @@ class UpdateAccount(
 ) {
     fun execute(
         authToken: AuthToken?,
-        pk: Int?,
+        _id: String?,
         email: String,
-        username: String,
+        name: String,
     ): Flow<DataState<Response>> = flow {
         emit(DataState.loading<Response>())
         if(authToken == null){
             throw Exception(ErrorHandling.ERROR_AUTH_TOKEN_INVALID)
         }
-        if(pk == null){
+        if(_id == null){
             throw Exception(ErrorHandling.ERROR_PK_INVALID)
         }
 
@@ -34,7 +34,7 @@ class UpdateAccount(
         val response = service.updateAccount(
             authorization = "Token ${authToken.token}",
             email = email,
-            username = username
+            username = name
         )
 
         if(response.response == GENERIC_ERROR){
@@ -46,9 +46,9 @@ class UpdateAccount(
 
         // update cache
         cache.updateAccount(
-            pk = pk,
+            id = _id,
             email = email,
-            username = username
+            name = name
         )
 
         // Tell the UI it was successful

@@ -9,8 +9,8 @@ import com.templateapp.cloudapi.business.domain.models.BlogPost
 data class BlogPostEntity(
 
     @PrimaryKey(autoGenerate = false)
-    @ColumnInfo(name = "pk")
-    val pk: Int,
+    @ColumnInfo(name = "id")
+    val id: String,
 
     @ColumnInfo(name = "title")
     val title: String,
@@ -33,7 +33,7 @@ data class BlogPostEntity(
 
 fun BlogPostEntity.toBlogPost(): BlogPost{
     return BlogPost(
-        pk = pk,
+        id = id,
         title = title,
         slug = slug,
         body = body,
@@ -45,7 +45,7 @@ fun BlogPostEntity.toBlogPost(): BlogPost{
 
 fun BlogPost.toEntity(): BlogPostEntity{
     return BlogPostEntity(
-        pk = pk,
+        id = id,
         title = title,
         slug = slug,
         body = body,

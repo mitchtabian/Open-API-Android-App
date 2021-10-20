@@ -16,9 +16,9 @@ class AccountDaoFake(
         return null
     }
 
-    override suspend fun searchByPk(pk: Int): AccountEntity? {
+    override suspend fun searchByPk(id: String): AccountEntity? {
         for(account in db.accounts){
-            if(account.pk == pk){
+            if(account._id == id){
                 return account
             }
         }
@@ -27,7 +27,7 @@ class AccountDaoFake(
 
     override suspend fun insertAndReplace(account: AccountEntity): Long {
         db.accounts.removeIf {
-            it.pk == account.pk
+            it._id == account._id
         }
         db.accounts.add(account)
         return 1 // always return success
@@ -40,9 +40,9 @@ class AccountDaoFake(
         return 1 // always return success
     }
 
-    override suspend fun updateAccount(pk: Int, email: String, username: String) {
+    override suspend fun updateAccount(id: String, email: String, username: String) {
         for(account in db.accounts){
-            if(account.pk == pk){
+            if(account._id == id){
                 val updated = account.copy(email = email, username = username)
                 db.accounts.remove(account)
                 db.accounts.add(updated)

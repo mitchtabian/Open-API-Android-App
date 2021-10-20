@@ -24,7 +24,7 @@ class BlogListAdapter(
     val DIFF_CALLBACK = object : DiffUtil.ItemCallback<BlogPost>() {
 
         override fun areItemsTheSame(oldItem: BlogPost, newItem: BlogPost): Boolean {
-            return oldItem.pk == newItem.pk
+            return oldItem.id == newItem.id
         }
 
         override fun areContentsTheSame(oldItem: BlogPost, newItem: BlogPost): Boolean {

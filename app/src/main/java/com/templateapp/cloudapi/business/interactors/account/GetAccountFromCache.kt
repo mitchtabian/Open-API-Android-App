@@ -15,11 +15,11 @@ class GetAccountFromCache(
     private val cache: AccountDao,
 ) {
     fun execute(
-        pk: Int,
+        _id: String,
     ): Flow<DataState<Account>> = flow {
         emit(DataState.loading<Account>())
         // emit from cache
-        val cachedAccount = cache.searchByPk(pk)?.toAccount()
+        val cachedAccount = cache.searchByPk(_id)?.toAccount()
 
         if(cachedAccount == null){
             throw Exception(ErrorHandling.ERROR_UNABLE_TO_RETRIEVE_ACCOUNT_DETAILS)

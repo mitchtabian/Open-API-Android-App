@@ -22,11 +22,11 @@ class ConfirmBlogExistsOnServer(
 
     fun execute(
         authToken: AuthToken?,
-        pk: Int,
+        id: String,
         slug: String,
     ): Flow<DataState<Response>> =  flow {
         emit(DataState.loading<Response>())
-        val cachedBlog = cache.getBlogPost(pk)
+        val cachedBlog = cache.getBlogPost(id)
         if(cachedBlog == null){
             // It doesn't exist in cache. Finish.
             emit(DataState.data<Response>(
@@ -69,7 +69,7 @@ class ConfirmBlogExistsOnServer(
             else{
                 // if it exists on server but not in cache. Delete from cache and emit error.
                 if(blogPost == null){
-                    cache.deleteBlogPost(pk)
+                    cache.deleteBlogPost(id)
                     emit(DataState.error<Response>(
                         response = Response(
                             message = ErrorHandling.ERROR_BLOG_DOES_NOT_EXIST,

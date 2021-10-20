@@ -36,7 +36,7 @@ class GetAccount(
         cache.insertAndReplace(account.toEntity())
 
         // emit from cache
-        val cachedAccount = cache.searchByPk(account.pk)?.toAccount()
+        val cachedAccount = cache.searchByPk(account.id)?.toAccount()
 
         if(cachedAccount == null){
             throw Exception(ERROR_UNABLE_TO_RETRIEVE_ACCOUNT_DETAILS)

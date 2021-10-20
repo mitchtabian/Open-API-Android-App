@@ -16,9 +16,9 @@ class AuthTokenDaoFake(
         db.authTokens.clear()
     }
 
-    override suspend fun searchByPk(pk: Int): AuthTokenEntity? {
+    override suspend fun searchById(id: String): AuthTokenEntity? {
         for(entity in db.authTokens){
-            if(entity.account_pk == pk){
+            if(entity.account_id.equals(id)){
                 return entity
             }
         }

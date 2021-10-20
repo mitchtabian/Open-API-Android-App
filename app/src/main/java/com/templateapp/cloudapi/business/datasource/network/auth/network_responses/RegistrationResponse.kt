@@ -1,24 +1,17 @@
 package com.templateapp.cloudapi.business.datasource.network.auth.network_responses
 
 import com.google.gson.annotations.SerializedName
+import com.templateapp.cloudapi.business.datasource.network.responseObjects.User
 
 class RegistrationResponse(
 
-    @SerializedName("response")
-    var response: String,
-
-    @SerializedName("error_message")
-    var errorMessage: String,
-
-    @SerializedName("email")
-    var email: String,
-
-    @SerializedName("username")
-    var username: String,
-
-    @SerializedName("pk")
-    var pk: Int,
+    @SerializedName("user")
+    var user: User,
 
     @SerializedName("token")
-    var token: String
+    var token: String,
+
+    @SerializedName("error")
+    var error: String
+
 )

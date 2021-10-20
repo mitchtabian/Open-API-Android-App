@@ -39,7 +39,7 @@ class AuthActivity : BaseActivity()
             if (state.didCheckForPreviousAuthUser) {
                 onFinishCheckPreviousAuthUser()
             }
-            if (state.authToken != null && state.authToken.accountPk != -1) {
+            if (state.authToken != null &&  !"-1".equals(state.authToken.accountId) ) {
                 navMainActivity()
             }
         }

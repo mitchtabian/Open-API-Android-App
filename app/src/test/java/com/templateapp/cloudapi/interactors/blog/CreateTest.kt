@@ -86,7 +86,7 @@ class CreateTest {
         val blogPost = CreateResponses.blogPost
 
         // Confirm the blog does not exist in the cache
-        var cachedBlog = cache.getBlogPost(blogPost.pk)
+        var cachedBlog = cache.getBlogPost(blogPost.id)
         assert(cachedBlog == null)
 
         // publish the blog
@@ -104,7 +104,7 @@ class CreateTest {
         assert(emissions[0].isLoading)
 
         // confirm it was inserted into the cache
-        cachedBlog = cache.getBlogPost(blogPost.pk)
+        cachedBlog = cache.getBlogPost(blogPost.id)
         assert(cachedBlog?.toBlogPost() == blogPost)
 
         // confirm second emission is a success message
@@ -132,7 +132,7 @@ class CreateTest {
         val blogPost = CreateResponses.blogPost
 
         // Confirm the blog does not exist in the cache
-        var cachedBlog = cache.getBlogPost(blogPost.pk)
+        var cachedBlog = cache.getBlogPost(blogPost.id)
         assert(cachedBlog == null)
 
         // Attempt to publish the blog
@@ -150,7 +150,7 @@ class CreateTest {
         assert(emissions[0].isLoading)
 
         // confirm it was NOT inserted into the cache
-        cachedBlog = cache.getBlogPost(blogPost.pk)
+        cachedBlog = cache.getBlogPost(blogPost.id)
         assert(cachedBlog == null)
 
         // confirm second emission is an error dialog
@@ -178,7 +178,7 @@ class CreateTest {
         val blogPost = CreateResponses.blogPost
 
         // Confirm the blog does not exist in the cache
-        var cachedBlog = cache.getBlogPost(blogPost.pk)
+        var cachedBlog = cache.getBlogPost(blogPost.id)
         assert(cachedBlog == null)
 
         // Attempt to publish the blog
@@ -196,7 +196,7 @@ class CreateTest {
         assert(emissions[0].isLoading)
 
         // confirm it was NOT inserted into the cache
-        cachedBlog = cache.getBlogPost(blogPost.pk)
+        cachedBlog = cache.getBlogPost(blogPost.id)
         assert(cachedBlog == null)
 
         // confirm second emission is an error dialog
@@ -224,7 +224,7 @@ class CreateTest {
         val blogPost = CreateResponses.blogPost
 
         // Confirm the blog does not exist in the cache
-        var cachedBlog = cache.getBlogPost(blogPost.pk)
+        var cachedBlog = cache.getBlogPost(blogPost.id)
         assert(cachedBlog == null)
 
         // Attempt to publish the blog
@@ -242,7 +242,7 @@ class CreateTest {
         assert(emissions[0].isLoading)
 
         // confirm it was NOT inserted into the cache
-        cachedBlog = cache.getBlogPost(blogPost.pk)
+        cachedBlog = cache.getBlogPost(blogPost.id)
         assert(cachedBlog == null)
 
         // confirm second emission is an error dialog
@@ -270,7 +270,7 @@ class CreateTest {
         val blogPost = CreateResponses.blogPost
 
         // Confirm the blog does not exist in the cache
-        var cachedBlog = cache.getBlogPost(blogPost.pk)
+        var cachedBlog = cache.getBlogPost(blogPost.id)
         assert(cachedBlog == null)
 
         // Attempt to publish the blog
@@ -288,7 +288,7 @@ class CreateTest {
         assert(emissions[0].isLoading)
 
         // confirm it was NOT inserted into the cache
-        cachedBlog = cache.getBlogPost(blogPost.pk)
+        cachedBlog = cache.getBlogPost(blogPost.id)
         assert(cachedBlog == null)
 
         // confirm second emission is an error dialog
@@ -316,7 +316,7 @@ class CreateTest {
         val blogPost = CreateResponses.blogPost
 
         // Confirm the blog does not exist in the cache
-        var cachedBlog = cache.getBlogPost(blogPost.pk)
+        var cachedBlog = cache.getBlogPost(blogPost.id)
         assert(cachedBlog == null)
 
         // Attempt to publish the blog
@@ -334,7 +334,7 @@ class CreateTest {
         assert(emissions[0].isLoading)
 
         // confirm it was NOT inserted into the cache
-        cachedBlog = cache.getBlogPost(blogPost.pk)
+        cachedBlog = cache.getBlogPost(blogPost.id)
         assert(cachedBlog == null)
 
         // confirm second emission is an error dialog

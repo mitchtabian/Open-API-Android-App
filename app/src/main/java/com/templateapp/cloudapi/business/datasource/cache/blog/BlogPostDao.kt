@@ -12,15 +12,15 @@ interface BlogPostDao {
     @Delete
     suspend fun deleteBlogPost(blogPost: BlogPostEntity)
 
-    @Query("DELETE FROM blog_post WHERE pk = :pk")
-    suspend fun deleteBlogPost(pk: Int)
+    @Query("DELETE FROM blog_post WHERE id = :id")
+    suspend fun deleteBlogPost(id: String)
 
     @Query("""
         UPDATE blog_post SET title = :title, body = :body, image = :image 
-        WHERE pk = :pk
+        WHERE id = :id
         """)
 
-    suspend fun updateBlogPost(pk: Int, title: String, body: String, image: String)
+    suspend fun updateBlogPost(id: String, title: String, body: String, image: String)
 
     @Query("""
         SELECT * FROM blog_post 
@@ -85,8 +85,8 @@ interface BlogPostDao {
         pageSize: Int = PAGINATION_PAGE_SIZE
     ): List<BlogPostEntity>
 
-    @Query("SELECT * FROM blog_post WHERE pk = :pk")
-    suspend fun getBlogPost(pk: Int): BlogPostEntity?
+    @Query("SELECT * FROM blog_post WHERE id = :id")
+    suspend fun getBlogPost(id: String): BlogPostEntity?
 }
 
 suspend fun BlogPostDao.returnOrderedBlogQuery(

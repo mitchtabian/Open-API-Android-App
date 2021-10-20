@@ -8,7 +8,7 @@ class BlogDaoFake(
 ): BlogPostDao {
     override suspend fun insert(blogPost: BlogPostEntity): Long {
         db.blogs.removeIf {
-            it.pk == blogPost.pk
+            it.id == blogPost.id
         }
         db.blogs.add(blogPost)
         return 1 // always return success
@@ -18,18 +18,18 @@ class BlogDaoFake(
         db.blogs.remove(blogPost)
     }
 
-    override suspend fun deleteBlogPost(pk: Int) {
+    override suspend fun deleteBlogPost(id: String) {
         for(blog in db.blogs){
-            if(blog.pk == pk){
+            if(blog.id.equals(id)){
                 db.blogs.remove(blog)
                 break
             }
         }
     }
 
-    override suspend fun updateBlogPost(pk: Int, title: String, body: String, image: String) {
+    override suspend fun updateBlogPost(id: String, title: String, body: String, image: String) {
         for(blog in db.blogs){
-            if(blog.pk == pk){
+            if(blog.id.equals(id)){
                 db.blogs.remove(blog)
                 val updated = blog.copy(title = title, body = body, image = image)
                 db.blogs.add(updated)
@@ -88,9 +88,9 @@ class BlogDaoFake(
         return copy
     }
 
-    override suspend fun getBlogPost(pk: Int): BlogPostEntity? {
+    override suspend fun getBlogPost(id: String): BlogPostEntity? {
         for(blog in db.blogs){
-            if(blog.pk == pk){
+            if(blog.id.equals(id)){
                 return blog
             }
         }

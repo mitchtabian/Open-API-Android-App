@@ -77,13 +77,13 @@ class LoginTest {
         )
 
         // User Information
-        val pk = LoginResponses.pk
+        val id = LoginResponses.id
         val email = LoginResponses.email
         val password = LoginResponses.password
         val token = LoginResponses.token
 
         // confirm no AuthToken is stored in cache
-        var cachedToken = authTokenDao.searchByPk(pk)
+        var cachedToken = authTokenDao.searchById(id)
         assert(cachedToken == null)
 
         // confirm no Account is stored in cache
@@ -103,21 +103,21 @@ class LoginTest {
         assert(emissions[0].isLoading)
 
         // confirm AuthToken is cached
-        cachedToken = authTokenDao.searchByPk(pk)
-        assert(cachedToken?.account_pk == pk)
+        cachedToken = authTokenDao.searchById(id)
+        assert(cachedToken?.account_id == id)
         assert(cachedToken?.token == token)
 
         // confirm Account is cached
-        cachedAccount = accountDao.searchByPk(pk)
+        cachedAccount = accountDao.searchByPk(id)
         assert(cachedAccount?.email == email)
-        assert(cachedAccount?.pk == pk)
+        assert(cachedAccount?._id == id)
 
         // confirm email is saved to DataStore
         storedEmail = dataStore.readValue(DataStoreKeys.PREVIOUS_AUTH_USER)
         assert(storedEmail == email)
 
         // confirm second emission is the cached AuthToken
-        assert(emissions[1].data?.accountPk == pk)
+        assert(emissions[1].data?.accountId == id)
         assert(emissions[1].data?.token == token)
 
         // loading done
@@ -134,12 +134,12 @@ class LoginTest {
         )
 
         // User Information
-        val pk = LoginResponses.pk
+        val id = LoginResponses.id
         val email = LoginResponses.email
         val password = LoginResponses.password
 
         // confirm no AuthToken is stored in cache
-        var cachedToken = authTokenDao.searchByPk(pk)
+        var cachedToken = authTokenDao.searchById(id)
         assert(cachedToken == null)
 
         // confirm no Account is stored in cache
@@ -159,11 +159,11 @@ class LoginTest {
         assert(emissions[0].isLoading)
 
         // confirm AuthToken is NOT cached
-        cachedToken = authTokenDao.searchByPk(pk)
+        cachedToken = authTokenDao.searchById(id)
         assert(cachedToken == null)
 
         // confirm Account is NOT cached
-        cachedAccount = accountDao.searchByPk(pk)
+        cachedAccount = accountDao.searchByPk(id)
         assert(cachedAccount == null)
 
         // confirm email is NOT saved to DataStore

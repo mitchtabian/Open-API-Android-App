@@ -1,7 +1,7 @@
 package com.templateapp.cloudapi.business.domain.models
 
 data class BlogPost(
-    val pk: Int,
+    val id: String,
     val title: String,
     val slug: String,
     val body: String,

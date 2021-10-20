@@ -9,19 +9,19 @@ import com.templateapp.cloudapi.business.domain.models.Account
 data class AccountEntity(
 
     @PrimaryKey(autoGenerate = false)
-    @ColumnInfo(name = "pk")
-    val pk: Int,
+    @ColumnInfo(name = "_id")
+    val _id: String,
 
     @ColumnInfo(name = "email")
     val email: String,
 
-    @ColumnInfo(name = "username")
+    @ColumnInfo(name = "name")
     val username: String
 )
 
 fun AccountEntity.toAccount(): Account {
     return Account(
-        pk = pk,
+        id = _id,
         email = email,
         username = username
     )
@@ -29,7 +29,7 @@ fun AccountEntity.toAccount(): Account {
 
 fun Account.toEntity(): AccountEntity {
     return AccountEntity(
-        pk = pk,
+        _id = id,
         email = email,
         username = username
     )

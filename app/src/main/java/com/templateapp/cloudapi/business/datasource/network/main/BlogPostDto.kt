@@ -6,8 +6,8 @@ import com.google.gson.annotations.SerializedName
 
 class BlogPostDto(
 
-    @SerializedName("pk")
-    val pk: Int,
+    @SerializedName("id")
+    val id: String,
 
     @SerializedName("title")
     val title: String,
@@ -32,7 +32,7 @@ class BlogPostDto(
 
 fun BlogPostDto.toBlogPost(): BlogPost{
     return BlogPost(
-            pk = pk,
+            id = id,
             title = title,
             slug = slug,
             body = body,
@@ -47,7 +47,7 @@ fun BlogPostDto.toBlogPost(): BlogPost{
 
 fun BlogPost.toDto(): BlogPostDto {
     return BlogPostDto(
-        pk = pk,
+        id = id,
         title = title,
         slug = slug,
         body = body,

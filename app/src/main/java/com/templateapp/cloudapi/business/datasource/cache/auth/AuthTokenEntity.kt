@@ -13,8 +13,8 @@ import com.google.gson.annotations.Expose
     foreignKeys = [
         ForeignKey(
             entity = AccountEntity::class,
-            parentColumns = ["pk"],
-            childColumns = ["account_pk"],
+            parentColumns = ["_id"],
+            childColumns = ["account_id"],
             onDelete = ForeignKey.CASCADE
         )
     ]
@@ -22,8 +22,8 @@ import com.google.gson.annotations.Expose
 data class AuthTokenEntity(
 
     @PrimaryKey
-    @ColumnInfo(name = "account_pk")
-    var account_pk: Int? = -1,
+    @ColumnInfo(name = "account_id")
+    var account_id: String = "-1",
 
 
     @ColumnInfo(name = "token")
@@ -32,21 +32,21 @@ data class AuthTokenEntity(
 )
 
 fun AuthTokenEntity.toAuthToken(): AuthToken {
-    if(account_pk == null){
-        throw Exception("Account PK cannot be null.")
+    if(account_id == null){
+        throw Exception("Account _id cannot be null.")
     }
     if(token == null){
         throw Exception("Token cannot be null.")
     }
     return AuthToken(
-        accountPk = account_pk!!,
+        accountId = account_id!!,
         token = token,
     )
 }
 
 fun AuthToken.toEntity(): AuthTokenEntity{
     return AuthTokenEntity(
-        account_pk = accountPk,
+        account_id = accountId,
         token = token,
     )
 }

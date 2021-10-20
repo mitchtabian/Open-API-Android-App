@@ -88,7 +88,7 @@ class UpdateBlogTest {
         cache.insert(blogPost = blogPost.toEntity())
 
         // Confirm the blog exists in the cache
-        var cachedBlog = cache.getBlogPost(blogPost.pk)
+        var cachedBlog = cache.getBlogPost(blogPost.id)
         assert(cachedBlog?.toBlogPost() == blogPost)
 
         // Update the blog
@@ -107,7 +107,7 @@ class UpdateBlogTest {
         assert(emissions[0].isLoading)
 
         // confirm it was updated in the cache
-        cachedBlog = cache.getBlogPost(blogPost.pk)
+        cachedBlog = cache.getBlogPost(blogPost.id)
         assert(cachedBlog?.toBlogPost()?.title == UpdateBlogResponses.updatedTitle)
         assert(cachedBlog?.toBlogPost()?.body == UpdateBlogResponses.updatedBody)
 
@@ -132,7 +132,7 @@ class UpdateBlogTest {
         cache.insert(blogPost = blogPost.toEntity())
 
         // Confirm the blog exists in the cache
-        var cachedBlog = cache.getBlogPost(blogPost.pk)
+        var cachedBlog = cache.getBlogPost(blogPost.id)
         assert(cachedBlog?.toBlogPost() == blogPost)
 
         // Update the blog
@@ -151,7 +151,7 @@ class UpdateBlogTest {
         assert(emissions[0].isLoading)
 
         // confirm it was NOT updated in the cache
-        cachedBlog = cache.getBlogPost(blogPost.pk)
+        cachedBlog = cache.getBlogPost(blogPost.id)
         assert(cachedBlog?.toBlogPost()?.title == blogPost.title)
         assert(cachedBlog?.toBlogPost()?.body == blogPost.body)
 
@@ -183,7 +183,7 @@ class UpdateBlogTest {
         cache.insert(blogPost = blogPost.toEntity())
 
         // Confirm the blog exists in the cache
-        var cachedBlog = cache.getBlogPost(blogPost.pk)
+        var cachedBlog = cache.getBlogPost(blogPost.id)
         assert(cachedBlog?.toBlogPost() == blogPost)
 
         // Update the blog
@@ -202,7 +202,7 @@ class UpdateBlogTest {
         assert(emissions[0].isLoading)
 
         // confirm it was NOT updated in the cache
-        cachedBlog = cache.getBlogPost(blogPost.pk)
+        cachedBlog = cache.getBlogPost(blogPost.id)
         assert(cachedBlog?.toBlogPost()?.title == blogPost.title)
         assert(cachedBlog?.toBlogPost()?.body == blogPost.body)
 
@@ -234,7 +234,7 @@ class UpdateBlogTest {
         cache.insert(blogPost = blogPost.toEntity())
 
         // Confirm the blog exists in the cache
-        var cachedBlog = cache.getBlogPost(blogPost.pk)
+        var cachedBlog = cache.getBlogPost(blogPost.id)
         assert(cachedBlog?.toBlogPost() == blogPost)
 
         // Update the blog
@@ -253,7 +253,7 @@ class UpdateBlogTest {
         assert(emissions[0].isLoading)
 
         // confirm it was NOT updated in the cache
-        cachedBlog = cache.getBlogPost(blogPost.pk)
+        cachedBlog = cache.getBlogPost(blogPost.id)
         assert(cachedBlog?.toBlogPost()?.title == blogPost.title)
         assert(cachedBlog?.toBlogPost()?.body == blogPost.body)
 
@@ -285,7 +285,7 @@ class UpdateBlogTest {
         cache.insert(blogPost = blogPost.toEntity())
 
         // Confirm the blog exists in the cache
-        var cachedBlog = cache.getBlogPost(blogPost.pk)
+        var cachedBlog = cache.getBlogPost(blogPost.id)
         assert(cachedBlog?.toBlogPost() == blogPost)
 
         // Update the blog
@@ -304,7 +304,7 @@ class UpdateBlogTest {
         assert(emissions[0].isLoading)
 
         // confirm it was NOT updated in the cache
-        cachedBlog = cache.getBlogPost(blogPost.pk)
+        cachedBlog = cache.getBlogPost(blogPost.id)
         assert(cachedBlog?.toBlogPost()?.title == blogPost.title)
         assert(cachedBlog?.toBlogPost()?.body == blogPost.body)
 
@@ -336,7 +336,7 @@ class UpdateBlogTest {
         cache.insert(blogPost = blogPost.toEntity())
 
         // Confirm the blog exists in the cache
-        var cachedBlog = cache.getBlogPost(blogPost.pk)
+        var cachedBlog = cache.getBlogPost(blogPost.id)
         assert(cachedBlog?.toBlogPost() == blogPost)
 
         // Update the blog
@@ -355,7 +355,7 @@ class UpdateBlogTest {
         assert(emissions[0].isLoading)
 
         // confirm it was NOT updated in the cache
-        cachedBlog = cache.getBlogPost(blogPost.pk)
+        cachedBlog = cache.getBlogPost(blogPost.id)
         assert(cachedBlog?.toBlogPost()?.title == blogPost.title)
         assert(cachedBlog?.toBlogPost()?.body == blogPost.body)
 
@@ -387,7 +387,7 @@ class UpdateBlogTest {
         cache.insert(blogPost = blogPost.toEntity())
 
         // Confirm the blog exists in the cache
-        var cachedBlog = cache.getBlogPost(blogPost.pk)
+        var cachedBlog = cache.getBlogPost(blogPost.id)
         assert(cachedBlog?.toBlogPost() == blogPost)
 
         // Update the blog
@@ -406,7 +406,7 @@ class UpdateBlogTest {
         assert(emissions[0].isLoading)
 
         // confirm it was NOT updated in the cache
-        cachedBlog = cache.getBlogPost(blogPost.pk)
+        cachedBlog = cache.getBlogPost(blogPost.id)
         assert(cachedBlog?.toBlogPost()?.title == blogPost.title)
         assert(cachedBlog?.toBlogPost()?.body == blogPost.body)
 

@@ -4,7 +4,7 @@ package com.templateapp.cloudapi.presentation.main.account.update
 sealed class UpdateAccountEvents{
 
     data class GetAccountFromCache(
-        val pk: Int
+        val _id: String
     ): UpdateAccountEvents()
 
     data class Update(

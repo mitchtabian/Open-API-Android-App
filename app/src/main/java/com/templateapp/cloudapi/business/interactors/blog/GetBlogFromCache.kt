@@ -18,10 +18,10 @@ class GetBlogFromCache(
 ) {
 
     fun execute(
-        pk: Int,
+        id: String,
     ): Flow<DataState<BlogPost>> = flow{
         emit(DataState.loading<BlogPost>())
-        val blogPost = cache.getBlogPost(pk)?.toBlogPost()
+        val blogPost = cache.getBlogPost(id)?.toBlogPost()
 
         if(blogPost != null){
             emit(DataState.data(response = null, data = blogPost))

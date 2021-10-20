@@ -56,11 +56,11 @@ class GetBlogFromCacheTest {
         cache.insert(blogPost.toEntity())
 
         // Confirm the blog is in the cache
-        val cachedBlog = cache.getBlogPost(blogPost.pk)
+        val cachedBlog = cache.getBlogPost(blogPost.id)
         assert(cachedBlog?.toBlogPost() == blogPost)
 
         // execute use case
-        val emissions = getBlogFromCache.execute(blogPost.pk).toList()
+        val emissions = getBlogFromCache.execute(blogPost.id).toList()
 
         // first emission should be `loading`
         assert(emissions[0].isLoading)
@@ -77,11 +77,11 @@ class GetBlogFromCacheTest {
         val blogPost = GetBlogFromCacheResponses.blogPost
 
         // Confirm the blog is not in the cache
-        val cachedBlog = cache.getBlogPost(blogPost.pk)
+        val cachedBlog = cache.getBlogPost(blogPost.id)
         assert(cachedBlog == null)
 
         // execute use case
-        val emissions = getBlogFromCache.execute(blogPost.pk).toList()
+        val emissions = getBlogFromCache.execute(blogPost.id).toList()
 
         // first emission should be `loading`
         assert(emissions[0].isLoading)

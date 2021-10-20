@@ -5,8 +5,8 @@ import com.google.gson.annotations.SerializedName
 
 class AccountDto(
 
-    @SerializedName("pk")
-    val pk: Int,
+    @SerializedName("_id")
+    val _id: String,
 
     @SerializedName("email")
     val email: String,
@@ -17,7 +17,7 @@ class AccountDto(
 
 fun AccountDto.toAccount(): Account {
     return Account(
-        pk = pk,
+        id = _id,
         email = email,
         username = username
     )

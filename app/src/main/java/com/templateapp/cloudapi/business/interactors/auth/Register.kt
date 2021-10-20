@@ -32,27 +32,27 @@ class Register(
         emit(DataState.loading<AuthToken>())
         val registerResponse = service.register(
             email = email,
-            username = username,
+            name = username,
             password = password,
-            password2 = confirmPassword,
+            confirm_password = confirmPassword,
         )
         // Incorrect login credentials counts as a 200 response from server, so need to handle that
-        if(registerResponse.response.equals(ErrorHandling.GENERIC_AUTH_ERROR)){
-            throw Exception(registerResponse.errorMessage)
+        registerResponse.error?.let{
+            throw Exception(it)
         }
 
         // cache account information
         accountDao.insertAndReplace(
             Account(
-                registerResponse.pk,
-                registerResponse.email,
-                registerResponse.username
+                registerResponse.user._id,
+                registerResponse.user.email,
+                registerResponse.user.name
             ).toEntity()
         )
 
         // cache the auth token
         val authToken = AuthToken(
-            registerResponse.pk,
+            registerResponse.user._id,
             registerResponse.token
         )
         val result = authTokenDao.insert(authToken.toEntity())

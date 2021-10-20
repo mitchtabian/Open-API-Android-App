@@ -7,7 +7,7 @@ sealed class UpdateBlogEvents {
 
     object Update: UpdateBlogEvents()
 
-    data class getBlog(val pk: Int): UpdateBlogEvents()
+    data class getBlog(val id: String): UpdateBlogEvents()
 
     data class OnUpdateTitle(val title: String): UpdateBlogEvents()
 

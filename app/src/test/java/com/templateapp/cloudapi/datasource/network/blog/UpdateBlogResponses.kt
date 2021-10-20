@@ -11,12 +11,12 @@ object UpdateBlogResponses {
     // account info
     val email = "mitch_test@gmail.com"
     val password = "password"
-    val pk = 1
+    val id = "1"
     val username = "mitch_test"
     val token = "de803edc9ebefa3dee77faea8f34fff3e6b217b5"
 
     val authToken = AuthToken(
-        accountPk = pk,
+        accountId = id,
         token = token,
     )
 
@@ -29,7 +29,7 @@ object UpdateBlogResponses {
     val dateUpdated = "2021-07-09T16:26:23.121544Z"
 
     val blogPost = BlogPost(
-        pk = blogPk,
+        id = blogPk,
         title = title,
         body = body,
         image = image,
@@ -41,7 +41,7 @@ object UpdateBlogResponses {
     val updatedTitle = "Hey look a new title"
     val updatedBody = "I don't know I just need to make sure this is 50 characters long for testing."
 
-    val updateSuccess = "{ \"response\": \"${SuccessHandling.SUCCESS_BLOG_UPDATED}\", \"pk\": $blogPk, \"title\": \"$updatedTitle\", \"body\": \"$updatedBody\", \"slug\": \"$slug\", \"date_updated\": \"$dateUpdated\", \"image\": \"$image\", \"username\": \"$username\" }"
+    val updateSuccess = "{ \"response\": \"${SuccessHandling.SUCCESS_BLOG_UPDATED}\", \"id\": $blogPk, \"title\": \"$updatedTitle\", \"body\": \"$updatedBody\", \"slug\": \"$slug\", \"date_updated\": \"$dateUpdated\", \"image\": \"$image\", \"username\": \"$username\" }"
 
     val updateFail_dontHavePermission = "{ \"response\": \"Error\", \"error_message\": \"${ErrorHandling.ERROR_EDIT_BLOG_NEED_PERMISSION}\" }"
 

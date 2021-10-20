@@ -78,7 +78,7 @@ class AccountFragment : BaseAccountFragment() {
             R.id.edit -> {
                 viewModel.state.value?.let { state ->
                     state.account?.let { account ->
-                        val bundle = bundleOf("accountPk" to account.pk)
+                        val bundle = bundleOf("accountId" to account.id)
                         findNavController().navigate(R.id.action_accountFragment_to_updateAccountFragment, bundle)
                     }
                 }

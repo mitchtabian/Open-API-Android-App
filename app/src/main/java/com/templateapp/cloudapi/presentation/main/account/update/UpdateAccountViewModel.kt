@@ -32,8 +32,8 @@ constructor(
     val state: MutableLiveData<UpdateAccountState> = MutableLiveData(UpdateAccountState())
 
     init {
-        savedStateHandle.get<Int>("accountPk")?.let { accountPk ->
-            onTriggerEvent(UpdateAccountEvents.GetAccountFromCache(accountPk))
+        savedStateHandle.get<String>("accountId")?.let { accountId ->
+            onTriggerEvent(UpdateAccountEvents.GetAccountFromCache(accountId))
         }
     }
 
@@ -46,7 +46,7 @@ constructor(
                 onUpdateUsername(event.username)
             }
             is UpdateAccountEvents.GetAccountFromCache -> {
-                getAccount(event.pk)
+                getAccount(event._id)
             }
             is UpdateAccountEvents.Update -> {
                 update(
@@ -111,10 +111,10 @@ constructor(
         }
     }
 
-    private fun getAccount(pk: Int) {
+    private fun getAccount(id: String) {
         state.value?.let { state ->
             getAccountFromCache.execute(
-                pk = pk,
+                _id = id,
             ).onEach { dataState ->
                 this.state.value = state.copy(isLoading = dataState.isLoading)
 
@@ -134,9 +134,9 @@ constructor(
         state.value?.let { state ->
             updateAccount.execute(
                 authToken = sessionManager.state.value?.authToken,
-                pk = sessionManager.state.value?.authToken?.accountPk,
+                _id = sessionManager.state.value?.authToken?.accountId,
                 email = email,
-                username = username,
+                name = username,
             ).onEach { dataState ->
                 this.state.value = state.copy(isLoading = dataState.isLoading)
 
