@@ -33,8 +33,8 @@ class DeleteBlogPost(
         }
         // attempt delete from network
         val response = service.deleteBlogPost(
-            "Token ${authToken.token}",
-            blogPost.slug
+            "${authToken.token}",
+            blogPost.id
         )
         if(response.response == GENERIC_ERROR
             && response.errorMessage != ERROR_DELETE_BLOG_DOES_NOT_EXIST){ // failure

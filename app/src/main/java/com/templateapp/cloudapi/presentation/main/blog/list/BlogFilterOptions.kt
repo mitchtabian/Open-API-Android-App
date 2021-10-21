@@ -2,7 +2,7 @@ package com.templateapp.cloudapi.presentation.main.blog.list
 
 enum class BlogFilterOptions(val value: String) {
     USERNAME("username"),
-    DATE_UPDATED("date_updated"),
+    DATE_UPDATED("modifiedAt"),
 }
 
 fun getFilterFromValue(value: String?): BlogFilterOptions{

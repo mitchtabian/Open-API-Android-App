@@ -1,8 +1,8 @@
 package com.templateapp.cloudapi.presentation.main.blog.list
 
 enum class BlogOrderOptions(val value: String) {
-    ASC(""),
-    DESC("-")
+    ASC(":asc"),
+    DESC(":desc")
 }
 
 fun getOrderFromValue(value: String?): BlogOrderOptions {

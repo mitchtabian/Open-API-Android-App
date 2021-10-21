@@ -3,49 +3,48 @@ package com.templateapp.cloudapi.business.datasource.network.main.responses
 import com.templateapp.cloudapi.business.domain.models.BlogPost
 import com.templateapp.cloudapi.business.domain.util.DateUtils
 import com.google.gson.annotations.SerializedName
+import com.templateapp.cloudapi.business.datasource.network.responseObjects.Task
 
 class BlogCreateUpdateResponse(
 
     @SerializedName("response")
     val response: String,
 
-    @SerializedName("error_message")
-    val errorMessage: String,
+    @SerializedName("error")
+    val error: String,
 
-    @SerializedName("id")
-    val id: String,
+    @SerializedName("task")
+    val task: Task,
 
-    @SerializedName("title")
-    val title: String,
-
-    @SerializedName("slug")
-    val slug: String,
-
-    @SerializedName("body")
-    val body: String,
+    @SerializedName("owner")
+    val owner: String,
 
     @SerializedName("image")
     val image: String,
 
-    @SerializedName("date_updated")
-    val date_updated: String,
+    @SerializedName("createdAt")
+    val createdAt: String,
 
-    @SerializedName("username")
-    val username: String
-
+    @SerializedName("updatedAt")
+    val updatedAt: String,
 )
+
+
 
 fun BlogCreateUpdateResponse.toBlogPost(): BlogPost {
     return BlogPost(
-        id = id,
-        title = title,
-        slug = slug,
-        body = body,
-        image = image,
-        dateUpdated = DateUtils.convertServerStringDateToLong(
-            date_updated
+        id = task._id,
+        completed = task.completed,
+        title = task.title,
+        description = task.description,
+        image = task.image,
+        createdAt = DateUtils.convertServerStringDateToLong(
+            task.createdAt
         ),
-        username = username
+        updatedAt = DateUtils.convertServerStringDateToLong(
+            task.updatedAt
+        ),
+        username = task.owner
     )
 }
 

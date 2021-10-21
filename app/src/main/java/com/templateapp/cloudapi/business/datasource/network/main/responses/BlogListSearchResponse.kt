@@ -10,7 +10,7 @@ class BlogListSearchResponse(
     @SerializedName("results")
     var results: List<BlogPostDto>,
 
-    @SerializedName("detail")
+    @SerializedName("count")
     var detail: String
 )
 

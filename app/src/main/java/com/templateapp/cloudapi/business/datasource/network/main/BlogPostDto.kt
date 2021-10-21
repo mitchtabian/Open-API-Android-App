@@ -3,68 +3,59 @@ package com.templateapp.cloudapi.business.datasource.network.main
 import com.templateapp.cloudapi.business.domain.models.BlogPost
 import com.templateapp.cloudapi.business.domain.util.DateUtils
 import com.google.gson.annotations.SerializedName
+import com.templateapp.cloudapi.business.datasource.network.responseObjects.User
 
 class BlogPostDto(
 
-    @SerializedName("id")
+    @SerializedName("completed")
+    val completed: Boolean,
+
+    @SerializedName("_id")
     val id: String,
 
     @SerializedName("title")
     val title: String,
 
-    @SerializedName("slug")
-    val slug: String,
-
-    @SerializedName("body")
-    val body: String,
+    @SerializedName("description")
+    val description: String,
 
     @SerializedName("image")
     val image: String,
 
-    @SerializedName("date_updated")
-    val date_updated: String,
+    @SerializedName("createdAt")
+    val createdAt: String,
 
-    @SerializedName("username")
-    val username: String
+    @SerializedName("updatedAt")
+    val updatedAt: String,
 
-
+    @SerializedName("owner")
+    val owner: User
 )
 
 fun BlogPostDto.toBlogPost(): BlogPost{
     return BlogPost(
             id = id,
+            completed = completed,
             title = title,
-            slug = slug,
-            body = body,
+            description = description,
             image = image,
-            dateUpdated = DateUtils.convertServerStringDateToLong(
-                date_updated
-            ),
-            username = username
+            createdAt = DateUtils.convertServerStringDateToLong(createdAt),
+            updatedAt = DateUtils.convertServerStringDateToLong(updatedAt),
+            username = owner.name
         )
 }
 
-
+/*
 fun BlogPost.toDto(): BlogPostDto {
     return BlogPostDto(
         id = id,
+        completed = completed,
         title = title,
-        slug = slug,
-        body = body,
+        description = description,
         image = image,
-        date_updated = DateUtils.convertLongToStringDate(dateUpdated),
-        username = username
+        updatedAt = DateUtils.convertLongToStringDate(updatedAt),
+        createdAt = DateUtils.convertLongToStringDate(createdAt),
+        username = owner.name
     )
 }
-
-
-
-
-
-
-
-
-
-
-
-
+*/

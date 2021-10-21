@@ -52,7 +52,7 @@ constructor(
                         override fun done() {
                             state.value?.let { state ->
                                 state.blogPost?.let { blog ->
-                                    onTriggerEvent(ViewBlogEvents.ConfirmBlogExistsOnServer(id = event.id, blog.slug))
+                                    onTriggerEvent(ViewBlogEvents.ConfirmBlogExistsOnServer(id = event.id, blog.id))
                                 }
                             }
                         }
@@ -67,7 +67,7 @@ constructor(
                         override fun done() {
                             state.value?.let { state ->
                                 state.blogPost?.let { blog ->
-                                    onTriggerEvent(ViewBlogEvents.IsAuthor(slug = blog.slug))
+                                    onTriggerEvent(ViewBlogEvents.IsAuthor(slug = blog.id))
                                 }
                             }
                         }

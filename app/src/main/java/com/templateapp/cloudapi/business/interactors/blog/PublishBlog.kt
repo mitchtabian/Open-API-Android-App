@@ -46,7 +46,7 @@ class PublishBlog(
         }
 
         if(createResponse.response == ErrorHandling.GENERIC_ERROR){
-            throw Exception(createResponse.errorMessage)
+            throw Exception(createResponse.error)
         }
 
         // insert the new blog into the cache

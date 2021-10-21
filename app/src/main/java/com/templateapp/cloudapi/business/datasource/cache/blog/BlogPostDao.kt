@@ -16,16 +16,16 @@ interface BlogPostDao {
     suspend fun deleteBlogPost(id: String)
 
     @Query("""
-        UPDATE blog_post SET title = :title, body = :body, image = :image 
+        UPDATE blog_post SET completed =:completed, title = :title, description = :description, image = :image, createdAt =:createdAt, updatedAt =:updatedAt
         WHERE id = :id
         """)
 
-    suspend fun updateBlogPost(id: String, title: String, body: String, image: String)
+    suspend fun updateBlogPost(id: String, completed: Boolean, title: String, description: String, image: String, createdAt: Long, updatedAt: Long)
 
     @Query("""
         SELECT * FROM blog_post 
         WHERE title LIKE '%' || :query || '%' 
-        OR body LIKE '%' || :query || '%' 
+        OR description LIKE '%' || :query || '%' 
         OR username LIKE '%' || :query || '%' 
         LIMIT (:page * :pageSize)
         """)
@@ -38,9 +38,9 @@ interface BlogPostDao {
     @Query("""
         SELECT * FROM blog_post 
         WHERE title LIKE '%' || :query || '%' 
-        OR body LIKE '%' || :query || '%' 
+        OR description LIKE '%' || :query || '%' 
         OR username LIKE '%' || :query || '%' 
-        ORDER BY date_updated DESC LIMIT (:page * :pageSize)
+        ORDER BY updatedAt DESC LIMIT (:page * :pageSize)
         """)
     suspend fun searchBlogPostsOrderByDateDESC(
         query: String,
@@ -51,9 +51,9 @@ interface BlogPostDao {
     @Query("""
         SELECT * FROM blog_post 
         WHERE title LIKE '%' || :query || '%' 
-        OR body LIKE '%' || :query || '%' 
+        OR description LIKE '%' || :query || '%' 
         OR username LIKE '%' || :query || '%' 
-        ORDER BY date_updated  ASC LIMIT (:page * :pageSize)""")
+        ORDER BY updatedAt ASC LIMIT (:page * :pageSize)""")
     suspend fun searchBlogPostsOrderByDateASC(
         query: String,
         page: Int,
@@ -63,7 +63,7 @@ interface BlogPostDao {
     @Query("""
         SELECT * FROM blog_post 
         WHERE title LIKE '%' || :query || '%' 
-        OR body LIKE '%' || :query || '%' 
+        OR description LIKE '%' || :query || '%' 
         OR username LIKE '%' || :query || '%' 
         ORDER BY username DESC LIMIT (:page * :pageSize)""")
     suspend fun searchBlogPostsOrderByAuthorDESC(
@@ -75,7 +75,7 @@ interface BlogPostDao {
     @Query("""
         SELECT * FROM blog_post 
         WHERE title LIKE '%' || :query || '%' 
-        OR body LIKE '%' || :query || '%' 
+        OR description LIKE '%' || :query || '%' 
         OR username LIKE '%' || :query || '%' 
         ORDER BY username  ASC LIMIT (:page * :pageSize)
         """)

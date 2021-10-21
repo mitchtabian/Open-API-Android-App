@@ -12,20 +12,23 @@ data class BlogPostEntity(
     @ColumnInfo(name = "id")
     val id: String,
 
+    @ColumnInfo(name = "completed")
+    val completed: Boolean,
+
     @ColumnInfo(name = "title")
     val title: String,
 
-    @ColumnInfo(name = "slug")
-    val slug: String,
-
-    @ColumnInfo(name = "body")
-    val body: String,
+    @ColumnInfo(name = "description")
+    val description: String,
 
     @ColumnInfo(name = "image")
     val image: String,
 
-    @ColumnInfo(name = "date_updated")
-    val date_updated: Long,
+    @ColumnInfo(name = "createdAt")
+    val createdAt: Long,
+
+    @ColumnInfo(name = "updatedAt")
+    val updatedAt: Long,
 
     @ColumnInfo(name = "username")
     val username: String
@@ -34,11 +37,12 @@ data class BlogPostEntity(
 fun BlogPostEntity.toBlogPost(): BlogPost{
     return BlogPost(
         id = id,
+        completed = completed,
         title = title,
-        slug = slug,
-        body = body,
+        description = description,
         image = image,
-        dateUpdated = date_updated,
+        createdAt = createdAt,
+        updatedAt = updatedAt,
         username = username
     )
 }
@@ -46,11 +50,12 @@ fun BlogPostEntity.toBlogPost(): BlogPost{
 fun BlogPost.toEntity(): BlogPostEntity{
     return BlogPostEntity(
         id = id,
+        completed = completed,
         title = title,
-        slug = slug,
-        body = body,
+        description = description,
         image = image,
-        date_updated = dateUpdated,
+        createdAt = createdAt,
+        updatedAt = updatedAt,
         username = username
     )
 }

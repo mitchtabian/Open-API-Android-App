@@ -96,8 +96,8 @@ class ViewBlogFragment : BaseBlogFragment()
             .into(binding.blogImage)
         binding.blogTitle.setText(blogPost.title)
         binding.blogAuthor.setText(blogPost.username)
-        binding.blogUpdateDate.setText(DateUtils.convertLongToStringDate(blogPost.dateUpdated))
-        binding.blogBody.setText(blogPost.body)
+        binding.blogUpdateDate.setText(DateUtils.convertLongToStringDate(blogPost.updatedAt))
+        binding.blogBody.setText(blogPost.description)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

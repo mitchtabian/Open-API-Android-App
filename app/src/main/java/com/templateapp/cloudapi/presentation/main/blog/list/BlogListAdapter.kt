@@ -108,7 +108,7 @@ class BlogListAdapter(
                 .into(binding.blogImage)
             binding.blogTitle.text = item.title
             binding.blogAuthor.text = item.username
-            binding.blogUpdateDate.text = DateUtils.convertLongToStringDate(item.dateUpdated)
+            binding.blogUpdateDate.text = DateUtils.convertLongToStringDate(item.updatedAt)
         }
     }
 

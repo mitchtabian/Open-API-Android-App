@@ -96,7 +96,7 @@ class UpdateBlogFragment : BaseBlogFragment() {
                 val image = state.newImageUri
                 setBlogProperties(
                     blogPost.title,
-                    blogPost.body,
+                    blogPost.description,
                     image ?: blogPost.image.toUri()
                 )
             }

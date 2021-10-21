@@ -1,5 +1,6 @@
 package com.templateapp.cloudapi.business.datasource.network.main
 
+import androidx.lifecycle.LiveData
 import com.templateapp.cloudapi.business.datasource.network.GenericResponse
 import com.templateapp.cloudapi.business.datasource.network.main.responses.BlogCreateUpdateResponse
 import com.templateapp.cloudapi.business.datasource.network.main.responses.BlogListSearchResponse
@@ -32,14 +33,16 @@ interface OpenApiMainService {
         @Field("confirm_new_password") confirmNewPassword: String
     ): GenericResponse
 
-    @GET("blog/list")
+    /* Get a list of all the tasks */
+    @GET("all_tasks")
+    @Headers("Content-Type: application/json;charset=UTF-8")
     suspend fun searchListBlogPosts(
         @Header("Authorization") authorization: String,
+        @Query("limit") limit: Int,
+        @Query("skip") skip: Int,
         @Query("search") query: String,
-        @Query("ordering") ordering: String,
-        @Query("page") page: Int
+        @Query("sortBy") sortBy: String
     ): BlogListSearchResponse
-
 
     @GET("blog/{slug}/is_author")
     suspend fun isAuthorOfBlogPost(
@@ -47,23 +50,25 @@ interface OpenApiMainService {
         @Path("slug") slug: String
     ): GenericResponse
 
-
-    @DELETE("blog/{slug}/delete")
+    /* Delete the task */
+    @DELETE("tasks/{id}")
+    @Headers("Content-Type: application/json;charset=UTF-8")
     suspend fun deleteBlogPost(
         @Header("Authorization") authorization: String,
-        @Path("slug") slug: String
+        @Path("id") id: String
     ): GenericResponse
 
+    // Update the task
     @Multipart
-    @PUT("blog/{slug}/update")
+    @PATCH("tasks/{id}")
     suspend fun updateBlog(
         @Header("Authorization") authorization: String,
-        @Path("slug") slug: String,
+        @Path("id") id: String,
         @Part("title") title: RequestBody,
-        @Part("body") body: RequestBody,
+        @Part("description") description: RequestBody,
+        @Part("completed") completed: Boolean,
         @Part image: MultipartBody.Part?
     ): BlogCreateUpdateResponse
-
 
     @Multipart
     @POST("blog/create")
@@ -80,12 +85,4 @@ interface OpenApiMainService {
         @Path("slug") slug: String,
     ): BlogPostDto?
 }
-
-
-
-
-
-
-
-
 

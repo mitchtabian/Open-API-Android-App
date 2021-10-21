@@ -113,7 +113,7 @@ constructor(
     private fun onUpdateBody(body: String){
         state.value?.let { state ->
             state.blogPost?.let { blogPost ->
-                val curr = blogPost.copy(body = body)
+                val curr = blogPost.copy(description = body)
                 this.state.value = state.copy(blogPost = curr)
             }
         }
@@ -134,7 +134,7 @@ constructor(
                 )
                 val body = RequestBody.create(
                     MediaType.parse("text/plain"),
-                    blogPost.body
+                    blogPost.description
                 )
                 var multipartBody: MultipartBody.Part? = null
                 if(state.newImageUri != null){
@@ -156,9 +156,10 @@ constructor(
                 }
                 updateBlogPost.execute(
                     authToken = sessionManager.state.value?.authToken,
-                    slug = state.blogPost.slug,
+                    id = state.blogPost.id,
+                    completed = state.blogPost.completed,
                     title = title,
-                    body = body,
+                    description = body,
                     image = multipartBody,
                 ).onEach { dataState ->
                     this.state.value = state.copy(isLoading = dataState.isLoading)

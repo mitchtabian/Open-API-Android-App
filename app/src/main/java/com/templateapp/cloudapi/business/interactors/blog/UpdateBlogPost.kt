@@ -1,16 +1,14 @@
 package com.templateapp.cloudapi.business.interactors.blog
 
+import android.accounts.AuthenticatorDescription
 import com.templateapp.cloudapi.api.handleUseCaseException
 import com.templateapp.cloudapi.business.datasource.cache.blog.BlogPostDao
 import com.templateapp.cloudapi.business.datasource.network.main.OpenApiMainService
 import com.templateapp.cloudapi.business.domain.models.AuthToken
-import com.templateapp.cloudapi.business.domain.util.DataState
+import com.templateapp.cloudapi.business.domain.util.*
 import com.templateapp.cloudapi.business.domain.util.ErrorHandling.Companion.ERROR_AUTH_TOKEN_INVALID
 import com.templateapp.cloudapi.business.domain.util.ErrorHandling.Companion.GENERIC_ERROR
-import com.templateapp.cloudapi.business.domain.util.MessageType
-import com.templateapp.cloudapi.business.domain.util.Response
 import com.templateapp.cloudapi.business.domain.util.SuccessHandling.Companion.SUCCESS_BLOG_UPDATED
-import com.templateapp.cloudapi.business.domain.util.UIComponentType
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
@@ -27,9 +25,10 @@ class UpdateBlogPost(
      */
     fun execute(
         authToken: AuthToken?,
-        slug: String,
+        id: String,
+        completed: Boolean,
         title: RequestBody,
-        body: RequestBody,
+        description: RequestBody,
         image: MultipartBody.Part?,
     ): Flow<DataState<Response>> = flow{
         emit(DataState.loading<Response>())
@@ -38,20 +37,24 @@ class UpdateBlogPost(
         }
         // attempt update
         val createUpdateResponse = service.updateBlog(
-            "Token ${authToken.token}",
-            slug,
-            title,
-            body,
-            image
+            "${authToken.token}",
+            id = id,
+            completed = completed,
+            title = title,
+            description = description,
+            image = image
         )
 
         if(createUpdateResponse.response == GENERIC_ERROR){ // failure
-            throw Exception(createUpdateResponse.errorMessage)
+            throw Exception(createUpdateResponse.error)
         }else{ // success
             cache.updateBlogPost(
-                id = createUpdateResponse.id,
-                title = createUpdateResponse.title,
-                body = createUpdateResponse.body,
+                id = createUpdateResponse.task._id,
+                completed = createUpdateResponse.task.completed,
+                title = createUpdateResponse.task.title,
+                description = createUpdateResponse.task.description,
+                updatedAt = DateUtils.convertServerStringDateToLong(createUpdateResponse.task.updatedAt),
+                createdAt = DateUtils.convertServerStringDateToLong(createUpdateResponse.task.createdAt),
                 image = createUpdateResponse.image
             )
             // Tell the UI it was successful
