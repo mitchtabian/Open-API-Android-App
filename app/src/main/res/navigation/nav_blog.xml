@@ -27,7 +27,7 @@
 
         <argument
                 android:name="blogPostId"
-                app:argType="integer"
+                app:argType="string"
                 android:defaultValue="-1" />
 
         <action android:id="@+id/action_viewBlogFragment_to_updateBlogFragment"
@@ -44,7 +44,7 @@
 
         <argument
                 android:name="blogPostId"
-                app:argType="integer"
+                app:argType="string"
                 android:defaultValue="-1" />
 
     </fragment>
