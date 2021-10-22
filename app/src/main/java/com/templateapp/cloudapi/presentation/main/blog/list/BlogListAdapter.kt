@@ -8,6 +8,7 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withC
 import com.bumptech.glide.request.RequestOptions
 import com.templateapp.cloudapi.R
 import com.templateapp.cloudapi.business.domain.models.BlogPost
+import com.templateapp.cloudapi.business.domain.util.Constants.Companion.BASE_URL
 import com.templateapp.cloudapi.business.domain.util.DateUtils
 import com.templateapp.cloudapi.databinding.LayoutBlogListItemBinding
 
@@ -103,7 +104,7 @@ class BlogListAdapter(
 
             Glide.with(binding.root)
                 .setDefaultRequestOptions(requestOptions)
-                .load(item.image)
+                .load(BASE_URL + item.image)
                 .transition(withCrossFade())
                 .into(binding.blogImage)
             binding.blogTitle.text = item.title
