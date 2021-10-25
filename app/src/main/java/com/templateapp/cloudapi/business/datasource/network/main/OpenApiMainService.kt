@@ -79,10 +79,10 @@ interface OpenApiMainService {
         @Part image: MultipartBody.Part?
     ): BlogCreateUpdateResponse
 
-    @GET("blog/{slug}")
+    @GET("tasks/{id}")
     suspend fun getBlog(
         @Header("Authorization") authorization: String,
-        @Path("slug") slug: String,
+        @Path("id") id: String,
     ): BlogPostDto?
 }
 

@@ -29,7 +29,10 @@ class BlogPostDto(
     val updatedAt: String,
 
     @SerializedName("owner")
-    val owner: User
+    val owner: User,
+
+    @SerializedName("error")
+    val error: String?,
 )
 
 fun BlogPostDto.toBlogPost(): BlogPost{

@@ -6,6 +6,7 @@ import com.templateapp.cloudapi.business.datasource.network.main.OpenApiMainServ
 import com.templateapp.cloudapi.business.domain.models.AuthToken
 import com.templateapp.cloudapi.business.domain.util.*
 import com.templateapp.cloudapi.business.domain.util.ErrorHandling.Companion.UNABLE_TO_RESOLVE_HOST
+import com.templateapp.cloudapi.business.domain.util.ErrorHandling.Companion.UNAUTHORIZED_ERROR
 import com.templateapp.cloudapi.business.domain.util.SuccessHandling.Companion.SUCCESS_BLOG_DOES_NOT_EXIST_IN_CACHE
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -43,14 +44,19 @@ class ConfirmBlogExistsOnServer(
             }
             // confirm it exists on server (throws 404 if does not exist)
             var isNetworkError = false
+            // check for auth error (throws 401 if token error)
+            var isAuthorizationError = false
             val blogPost = try {
                 service.getBlog(
-                    authorization = "Token ${authToken.token}",
-                    slug = slug,
+                    authorization = "${authToken.token}",
+                    id = slug,
                 )
             }catch (e1: Exception){
                 if(e1.message?.contains(UNABLE_TO_RESOLVE_HOST) == true){ // network error
                     isNetworkError = true
+                }
+                if(e1.message?.contains(UNAUTHORIZED_ERROR) == true){ // authorization error
+                    isAuthorizationError = true
                 }
                 e1.printStackTrace()
                 null
@@ -65,27 +71,42 @@ class ConfirmBlogExistsOnServer(
                         )
                     )
                 )
-            }
-            else{
-                // if it exists on server but not in cache. Delete from cache and emit error.
-                if(blogPost == null){
-                    cache.deleteBlogPost(id)
-                    emit(DataState.error<Response>(
-                        response = Response(
-                            message = ErrorHandling.ERROR_BLOG_DOES_NOT_EXIST,
-                            uiComponentType = UIComponentType.Dialog(),
-                            messageType = MessageType.Error()
+            }else{
+                if(isAuthorizationError){
+                    emit(
+                        DataState.error<Response>(
+                            response = Response(
+                                message = "Authorization error. Please restart the app.",
+                                uiComponentType = UIComponentType.Dialog(),
+                                messageType = MessageType.Error()
+                            )
                         )
-                    ))
-                }else{ // if it exists in the cache and on the server. Everything is fine.
-                    emit(DataState.data<Response>(
-                        data = Response(
-                            message = SuccessHandling.SUCCESS_BLOG_EXISTS_ON_SERVER,
-                            uiComponentType = UIComponentType.None(),
-                            messageType = MessageType.Success()
-                        ),
-                        response = null,
-                    ))
+                    )
+                }else{
+                    // if it exists on server but not in cache. Delete from cache and emit error.
+                    if (blogPost == null) {
+                        cache.deleteBlogPost(id)
+                        emit(
+                            DataState.error<Response>(
+                                response = Response(
+                                    message = ErrorHandling.ERROR_BLOG_DOES_NOT_EXIST,
+                                    uiComponentType = UIComponentType.Dialog(),
+                                    messageType = MessageType.Error()
+                                )
+                            )
+                        )
+                    } else { // if it exists in the cache and on the server. Everything is fine.
+                        emit(
+                            DataState.data<Response>(
+                                data = Response(
+                                    message = SuccessHandling.SUCCESS_BLOG_EXISTS_ON_SERVER,
+                                    uiComponentType = UIComponentType.None(),
+                                    messageType = MessageType.Success()
+                                ),
+                                response = null,
+                            )
+                        )
+                    }
                 }
             }
         }
