@@ -30,7 +30,7 @@ class IsAuthorOfBlogPost(
         }
         try{ // catch network exception
             val response = service.isAuthorOfBlogPost(
-                "Token ${authToken.token}",
+                "${authToken.token}",
                 slug
             )
             if(response.response == RESPONSE_HAS_PERMISSION_TO_EDIT){

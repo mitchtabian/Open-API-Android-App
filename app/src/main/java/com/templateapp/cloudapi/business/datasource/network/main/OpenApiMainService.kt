@@ -44,11 +44,14 @@ interface OpenApiMainService {
         @Query("sortBy") sortBy: String
     ): BlogListSearchResponse
 
-    @GET("blog/{slug}/is_author")
+    /* Get the owner of the task - is it me? */
+    @GET("tasks/{id}/is_owner")
+    @Headers("Content-Type: application/json;charset=UTF-8")
     suspend fun isAuthorOfBlogPost(
         @Header("Authorization") authorization: String,
-        @Path("slug") slug: String
+        @Path("id") id: String
     ): GenericResponse
+
 
     /* Delete the task */
     @DELETE("tasks/{id}")
