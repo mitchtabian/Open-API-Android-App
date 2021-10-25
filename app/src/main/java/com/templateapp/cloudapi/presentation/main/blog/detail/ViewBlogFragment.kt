@@ -10,6 +10,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.templateapp.cloudapi.R
 import com.templateapp.cloudapi.business.domain.models.BlogPost
 import com.templateapp.cloudapi.business.domain.util.*
+import com.templateapp.cloudapi.business.domain.util.Constants.Companion.BASE_URL
 import com.templateapp.cloudapi.business.domain.util.ErrorHandling.Companion.ERROR_BLOG_DOES_NOT_EXIST
 import com.templateapp.cloudapi.databinding.FragmentViewBlogBinding
 import com.templateapp.cloudapi.presentation.main.blog.BaseBlogFragment
@@ -92,7 +93,7 @@ class ViewBlogFragment : BaseBlogFragment()
     private fun setBlogProperties(blogPost: BlogPost){
         Glide.with(this)
             .setDefaultRequestOptions(requestOptions)
-            .load(blogPost.image)
+            .load(BASE_URL + blogPost.image)
             .into(binding.blogImage)
         binding.blogTitle.setText(blogPost.title)
         binding.blogAuthor.setText(blogPost.username)
