@@ -19,7 +19,7 @@ class GetOrderAndFilter(
         }?: getFilterFromValue(BlogFilterOptions.DATE_UPDATED.value)
         val order = appDataStoreManager.readValue(DataStoreKeys.BLOG_ORDER)?.let { order ->
             getOrderFromValue(order)
-        }?: getOrderFromValue(BlogOrderOptions.DESC.value)
+        }?: getOrderFromValue(BlogOrderOptions.ASC.value)
         emit(DataState.data(
             response = null,
             data = OrderAndFilter(order = order, filter = filter)

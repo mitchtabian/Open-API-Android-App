@@ -13,6 +13,6 @@ data class BlogState(
     val page: Int = 1,
     val isQueryExhausted: Boolean = false, // no more results available, prevent next page
     val filter: BlogFilterOptions = DATE_UPDATED,
-    val order: BlogOrderOptions = DESC,
+    val order: BlogOrderOptions = ASC,
     val queue: Queue<StateMessage> = Queue(mutableListOf()),
 )

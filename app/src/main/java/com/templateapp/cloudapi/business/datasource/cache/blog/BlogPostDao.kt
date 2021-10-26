@@ -40,7 +40,7 @@ interface BlogPostDao {
         WHERE title LIKE '%' || :query || '%' 
         OR description LIKE '%' || :query || '%' 
         OR username LIKE '%' || :query || '%' 
-        ORDER BY updatedAt DESC LIMIT (:page * :pageSize)
+        ORDER BY createdAt DESC LIMIT (:page * :pageSize)
         """)
     suspend fun searchBlogPostsOrderByDateDESC(
         query: String,
@@ -53,7 +53,7 @@ interface BlogPostDao {
         WHERE title LIKE '%' || :query || '%' 
         OR description LIKE '%' || :query || '%' 
         OR username LIKE '%' || :query || '%' 
-        ORDER BY updatedAt ASC LIMIT (:page * :pageSize)""")
+        ORDER BY createdAt ASC LIMIT (:page * :pageSize)""")
     suspend fun searchBlogPostsOrderByDateASC(
         query: String,
         page: Int,
@@ -120,7 +120,7 @@ suspend fun BlogPostDao.returnOrderedBlogQuery(
                 page = page)
         }
         else ->
-            return searchBlogPostsOrderByDateDESC(
+            return searchBlogPostsOrderByDateASC(
                 query = query,
                 page = page
             )
