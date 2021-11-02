@@ -30,7 +30,7 @@ constructor(
     private val sessionManager: SessionManager,
     private val getBlogFromCache: GetBlogFromCache,
     private val updateBlogPost: UpdateBlogPost,
-    private val savedStateHandle: SavedStateHandle,
+    savedStateHandle: SavedStateHandle,
 ): ViewModel() {
 
     private val TAG: String = "AppDebug"

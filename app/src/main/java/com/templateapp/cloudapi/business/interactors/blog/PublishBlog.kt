@@ -34,7 +34,7 @@ class PublishBlog(
         }
         // attempt update
         val createResponse = service.createBlog(
-            "${authToken.token}",
+            authToken.token,
             title = title,
             description = body,
             completed = completed,
