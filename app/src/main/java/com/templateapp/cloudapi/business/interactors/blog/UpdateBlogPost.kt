@@ -55,7 +55,7 @@ class UpdateBlogPost(
                 description = createUpdateResponse.task.description,
                 updatedAt = DateUtils.convertServerStringDateToLong(createUpdateResponse.task.updatedAt),
                 createdAt = DateUtils.convertServerStringDateToLong(createUpdateResponse.task.createdAt),
-                image = createUpdateResponse.image
+                image = createUpdateResponse.task.image
             )
             // Tell the UI it was successful
             emit(DataState.data<Response>(

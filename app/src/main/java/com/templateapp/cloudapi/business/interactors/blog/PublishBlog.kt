@@ -25,6 +25,7 @@ class PublishBlog(
         authToken: AuthToken?,
         title: RequestBody,
         body: RequestBody,
+        completed: Boolean,
         image: MultipartBody.Part?,
     ): Flow<DataState<Response>> = flow {
         emit(DataState.loading<Response>())
@@ -33,10 +34,11 @@ class PublishBlog(
         }
         // attempt update
         val createResponse = service.createBlog(
-            "Token ${authToken.token}",
-            title,
-            body,
-            image
+            "${authToken.token}",
+            title = title,
+            description = body,
+            completed = completed,
+            image= image
         )
 
         // If they don't have a paid membership account it will still return a 200 with failure message

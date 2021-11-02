@@ -73,12 +73,14 @@ interface OpenApiMainService {
         @Part image: MultipartBody.Part?
     ): BlogCreateUpdateResponse
 
+    /* Create the task */
     @Multipart
-    @POST("blog/create")
+    @POST("tasks")
     suspend fun createBlog(
         @Header("Authorization") authorization: String,
         @Part("title") title: RequestBody,
-        @Part("body") body: RequestBody,
+        @Part("description") description: RequestBody,
+        @Part("completed") completed: Boolean,
         @Part image: MultipartBody.Part?
     ): BlogCreateUpdateResponse
 

@@ -8,6 +8,7 @@ data class CreateBlogState(
     val isLoading: Boolean = false,
     val title: String = "",
     val body: String = "",
+    val completed: Boolean = false,
     val uri: Uri? = null,
     val onPublishSuccess: Boolean = false,
     val queue: Queue<StateMessage> = Queue(mutableListOf()),

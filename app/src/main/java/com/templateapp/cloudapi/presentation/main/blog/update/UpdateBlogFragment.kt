@@ -15,6 +15,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.canhub.cropper.CropImage
 import com.canhub.cropper.CropImageView
 import com.templateapp.cloudapi.R
+import com.templateapp.cloudapi.business.domain.util.Constants.Companion.BASE_URL
 import com.templateapp.cloudapi.business.domain.util.StateMessageCallback
 import com.templateapp.cloudapi.databinding.FragmentUpdateBlogBinding
 import com.templateapp.cloudapi.presentation.main.blog.BaseBlogFragment
@@ -112,10 +113,17 @@ class UpdateBlogFragment : BaseBlogFragment() {
 
     private fun setBlogProperties(title: String?, body: String?, image: Uri?) {
         image?.let {
-            Glide.with(this)
-                .setDefaultRequestOptions(requestOptions)
-                .load(it)
-                .into(binding.blogImage)
+            if("content://" in image.toString()) {
+                Glide.with(this)
+                    .setDefaultRequestOptions(requestOptions)
+                    .load(it)
+                    .into(binding.blogImage)
+            }else{
+                Glide.with(this)
+                    .setDefaultRequestOptions(requestOptions)
+                    .load(BASE_URL + it)
+                    .into(binding.blogImage)
+            }
         }
         binding.blogTitle.setText(title)
         binding.blogBody.setText(body)
@@ -123,7 +131,7 @@ class UpdateBlogFragment : BaseBlogFragment() {
 
     private fun saveChanges() {
         cacheState()
-        viewModel.onTriggerEvent(UpdateBlogEvents.Update)
+        viewModel.onTriggerEvent(UpdateBlogEvents.Update(activity))
         uiCommunicationListener.hideSoftKeyboard()
     }
 

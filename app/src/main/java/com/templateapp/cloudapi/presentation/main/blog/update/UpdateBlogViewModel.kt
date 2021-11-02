@@ -2,6 +2,7 @@ package com.templateapp.cloudapi.presentation.main.blog.update
 
 import android.net.Uri
 import android.util.Log
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -57,7 +58,7 @@ constructor(
                 onUpdateBody(event.body)
             }
             is UpdateBlogEvents.Update -> {
-                update()
+                update(event.activity)
             }
             is UpdateBlogEvents.OnUpdateComplete ->{
                 onUpdateComplete()
@@ -125,7 +126,7 @@ constructor(
         }
     }
 
-    private fun update(){
+    private fun update(activity: FragmentActivity?){
         state.value?.let { state ->
             state.blogPost?.let { blogPost ->
                 val title = RequestBody.create(
@@ -137,21 +138,21 @@ constructor(
                     blogPost.description
                 )
                 var multipartBody: MultipartBody.Part? = null
-                if(state.newImageUri != null){
-                    state.newImageUri.path?.let { filePath ->
-                        val imageFile = File(filePath)
-                        if(imageFile.exists()){
-                            val requestBody =
-                                RequestBody.create(
-                                    MediaType.parse("image/*"),
-                                    imageFile
-                                )
-                            multipartBody = MultipartBody.Part.createFormData(
-                                "image",
-                                imageFile.name,
-                                requestBody
+                state.newImageUri?.let { contentFilePath ->
+                    val filename = contentFilePath.path?.split("/")?.lastOrNull()
+                    val imageFile = activity?.contentResolver?.openInputStream(contentFilePath)
+
+                    imageFile?.let{
+                        val requestBody =
+                            RequestBody.create(
+                                MediaType.parse("image/*"),
+                                imageFile.readBytes()
                             )
-                        }
+                        multipartBody = MultipartBody.Part.createFormData(
+                            "image",
+                            filename,
+                            requestBody
+                        )
                     }
                 }
                 updateBlogPost.execute(

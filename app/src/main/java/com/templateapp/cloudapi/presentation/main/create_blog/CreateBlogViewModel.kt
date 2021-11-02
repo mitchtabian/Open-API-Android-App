@@ -2,6 +2,7 @@ package com.templateapp.cloudapi.presentation.main.create_blog
 
 import android.net.Uri
 import android.util.Log
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -15,7 +16,6 @@ import kotlinx.coroutines.flow.onEach
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
@@ -24,11 +24,15 @@ class CreateBlogViewModel
 constructor(
     private val publishBlog: PublishBlog,
     private val sessionManager: SessionManager
+    //private val baseApplication: BaseApplication
 ): ViewModel() {
 
     private val TAG: String = "AppDebug"
 
     val state: MutableLiveData<CreateBlogState> = MutableLiveData(CreateBlogState())
+
+    //@Inject
+    //lateinit var baseApplication: BaseApplication
 
     fun onTriggerEvent(event: CreateBlogEvents){
         when(event){
@@ -42,7 +46,7 @@ constructor(
                 onUpdateUri(event.uri)
             }
             is CreateBlogEvents.PublishBlog -> {
-                publishBlog()
+                publishBlog(event.activity)
             }
             is CreateBlogEvents.OnPublishSuccess -> {
                 onPublishSuccess()
@@ -112,7 +116,7 @@ constructor(
         }
     }
 
-    private fun publishBlog(){
+    private fun publishBlog(activity: FragmentActivity?){
         state.value?.let { state ->
             val title = RequestBody.create(
                 MediaType.parse("text/plain"),
@@ -122,6 +126,8 @@ constructor(
                 MediaType.parse("text/plain"),
                 state.body
             )
+            val completed = state.completed
+
             if(state.uri == null){
                 onTriggerEvent(CreateBlogEvents.Error(
                     stateMessage = StateMessage(
@@ -135,26 +141,30 @@ constructor(
             }
             else{
                 var multipartBody: MultipartBody.Part? = null
-                state.uri.path?.let { filePath ->
-                    val imageFile = File(filePath)
-                    if(imageFile.exists()){
+                state.uri?.let { contentFilePath ->
+                    val filename = contentFilePath.path?.split("/")?.lastOrNull()
+                    val imageFile = activity?.contentResolver?.openInputStream(contentFilePath)
+
+                    imageFile?.let{
                         val requestBody =
                             RequestBody.create(
                                 MediaType.parse("image/*"),
-                                imageFile
+                                imageFile.readBytes()
                             )
                         multipartBody = MultipartBody.Part.createFormData(
                             "image",
-                            imageFile.name,
+                            filename,
                             requestBody
                         )
                     }
                 }
+
                 if(multipartBody != null){
                     publishBlog.execute(
                         authToken = sessionManager.state.value?.authToken,
                         title = title,
                         body = body,
+                        completed = state.completed,
                         image = multipartBody,
                     ).onEach { dataState ->
                         this.state.value = state.copy(isLoading = dataState.isLoading)

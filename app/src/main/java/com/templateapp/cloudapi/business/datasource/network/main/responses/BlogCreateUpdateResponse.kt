@@ -19,9 +19,6 @@ class BlogCreateUpdateResponse(
     @SerializedName("owner")
     val owner: String,
 
-    @SerializedName("image")
-    val image: String,
-
     @SerializedName("createdAt")
     val createdAt: String,
 

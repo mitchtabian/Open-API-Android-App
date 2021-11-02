@@ -1,11 +1,13 @@
 package com.templateapp.cloudapi.presentation.main.blog.update
 
 import android.net.Uri
+import androidx.fragment.app.FragmentActivity
 import com.templateapp.cloudapi.business.domain.util.StateMessage
+import com.templateapp.cloudapi.presentation.main.create_blog.CreateBlogEvents
 
 sealed class UpdateBlogEvents {
 
-    object Update: UpdateBlogEvents()
+    data class Update(val activity: FragmentActivity?): UpdateBlogEvents()
 
     data class getBlog(val id: String): UpdateBlogEvents()
 
