@@ -142,7 +142,7 @@ class CreateBlogFragment : BaseCreateBlogFragment() {
         when (item.itemId) {
             R.id.publish -> {
                 cacheState()
-                viewModel.onTriggerEvent(CreateBlogEvents.PublishBlog)
+                viewModel.onTriggerEvent(CreateBlogEvents.PublishBlog(activity))
                 return true
             }
         }

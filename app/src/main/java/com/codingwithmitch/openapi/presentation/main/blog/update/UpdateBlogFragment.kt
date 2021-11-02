@@ -123,7 +123,7 @@ class UpdateBlogFragment : BaseBlogFragment() {
 
     private fun saveChanges() {
         cacheState()
-        viewModel.onTriggerEvent(UpdateBlogEvents.Update)
+        viewModel.onTriggerEvent(UpdateBlogEvents.Update(activity))
         uiCommunicationListener.hideSoftKeyboard()
     }
 

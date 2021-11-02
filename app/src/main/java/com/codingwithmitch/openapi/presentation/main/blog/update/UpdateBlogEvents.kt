@@ -1,11 +1,12 @@
 package com.codingwithmitch.openapi.presentation.main.blog.update
 
 import android.net.Uri
+import androidx.fragment.app.FragmentActivity
 import com.codingwithmitch.openapi.business.domain.util.StateMessage
 
 sealed class UpdateBlogEvents {
 
-    object Update: UpdateBlogEvents()
+    data class Update(val activity: FragmentActivity?): UpdateBlogEvents()
 
     data class getBlog(val pk: Int): UpdateBlogEvents()
 

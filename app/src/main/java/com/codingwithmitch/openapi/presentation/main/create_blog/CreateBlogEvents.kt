@@ -1,11 +1,14 @@
 package com.codingwithmitch.openapi.presentation.main.create_blog
 
 import android.net.Uri
+import androidx.fragment.app.FragmentActivity
 import com.codingwithmitch.openapi.business.domain.util.StateMessage
 
 sealed class CreateBlogEvents {
 
-    object PublishBlog: CreateBlogEvents()
+    data class PublishBlog(
+        val activity: FragmentActivity?
+    ): CreateBlogEvents()
 
     data class OnUpdateTitle(
         val title: String,
