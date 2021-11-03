@@ -27,18 +27,21 @@ class UpdatePassword(
         }
         // Update network
         val response = service.updatePassword(
-            authorization = "Token ${authToken.token}",
+            authorization = authToken.token,
             currentPassword = currentPassword,
             newPassword = newPassword,
             confirmNewPassword = confirmNewPassword
         )
 
-        if(response.response == GENERIC_ERROR){
-            throw Exception(response.errorMessage)
+        response.error?.let{
+            throw Exception(response.error)
+        }?:run{
+            response.response?.let{
+                if(response.response != SUCCESS_PASSWORD_UPDATED)
+                    throw Exception(GENERIC_ERROR)
+            }
         }
-        else if(response.response != SUCCESS_PASSWORD_UPDATED){
-            throw Exception(ERROR_UPDATE_PASSWORD)
-        }
+
 
         // Tell the UI it was successful
         emit(DataState.data<Response>(

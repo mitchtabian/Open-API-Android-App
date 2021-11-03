@@ -5,6 +5,7 @@ import com.templateapp.cloudapi.business.datasource.network.GenericResponse
 import com.templateapp.cloudapi.business.datasource.network.main.responses.AccountUpdateResponse
 import com.templateapp.cloudapi.business.datasource.network.main.responses.BlogCreateUpdateResponse
 import com.templateapp.cloudapi.business.datasource.network.main.responses.BlogListSearchResponse
+import com.templateapp.cloudapi.business.datasource.network.main.responses.PasswordUpdateResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.*
@@ -25,14 +26,14 @@ interface OpenApiMainService {
         @Field("name") name: String
     ): AccountUpdateResponse
 
-    @PUT("account/change_password/")
+    @PATCH("users/me/change_password")
     @FormUrlEncoded
     suspend fun updatePassword(
         @Header("Authorization") authorization: String,
-        @Field("old_password") currentPassword: String,
+        @Field("current_password") currentPassword: String,
         @Field("new_password") newPassword: String,
         @Field("confirm_new_password") confirmNewPassword: String
-    ): GenericResponse
+    ): PasswordUpdateResponse
 
     /* Get a list of all the tasks */
     @GET("all_tasks")

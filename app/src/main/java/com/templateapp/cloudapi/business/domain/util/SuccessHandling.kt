@@ -17,7 +17,7 @@ class SuccessHandling {
         const val SUCCESS_BLOG_EXISTS_ON_SERVER = "Blog exists on the server and in the cache."
 
         const val SUCCESS_ACCOUNT_UPDATED = "User information update success."
-        const val SUCCESS_PASSWORD_UPDATED = "successfully changed password"
+        const val SUCCESS_PASSWORD_UPDATED = "User password update success."
 
         const val SUCCESS_LOGOUT = "Logout success."
 
