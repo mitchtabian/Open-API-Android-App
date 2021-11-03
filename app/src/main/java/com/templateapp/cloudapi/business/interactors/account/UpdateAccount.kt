@@ -32,17 +32,19 @@ class UpdateAccount(
 
         // Update network
         val response = service.updateAccount(
-            authorization = "Token ${authToken.token}",
+            authorization = authToken.token,
             email = email,
-            username = name
+            name = name
         )
 
-        if(response.response == GENERIC_ERROR){
-            throw Exception(response.errorMessage)
-        }
-        else if(response.response != SUCCESS_ACCOUNT_UPDATED){
+        response.response?.let {
+            if(response.response != SUCCESS_ACCOUNT_UPDATED){
+                throw Exception(ErrorHandling.ERROR_UPDATE_ACCOUNT)
+            }
+        }?:run{
             throw Exception(ErrorHandling.ERROR_UPDATE_ACCOUNT)
         }
+
 
         // update cache
         cache.updateAccount(

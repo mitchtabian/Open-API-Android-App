@@ -24,7 +24,7 @@ constructor(
     private val sessionManager: SessionManager,
     private val updateAccount: UpdateAccount,
     private val getAccountFromCache: GetAccountFromCache,
-    private savedStateHandle: SavedStateHandle,
+    savedStateHandle: SavedStateHandle,
 ): ViewModel(){
 
     private val TAG: String = "AppDebug"

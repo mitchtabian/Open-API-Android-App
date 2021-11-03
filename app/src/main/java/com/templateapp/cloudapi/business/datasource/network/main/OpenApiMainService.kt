@@ -2,6 +2,7 @@ package com.templateapp.cloudapi.business.datasource.network.main
 
 import androidx.lifecycle.LiveData
 import com.templateapp.cloudapi.business.datasource.network.GenericResponse
+import com.templateapp.cloudapi.business.datasource.network.main.responses.AccountUpdateResponse
 import com.templateapp.cloudapi.business.datasource.network.main.responses.BlogCreateUpdateResponse
 import com.templateapp.cloudapi.business.datasource.network.main.responses.BlogListSearchResponse
 import okhttp3.MultipartBody
@@ -16,13 +17,13 @@ interface OpenApiMainService {
         @Header("Authorization") authorization: String
     ): AccountDto
 
-    @PUT("account/properties/update")
+    @PATCH("users/me")
     @FormUrlEncoded
     suspend fun updateAccount(
         @Header("Authorization") authorization: String,
         @Field("email") email: String,
-        @Field("username") username: String
-    ): GenericResponse
+        @Field("name") name: String
+    ): AccountUpdateResponse
 
     @PUT("account/change_password/")
     @FormUrlEncoded
