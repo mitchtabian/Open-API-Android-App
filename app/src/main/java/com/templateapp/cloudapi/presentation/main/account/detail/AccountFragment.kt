@@ -66,7 +66,7 @@ class AccountFragment : BaseAccountFragment() {
 
     private fun setAccountDataFields(account: Account){
         binding.email.text = account.email
-        binding.username.text = account.username
+        binding.username.text = account.name
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -78,7 +78,7 @@ class AccountFragment : BaseAccountFragment() {
             R.id.edit -> {
                 viewModel.state.value?.let { state ->
                     state.account?.let { account ->
-                        val bundle = bundleOf("accountId" to account.id)
+                        val bundle = bundleOf("accountId" to account._id)
                         findNavController().navigate(R.id.action_accountFragment_to_updateAccountFragment, bundle)
                     }
                 }

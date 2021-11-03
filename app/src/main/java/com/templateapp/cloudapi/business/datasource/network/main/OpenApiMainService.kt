@@ -11,7 +11,7 @@ import retrofit2.http.*
 interface OpenApiMainService {
 
 
-    @GET("account/properties")
+    @GET("users/me")
     suspend fun getAccount(
         @Header("Authorization") authorization: String
     ): AccountDto

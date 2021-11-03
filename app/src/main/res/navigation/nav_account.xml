@@ -35,7 +35,7 @@
 
         <argument
                 android:name="accountId"
-                app:argType="integer"
+                app:argType="string"
                 android:defaultValue="-1" />
     </fragment>
 

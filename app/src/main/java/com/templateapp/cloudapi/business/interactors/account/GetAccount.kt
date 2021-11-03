@@ -30,13 +30,13 @@ class GetAccount(
             throw Exception(ERROR_AUTH_TOKEN_INVALID)
         }
         // get from network
-        val account = service.getAccount("Token ${authToken.token}").toAccount()
+        val account = service.getAccount(authToken.token).toAccount()
 
         // update/insert into the cache
         cache.insertAndReplace(account.toEntity())
 
         // emit from cache
-        val cachedAccount = cache.searchByPk(account.id)?.toAccount()
+        val cachedAccount = cache.searchByPk(account._id)?.toAccount()
 
         if(cachedAccount == null){
             throw Exception(ERROR_UNABLE_TO_RETRIEVE_ACCOUNT_DETAILS)

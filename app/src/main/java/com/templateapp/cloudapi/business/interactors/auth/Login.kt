@@ -37,9 +37,15 @@ class Login(
         // cache the Account information (don't know the username yet)
         accountDao.insertOrIgnore(
             Account(
-                id = loginResponse.user._id,
+                _id = loginResponse.user._id,
                 email = loginResponse.user.email,
-                username = ""
+                name = loginResponse.user.name,
+                age = loginResponse.user.age,
+                createdAt = loginResponse.user.createdAt,
+                updatedAt = loginResponse.user.updatedAt,
+                userCreatedSequence = loginResponse.user.userCreatedSequence,
+                __v = loginResponse.user.__v
+
             ).toEntity()
         )
 

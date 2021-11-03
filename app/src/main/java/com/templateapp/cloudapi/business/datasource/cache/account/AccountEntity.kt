@@ -16,21 +16,47 @@ data class AccountEntity(
     val email: String,
 
     @ColumnInfo(name = "name")
-    val username: String
+    val name: String,
+
+    @ColumnInfo(name = "age")
+    val age: Int,
+
+    @ColumnInfo(name = "createdAt")
+    val createdAt: String,
+
+    @ColumnInfo(name = "updatedAt")
+    val updatedAt: String,
+
+    @ColumnInfo(name = "userCreatedSequence")
+    val userCreatedSequence: Int,
+
+    @ColumnInfo(name = "__v")
+    val __v: Int,
+
 )
 
 fun AccountEntity.toAccount(): Account {
     return Account(
-        id = _id,
+        _id = _id,
         email = email,
-        username = username
+        name = name,
+        age = age,
+        createdAt = createdAt,
+        updatedAt = updatedAt,
+        userCreatedSequence = userCreatedSequence,
+        __v = __v
     )
 }
 
 fun Account.toEntity(): AccountEntity {
     return AccountEntity(
-        _id = id,
+        _id = _id,
         email = email,
-        username = username
+        name = name,
+        age = age,
+        createdAt = createdAt,
+        updatedAt = updatedAt,
+        userCreatedSequence = userCreatedSequence,
+        __v = __v
     )
 }

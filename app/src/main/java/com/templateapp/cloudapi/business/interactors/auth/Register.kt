@@ -44,9 +44,15 @@ class Register(
         // cache account information
         accountDao.insertAndReplace(
             Account(
-                registerResponse.user._id,
-                registerResponse.user.email,
-                registerResponse.user.name
+                _id = registerResponse.user._id,
+                email = registerResponse.user.email,
+                name = registerResponse.user.name,
+                age = registerResponse.user.age,
+                createdAt = registerResponse.user.createdAt,
+                updatedAt = registerResponse.user.updatedAt,
+                userCreatedSequence = registerResponse.user.userCreatedSequence,
+                __v = registerResponse.user.__v
+
             ).toEntity()
         )
 

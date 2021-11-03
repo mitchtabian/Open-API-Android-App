@@ -24,7 +24,7 @@ constructor(
     private val sessionManager: SessionManager,
     private val updateAccount: UpdateAccount,
     private val getAccountFromCache: GetAccountFromCache,
-    private val savedStateHandle: SavedStateHandle,
+    private savedStateHandle: SavedStateHandle,
 ): ViewModel(){
 
     private val TAG: String = "AppDebug"
@@ -102,10 +102,10 @@ constructor(
         }
     }
 
-    private fun onUpdateUsername(username: String){
+    private fun onUpdateUsername(name: String){
         state.value?.let { state ->
             state.account?.let { account ->
-                val new = account.copy(username = username)
+                val new = account.copy(name = name)
                 this.state.value = state.copy(account = new)
             }
         }

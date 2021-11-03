@@ -31,7 +31,7 @@ class User(
 
     @SerializedName("userCreatedSequence")
     @Expose
-    var userCreatedSequence: String,
+    var userCreatedSequence: Int,
 
     @SerializedName("__v")
     @Expose

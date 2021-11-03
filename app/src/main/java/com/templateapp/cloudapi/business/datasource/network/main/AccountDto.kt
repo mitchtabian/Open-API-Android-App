@@ -11,17 +11,39 @@ class AccountDto(
     @SerializedName("email")
     val email: String,
 
-    @SerializedName("username")
-    val username: String
+    @SerializedName("name")
+    val name: String,
+
+    @SerializedName("age")
+    val age: Int,
+
+    @SerializedName("createdAt")
+    val createdAt: String,
+
+    @SerializedName("updatedAt")
+    val updatedAt: String,
+
+    @SerializedName("userCreatedSequence")
+    val userCreatedSequence: Int,
+
+    @SerializedName("__v")
+    val __v: Int
+
 )
 
 fun AccountDto.toAccount(): Account {
     return Account(
-        id = _id,
+        _id = _id,
         email = email,
-        username = username
+        name = name,
+        age = age,
+        createdAt = createdAt,
+        updatedAt = updatedAt,
+        userCreatedSequence = userCreatedSequence,
+        __v = __v
     )
 }
+
 
 
 
