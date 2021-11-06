@@ -6,6 +6,7 @@ import com.templateapp.cloudapi.business.interactors.account.GetAccountFromCache
 import com.templateapp.cloudapi.business.interactors.account.UpdateAccount
 import com.templateapp.cloudapi.business.interactors.account.UpdatePassword
 import com.templateapp.cloudapi.business.datasource.cache.account.AccountDao
+import com.templateapp.cloudapi.business.datasource.cache.auth.AuthTokenDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,9 +21,10 @@ object AccountModule {
     @Provides
     fun provideGetAccount(
         service: OpenApiMainService,
-        cache: AccountDao,
+        accountCache: AccountDao,
+        tokenCache: AuthTokenDao
     ): GetAccount{
-        return GetAccount(service, cache)
+        return GetAccount(service, accountCache, tokenCache)
     }
 
     @Singleton

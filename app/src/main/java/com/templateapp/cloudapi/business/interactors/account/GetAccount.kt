@@ -8,6 +8,8 @@ import com.templateapp.cloudapi.business.domain.models.AuthToken
 import com.templateapp.cloudapi.business.datasource.cache.account.AccountDao
 import com.templateapp.cloudapi.business.datasource.cache.account.toAccount
 import com.templateapp.cloudapi.business.datasource.cache.account.toEntity
+import com.templateapp.cloudapi.business.datasource.cache.auth.AuthTokenDao
+import com.templateapp.cloudapi.business.datasource.cache.auth.toEntity
 import com.templateapp.cloudapi.business.domain.util.DataState
 import com.templateapp.cloudapi.business.domain.util.ErrorHandling.Companion.ERROR_AUTH_TOKEN_INVALID
 import com.templateapp.cloudapi.business.domain.util.ErrorHandling.Companion.ERROR_UNABLE_TO_RETRIEVE_ACCOUNT_DETAILS
@@ -18,7 +20,8 @@ import java.lang.Exception
 
 class GetAccount(
     private val service: OpenApiMainService,
-    private val cache: AccountDao,
+    private val accountCache: AccountDao,
+    private val tokenCache: AuthTokenDao
 ) {
     private val TAG: String = "AppDebug"
 
@@ -33,10 +36,16 @@ class GetAccount(
         val account = service.getAccount(authToken.token).toAccount()
 
         // update/insert into the cache
-        cache.insertAndReplace(account.toEntity())
+        accountCache.insertAndReplace(account.toEntity())
+
+        // Any updates that were made are causing deletion of the account's row first. That
+        // triggers cascading 'delete' event into token as well. Fix it by loading token and making
+        // sure that it's the same as authToken.token
+        if(tokenCache.searchById(account._id)==null)
+            tokenCache.insert(authToken.toEntity())
 
         // emit from cache
-        val cachedAccount = cache.searchByPk(account._id)?.toAccount()
+        val cachedAccount = accountCache.searchByPk(account._id)?.toAccount()
 
         if(cachedAccount == null){
             throw Exception(ERROR_UNABLE_TO_RETRIEVE_ACCOUNT_DETAILS)
