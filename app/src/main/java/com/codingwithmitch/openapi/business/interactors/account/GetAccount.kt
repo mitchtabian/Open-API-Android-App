@@ -8,6 +8,8 @@ import com.codingwithmitch.openapi.business.domain.models.AuthToken
 import com.codingwithmitch.openapi.business.datasource.cache.account.AccountDao
 import com.codingwithmitch.openapi.business.datasource.cache.account.toAccount
 import com.codingwithmitch.openapi.business.datasource.cache.account.toEntity
+import com.codingwithmitch.openapi.business.datasource.cache.auth.AuthTokenDao
+import com.codingwithmitch.openapi.business.datasource.cache.auth.toEntity
 import com.codingwithmitch.openapi.business.domain.util.DataState
 import com.codingwithmitch.openapi.business.domain.util.ErrorHandling.Companion.ERROR_AUTH_TOKEN_INVALID
 import com.codingwithmitch.openapi.business.domain.util.ErrorHandling.Companion.ERROR_UNABLE_TO_RETRIEVE_ACCOUNT_DETAILS
@@ -18,7 +20,8 @@ import java.lang.Exception
 
 class GetAccount(
     private val service: OpenApiMainService,
-    private val cache: AccountDao,
+    private val accountCache: AccountDao,
+    private val tokenCache: AuthTokenDao
 ) {
     private val TAG: String = "AppDebug"
 
@@ -33,10 +36,15 @@ class GetAccount(
         val account = service.getAccount("Token ${authToken.token}").toAccount()
 
         // update/insert into the cache
-        cache.insertAndReplace(account.toEntity())
+        accountCache.insertAndReplace(account.toEntity())
+
+        // Did insertAndReplace cause token to be deleted? If so, write token back to the database.
+        if(tokenCache.searchByPk(account.pk)==null) {
+            tokenCache.insert(authToken.toEntity())
+        }
 
         // emit from cache
-        val cachedAccount = cache.searchByPk(account.pk)?.toAccount()
+        val cachedAccount = accountCache.searchByPk(account.pk)?.toAccount()
 
         if(cachedAccount == null){
             throw Exception(ERROR_UNABLE_TO_RETRIEVE_ACCOUNT_DETAILS)

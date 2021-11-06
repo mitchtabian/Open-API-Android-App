@@ -6,6 +6,7 @@ import com.codingwithmitch.openapi.business.interactors.account.GetAccountFromCa
 import com.codingwithmitch.openapi.business.interactors.account.UpdateAccount
 import com.codingwithmitch.openapi.business.interactors.account.UpdatePassword
 import com.codingwithmitch.openapi.business.datasource.cache.account.AccountDao
+import com.codingwithmitch.openapi.business.datasource.cache.auth.AuthTokenDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,9 +21,10 @@ object AccountModule {
     @Provides
     fun provideGetAccount(
         service: OpenApiMainService,
-        cache: AccountDao,
+        accountCache: AccountDao,
+        tokenCache: AuthTokenDao,
     ): GetAccount{
-        return GetAccount(service, cache)
+        return GetAccount(service, accountCache, tokenCache)
     }
 
     @Singleton
