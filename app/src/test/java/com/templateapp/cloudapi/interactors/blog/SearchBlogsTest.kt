@@ -86,7 +86,7 @@ class SearchBlogsTest {
             authToken = authToken,
             query = "",
             page = 1,
-            filter = BlogFilterOptions.DATE_UPDATED,
+            filter = BlogFilterOptions.DATE_CREATED,
             order = BlogOrderOptions.DESC,
         ).toList()
 
@@ -127,7 +127,7 @@ class SearchBlogsTest {
             authToken = authToken,
             query = "",
             page = 1,
-            filter = BlogFilterOptions.DATE_UPDATED,
+            filter = BlogFilterOptions.DATE_CREATED,
             order = BlogOrderOptions.DESC,
         ).toList()
 
@@ -168,7 +168,7 @@ class SearchBlogsTest {
             authToken = authToken,
             query = "",
             page = 1,
-            filter = BlogFilterOptions.DATE_UPDATED,
+            filter = BlogFilterOptions.DATE_CREATED,
             order = BlogOrderOptions.DESC,
         ).toList()
 
@@ -200,7 +200,7 @@ class SearchBlogsTest {
             authToken = authToken,
             query = "",
             page = 1,
-            filter = BlogFilterOptions.DATE_UPDATED,
+            filter = BlogFilterOptions.DATE_CREATED,
             order = BlogOrderOptions.DESC,
         ).toList()
 
@@ -241,7 +241,7 @@ class SearchBlogsTest {
             authToken = authToken,
             query = "",
             page = 1,
-            filter = BlogFilterOptions.DATE_UPDATED,
+            filter = BlogFilterOptions.DATE_CREATED,
             order = BlogOrderOptions.DESC,
         ).toList()
 
@@ -283,7 +283,7 @@ class SearchBlogsTest {
             authToken = authToken,
             query = "",
             page = 1,
-            filter = BlogFilterOptions.DATE_UPDATED,
+            filter = BlogFilterOptions.DATE_CREATED,
             order = BlogOrderOptions.DESC,
         ).toList()
 

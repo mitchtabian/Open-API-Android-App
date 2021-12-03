@@ -246,8 +246,8 @@ class BlogFragment : BaseBlogFragment(),
 
                     val newOrder =
                         when (view.findViewById<RadioGroup>(R.id.order_group).checkedRadioButtonId) {
-                            R.id.filter_desc -> "-"
-                            else -> ""
+                            R.id.filter_desc -> BLOG_ORDER_DESC
+                            else -> BLOG_ORDER_ASC
                         }
 
                     viewModel.apply {

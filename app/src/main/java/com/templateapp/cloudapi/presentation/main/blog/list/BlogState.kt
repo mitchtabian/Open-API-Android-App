@@ -12,7 +12,7 @@ data class BlogState(
     val query: String = "",
     val page: Int = 1,
     val isQueryExhausted: Boolean = false, // no more results available, prevent next page
-    val filter: BlogFilterOptions = DATE_UPDATED,
+    val filter: BlogFilterOptions = DATE_CREATED,
     val order: BlogOrderOptions = ASC,
     val queue: Queue<StateMessage> = Queue(mutableListOf()),
 )
