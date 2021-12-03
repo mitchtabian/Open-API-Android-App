@@ -42,7 +42,7 @@ interface BlogPostDao {
         OR username LIKE '%' || :query || '%' 
         ORDER BY createdAt DESC LIMIT (:page * :pageSize)
         """)
-    suspend fun searchBlogPostsOrderByDateDESC(
+    suspend fun searchBlogPostsOrderByDateCreatedDESC(
         query: String,
         page: Int,
         pageSize: Int = PAGINATION_PAGE_SIZE
@@ -54,7 +54,32 @@ interface BlogPostDao {
         OR description LIKE '%' || :query || '%' 
         OR username LIKE '%' || :query || '%' 
         ORDER BY createdAt ASC LIMIT (:page * :pageSize)""")
-    suspend fun searchBlogPostsOrderByDateASC(
+    suspend fun searchBlogPostsOrderByDateCreatedASC(
+        query: String,
+        page: Int,
+        pageSize: Int = PAGINATION_PAGE_SIZE
+    ): List<BlogPostEntity>
+
+    @Query("""
+        SELECT * FROM blog_post 
+        WHERE title LIKE '%' || :query || '%' 
+        OR description LIKE '%' || :query || '%' 
+        OR username LIKE '%' || :query || '%' 
+        ORDER BY updatedAt DESC LIMIT (:page * :pageSize)
+        """)
+    suspend fun searchBlogPostsOrderByDateUpdatedDESC(
+        query: String,
+        page: Int,
+        pageSize: Int = PAGINATION_PAGE_SIZE
+    ): List<BlogPostEntity>
+
+    @Query("""
+        SELECT * FROM blog_post 
+        WHERE title LIKE '%' || :query || '%' 
+        OR description LIKE '%' || :query || '%' 
+        OR username LIKE '%' || :query || '%' 
+        ORDER BY updatedAt ASC LIMIT (:page * :pageSize)""")
+    suspend fun searchBlogPostsOrderByDateUpdatedASC(
         query: String,
         page: Int,
         pageSize: Int = PAGINATION_PAGE_SIZE
@@ -96,14 +121,26 @@ suspend fun BlogPostDao.returnOrderedBlogQuery(
 ): List<BlogPostEntity> {
 
     when{
+        filterAndOrder.contains(BlogQueryUtils.ORDER_BY_DESC_DATE_CREATED) ->{
+            return searchBlogPostsOrderByDateCreatedDESC(
+                query = query,
+                page = page)
+        }
+
+        filterAndOrder.contains(BlogQueryUtils.ORDER_BY_ASC_DATE_CREATED) ->{
+            return searchBlogPostsOrderByDateCreatedASC(
+                query = query,
+                page = page)
+        }
+
         filterAndOrder.contains(BlogQueryUtils.ORDER_BY_DESC_DATE_UPDATED) ->{
-            return searchBlogPostsOrderByDateDESC(
+            return searchBlogPostsOrderByDateUpdatedDESC(
                 query = query,
                 page = page)
         }
 
         filterAndOrder.contains(BlogQueryUtils.ORDER_BY_ASC_DATE_UPDATED) ->{
-            return searchBlogPostsOrderByDateASC(
+            return searchBlogPostsOrderByDateUpdatedASC(
                 query = query,
                 page = page)
         }
@@ -120,7 +157,7 @@ suspend fun BlogPostDao.returnOrderedBlogQuery(
                 page = page)
         }
         else ->
-            return searchBlogPostsOrderByDateASC(
+            return searchBlogPostsOrderByDateCreatedASC(
                 query = query,
                 page = page
             )

@@ -21,6 +21,7 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
 import com.afollestad.materialdialogs.customview.getCustomView
 import com.templateapp.cloudapi.R
+import com.templateapp.cloudapi.business.datasource.cache.blog.BlogQueryUtils.Companion.BLOG_FILTER_DATE_CREATED
 import com.templateapp.cloudapi.business.datasource.cache.blog.BlogQueryUtils.Companion.BLOG_FILTER_DATE_UPDATED
 import com.templateapp.cloudapi.business.datasource.cache.blog.BlogQueryUtils.Companion.BLOG_FILTER_USERNAME
 import com.templateapp.cloudapi.business.datasource.cache.blog.BlogQueryUtils.Companion.BLOG_ORDER_ASC
@@ -224,7 +225,8 @@ class BlogFragment : BaseBlogFragment(),
 
                 view.findViewById<RadioGroup>(R.id.filter_group).apply {
                     when (filter) {
-                        BLOG_FILTER_DATE_UPDATED -> check(R.id.filter_date)
+                        BLOG_FILTER_DATE_CREATED -> check(R.id.filter_date_created)
+                        BLOG_FILTER_DATE_UPDATED -> check(R.id.filter_date_modified)
                         BLOG_FILTER_USERNAME -> check(R.id.filter_author)
                     }
                 }
@@ -240,8 +242,9 @@ class BlogFragment : BaseBlogFragment(),
                     val newFilter =
                         when (view.findViewById<RadioGroup>(R.id.filter_group).checkedRadioButtonId) {
                             R.id.filter_author -> BLOG_FILTER_USERNAME
-                            R.id.filter_date -> BLOG_FILTER_DATE_UPDATED
-                            else -> BLOG_FILTER_DATE_UPDATED
+                            R.id.filter_date_created -> BLOG_FILTER_DATE_CREATED
+                            R.id.filter_date_modified -> BLOG_FILTER_DATE_UPDATED
+                            else -> BLOG_FILTER_DATE_CREATED
                         }
 
                     val newOrder =

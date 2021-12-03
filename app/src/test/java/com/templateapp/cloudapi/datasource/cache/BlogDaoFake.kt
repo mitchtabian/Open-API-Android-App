@@ -46,7 +46,7 @@ class BlogDaoFake(
         return db.blogs
     }
 
-    override suspend fun searchBlogPostsOrderByDateDESC(
+    override suspend fun searchBlogPostsOrderByDateCreatedDESC(
         query: String,
         page: Int,
         pageSize: Int
@@ -56,7 +56,7 @@ class BlogDaoFake(
         return copy
     }
 
-    override suspend fun searchBlogPostsOrderByDateASC(
+    override suspend fun searchBlogPostsOrderByDateCreatedASC(
         query: String,
         page: Int,
         pageSize: Int

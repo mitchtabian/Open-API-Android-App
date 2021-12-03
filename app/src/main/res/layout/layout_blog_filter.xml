@@ -43,8 +43,18 @@
         <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/filter_date"
-                android:text="@string/filter_date"
+                android:id="@+id/filter_date_created"
+                android:text="@string/filter_date_created"
+                android:textSize="16sp"
+                android:textColor="#000"
+                android:layout_marginTop="20dp"
+                />
+
+        <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/filter_date_modified"
+                android:text="@string/filter_date_modified"
                 android:textSize="16sp"
                 android:textColor="#000"
                 android:layout_marginTop="20dp"
