@@ -9,12 +9,12 @@ class SuccessHandling {
         const val RESPONSE_MUST_BECOME_CODINGWITHMITCH_MEMBER = "You must become a member on Codingwithmitch.com to access the API. Visit https://codingwithmitch.com/enroll/"
         const val RESPONSE_NO_PERMISSION_TO_EDIT = "You are not the owner of the task."
         const val RESPONSE_HAS_PERMISSION_TO_EDIT = "You are the owner of the task."
-        const val SUCCESS_BLOG_CREATED = "created"
-        const val SUCCESS_BLOG_DELETED = "deleted"
-        const val SUCCESS_BLOG_UPDATED = "updated"
+        const val SUCCESS_TASK_CREATED = "created"
+        const val SUCCESS_TASK_DELETED = "deleted"
+        const val SUCCESS_TASK_UPDATED = "updated"
 
-        const val SUCCESS_BLOG_DOES_NOT_EXIST_IN_CACHE = "Blog does not exist in the cache."
-        const val SUCCESS_BLOG_EXISTS_ON_SERVER = "Blog exists on the server and in the cache."
+        const val SUCCESS_TASK_DOES_NOT_EXIST_IN_CACHE = "Task does not exist in the cache."
+        const val SUCCESS_TASK_EXISTS_ON_SERVER = "Task exists on the server and in the cache."
 
         const val SUCCESS_ACCOUNT_UPDATED = "User information update success."
         const val SUCCESS_PASSWORD_UPDATED = "User password update success."

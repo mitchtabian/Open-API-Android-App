@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:id="@+id/nav_blog"
+    <item android:id="@+id/nav_task"
           android:title="@string/home"
     android:icon="@drawable/ic_home_white_24dp"/>
 

@@ -33,7 +33,7 @@
     <string name="fragment_view_blog">View</string>
     <string name="fragment_account">Account</string>
     <string name="fragment_change_password">Change password</string>
-    <string name="fragment_blog">Blog</string>
+    <string name="fragment_task">Task</string>
     <string name="save_changes">Save changes</string>
     <string name="fragment_update_account">Update account</string>
     <string name="arg_email">arg_email</string>
@@ -79,6 +79,11 @@
     <string name="text_forgot_password">Forgot password</string>
     <string name="process_death_state">process_death_state</string>
     <string name="invalid_login_credentials">Invalid login</string>
+    <string name="write_a_task_title">Write a task title...</string>
+    <string name="the_title_of_a_task">The Title of a Task</string>
+    <string name="touch_to_change_image">Touch to change image</string>
+    <string name="this_is_some_task_descripton">This is some task description</string>
+    <string name="user_name">John Doe</string>
 
 </resources>
 

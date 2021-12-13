@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/nav_task"
+        app:startDestination="@id/taskFragment"
+        >
+
+    <fragment android:id="@+id/taskFragment"
+            android:name="com.templateapp.cloudapi.presentation.main.task.list.TaskFragment"
+            android:label=""
+            tools:layout="@layout/fragment_task"
+            >
+
+        <action
+                android:id="@+id/action_taskFragment_to_viewTaskFragment"
+                app:destination="@id/viewTaskFragment"
+                />
+
+    </fragment>
+
+    <fragment android:id="@+id/viewTaskFragment"
+            android:name="com.templateapp.cloudapi.presentation.main.task.detail.ViewTaskFragment"
+            android:label=""
+            tools:layout="@layout/fragment_view_task">
+
+        <argument
+                android:name="taskId"
+                app:argType="string"
+                android:defaultValue="-1" />
+
+        <action android:id="@+id/action_viewTaskFragment_to_updateTaskFragment"
+                app:destination="@id/updateBlogFragment"
+                />
+
+    </fragment>
+
+    <fragment android:id="@+id/updateBlogFragment"
+            android:name="com.templateapp.cloudapi.presentation.main.task.update.UpdateTaskFragment"
+            android:label="@string/fragment_update_blog"
+            tools:layout="@layout/fragment_update_task"
+            >
+
+        <argument
+                android:name="taskId"
+                app:argType="string"
+                android:defaultValue="-1" />
+
+    </fragment>
+</navigation>

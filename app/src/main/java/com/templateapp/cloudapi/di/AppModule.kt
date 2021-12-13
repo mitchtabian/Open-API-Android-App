@@ -6,7 +6,7 @@ import com.templateapp.cloudapi.business.datasource.cache.AppDatabase
 import com.templateapp.cloudapi.business.datasource.cache.AppDatabase.Companion.DATABASE_NAME
 import com.templateapp.cloudapi.business.datasource.cache.account.AccountDao
 import com.templateapp.cloudapi.business.datasource.cache.auth.AuthTokenDao
-import com.templateapp.cloudapi.business.datasource.cache.blog.BlogPostDao
+import com.templateapp.cloudapi.business.datasource.cache.task.TaskDao
 import com.templateapp.cloudapi.business.datasource.datastore.AppDataStore
 import com.templateapp.cloudapi.business.datasource.datastore.AppDataStoreManager
 import com.templateapp.cloudapi.business.datasource.network.main.OpenApiMainService
@@ -79,8 +79,8 @@ object AppModule{
 
     @Singleton
     @Provides
-    fun provideBlogPostDao(db: AppDatabase): BlogPostDao {
-        return db.getBlogPostDao()
+    fun provideTaskDao(db: AppDatabase): TaskDao {
+        return db.getTaskDao()
     }
 
 }

@@ -1,24 +1,24 @@
 package com.templateapp.cloudapi.datasource.cache
 
-import com.templateapp.cloudapi.business.datasource.cache.blog.BlogPostDao
-import com.templateapp.cloudapi.business.datasource.cache.blog.BlogPostEntity
+import com.templateapp.cloudapi.business.datasource.cache.task.TaskDao
+import com.templateapp.cloudapi.business.datasource.cache.task.TaskEntity
 
 class BlogDaoFake(
     private val db: AppDatabaseFake
-): BlogPostDao {
-    override suspend fun insert(blogPost: BlogPostEntity): Long {
+): TaskDao {
+    override suspend fun insert(task: TaskEntity): Long {
         db.blogs.removeIf {
-            it.id == blogPost.id
+            it.id == task.id
         }
-        db.blogs.add(blogPost)
+        db.blogs.add(task)
         return 1 // always return success
     }
 
-    override suspend fun deleteBlogPost(blogPost: BlogPostEntity) {
-        db.blogs.remove(blogPost)
+    override suspend fun deleteTask(task: TaskEntity) {
+        db.blogs.remove(task)
     }
 
-    override suspend fun deleteBlogPost(id: String) {
+    override suspend fun deleteTask(id: String) {
         for(blog in db.blogs){
             if(blog.id.equals(id)){
                 db.blogs.remove(blog)
@@ -38,57 +38,57 @@ class BlogDaoFake(
         }
     }
 
-    override suspend fun getAllBlogPosts(
+    override suspend fun getAllTasks(
         query: String,
         page: Int,
         pageSize: Int
-    ): List<BlogPostEntity> {
+    ): List<TaskEntity> {
         return db.blogs
     }
 
-    override suspend fun searchBlogPostsOrderByDateCreatedDESC(
+    override suspend fun searchTasksOrderByDateCreatedDESC(
         query: String,
         page: Int,
         pageSize: Int
-    ): List<BlogPostEntity> {
+    ): List<TaskEntity> {
         val copy = db.blogs.toMutableList()
         copy.sortByDescending { it.date_updated }
         return copy
     }
 
-    override suspend fun searchBlogPostsOrderByDateCreatedASC(
+    override suspend fun searchTasksOrderByDateCreatedASC(
         query: String,
         page: Int,
         pageSize: Int
-    ): List<BlogPostEntity> {
+    ): List<TaskEntity> {
         val copy = db.blogs.toMutableList()
         copy.sortByDescending { it.date_updated }
         copy.reverse()
         return copy
     }
 
-    override suspend fun searchBlogPostsOrderByAuthorDESC(
+    override suspend fun searchTasksOrderByAuthorDESC(
         query: String,
         page: Int,
         pageSize: Int
-    ): List<BlogPostEntity> {
+    ): List<TaskEntity> {
         val copy = db.blogs.toMutableList()
         copy.sortByDescending { it.username }
         return copy
     }
 
-    override suspend fun searchBlogPostsOrderByAuthorASC(
+    override suspend fun searchTasksOrderByAuthorASC(
         query: String,
         page: Int,
         pageSize: Int
-    ): List<BlogPostEntity> {
+    ): List<TaskEntity> {
         val copy = db.blogs.toMutableList()
         copy.sortByDescending { it.username }
         copy.reverse()
         return copy
     }
 
-    override suspend fun getBlogPost(id: String): BlogPostEntity? {
+    override suspend fun getTask(id: String): TaskEntity? {
         for(blog in db.blogs){
             if(blog.id.equals(id)){
                 return blog

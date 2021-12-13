@@ -2,8 +2,8 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/nav_main"
-        app:startDestination="@+id/nav_blog">
-    <include app:graph="@navigation/nav_blog"/>
-    <include app:graph="@navigation/nav_create_blog"/>
+        app:startDestination="@+id/nav_task">
+    <include app:graph="@navigation/nav_task"/>
+    <include app:graph="@navigation/nav_create_task"/>
     <include app:graph="@navigation/nav_account"/>
 </navigation>

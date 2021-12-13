@@ -53,7 +53,7 @@ class MainActivity : BaseActivity() {
     private fun setupActionBar() {
         setSupportActionBar(binding.toolBar)
         appBarConfiguration = AppBarConfiguration(
-            setOf(R.id.blogFragment, R.id.createBlogFragment, R.id.accountFragment)
+            setOf(R.id.taskFragment, R.id.createTaskFragment, R.id.accountFragment)
         )
         binding.toolBar.setupWithNavController(navController, appBarConfiguration)
     }

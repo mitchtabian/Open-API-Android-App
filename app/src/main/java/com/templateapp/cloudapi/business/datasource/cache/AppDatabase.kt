@@ -6,17 +6,17 @@ import com.templateapp.cloudapi.business.datasource.cache.account.AccountDao
 import com.templateapp.cloudapi.business.datasource.cache.account.AccountEntity
 import com.templateapp.cloudapi.business.datasource.cache.auth.AuthTokenDao
 import com.templateapp.cloudapi.business.datasource.cache.auth.AuthTokenEntity
-import com.templateapp.cloudapi.business.datasource.cache.blog.BlogPostDao
-import com.templateapp.cloudapi.business.datasource.cache.blog.BlogPostEntity
+import com.templateapp.cloudapi.business.datasource.cache.task.TaskDao
+import com.templateapp.cloudapi.business.datasource.cache.task.TaskEntity
 
-@Database(entities = [AuthTokenEntity::class, AccountEntity::class, BlogPostEntity::class], version = 1)
+@Database(entities = [AuthTokenEntity::class, AccountEntity::class, TaskEntity::class], version = 1)
 abstract class AppDatabase: RoomDatabase() {
 
     abstract fun getAuthTokenDao(): AuthTokenDao
 
     abstract fun getAccountPropertiesDao(): AccountDao
 
-    abstract fun getBlogPostDao(): BlogPostDao
+    abstract fun getTaskDao(): TaskDao
 
     companion object{
         val DATABASE_NAME: String = "app_db"
