@@ -4,8 +4,8 @@
 
 
     <item
-            android:id="@+id/publish"
-            android:title="Publish"
+            android:id="@+id/create"
+            android:title="@string/create_task"
             app:showAsAction="ifRoom"
             />
 

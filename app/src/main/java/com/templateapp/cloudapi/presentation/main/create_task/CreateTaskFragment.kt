@@ -135,12 +135,12 @@ class CreateTaskFragment : BaseCreateTaskFragment() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.publish_menu, menu)
+        inflater.inflate(R.menu.create_menu, menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.publish -> {
+            R.id.create -> {
                 cacheState()
                 viewModel.onTriggerEvent(CreateTaskEvents.PublishTask(activity))
                 return true

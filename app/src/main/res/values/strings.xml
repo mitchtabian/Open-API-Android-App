@@ -84,6 +84,7 @@
     <string name="touch_to_change_image">Touch to change image</string>
     <string name="this_is_some_task_descripton">This is some task description</string>
     <string name="user_name">John Doe</string>
+    <string name="create_task">Create</string>
 
 </resources>
 
