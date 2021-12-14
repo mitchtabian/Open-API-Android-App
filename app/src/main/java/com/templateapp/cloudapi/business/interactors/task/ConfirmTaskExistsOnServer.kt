@@ -5,6 +5,7 @@ import com.templateapp.cloudapi.business.datasource.cache.task.TaskDao
 import com.templateapp.cloudapi.business.datasource.network.main.OpenApiMainService
 import com.templateapp.cloudapi.business.domain.models.AuthToken
 import com.templateapp.cloudapi.business.domain.util.*
+import com.templateapp.cloudapi.business.domain.util.ErrorHandling.Companion.ERROR_TASK_DOES_NOT_EXIST
 import com.templateapp.cloudapi.business.domain.util.ErrorHandling.Companion.UNABLE_TO_RESOLVE_HOST
 import com.templateapp.cloudapi.business.domain.util.ErrorHandling.Companion.UNAUTHORIZED_ERROR
 import com.templateapp.cloudapi.business.domain.util.SuccessHandling.Companion.SUCCESS_TASK_DOES_NOT_EXIST_IN_CACHE
@@ -83,17 +84,18 @@ class ConfirmTaskExistsOnServer(
                     )
                 }else{
                     // if it exists on server but not in cache. Delete from cache and emit error.
-                    if (task == null) {
+                    if (task?.error?.contains(ERROR_TASK_DOES_NOT_EXIST) == true) {
                         cache.deleteTask(id)
                         emit(
                             DataState.error<Response>(
                                 response = Response(
-                                    message = ErrorHandling.ERROR_TASK_DOES_NOT_EXIST,
+                                    message = ERROR_TASK_DOES_NOT_EXIST,
                                     uiComponentType = UIComponentType.Dialog(),
                                     messageType = MessageType.Error()
                                 )
                             )
                         )
+
                     } else { // if it exists in the cache and on the server. Everything is fine.
                         emit(
                             DataState.data<Response>(

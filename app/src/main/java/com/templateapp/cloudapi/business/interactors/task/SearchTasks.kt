@@ -11,6 +11,7 @@ import com.templateapp.cloudapi.presentation.main.task.list.TaskFilterOptions
 import com.templateapp.cloudapi.presentation.main.task.list.TaskOrderOptions
 import com.templateapp.cloudapi.business.domain.util.DataState
 import com.templateapp.cloudapi.business.domain.util.ErrorHandling.Companion.ERROR_AUTH_TOKEN_INVALID
+import com.templateapp.cloudapi.business.domain.util.ErrorHandling.Companion.ERROR_TASK_DOES_NOT_EXIST
 import com.templateapp.cloudapi.business.domain.util.MessageType
 import com.templateapp.cloudapi.business.domain.util.Response
 import com.templateapp.cloudapi.business.domain.util.UIComponentType
@@ -68,7 +69,44 @@ class SearchTasks(
             )
         }
 
-        // emit from cache
+        // load and check if tasks that are in cache are indeed present on the server
+        var keepSearching = true;
+        while(keepSearching){
+            val cachedTasks = cache.returnOrderedTaskQuery(
+                query = query,
+                filterAndOrder = filterAndOrder,
+                page = page
+            )
+            val cachedTaskSize = cachedTasks.size
+
+            for(cachedTask in cachedTasks){
+                try { // try to load each task and check if it exists on the server
+                    val serverTask = service.getTask(
+                        "${authToken.token}",
+                        id = cachedTask.id
+                    )
+                    // If task was not found on server, delete task from cache.
+                    if(serverTask?.error?.contains(ERROR_TASK_DOES_NOT_EXIST) == true) {
+                        cache.deleteTask(cachedTask.id)
+                    }
+                }catch (e: Exception){
+                    emit(
+                        DataState.error<List<Task>>(
+                            response = Response(
+                                message = "Unable to get the task from the server. Bad connection?",
+                                uiComponentType = UIComponentType.None(),
+                                messageType = MessageType.Error()
+                            )
+                        )
+                    )
+                }
+            }
+            // Stop searching once no tasks were deleted from the cache, as they all appear to be also on the server.
+            if(cachedTaskSize == cachedTasks.size)
+                keepSearching = false;
+        }
+
+        // Return cache to the caller
         val cachedTasks = cache.returnOrderedTaskQuery(
             query = query,
             filterAndOrder = filterAndOrder,
