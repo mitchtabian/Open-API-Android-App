@@ -8,6 +8,7 @@ import com.templateapp.cloudapi.business.datasource.cache.task.TaskDao
 import com.templateapp.cloudapi.business.datasource.cache.task.toEntity
 import com.templateapp.cloudapi.business.domain.util.*
 import com.templateapp.cloudapi.business.domain.util.ErrorHandling.Companion.ERROR_AUTH_TOKEN_INVALID
+import com.templateapp.cloudapi.presentation.util.ServerMsgTranslator
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
@@ -18,6 +19,7 @@ import java.lang.Exception
 class PublishTask(
     private val service: OpenApiMainService,
     private val cache: TaskDao,
+    private val serverMsgTranslator: ServerMsgTranslator
 ){
     private val TAG: String = "AppDebug"
 
@@ -64,7 +66,7 @@ class PublishTask(
             response = null,
         ))
     }.catch { e ->
-        emit(handleUseCaseException(e))
+        emit(handleUseCaseException(e, serverMsgTranslator))
     }
 }
 

@@ -86,6 +86,9 @@
     <string name="user_name">John Doe</string>
     <string name="create_task">Create</string>
 
+    <!-- Dialogs -->
+    <string name="error_email_exists">User with this email is already registered.</string>
+
 </resources>
 
 

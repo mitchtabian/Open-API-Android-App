@@ -6,6 +6,7 @@ import com.templateapp.cloudapi.business.datasource.cache.account.AccountDao
 import com.templateapp.cloudapi.business.datasource.cache.account.toAccount
 import com.templateapp.cloudapi.business.domain.util.DataState
 import com.templateapp.cloudapi.business.domain.util.ErrorHandling
+import com.templateapp.cloudapi.presentation.util.ServerMsgTranslator
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
@@ -13,6 +14,7 @@ import java.lang.Exception
 
 class GetAccountFromCache(
     private val cache: AccountDao,
+    private val serverMsgTranslator: ServerMsgTranslator
 ) {
     fun execute(
         _id: String,
@@ -27,7 +29,7 @@ class GetAccountFromCache(
 
         emit(DataState.data(response = null, cachedAccount))
     }.catch { e ->
-        emit(handleUseCaseException(e))
+        emit(handleUseCaseException(e, serverMsgTranslator))
     }
 }
 

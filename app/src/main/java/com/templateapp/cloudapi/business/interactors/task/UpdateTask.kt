@@ -8,6 +8,7 @@ import com.templateapp.cloudapi.business.domain.util.*
 import com.templateapp.cloudapi.business.domain.util.ErrorHandling.Companion.ERROR_AUTH_TOKEN_INVALID
 import com.templateapp.cloudapi.business.domain.util.ErrorHandling.Companion.GENERIC_ERROR
 import com.templateapp.cloudapi.business.domain.util.SuccessHandling.Companion.SUCCESS_TASK_UPDATED
+import com.templateapp.cloudapi.presentation.util.ServerMsgTranslator
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
@@ -17,6 +18,7 @@ import okhttp3.RequestBody
 class UpdateTask(
     private val service: OpenApiMainService,
     private val cache: TaskDao,
+    private val serverMsgTranslator: ServerMsgTranslator
 ) {
 
     /**
@@ -67,7 +69,7 @@ class UpdateTask(
             ))
         }
     }.catch { e ->
-        emit(handleUseCaseException(e))
+        emit(handleUseCaseException(e, serverMsgTranslator))
     }
 }
 

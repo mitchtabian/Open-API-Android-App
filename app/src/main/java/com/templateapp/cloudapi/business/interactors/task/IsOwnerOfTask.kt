@@ -11,6 +11,7 @@ import com.templateapp.cloudapi.business.domain.util.Response
 import com.templateapp.cloudapi.business.domain.util.SuccessHandling.Companion.RESPONSE_HAS_PERMISSION_TO_EDIT
 import com.templateapp.cloudapi.business.domain.util.SuccessHandling.Companion.RESPONSE_NO_PERMISSION_TO_EDIT
 import com.templateapp.cloudapi.business.domain.util.UIComponentType
+import com.templateapp.cloudapi.presentation.util.ServerMsgTranslator
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
@@ -18,6 +19,7 @@ import java.lang.Exception
 
 class IsOwnerOfTask(
     private val service: OpenApiMainService,
+    private val serverMsgTranslator: ServerMsgTranslator
 ) {
 
     fun execute(
@@ -64,7 +66,7 @@ class IsOwnerOfTask(
             emit(DataState.data(response = null, false))
         }
     }.catch { e ->
-        emit(handleUseCaseException(e))
+        emit(handleUseCaseException(e, serverMsgTranslator))
     }
 }
 

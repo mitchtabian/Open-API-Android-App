@@ -9,6 +9,7 @@ import com.templateapp.cloudapi.business.domain.util.ErrorHandling.Companion.ERR
 import com.templateapp.cloudapi.business.domain.util.ErrorHandling.Companion.UNABLE_TO_RESOLVE_HOST
 import com.templateapp.cloudapi.business.domain.util.ErrorHandling.Companion.UNAUTHORIZED_ERROR
 import com.templateapp.cloudapi.business.domain.util.SuccessHandling.Companion.SUCCESS_TASK_DOES_NOT_EXIST_IN_CACHE
+import com.templateapp.cloudapi.presentation.util.ServerMsgTranslator
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
@@ -19,7 +20,8 @@ import java.lang.Exception
  */
 class ConfirmTaskExistsOnServer(
     private val service: OpenApiMainService,
-    private val cache: TaskDao
+    private val cache: TaskDao,
+    private val serverMsgTranslator: ServerMsgTranslator
 ) {
 
     fun execute(
@@ -112,7 +114,7 @@ class ConfirmTaskExistsOnServer(
             }
         }
     }.catch { e ->
-        emit(handleUseCaseException(e))
+        emit(handleUseCaseException(e, serverMsgTranslator))
     }
 }
 

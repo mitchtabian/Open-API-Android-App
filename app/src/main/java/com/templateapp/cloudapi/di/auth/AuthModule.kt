@@ -8,6 +8,7 @@ import com.templateapp.cloudapi.business.interactors.auth.Login
 import com.templateapp.cloudapi.business.interactors.auth.Register
 import com.templateapp.cloudapi.business.interactors.session.CheckPreviousAuthUser
 import com.templateapp.cloudapi.business.interactors.session.Logout
+import com.templateapp.cloudapi.presentation.util.ServerMsgTranslator
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -48,12 +49,14 @@ object AuthModule{
         accountDao: AccountDao,
         authTokenDao: AuthTokenDao,
         appDataStoreManager: AppDataStore,
+        serverMsgTranslator: ServerMsgTranslator
     ): Login {
         return Login(
             service,
             accountDao,
             authTokenDao,
-            appDataStoreManager
+            appDataStoreManager,
+            serverMsgTranslator
         )
     }
 
@@ -72,12 +75,14 @@ object AuthModule{
         accountDao: AccountDao,
         authTokenDao: AuthTokenDao,
         appDataStoreManager: AppDataStore,
+        serverMsgTranslator: ServerMsgTranslator
     ): Register {
         return Register(
             service,
             accountDao,
             authTokenDao,
-            appDataStoreManager
+            appDataStoreManager,
+            serverMsgTranslator
         )
     }
 }

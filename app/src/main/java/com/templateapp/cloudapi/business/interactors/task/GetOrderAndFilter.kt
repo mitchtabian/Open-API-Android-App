@@ -5,12 +5,14 @@ import com.templateapp.cloudapi.business.datasource.datastore.AppDataStore
 import com.templateapp.cloudapi.business.domain.util.DataState
 import com.templateapp.cloudapi.presentation.main.task.list.*
 import com.templateapp.cloudapi.presentation.util.DataStoreKeys
+import com.templateapp.cloudapi.presentation.util.ServerMsgTranslator
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 
 class GetOrderAndFilter(
-    private val appDataStoreManager: AppDataStore
+    private val appDataStoreManager: AppDataStore,
+    private val serverMsgTranslator: ServerMsgTranslator
 ) {
     fun execute(): Flow<DataState<OrderAndFilter>> = flow {
         emit(DataState.loading<OrderAndFilter>())
@@ -25,7 +27,7 @@ class GetOrderAndFilter(
             data = OrderAndFilter(order = order, filter = filter)
         ))
     }.catch { e ->
-        emit(handleUseCaseException(e))
+        emit(handleUseCaseException(e, serverMsgTranslator))
     }
 }
 

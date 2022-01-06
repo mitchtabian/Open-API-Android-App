@@ -4,6 +4,7 @@ import com.templateapp.cloudapi.business.datasource.cache.task.TaskDao
 import com.templateapp.cloudapi.business.datasource.datastore.AppDataStore
 import com.templateapp.cloudapi.business.datasource.network.main.OpenApiMainService
 import com.templateapp.cloudapi.business.interactors.task.*
+import com.templateapp.cloudapi.presentation.util.ServerMsgTranslator
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -17,17 +18,19 @@ object TaskModule {
     @Singleton
     @Provides
     fun provideGetTaskFromCache(
-        dao: TaskDao
+        dao: TaskDao,
+        serverMsgTranslator: ServerMsgTranslator
     ): GetTaskFromCache{
-        return GetTaskFromCache(dao)
+        return GetTaskFromCache(dao, serverMsgTranslator)
     }
 
     @Singleton
     @Provides
     fun provideIsOwnerOfTask(
-        service: OpenApiMainService
+        service: OpenApiMainService,
+        serverMsgTranslator: ServerMsgTranslator
     ): IsOwnerOfTask{
-        return IsOwnerOfTask(service)
+        return IsOwnerOfTask(service, serverMsgTranslator)
     }
 
     @Singleton
@@ -35,8 +38,9 @@ object TaskModule {
     fun provideSearchTasks(
         service: OpenApiMainService,
         dao: TaskDao,
+        serverMsgTranslator: ServerMsgTranslator
     ): SearchTasks{
-        return SearchTasks(service, dao)
+        return SearchTasks(service, dao, serverMsgTranslator)
     }
 
     @Singleton
@@ -44,8 +48,9 @@ object TaskModule {
     fun provideDeleteTask(
         service: OpenApiMainService,
         dao: TaskDao,
+        serverMsgTranslator: ServerMsgTranslator
     ): DeleteTask{
-        return DeleteTask(service, dao)
+        return DeleteTask(service, dao, serverMsgTranslator)
     }
 
     @Singleton
@@ -53,8 +58,9 @@ object TaskModule {
     fun provideUpdateTask(
         service: OpenApiMainService,
         dao: TaskDao,
+        serverMsgTranslator: ServerMsgTranslator
     ): UpdateTask{
-        return UpdateTask(service, dao)
+        return UpdateTask(service, dao, serverMsgTranslator)
     }
 
     @Singleton
@@ -62,16 +68,18 @@ object TaskModule {
     fun providePublishTask(
         service: OpenApiMainService,
         dao: TaskDao,
+        serverMsgTranslator: ServerMsgTranslator
     ): PublishTask{
-        return PublishTask(service, dao)
+        return PublishTask(service, dao, serverMsgTranslator)
     }
 
     @Singleton
     @Provides
     fun provideGetOrderAndFilter(
-        appDataStoreManager: AppDataStore
+        appDataStoreManager: AppDataStore,
+        serverMsgTranslator: ServerMsgTranslator
     ): GetOrderAndFilter{
-        return GetOrderAndFilter(appDataStoreManager)
+        return GetOrderAndFilter(appDataStoreManager, serverMsgTranslator)
     }
 
     @Singleton
@@ -79,8 +87,9 @@ object TaskModule {
     fun provideConfirmTaskExistsOnServer(
         service: OpenApiMainService,
         cache: TaskDao,
+        serverMsgTranslator: ServerMsgTranslator
     ): ConfirmTaskExistsOnServer{
-        return ConfirmTaskExistsOnServer(service = service, cache = cache)
+        return ConfirmTaskExistsOnServer(service = service, cache = cache, serverMsgTranslator = serverMsgTranslator)
     }
 }
 

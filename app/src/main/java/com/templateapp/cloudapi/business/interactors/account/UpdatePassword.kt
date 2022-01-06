@@ -7,6 +7,7 @@ import com.templateapp.cloudapi.business.domain.util.*
 import com.templateapp.cloudapi.business.domain.util.ErrorHandling.Companion.ERROR_UPDATE_PASSWORD
 import com.templateapp.cloudapi.business.domain.util.ErrorHandling.Companion.GENERIC_ERROR
 import com.templateapp.cloudapi.business.domain.util.SuccessHandling.Companion.SUCCESS_PASSWORD_UPDATED
+import com.templateapp.cloudapi.presentation.util.ServerMsgTranslator
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
@@ -14,6 +15,7 @@ import java.lang.Exception
 
 class UpdatePassword(
     private val service: OpenApiMainService,
+    private val serverMsgTranslator: ServerMsgTranslator
 ) {
     fun execute(
         authToken: AuthToken?,
@@ -53,6 +55,6 @@ class UpdatePassword(
             response = null
         ))
     }.catch { e ->
-        emit(handleUseCaseException(e))
+        emit(handleUseCaseException(e, serverMsgTranslator))
     }
 }

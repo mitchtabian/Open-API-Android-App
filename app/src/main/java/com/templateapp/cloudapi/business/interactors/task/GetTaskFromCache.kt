@@ -9,12 +9,14 @@ import com.templateapp.cloudapi.business.domain.util.ErrorHandling.Companion.ERR
 import com.templateapp.cloudapi.business.domain.util.MessageType
 import com.templateapp.cloudapi.business.domain.util.Response
 import com.templateapp.cloudapi.business.domain.util.UIComponentType
+import com.templateapp.cloudapi.presentation.util.ServerMsgTranslator
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 
 class GetTaskFromCache(
     private val cache: TaskDao,
+    private val serverMsgTranslator: ServerMsgTranslator
 ) {
 
     fun execute(
@@ -36,7 +38,7 @@ class GetTaskFromCache(
             ))
         }
     }.catch { e ->
-        emit(handleUseCaseException(e))
+        emit(handleUseCaseException(e, serverMsgTranslator))
     }
 }
 

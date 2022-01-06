@@ -13,6 +13,7 @@ import com.templateapp.cloudapi.business.datasource.cache.auth.toEntity
 import com.templateapp.cloudapi.business.domain.util.DataState
 import com.templateapp.cloudapi.business.domain.util.ErrorHandling.Companion.ERROR_AUTH_TOKEN_INVALID
 import com.templateapp.cloudapi.business.domain.util.ErrorHandling.Companion.ERROR_UNABLE_TO_RETRIEVE_ACCOUNT_DETAILS
+import com.templateapp.cloudapi.presentation.util.ServerMsgTranslator
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
@@ -21,7 +22,8 @@ import java.lang.Exception
 class GetAccount(
     private val service: OpenApiMainService,
     private val accountCache: AccountDao,
-    private val tokenCache: AuthTokenDao
+    private val tokenCache: AuthTokenDao,
+    private val serverMsgTranslator: ServerMsgTranslator
 ) {
     private val TAG: String = "AppDebug"
 
@@ -53,7 +55,7 @@ class GetAccount(
 
         emit(DataState.data(response = null, cachedAccount))
     }.catch { e ->
-        emit(handleUseCaseException(e))
+        emit(handleUseCaseException(e, serverMsgTranslator))
     }
 }
 

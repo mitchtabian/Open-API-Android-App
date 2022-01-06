@@ -12,6 +12,7 @@ import com.templateapp.cloudapi.business.datasource.datastore.AppDataStore
 import com.templateapp.cloudapi.business.domain.util.*
 import com.templateapp.cloudapi.business.domain.util.ErrorHandling.Companion.ERROR_SAVE_AUTH_TOKEN
 import com.templateapp.cloudapi.presentation.util.DataStoreKeys
+import com.templateapp.cloudapi.presentation.util.ServerMsgTranslator
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
@@ -22,6 +23,7 @@ class Register(
     private val accountDao: AccountDao,
     private val authTokenDao: AuthTokenDao,
     private val appDataStoreManager: AppDataStore,
+    private val serverMsgTranslator: ServerMsgTranslator
 ){
     fun execute(
         email: String,
@@ -70,7 +72,7 @@ class Register(
         appDataStoreManager.setValue(DataStoreKeys.PREVIOUS_AUTH_USER, email)
         emit(DataState.data(data = authToken, response = null))
     }.catch { e ->
-        emit(handleUseCaseException(e))
+        emit(handleUseCaseException(e, serverMsgTranslator))
     }
 }
 

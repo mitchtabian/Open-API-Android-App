@@ -7,6 +7,7 @@ import com.templateapp.cloudapi.business.interactors.account.UpdateAccount
 import com.templateapp.cloudapi.business.interactors.account.UpdatePassword
 import com.templateapp.cloudapi.business.datasource.cache.account.AccountDao
 import com.templateapp.cloudapi.business.datasource.cache.auth.AuthTokenDao
+import com.templateapp.cloudapi.presentation.util.ServerMsgTranslator
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -22,9 +23,10 @@ object AccountModule {
     fun provideGetAccount(
         service: OpenApiMainService,
         accountCache: AccountDao,
-        tokenCache: AuthTokenDao
+        tokenCache: AuthTokenDao,
+        serverMsgTranslator: ServerMsgTranslator
     ): GetAccount{
-        return GetAccount(service, accountCache, tokenCache)
+        return GetAccount(service, accountCache, tokenCache, serverMsgTranslator)
     }
 
     @Singleton
@@ -32,16 +34,18 @@ object AccountModule {
     fun provideUpdateAccount(
         service: OpenApiMainService,
         cache: AccountDao,
+        serverMsgTranslator: ServerMsgTranslator
     ): UpdateAccount{
-        return UpdateAccount(service, cache)
+        return UpdateAccount(service, cache, serverMsgTranslator)
     }
 
     @Singleton
     @Provides
     fun provideGetAccountFromCache(
         cache: AccountDao,
+        serverMsgTranslator: ServerMsgTranslator
     ): GetAccountFromCache{
-        return GetAccountFromCache(cache)
+        return GetAccountFromCache(cache, serverMsgTranslator)
     }
 
     @Singleton
@@ -49,8 +53,9 @@ object AccountModule {
     fun provideUpdatePassword(
         service: OpenApiMainService,
         cache: AccountDao,
+        serverMsgTranslator: ServerMsgTranslator
     ): UpdatePassword{
-        return UpdatePassword(service)
+        return UpdatePassword(service, serverMsgTranslator)
     }
 }
 

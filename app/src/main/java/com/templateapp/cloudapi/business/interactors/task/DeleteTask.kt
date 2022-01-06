@@ -11,6 +11,7 @@ import com.templateapp.cloudapi.business.domain.util.ErrorHandling.Companion.ERR
 import com.templateapp.cloudapi.business.domain.util.ErrorHandling.Companion.ERROR_DELETE_TASK_DOES_NOT_EXIST
 import com.templateapp.cloudapi.business.domain.util.ErrorHandling.Companion.GENERIC_ERROR
 import com.templateapp.cloudapi.business.domain.util.SuccessHandling.Companion.SUCCESS_TASK_DELETED
+import com.templateapp.cloudapi.presentation.util.ServerMsgTranslator
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
@@ -19,6 +20,7 @@ import java.lang.Exception
 class DeleteTask(
     private val service: OpenApiMainService,
     private val cache: TaskDao,
+    private val serverMsgTranslator: ServerMsgTranslator
 ) {
     /**
      * If successful this will emit a string saying: 'deleted'
@@ -53,7 +55,7 @@ class DeleteTask(
             ))
         }
     }.catch { e ->
-        emit(handleUseCaseException(e))
+        emit(handleUseCaseException(e, serverMsgTranslator))
     }
 }
 
