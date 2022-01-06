@@ -2,8 +2,8 @@ package com.templateapp.cloudapi.presentation.util
 
 import android.app.Application
 import com.templateapp.cloudapi.R
-import javax.inject.Inject
-import javax.inject.Singleton
+import com.templateapp.cloudapi.presentation.util.ServerMsgStrings.Companion.ERROR_EMAIL_EXISTS
+import com.templateapp.cloudapi.presentation.util.ServerMsgStrings.Companion.ERROR_PASSWORDS_MISMATCH
 
 /*
  * This message translator builds a table of messages returned by server. The translator offers
@@ -19,7 +19,8 @@ class ServerMsgTranslator (
      */
     private val translationsStrings = hashMapOf(
         /* Server responses */
-        "Email already exists." to application.getString(R.string.error_email_exists),
+        ERROR_EMAIL_EXISTS to application.getString(R.string.error_email_exists),
+        ERROR_PASSWORDS_MISMATCH to application.getString(R.string.error_passwords_do_not_match),
        /* "Unable to authenticate." to application.getString(R.string.error_unable_to_authenticate),
         "User information update success." to application.getString(R.string.success_user_data_updates),
         "Name already exists." to application.getString(R.string.error_name_exists),

@@ -88,6 +88,7 @@
 
     <!-- Dialogs -->
     <string name="error_email_exists">User with this email is already registered.</string>
+    <string name="error_passwords_do_not_match">Passwords mismatch. Please try again.</string>
 
 </resources>
 
