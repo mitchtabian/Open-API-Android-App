@@ -64,7 +64,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/task_update_date"
-                    android:text="Updated on July 23, 2019"
+                    android:text="@string/updated"
                     android:textColor="@color/grey5"
                     android:textSize="13sp"
                     android:layout_marginTop="10dp"

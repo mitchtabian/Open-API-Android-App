@@ -3,7 +3,28 @@ package com.templateapp.cloudapi.presentation.util
 import android.app.Application
 import com.templateapp.cloudapi.R
 import com.templateapp.cloudapi.presentation.util.ServerMsgStrings.Companion.ERROR_EMAIL_EXISTS
+import com.templateapp.cloudapi.presentation.util.ServerMsgStrings.Companion.ERROR_INCORRECT_CURRENT_PASSWORD
+import com.templateapp.cloudapi.presentation.util.ServerMsgStrings.Companion.ERROR_INCORRECT_PASSWORDS_MISMATCH
+import com.templateapp.cloudapi.presentation.util.ServerMsgStrings.Companion.ERROR_INVALID_EMAIL
+import com.templateapp.cloudapi.presentation.util.ServerMsgStrings.Companion.ERROR_INVALID_EMAIL_UPDATES
+import com.templateapp.cloudapi.presentation.util.ServerMsgStrings.Companion.ERROR_INVALID_UPDATES
+import com.templateapp.cloudapi.presentation.util.ServerMsgStrings.Companion.ERROR_INVALID_USER_UPDATES
+import com.templateapp.cloudapi.presentation.util.ServerMsgStrings.Companion.ERROR_NAME_ALREADY_EXISTS
+import com.templateapp.cloudapi.presentation.util.ServerMsgStrings.Companion.ERROR_NEW_PASSWORD_TOO_SHORT
+import com.templateapp.cloudapi.presentation.util.ServerMsgStrings.Companion.ERROR_NO_QUERY_PAGINATION_RESULT
 import com.templateapp.cloudapi.presentation.util.ServerMsgStrings.Companion.ERROR_PASSWORDS_MISMATCH
+import com.templateapp.cloudapi.presentation.util.ServerMsgStrings.Companion.ERROR_PASSWORD_TOO_SHORT
+import com.templateapp.cloudapi.presentation.util.ServerMsgStrings.Companion.ERROR_SERVER_INTERNAL
+import com.templateapp.cloudapi.presentation.util.ServerMsgStrings.Companion.ERROR_TASK_DOES_NOT_EXIST_ON_THE_SERVER
+import com.templateapp.cloudapi.presentation.util.ServerMsgStrings.Companion.ERROR_UNABLE_TO_AUTHENTICATE
+import com.templateapp.cloudapi.presentation.util.ServerMsgStrings.Companion.RESPONSE_PASSWORD_RESET_SUCCESS
+import com.templateapp.cloudapi.presentation.util.ServerMsgStrings.Companion.RESPONSE_PASSWORD_UPDATE_SUCCESS
+import com.templateapp.cloudapi.presentation.util.ServerMsgStrings.Companion.RESPONSE_TASK_CREATED_SUCCESS
+import com.templateapp.cloudapi.presentation.util.ServerMsgStrings.Companion.RESPONSE_TASK_DELETED_SUCCESS
+import com.templateapp.cloudapi.presentation.util.ServerMsgStrings.Companion.RESPONSE_TASK_OWNER_NO
+import com.templateapp.cloudapi.presentation.util.ServerMsgStrings.Companion.RESPONSE_TASK_OWNER_YES
+import com.templateapp.cloudapi.presentation.util.ServerMsgStrings.Companion.RESPONSE_TASK_UPDATED_SUCCESS
+import com.templateapp.cloudapi.presentation.util.ServerMsgStrings.Companion.RESPONSE_USER_UPDATE_SUCCESS
 
 /*
  * This message translator builds a table of messages returned by server. The translator offers
@@ -21,7 +42,33 @@ class ServerMsgTranslator (
         /* Server responses */
         ERROR_EMAIL_EXISTS to application.getString(R.string.error_email_exists),
         ERROR_PASSWORDS_MISMATCH to application.getString(R.string.error_passwords_do_not_match),
-       /* "Unable to authenticate." to application.getString(R.string.error_unable_to_authenticate),
+        ERROR_NAME_ALREADY_EXISTS to application.getString(R.string.error_name_already_exists),
+        ERROR_INVALID_EMAIL to application.getString(R.string.error_invalid_email),
+        ERROR_PASSWORD_TOO_SHORT to application.getString(R.string.error_password_too_short),
+        ERROR_NEW_PASSWORD_TOO_SHORT to application.getString(R.string.error_new_password_too_short),
+        ERROR_UNABLE_TO_AUTHENTICATE to application.getString(R.string.error_unable_to_authenticate),
+        ERROR_INVALID_USER_UPDATES to application.getString(R.string.error_invalid_user_updates),
+        ERROR_INVALID_EMAIL_UPDATES to application.getString(R.string.error_invalid_email_updates),
+        ERROR_INCORRECT_CURRENT_PASSWORD to application.getString(R.string.error_incorrect_current_password),
+        ERROR_INCORRECT_PASSWORDS_MISMATCH to application.getString(R.string.error_incorrect_password_mismatch),
+        ERROR_NO_QUERY_PAGINATION_RESULT to application.getString(R.string.error_no_query_pagination_result),
+        ERROR_TASK_DOES_NOT_EXIST_ON_THE_SERVER to application.getString(R.string.error_task_does_not_exist_on_the_server),
+        ERROR_INVALID_UPDATES to application.getString(R.string.error_invalid_updates),
+
+        ERROR_SERVER_INTERNAL to application.getString(R.string.error_internal_server_error),
+
+        RESPONSE_USER_UPDATE_SUCCESS to application.getString(R.string.response_user_update_success),
+        RESPONSE_TASK_CREATED_SUCCESS to application.getString(R.string.response_task_created_success),
+        RESPONSE_TASK_UPDATED_SUCCESS to application.getString(R.string.response_task_updated_success),
+        RESPONSE_TASK_DELETED_SUCCESS to application.getString(R.string.response_task_deleted_success),
+        RESPONSE_TASK_OWNER_YES to application.getString(R.string.response_task_owner_yes),
+        RESPONSE_TASK_OWNER_NO to application.getString(R.string.response_task_owner_no),
+
+        RESPONSE_PASSWORD_RESET_SUCCESS to application.getString(R.string.response_password_reset_success),
+        RESPONSE_PASSWORD_UPDATE_SUCCESS to application.getString(R.string.response_password_update_success),
+
+
+      /* "Unable to authenticate." to application.getString(R.string.error_unable_to_authenticate),
         "User information update success." to application.getString(R.string.success_user_data_updates),
         "Name already exists." to application.getString(R.string.error_name_exists),
         "Incorrect current password." to application.getString(R.string.error_incorrect_current_password),

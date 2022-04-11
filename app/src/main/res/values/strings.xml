@@ -85,10 +85,44 @@
     <string name="this_is_some_task_descripton">This is some task description</string>
     <string name="user_name">John Doe</string>
     <string name="create_task">Create</string>
+    <string name="write_some_content">Write some content...</string>
+    <string name="owner_name">Mitch Tabian</string>
+    <string name="updated">Updated on July 23, 2019</string>
+    <string name="no_more_results">No more results...</string>
+    <string name="apply">Apply</string>
 
     <!-- Dialogs -->
     <string name="error_email_exists">User with this email is already registered.</string>
     <string name="error_passwords_do_not_match">Passwords mismatch. Please try again.</string>
+    <string name="error_name_already_exists">User with this name already exists.</string>
+    <string name="error_invalid_email">Email is in wrong format. Please try again.</string>
+    <string name="error_password_too_short">Password is too short.</string>
+    <string name="error_new_password_too_short">New password is too short.</string>
+    <string name="error_unable_to_authenticate">Unable to authenticate.</string>
+    <string name="error_invalid_user_updates">Invalid user updates</string>
+    <string name="error_invalid_email_updates">Invalid email updates.</string>
+    <string name="error_incorrect_current_password">Password is incorrect.</string>
+    <string name="error_incorrect_password_mismatch">Passwords do not match.</string>
+    <string name="error_no_query_pagination_result">No query pagination result.</string>
+    <string name="error_task_does_not_exist_on_the_server">Task does not exist on the server.</string>
+    <string name="error_invalid_updates">Invalid updates.</string>
+    <string name="test" translatable="false">Invalid updates.</string>
+
+    <string name="error_internal_server_error">Internal server error. Please try again.</string>
+
+
+    <string name="response_user_update_success">User information update success.</string>
+    <string name="response_task_created_success">Task created successfully.</string>
+    <string name="response_task_updated_success">Task updated successfully.</string>
+    <string name="response_task_deleted_success">Task deleted successfully.</string>
+    <string name="response_task_owner_yes">You are the owner of the task.</string>
+    <string name="response_task_owner_no">You are not the owner of the task.</string>
+
+
+    <string name="response_password_reset_success">Success. Please close the browser window.</string>
+    <string name="response_password_update_success">User password update success.</string>
+
+
 
 </resources>
 

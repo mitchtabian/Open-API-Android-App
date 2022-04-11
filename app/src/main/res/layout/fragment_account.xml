@@ -33,7 +33,7 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintBottom_toTopOf="@+id/username_input_layout"
                 android:padding="16dp"
-                app:helperText="Email"
+                app:helperText="@string/email_field"
                 android:id="@+id/email_input_layout"
                 app:layout_constraintVertical_chainStyle="packed"
                 app:layout_constraintVertical_bias=".1"
@@ -59,7 +59,7 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintBottom_toTopOf="@+id/change_password"
                 android:padding="16dp"
-                app:helperText="Username"
+                app:helperText="@string/field_username"
                 android:id="@+id/username_input_layout"
                 >
 
@@ -98,7 +98,7 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:background="@drawable/red_button_drawable"
-                android:text="Log out"
+                android:text="@string/logout"
                 android:textAllCaps="false"
                 android:textColor="#fff"
                 android:textSize="16sp"

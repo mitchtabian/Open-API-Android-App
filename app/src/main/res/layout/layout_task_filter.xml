@@ -113,7 +113,7 @@
                 android:id="@+id/negative_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Cancel"
+                android:text="@string/text_cancel"
                 android:textSize="16sp"
                 android:textColor="@color/colorPrimaryDark"
                 android:layout_marginEnd="30dp"
@@ -124,7 +124,7 @@
                 android:id="@+id/positive_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Apply"
+                android:text="@string/apply"
                 android:textSize="16sp"
                 android:textColor="@color/tealDark"
                 />
