@@ -34,5 +34,9 @@ companion object {
     const val RESPONSE_PASSWORD_RESET_SUCCESS= "{\"response\":\"Success. Please close the browser window.\"}"
     const val RESPONSE_PASSWORD_UPDATE_SUCCESS= "{\"response\":\"User password update success.\"}"
 
+
+    const val ERROR_ADMIN_ALREADY_EXISTS= "{\"error\":\"Unable to make a new account. Admin already exists!'\"}"
+    const val ERROR_ROLE_NOT_ADMIN= "{\"error\":\"Unable to make changes. Logged in user is not admin.'\"}"
+
 }
 }

@@ -123,6 +123,9 @@
     <string name="response_password_update_success">User password update success.</string>
 
 
+    <string name="error_admin_already_exists">Unable to make a new account. Admin already exists!</string>
+    <string name="error_role_not_admin">Unable to make changes. Logged in user is not admin.</string>
+
 
 </resources>
 
