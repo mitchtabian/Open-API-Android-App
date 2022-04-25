@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.templateapp.cloudapi.R
 import com.templateapp.cloudapi.business.domain.util.StateMessage
+import com.templateapp.cloudapi.business.domain.util.SuccessHandling
 import com.templateapp.cloudapi.business.domain.util.UIComponentType
 import com.templateapp.cloudapi.business.domain.util.doesMessageAlreadyExistInQueue
 import com.templateapp.cloudapi.business.interactors.account.GetAccount
@@ -36,6 +37,9 @@ constructor(
             }
             is AccountEvents.Logout -> {
                 logout()
+            }
+            is AccountEvents.ManageUsers -> {
+                manageUsers()
             }
             is AccountEvents.OnRemoveHeadFromQueue -> {
                 removeHeadFromQueue()
@@ -119,6 +123,13 @@ constructor(
 
     private fun logout() {
         sessionManager.onTriggerEvent(SessionEvents.Logout)
+    }
+
+    private fun manageUsers() {
+        state.value?.let { state ->
+            this.state.value = state.copy()
+        }
+
     }
 
 }

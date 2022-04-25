@@ -19,11 +19,6 @@
                 />
 
         <action
-                android:id="@+id/action_launcherFragment_to_registerAdmin"
-                app:destination="@id/registerAdminFragment"
-                />
-
-        <action
                 android:id="@+id/action_launcherFragment_to_loginFragment"
                 app:destination="@id/loginFragment"
                 />
@@ -32,9 +27,6 @@
                 android:id="@+id/action_launcherFragment_to_registerFragment"
                 app:destination="@id/registerFragment"
                 />
-        <action
-                android:id="@+id/action_launcherFragment_to_registerAdminFragment"
-                app:destination="@id/registerAdminFragment" />
 
     </fragment>
 
@@ -43,12 +35,6 @@
             android:name="com.templateapp.cloudapi.presentation.auth.forgot_password.ForgotPasswordFragment"
             android:label="fragment_forgot_password"
             tools:layout="@layout/fragment_forgot_password" />
-
-    <fragment
-            android:id="@+id/registerAdminFragment"
-            android:name="com.templateapp.cloudapi.presentation.auth.registerAdmin.RegisterAdminFragment"
-            android:label="fragment_forgot_password"
-            tools:layout="@layout/fragment_login" />
 
     <fragment
             android:id="@+id/loginFragment"

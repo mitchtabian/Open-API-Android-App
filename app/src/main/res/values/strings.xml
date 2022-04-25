@@ -128,6 +128,9 @@
 
 
     <string name="all_users" translatable="false">Manage users</string>
+    <string name="add_user" translatable="false">+</string>
+
+    <string name="fragment_manage_users" translatable="false">Manage users</string>
 
 </resources>
 

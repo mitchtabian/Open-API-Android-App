@@ -16,58 +16,43 @@
             >
 
 
-        <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                android:id="@+id/task_image"
-                android:padding="0dp"
-                android:layout_margin="0dp"
-                android:adjustViewBounds="true"
-                android:scaleType="fitXY"
-                />
+            <Button
+                    android:id="@+id/add_user_button"
+                    android:layout_height="wrap_content"
+                   app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:background="@drawable/red_button_drawable"
+                    android:text="@string/add_user"
+                    android:textAllCaps="false"
+                    android:textColor="#fff"
+                    android:textSize="16sp"
+                    android:layout_marginLeft="320dp"
+                    android:layout_marginTop="50dp"
+                    android:layout_marginBottom="30dp"
+                     android:layout_width="50dp"/>
+
 
 
         <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/task_image"
+                app:layout_constraintTop_toTopOf="@+id/add_user_button"
                 app:layout_constraintLeft_toLeftOf="parent"
+                android:layout_marginTop="60dp"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:orientation="vertical"
                 android:padding="10dp"
-                android:id="@+id/container1"
+                android:id="@+id/container2"
                 >
             <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/task_title"
-                    android:text="@string/the_title_of_a_task"
+                    android:text="@string/user_name"
                     android:textColor="#000"
                     android:textSize="19sp"
-                    />
-
-            <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/task_owner"
-                    android:text="@string/user_name"
-                    android:textColor="@color/grey5"
-                    android:textSize="15sp"
-                    android:layout_marginTop="10dp"
-                    />
-
-            <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/task_update_date"
-                    android:text="@string/updated"
-                    android:textColor="@color/grey5"
-                    android:textSize="13sp"
-                    android:layout_marginTop="10dp"
                     />
 
         </LinearLayout>

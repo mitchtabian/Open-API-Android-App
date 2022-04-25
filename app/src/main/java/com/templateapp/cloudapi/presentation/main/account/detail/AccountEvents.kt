@@ -7,6 +7,8 @@ sealed class AccountEvents{
 
     object Logout: AccountEvents()
 
+    object ManageUsers: AccountEvents()
+
     object OnRemoveHeadFromQueue: AccountEvents()
 
 }

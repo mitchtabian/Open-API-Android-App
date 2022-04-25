@@ -78,9 +78,6 @@ class LauncherFragment: BaseAuthFragment() {
         findNavController().navigate(R.id.action_launcherFragment_to_forgotPasswordFragment)
     }
 
-    fun navRegisterAdmin(){
-        findNavController().navigate(R.id.action_launcherFragment_to_registerAdmin)
-    }
 
     override fun onDestroyView() {
         super.onDestroyView()

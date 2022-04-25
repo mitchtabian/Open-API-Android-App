@@ -14,7 +14,7 @@
         <entry key="..\:/Android Studio Projects/Open-API-Android-App/app/src/main/res/layout/layout_blog_list_item.xml" value="0.1" />
         <entry key="..\:/Users/lunaz/OneDrive/Desktop/Posao/UVC/Cloud-Android-App-Template/app/src/main/res/layout/activity_auth.xml" value="0.15625" />
         <entry key="..\:/Users/lunaz/OneDrive/Desktop/Posao/UVC/Cloud-Android-App-Template/app/src/main/res/layout/activity_main.xml" value="0.11666666666666667" />
-        <entry key="..\:/Users/lunaz/OneDrive/Desktop/Posao/UVC/Cloud-Android-App-Template/app/src/main/res/layout/fragment_account.xml" value="0.11666666666666667" />
+        <entry key="..\:/Users/lunaz/OneDrive/Desktop/Posao/UVC/Cloud-Android-App-Template/app/src/main/res/layout/fragment_account.xml" value="0.264" />
         <entry key="..\:/Users/lunaz/OneDrive/Desktop/Posao/UVC/Cloud-Android-App-Template/app/src/main/res/layout/fragment_change_password.xml" value="0.11666666666666667" />
         <entry key="..\:/Users/lunaz/OneDrive/Desktop/Posao/UVC/Cloud-Android-App-Template/app/src/main/res/layout/fragment_create_task.xml" value="0.11666666666666667" />
         <entry key="..\:/Users/lunaz/OneDrive/Desktop/Posao/UVC/Cloud-Android-App-Template/app/src/main/res/layout/fragment_forgot_password.xml" value="0.11666666666666667" />
@@ -29,7 +29,8 @@
         <entry key="..\:/Users/lunaz/OneDrive/Desktop/Posao/UVC/Cloud-Android-App-Template/app/src/main/res/layout/layout_no_more_results.xml" value="0.11666666666666667" />
         <entry key="..\:/Users/lunaz/OneDrive/Desktop/Posao/UVC/Cloud-Android-App-Template/app/src/main/res/layout/layout_task_filter.xml" value="0.11666666666666667" />
         <entry key="..\:/Users/lunaz/OneDrive/Desktop/Posao/UVC/Cloud-Android-App-Template/app/src/main/res/layout/layout_task_list_item.xml" value="0.2" />
-        <entry key="..\:/Users/lunaz/OneDrive/Desktop/Posao/UVC/Cloud-Android-App-Template/app/src/main/res/layout/layout_task_list_users.xml" value="0.19739583333333333" />
+        <entry key="..\:/Users/lunaz/OneDrive/Desktop/Posao/UVC/Cloud-Android-App-Template/app/src/main/res/layout/layout_task_list_users.xml" value="0.1" />
+        <entry key="..\:/Users/lunaz/OneDrive/Desktop/Posao/UVC/Cloud-Android-App-Template/app/src/main/res/menu/edit_view_menu.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/lunaz/OneDrive/Desktop/Posao/UVC/Cloud-Android-App-Template/app/src/main/res/menu/update_menu.xml" value="0.1796875" />
       </map>
     </option>

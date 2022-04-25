@@ -44,6 +44,10 @@ class AccountFragment : BaseAccountFragment() {
             viewModel.onTriggerEvent(AccountEvents.Logout)
         }
 
+        binding.button.setOnClickListener {
+            viewModel.onTriggerEvent(AccountEvents.ManageUsers)
+        }
+
         //val btn: Button = R.id.see_all_users
 
 
