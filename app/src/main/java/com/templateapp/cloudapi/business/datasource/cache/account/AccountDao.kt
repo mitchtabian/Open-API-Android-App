@@ -4,6 +4,8 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.templateapp.cloudapi.business.datasource.cache.task.TaskEntity
+import com.templateapp.cloudapi.business.domain.util.Constants
 
 @Dao
 interface AccountDao {
@@ -22,6 +24,10 @@ interface AccountDao {
 
     @Query("UPDATE account_properties SET email = :email, name = :name WHERE _id = :id")
     suspend fun updateAccount(id: String, email: String, name: String)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(account: AccountEntity): Long
+
 }
 
 

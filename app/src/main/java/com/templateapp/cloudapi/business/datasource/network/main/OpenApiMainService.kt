@@ -1,10 +1,7 @@
 package com.templateapp.cloudapi.business.datasource.network.main
 
 import com.templateapp.cloudapi.business.datasource.network.GenericResponse
-import com.templateapp.cloudapi.business.datasource.network.main.responses.AccountUpdateResponse
-import com.templateapp.cloudapi.business.datasource.network.main.responses.TaskCreateUpdateResponse
-import com.templateapp.cloudapi.business.datasource.network.main.responses.TaskListSearchResponse
-import com.templateapp.cloudapi.business.datasource.network.main.responses.PasswordUpdateResponse
+import com.templateapp.cloudapi.business.datasource.network.main.responses.*
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.*
@@ -90,5 +87,10 @@ interface OpenApiMainService {
         @Header("Authorization") authorization: String,
         @Path("id") id: String,
     ): TaskDto?
+
+
+    @GET("userNumber")
+    fun getAllUsers(
+    ): AllUsersResponse
 }
 

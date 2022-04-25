@@ -53,7 +53,8 @@ class Register(
                 createdAt = registerResponse.user.createdAt,
                 updatedAt = registerResponse.user.updatedAt,
                 userCreatedSequence = registerResponse.user.userCreatedSequence,
-                __v = registerResponse.user.__v
+                __v = registerResponse.user.__v,
+                role=registerResponse.user.role
 
             ).toEntity()
         )

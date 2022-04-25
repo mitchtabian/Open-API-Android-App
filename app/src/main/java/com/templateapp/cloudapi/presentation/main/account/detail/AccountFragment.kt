@@ -2,7 +2,9 @@ package com.templateapp.cloudapi.presentation.main.account.detail
 
 import android.os.Bundle
 import android.view.*
+import android.widget.Button
 import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.templateapp.cloudapi.R
@@ -11,6 +13,7 @@ import com.templateapp.cloudapi.business.domain.util.StateMessageCallback
 import com.templateapp.cloudapi.databinding.FragmentAccountBinding
 import com.templateapp.cloudapi.presentation.main.account.BaseAccountFragment
 import com.templateapp.cloudapi.presentation.util.processQueue
+import kotlinx.android.synthetic.main.fragment_account.*
 
 class AccountFragment : BaseAccountFragment() {
 
@@ -18,7 +21,6 @@ class AccountFragment : BaseAccountFragment() {
 
     private var _binding: FragmentAccountBinding? = null
     private val binding get() = _binding!!
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -28,9 +30,11 @@ class AccountFragment : BaseAccountFragment() {
         return binding.root
     }
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
+
 
         binding.changePassword.setOnClickListener{
             findNavController().navigate(R.id.action_accountFragment_to_changePasswordFragment)
@@ -40,8 +44,25 @@ class AccountFragment : BaseAccountFragment() {
             viewModel.onTriggerEvent(AccountEvents.Logout)
         }
 
+        //val btn: Button = R.id.see_all_users
+
+
         subscribeObservers()
         viewModel.onTriggerEvent(AccountEvents.GetAccount)
+
+        if(viewModel.checkAdminRole()){
+            markButtonDisable(button)
+        }else{
+            markButtonEnable(button)
+        }
+    }
+
+    private fun markButtonDisable(button: Button) {
+        button?.isVisible = false
+    }
+
+    private fun markButtonEnable(button: Button) {
+        button?.isVisible = true
     }
 
     private fun subscribeObservers(){

@@ -1,5 +1,7 @@
 package com.templateapp.cloudapi.business.domain.models
 
+import com.templateapp.cloudapi.business.datasource.cache.account.RoleEntity
+
 data class Account(
     val _id: String,
     val email: String,
@@ -8,7 +10,8 @@ data class Account(
     val createdAt: String,
     val updatedAt: String,
     val userCreatedSequence: Int,
-    val __v: Int
+    val __v: Int,
+    val role: Role
 )
 
 

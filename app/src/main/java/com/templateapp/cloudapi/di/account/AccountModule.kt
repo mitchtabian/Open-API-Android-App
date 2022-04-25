@@ -1,12 +1,11 @@
 package com.templateapp.cloudapi.di.account
 
 import com.templateapp.cloudapi.business.datasource.network.main.OpenApiMainService
-import com.templateapp.cloudapi.business.interactors.account.GetAccount
-import com.templateapp.cloudapi.business.interactors.account.GetAccountFromCache
-import com.templateapp.cloudapi.business.interactors.account.UpdateAccount
-import com.templateapp.cloudapi.business.interactors.account.UpdatePassword
 import com.templateapp.cloudapi.business.datasource.cache.account.AccountDao
 import com.templateapp.cloudapi.business.datasource.cache.auth.AuthTokenDao
+import com.templateapp.cloudapi.business.datasource.cache.task.TaskDao
+import com.templateapp.cloudapi.business.interactors.account.*
+import com.templateapp.cloudapi.business.interactors.task.SearchTasks
 import com.templateapp.cloudapi.presentation.util.ServerMsgTranslator
 import dagger.Module
 import dagger.Provides
@@ -56,6 +55,15 @@ object AccountModule {
         serverMsgTranslator: ServerMsgTranslator
     ): UpdatePassword{
         return UpdatePassword(service, serverMsgTranslator)
+    }
+
+    @Singleton
+    @Provides
+    fun provideAllUsers(
+        service: OpenApiMainService,
+        serverMsgTranslator: ServerMsgTranslator
+    ): GetAllUsers {
+        return GetAllUsers(service, serverMsgTranslator)
     }
 }
 

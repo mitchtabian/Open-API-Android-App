@@ -36,7 +36,7 @@ class UpdateAccount(
         val response = service.updateAccount(
             authorization = authToken.token,
             email = email,
-            name = name
+            name = name,
         )
 
         response.response?.let {

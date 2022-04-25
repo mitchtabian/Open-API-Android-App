@@ -4,6 +4,8 @@ import com.templateapp.cloudapi.business.datasource.cache.account.AccountDao
 import com.templateapp.cloudapi.business.datasource.cache.auth.AuthTokenDao
 import com.templateapp.cloudapi.business.datasource.datastore.AppDataStore
 import com.templateapp.cloudapi.business.datasource.network.auth.OpenApiAuthService
+import com.templateapp.cloudapi.business.datasource.network.main.OpenApiMainService
+import com.templateapp.cloudapi.business.interactors.account.GetAllUsers
 import com.templateapp.cloudapi.business.interactors.auth.Login
 import com.templateapp.cloudapi.business.interactors.auth.Register
 import com.templateapp.cloudapi.business.interactors.session.CheckPreviousAuthUser
@@ -85,6 +87,7 @@ object AuthModule{
             serverMsgTranslator
         )
     }
+
 }
 
 

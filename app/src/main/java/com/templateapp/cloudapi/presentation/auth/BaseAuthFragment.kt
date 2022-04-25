@@ -22,6 +22,7 @@ abstract class BaseAuthFragment: Fragment(){
         }
 
     }
+
 }
 
 

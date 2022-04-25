@@ -22,4 +22,5 @@ interface OpenApiAuthService {
         @Field("confirm_password") confirm_password: String
     ): RegistrationResponse
 
+
 }

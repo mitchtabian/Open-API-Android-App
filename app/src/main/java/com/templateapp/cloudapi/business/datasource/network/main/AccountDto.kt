@@ -1,7 +1,10 @@
 package com.templateapp.cloudapi.business.datasource.network.main
 
+import androidx.room.TypeConverters
 import com.templateapp.cloudapi.business.domain.models.Account
 import com.google.gson.annotations.SerializedName
+import com.templateapp.cloudapi.business.datasource.cache.account.RoleEntity
+import com.templateapp.cloudapi.business.domain.models.Role
 
 class AccountDto(
 
@@ -26,6 +29,10 @@ class AccountDto(
     @SerializedName("userCreatedSequence")
     val userCreatedSequence: Int,
 
+    @SerializedName("role")
+    @TypeConverters(RoleEntity::class)
+    val role: Role,
+
     @SerializedName("__v")
     val __v: Int
 
@@ -40,7 +47,8 @@ fun AccountDto.toAccount(): Account {
         createdAt = createdAt,
         updatedAt = updatedAt,
         userCreatedSequence = userCreatedSequence,
-        __v = __v
+        __v = __v,
+        role = role
     )
 }
 

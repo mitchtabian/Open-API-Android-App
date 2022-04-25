@@ -4,10 +4,12 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.templateapp.cloudapi.R
 import com.templateapp.cloudapi.business.domain.util.StateMessage
 import com.templateapp.cloudapi.business.domain.util.UIComponentType
 import com.templateapp.cloudapi.business.domain.util.doesMessageAlreadyExistInQueue
 import com.templateapp.cloudapi.business.interactors.account.GetAccount
+import com.templateapp.cloudapi.presentation.main.account.update.UpdateAccountEvents
 import com.templateapp.cloudapi.presentation.session.SessionEvents
 import com.templateapp.cloudapi.presentation.session.SessionManager
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -38,7 +40,35 @@ constructor(
             is AccountEvents.OnRemoveHeadFromQueue -> {
                 removeHeadFromQueue()
             }
+
         }
+    }
+
+
+    fun checkAdminRole(): Boolean {
+        var isAdmin = false;
+        state.value?.let { state ->
+            getAccount.execute(
+                authToken = sessionManager.state.value?.authToken,
+            ).onEach { dataState ->
+                this.state.value = state.copy(isLoading = dataState.isLoading)
+
+                dataState.data?.let { account ->
+                    this.state.value = state.copy(account = account)
+
+                    println(account.role.title)
+                    if(account.role.title == "Admin"){
+                        isAdmin = true;
+                    }
+                }
+
+                dataState.stateMessage?.let { stateMessage ->
+                    appendToMessageQueue(stateMessage)
+                }
+
+            }.launchIn(viewModelScope)
+        }
+        return isAdmin;
     }
 
     private fun removeHeadFromQueue() {
@@ -66,6 +96,7 @@ constructor(
     }
 
     private fun getAccount() {
+
         state.value?.let { state ->
             getAccount.execute(
                 authToken = sessionManager.state.value?.authToken,
@@ -74,6 +105,7 @@ constructor(
 
                 dataState.data?.let { account ->
                     this.state.value = state.copy(account = account)
+
                 }
 
                 dataState.stateMessage?.let { stateMessage ->
@@ -82,6 +114,7 @@ constructor(
 
             }.launchIn(viewModelScope)
         }
+
     }
 
     private fun logout() {

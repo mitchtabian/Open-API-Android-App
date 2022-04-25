@@ -1,11 +1,12 @@
 package com.templateapp.cloudapi.business.datasource.cache.account
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import androidx.room.*
 import com.templateapp.cloudapi.business.domain.models.Account
+import com.templateapp.cloudapi.business.domain.models.Role
 
-@Entity(tableName = "account_properties")
+@Entity(
+    tableName = "account_properties",
+)
 data class AccountEntity(
 
     @PrimaryKey(autoGenerate = false)
@@ -33,7 +34,11 @@ data class AccountEntity(
     @ColumnInfo(name = "__v")
     val __v: Int,
 
-)
+    @ColumnInfo(name = "role")
+    @TypeConverters(RoleEntity::class)
+    val role: Role,
+
+    )
 
 fun AccountEntity.toAccount(): Account {
     return Account(
@@ -44,7 +49,8 @@ fun AccountEntity.toAccount(): Account {
         createdAt = createdAt,
         updatedAt = updatedAt,
         userCreatedSequence = userCreatedSequence,
-        __v = __v
+        __v = __v,
+        role = role
     )
 }
 
@@ -57,6 +63,7 @@ fun Account.toEntity(): AccountEntity {
         createdAt = createdAt,
         updatedAt = updatedAt,
         userCreatedSequence = userCreatedSequence,
-        __v = __v
+        __v = __v,
+        role = role
     )
 }

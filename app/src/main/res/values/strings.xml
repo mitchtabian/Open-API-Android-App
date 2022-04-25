@@ -127,6 +127,8 @@
     <string name="error_role_not_admin">Unable to make changes. Logged in user is not admin.</string>
 
 
+    <string name="all_users" translatable="false">Manage users</string>
+
 </resources>
 
 

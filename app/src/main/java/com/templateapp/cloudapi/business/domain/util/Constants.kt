@@ -6,6 +6,7 @@ class Constants {
 
         const val BASE_URL = "http://192.168.64.121:3000/"
         const val PASSWORD_RESET_URL: String = "http://192.168.64.121:3000/passwordresetform"
+        const val REGISTER_ADMIN_URL: String = "http://192.168.64.121:3000/registeruser"
 
 
         const val NETWORK_TIMEOUT = 6000L
