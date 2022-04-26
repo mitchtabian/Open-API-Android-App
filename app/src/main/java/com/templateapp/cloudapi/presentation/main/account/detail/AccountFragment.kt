@@ -45,7 +45,7 @@ class AccountFragment : BaseAccountFragment() {
         }
 
         binding.button.setOnClickListener {
-            viewModel.onTriggerEvent(AccountEvents.ManageUsers)
+            findNavController().navigate(R.id.action_accountFragment_to_manageUsersFragment)
         }
 
         //val btn: Button = R.id.see_all_users
@@ -62,11 +62,11 @@ class AccountFragment : BaseAccountFragment() {
     }
 
     private fun markButtonDisable(button: Button) {
-        button?.isVisible = false
+        button.isVisible = false
     }
 
     private fun markButtonEnable(button: Button) {
-        button?.isVisible = true
+        button.isVisible = true
     }
 
     private fun subscribeObservers(){

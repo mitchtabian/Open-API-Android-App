@@ -131,6 +131,7 @@
     <string name="add_user" translatable="false">+</string>
 
     <string name="fragment_manage_users" translatable="false">Manage users</string>
+    <string name="register_new_user" translatable="false">Register new user</string>
 
 </resources>
 

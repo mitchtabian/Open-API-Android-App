@@ -23,6 +23,8 @@
         <action android:id="@+id/action_accountFragment_to_manageUsersFragment"
                 app:destination="@id/manageUsersFragment"
                 />
+
+
     </fragment>
 
 
@@ -30,7 +32,19 @@
             android:id="@+id/manageUsersFragment"
             android:name="com.templateapp.cloudapi.presentation.main.account.users.ManageUsersFragment"
             android:label="@string/fragment_manage_users"
-            tools:layout="@layout/layout_task_list_users">
+            tools:layout="@layout/fragment_manage_users">
+
+        <action android:id="@+id/action_manageUsersFragment_to_registerUserFragment"
+                app:destination="@id/registerFragment"
+                />
+
+    </fragment>
+
+    <fragment
+            android:id="@+id/registerFragment"
+            android:name="com.templateapp.cloudapi.presentation.auth.register.RegisterFragment"
+            android:label="@string/register_new_user"
+            tools:layout="@layout/fragment_register">
 
     </fragment>
 
