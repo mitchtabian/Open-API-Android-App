@@ -31,6 +31,7 @@ class GetAccount(
         authToken: AuthToken?,
     ): Flow<DataState<Account>> = flow {
         emit(DataState.loading<Account>())
+
         if(authToken == null){
             throw Exception(ERROR_AUTH_TOKEN_INVALID)
         }

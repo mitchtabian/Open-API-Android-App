@@ -61,9 +61,10 @@ object AccountModule {
     @Provides
     fun provideAllUsers(
         service: OpenApiMainService,
+        cache: AccountDao,
         serverMsgTranslator: ServerMsgTranslator
     ): GetAllUsers {
-        return GetAllUsers(service, serverMsgTranslator)
+        return GetAllUsers(service, cache, serverMsgTranslator)
     }
 }
 

@@ -1,10 +1,13 @@
 package com.templateapp.cloudapi.business.datasource.cache.account
 
+import android.accounts.Account
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.templateapp.cloudapi.business.datasource.cache.task.TaskDao
 import com.templateapp.cloudapi.business.datasource.cache.task.TaskEntity
+import com.templateapp.cloudapi.business.datasource.cache.task.TaskQueryUtils
 import com.templateapp.cloudapi.business.domain.util.Constants
 
 @Dao
@@ -27,6 +30,17 @@ interface AccountDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(account: AccountEntity): Long
+
+
+    @Query("""
+        SELECT * FROM account_properties
+        LIMIT (:page * :pageSize)
+        """)
+    suspend fun getAllAccounts(
+        page: Int,
+        pageSize: Int = Constants.PAGINATION_PAGE_SIZE
+    ): List<AccountEntity>
+
 
 }
 

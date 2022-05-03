@@ -51,6 +51,7 @@ class SearchTasks(
                 limit = PAGINATION_PAGE_SIZE
             ).results.map { it.toTask() }
 
+
             // Insert into cache
             for(task in tasks){
                 try{

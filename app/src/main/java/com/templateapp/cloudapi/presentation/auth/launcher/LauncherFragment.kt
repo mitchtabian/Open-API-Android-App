@@ -4,32 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import com.templateapp.cloudapi.R
-import com.templateapp.cloudapi.api.handleUseCaseException
-import com.templateapp.cloudapi.business.datasource.datastore.AppDataStore
-import com.templateapp.cloudapi.business.datasource.network.auth.OpenApiAuthService
 import com.templateapp.cloudapi.business.datasource.network.main.OpenApiMainService
-import com.templateapp.cloudapi.business.domain.models.AuthToken
-import com.templateapp.cloudapi.business.domain.util.DataState
-import com.templateapp.cloudapi.business.domain.util.ErrorHandling
-import com.templateapp.cloudapi.business.interactors.account.GetAllUsers
-import com.templateapp.cloudapi.business.interactors.task.GetOrderAndFilter
-import com.templateapp.cloudapi.business.interactors.task.SearchTasks
 import com.templateapp.cloudapi.databinding.FragmentLauncherBinding
 import com.templateapp.cloudapi.presentation.auth.BaseAuthFragment
-import com.templateapp.cloudapi.presentation.auth.registerAdmin.RegisterState
-import com.templateapp.cloudapi.presentation.main.account.detail.AccountState
-import com.templateapp.cloudapi.presentation.main.task.list.TaskState
-import com.templateapp.cloudapi.presentation.main.task.list.TaskViewModel
-import com.templateapp.cloudapi.presentation.session.SessionManager
-import com.templateapp.cloudapi.presentation.util.ServerMsgTranslator
+import com.templateapp.cloudapi.presentation.auth.register.RegisterState
 import kotlinx.coroutines.flow.*
-import javax.inject.Inject
-import kotlin.properties.Delegates
 
 class LauncherFragment: BaseAuthFragment() {
     private var _binding: FragmentLauncherBinding? = null

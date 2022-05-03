@@ -43,6 +43,8 @@ class ErrorHandling{
         const val ERROR_DELETE_TASK_NEED_PERMISSION = "You don't have permission to delete that."
         const val ERROR_EDIT_TASK_NEED_PERMISSION = "You don't have permission to edit that."
         const val ERROR_TASK_DOES_NOT_EXIST = "That Task does not exist on the server."
+
+        const val ERROR_USER_DOES_NOT_EXIST = "That user does not exist on the server."
         const val ERROR_TASK_TITLE_LENGTH = "Enter a title longer than 5 characters."
         const val ERROR_TASK_BODY_LENGTH = "Enter a body longer than 50 characters."
         const val ERROR_TASK_IMAGE_SIZE = "That image is too large. Images must be less than 2 MB. Try a different image."

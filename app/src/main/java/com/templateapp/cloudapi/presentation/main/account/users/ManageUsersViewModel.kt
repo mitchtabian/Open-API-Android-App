@@ -5,12 +5,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.templateapp.cloudapi.business.domain.util.StateMessage
-import com.templateapp.cloudapi.business.domain.util.SuccessHandling
-import com.templateapp.cloudapi.business.domain.util.UIComponentType
-import com.templateapp.cloudapi.business.domain.util.doesMessageAlreadyExistInQueue
+import com.templateapp.cloudapi.business.domain.util.*
 import com.templateapp.cloudapi.business.interactors.account.GetAccountFromCache
+import com.templateapp.cloudapi.business.interactors.account.GetAllUsers
 import com.templateapp.cloudapi.business.interactors.account.UpdateAccount
+import com.templateapp.cloudapi.presentation.main.task.list.TaskEvents
 import com.templateapp.cloudapi.presentation.session.SessionManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
@@ -23,11 +22,15 @@ class ManageUsersViewModel
 constructor(
     private val sessionManager: SessionManager,
     savedStateHandle: SavedStateHandle,
+    private val getAllUsers: GetAllUsers
 ): ViewModel(){
 
     private val TAG: String = "AppDebug"
 
     val state: MutableLiveData<ManageUsersState> = MutableLiveData(ManageUsersState())
+    init {
+        onTriggerEvent(ManageUsersEvents.GetUsers)
+    }
 
     fun onTriggerEvent(event: ManageUsersEvents){
         when(event){
@@ -36,8 +39,81 @@ constructor(
                 removeHeadFromQueue()
             }
 
+            is ManageUsersEvents.GetUsers -> {
+                getUsers()
+            }
+            is ManageUsersEvents.Error -> {
+                appendToMessageQueue(event.stateMessage)
+            }
+            is ManageUsersEvents.NextPage -> {
+                nextPage()
+            }
+
         }
     }
+
+    private fun incrementPageNumber() {
+        state.value?.let { state ->
+            this.state.value = state.copy(page = state.page + 1)
+        }
+    }
+
+    private fun onUpdateQueryExhausted(isExhausted: Boolean) {
+        state.value?.let { state ->
+            this.state.value = state.copy(isQueryExhausted = isExhausted)
+        }
+    }
+
+
+    private fun nextPage() {
+        incrementPageNumber()
+        state.value?.let { state ->
+            getAllUsers.execute(
+                authToken = sessionManager.state.value?.authToken,
+                page = state.page,
+            ).onEach { dataState ->
+                this.state.value = state.copy(isLoading = dataState.isLoading)
+
+                dataState.data?.let { list ->
+                    this.state.value = state.copy(usersList = list)
+                    println(list)
+                }
+                dataState.stateMessage?.let { stateMessage ->
+                    if(stateMessage.response.message?.contains(ErrorHandling.INVALID_PAGE) == true){
+                        onUpdateQueryExhausted(true)
+                    }else{
+                        appendToMessageQueue(stateMessage)
+                    }
+                }
+
+            }.launchIn(viewModelScope)
+        }
+    }
+
+    private fun getUsers() {
+        state.value?.let { state ->
+            getAllUsers.execute(
+                authToken = sessionManager.state.value?.authToken,
+                page = state.page,
+            ).onEach { dataState ->
+                this.state.value = state.copy(isLoading = dataState.isLoading)
+
+                dataState.data?.let { list ->
+                    this.state.value = state.copy(usersList = list)
+                }
+
+                dataState.stateMessage?.let { stateMessage ->
+                    if(stateMessage.response.message?.contains(ErrorHandling.INVALID_PAGE) == true){
+                        onUpdateQueryExhausted(true)
+                    }else{
+                        appendToMessageQueue(stateMessage)
+                    }
+                }
+
+            }.launchIn(viewModelScope)
+        }
+    }
+
 
     private fun removeHeadFromQueue(){
         state.value?.let { state ->

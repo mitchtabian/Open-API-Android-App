@@ -14,6 +14,12 @@ interface OpenApiMainService {
         @Header("Authorization") authorization: String
     ): AccountDto
 
+    @GET("users/{id}")
+    suspend fun getAccountById(
+        @Header("Authorization") authorization: String,
+        @Path("id") id: String
+    ): AccountDto
+
     @PATCH("users/me")
     @FormUrlEncoded
     suspend fun updateAccount(
@@ -92,5 +98,13 @@ interface OpenApiMainService {
     @GET("userNumber")
     fun getAllUsers(
     ): AllUsersResponse
+
+    @GET("all_users")
+    suspend fun getAllUsers(
+        @Header("Authorization") authorization: String,
+        @Query("skip") skip: Int,
+        @Query("limit") limit: Int,
+    ): UserListResponse
+
 }
 

@@ -8,6 +8,7 @@ data class ViewTaskState(
     val isLoading: Boolean = false,
     val isDeleteComplete: Boolean = false,
     val task: Task? = null,
+    val page: Int = 1,
     val isAuthor: Boolean = false,
     val queue: Queue<StateMessage> = Queue(mutableListOf()),
 )

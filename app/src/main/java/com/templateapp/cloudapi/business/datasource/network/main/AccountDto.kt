@@ -36,7 +36,9 @@ class AccountDto(
     @SerializedName("__v")
     val __v: Int
 
-)
+) {
+    val error: Any
+}
 
 fun AccountDto.toAccount(): Account {
     return Account(

@@ -177,6 +177,7 @@ constructor(
 
                 dataState.data?.let { list ->
                     this.state.value = state.copy(tasksList = list)
+                    println("lili" + list)
                 }
 
                 dataState.stateMessage?.let { stateMessage ->
@@ -205,6 +206,7 @@ constructor(
 
                 dataState.data?.let { list ->
                     this.state.value = state.copy(tasksList = list)
+                    println("lala" + list)
                 }
 
                 dataState.stateMessage?.let { stateMessage ->
