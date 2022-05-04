@@ -29,25 +29,25 @@ import com.templateapp.cloudapi.business.datasource.cache.task.TaskQueryUtils.Co
 import com.templateapp.cloudapi.business.domain.models.Account
 import com.templateapp.cloudapi.business.domain.models.Task
 import com.templateapp.cloudapi.business.domain.util.*
-import com.templateapp.cloudapi.databinding.FragmentAccountsBinding
+import com.templateapp.cloudapi.databinding.FragmentManageUsersBinding
 import com.templateapp.cloudapi.databinding.FragmentTaskBinding
+import com.templateapp.cloudapi.presentation.main.account.BaseAccountFragment
 import com.templateapp.cloudapi.presentation.main.task.BaseTaskFragment
 import com.templateapp.cloudapi.presentation.main.task.list.TaskEvents
 import com.templateapp.cloudapi.presentation.util.TopSpacingItemDecoration
 import com.templateapp.cloudapi.presentation.util.processQueue
 import kotlinx.coroutines.*
 
-class ManageUsersFragment : BaseTaskFragment(),
+class ManageUsersFragment : BaseAccountFragment(),
     ManageUsersAdapter.Interaction,
     SwipeRefreshLayout.OnRefreshListener
 {
 
-    private lateinit var searchView: SearchView
     private var recyclerAdapter: ManageUsersAdapter? = null // can leak memory so need to null
     private val viewModel: ManageUsersViewModel by viewModels()
     private lateinit var menu: Menu
 
-    private var _binding: FragmentAccountsBinding? = null
+    private var _binding: FragmentManageUsersBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -55,7 +55,7 @@ class ManageUsersFragment : BaseTaskFragment(),
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentAccountsBinding.inflate(layoutInflater)
+        _binding = FragmentManageUsersBinding.inflate(layoutInflater)
         return binding.root
     }
 
@@ -140,10 +140,11 @@ class ManageUsersFragment : BaseTaskFragment(),
     }
 
     override fun onItemSelected(position: Int, item: Account) {
+
         try{
             viewModel.state.value?.let { state ->
                     val bundle = bundleOf("accountId" to item._id)
-                    findNavController().navigate(R.id.action_accountFragment_to_viewAccountFragment, bundle)
+                    findNavController().navigate(R.id.action_manageUsersFragment_to_viewAccountFragment, bundle)
             }?: throw Exception("Null Task")
         }catch (e: Exception){
             e.printStackTrace()

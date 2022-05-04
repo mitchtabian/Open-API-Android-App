@@ -16,16 +16,29 @@
             android:layout_marginBottom="20dp"
 
             >
+        <TextView
+                android:id="@+id/username"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical"
+                android:text="@string/field_username"
+                android:textColor="@color/grey5"
+                android:textSize="15sp" />
 
         <TextView
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/username"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 android:id="@+id/account_name"
                 android:gravity="center_vertical"
                 android:layout_marginStart="10dp"
+                android:layout_marginTop="20dp"
                 android:text="@string/user_name"
                 android:textColor="#000"
                 android:textSize="19sp"
@@ -45,6 +58,42 @@
                 >
 
             <TextView
+                    android:id="@+id/roleLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    android:layout_marginTop="10dp"
+                    android:orientation="vertical"
+                    android:text="@string/role_field"
+                    android:textColor="@color/grey5"
+                    android:textSize="15sp" />
+
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/role"
+                    android:text="@string/role"
+                    android:textColor="@color/grey5"
+                    android:textSize="15sp"
+                    />
+
+
+            <TextView
+                    android:id="@+id/emailLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    android:layout_marginTop="10dp"
+                    android:orientation="vertical"
+                    android:text="@string/email_field"
+                    android:textColor="@color/grey5"
+                    android:textSize="15sp" />
+
+            <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/email"
@@ -52,6 +101,19 @@
                     android:textColor="@color/grey5"
                     android:textSize="15sp"
                     />
+
+            <TextView
+                    android:id="@+id/ageLAbel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    android:layout_marginTop="10dp"
+                    android:orientation="vertical"
+                    android:text="@string/age_field"
+                    android:textColor="@color/grey5"
+                    android:textSize="15sp" />
 
             <TextView
                     android:layout_width="match_parent"
@@ -62,6 +124,61 @@
                     android:textSize="13sp"
                     android:layout_marginTop="10dp"
                     />
+
+
+            <TextView
+                    android:id="@+id/created"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    android:layout_marginTop="10dp"
+                    android:orientation="vertical"
+                    android:text="@string/createdAt_field"
+                    android:textColor="@color/grey5"
+                    android:textSize="15sp" />
+
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/createdAt"
+                    android:text="1111"
+                    android:textColor="@color/grey5"
+                    android:textSize="13sp"
+                    android:layout_marginTop="10dp"
+                    />
+
+
+            <TextView
+                    android:id="@+id/updated"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    android:layout_marginTop="10dp"
+                    android:orientation="vertical"
+                    android:text="@string/updatedAt_field"
+                    android:textColor="@color/grey5"
+                    android:textSize="15sp" />
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/updatedAt"
+                    android:text="1111"
+                    android:textColor="@color/grey5"
+                    android:textSize="13sp"
+                    android:layout_marginTop="10dp"
+                    />
+
+            <Switch
+                    android:id="@+id/enabled"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Enabled"
+                    android:checked="false"
+                    android:clickable="false"/>
 
             <View
                     android:layout_width="match_parent"

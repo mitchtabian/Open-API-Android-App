@@ -22,6 +22,11 @@ class User(
     @Expose
     var email: String,
 
+
+    @SerializedName("enabled")
+    @Expose
+    var enabled: Boolean,
+
     @SerializedName("createdAt")
     @Expose
     var createdAt: String,

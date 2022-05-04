@@ -10,6 +10,7 @@ data class Account(
     val createdAt: String,
     val updatedAt: String,
     val userCreatedSequence: Int,
+    val enabled: Boolean,
     val __v: Int,
     val role: Role
 )

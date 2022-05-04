@@ -6,7 +6,6 @@
         android:id="@+id/nav_account"
         app:startDestination="@id/accountFragment">
 
-
     <fragment android:id="@+id/accountFragment"
             android:name="com.templateapp.cloudapi.presentation.main.account.detail.AccountFragment"
             android:label="@string/fragment_account"
@@ -25,6 +24,8 @@
                 />
 
 
+
+
     </fragment>
 
 
@@ -32,10 +33,14 @@
             android:id="@+id/manageUsersFragment"
             android:name="com.templateapp.cloudapi.presentation.main.account.users.ManageUsersFragment"
             android:label="@string/fragment_manage_users"
-            tools:layout="@layout/fragment_manage_users">
+            tools:layout="@layout/fragment_manage_users1">
 
         <action android:id="@+id/action_manageUsersFragment_to_registerUserFragment"
                 app:destination="@id/registerFragment"
+                />
+
+        <action android:id="@+id/action_manageUsersFragment_to_viewAccountFragment"
+                app:destination="@id/viewAccountFragment"
                 />
 
     </fragment>
@@ -48,6 +53,18 @@
 
     </fragment>
 
+    <fragment
+            android:id="@+id/viewAccountFragment"
+            android:name="com.templateapp.cloudapi.presentation.main.account.users.detail.ViewAccountFragment"
+            android:label=""
+            tools:layout="@layout/fragment_view_account">
+
+        <argument
+                android:name="accountId"
+                app:argType="string"
+                android:defaultValue="-1" />
+
+    </fragment>
 
     <fragment android:id="@+id/changePasswordFragment"
             android:name="com.templateapp.cloudapi.presentation.main.account.password.AccountPasswordFragment"

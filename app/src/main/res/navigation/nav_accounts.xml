@@ -4,23 +4,23 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/nav_accounts"
-        app:startDestination="@id/accountFragment"
+        app:startDestination="@id/manageUsersFragment"
         >
 
-    <fragment android:id="@+id/accountFragment"
+    <fragment android:id="@+id/manageUsersFragment"
             android:name="com.templateapp.cloudapi.presentation.main.account.users.ManageUsersFragment"
             android:label=""
-            tools:layout="@layout/fragment_accounts"
+            tools:layout="@layout/fragment_manage_users"
             >
 
         <action
-                android:id="@+id/action_accountFragment_to_viewAccountFragment"
-                app:destination="@id/viewTaskFragment"
+                android:id="@+id/action_manageUsersFragment_to_viewAccountFragment"
+                app:destination="@id/viewAccountFragment"
                 />
 
     </fragment>
 
-    <fragment android:id="@+id/viewTaskFragment"
+    <fragment android:id="@+id/viewAccountFragment"
             android:name="com.templateapp.cloudapi.presentation.main.account.users.detail.ViewAccountFragment"
             android:label=""
             tools:layout="@layout/fragment_view_account">

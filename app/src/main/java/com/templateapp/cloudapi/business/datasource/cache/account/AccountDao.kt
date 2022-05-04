@@ -31,6 +31,8 @@ interface AccountDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(account: AccountEntity): Long
 
+    @Query("DELETE FROM account_properties WHERE _id = :id")
+    suspend fun deleteAccount(id: String)
 
     @Query("""
         SELECT * FROM account_properties

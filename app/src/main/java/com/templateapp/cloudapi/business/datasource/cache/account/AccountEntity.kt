@@ -28,6 +28,9 @@ data class AccountEntity(
     @ColumnInfo(name = "updatedAt")
     val updatedAt: String,
 
+    @ColumnInfo(name = "enabled")
+    val enabled: Boolean,
+
     @ColumnInfo(name = "userCreatedSequence")
     val userCreatedSequence: Int,
 
@@ -50,7 +53,8 @@ fun AccountEntity.toAccount(): Account {
         updatedAt = updatedAt,
         userCreatedSequence = userCreatedSequence,
         __v = __v,
-        role = role
+        role = role,
+        enabled = enabled,
     )
 }
 
@@ -64,6 +68,7 @@ fun Account.toEntity(): AccountEntity {
         updatedAt = updatedAt,
         userCreatedSequence = userCreatedSequence,
         __v = __v,
-        role = role
+        role = role,
+        enabled = enabled
     )
 }

@@ -132,6 +132,13 @@
 
     <string name="fragment_manage_users" translatable="false">Manage users</string>
     <string name="register_new_user" translatable="false">Register new user</string>
+    <string name="role" translatable="false">User</string>
+    <string name="name" translatable="false">Name</string>
+    <string name="email" translatable="false">Email</string>
+    <string name="role_field" translatable="false">Role</string>
+    <string name="age_field" translatable="false">Age</string>
+    <string name="updatedAt_field" translatable="false">Updated at</string>
+    <string name="createdAt_field" translatable="false">Created at</string>
 
 </resources>
 

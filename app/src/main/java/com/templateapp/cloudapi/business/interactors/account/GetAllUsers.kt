@@ -76,13 +76,13 @@ class GetAllUsers(
                         )
                         // If task was not found on server, delete task from cache.
                         if(serverAccount?.error?.contains(ErrorHandling.ERROR_USER_DOES_NOT_EXIST) == true) {
-                            cache.deleteTask(cachedUser._id)
+                            cache.deleteAccount(cachedUser._id)
                         }
                     }catch (e: Exception){
                         emit(
-                            DataState.error<List<Task>>(
+                            DataState.error<List<Account>>(
                                 response = Response(
-                                    message = "Unable to get the task from the server. Bad connection?",
+                                    message = "Unable to get the account from the server. Bad connection?",
                                     uiComponentType = UIComponentType.None(),
                                     messageType = MessageType.Error()
                                 )
@@ -91,18 +91,16 @@ class GetAllUsers(
                     }
                 }
                 // Stop searching once no tasks were deleted from the cache, as they all appear to be also on the server.
-                if(cachedTaskSize == cachedTasks.size)
+                if(cachedUsersSize == cachedUsers.size)
                     keepSearching = false;
             }
 
             // Return cache to the caller
-            val cachedTasks = cache.returnOrderedTaskQuery(
-                query = query,
-                filterAndOrder = filterAndOrder,
+            val cachedUsers = cache.getAllAccounts(
                 page = page
-            ).map { it.toTask() }
+            ).map { it.toAccount() }
 
-            emit(DataState.data(response = null, data = cachedTasks))
+            emit(DataState.data(response = null, data = cachedUsers))
 
         } catch (e: Exception) {
             emit(

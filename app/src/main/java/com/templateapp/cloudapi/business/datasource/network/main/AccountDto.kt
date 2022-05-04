@@ -20,6 +20,10 @@ class AccountDto(
     @SerializedName("age")
     val age: Int,
 
+
+    @SerializedName("enabled")
+    val enabled: Boolean,
+
     @SerializedName("createdAt")
     val createdAt: String,
 
@@ -34,11 +38,12 @@ class AccountDto(
     val role: Role,
 
     @SerializedName("__v")
-    val __v: Int
+    val __v: Int,
 
-) {
-    val error: Any
-}
+    @SerializedName("error")
+    val error: String?,
+
+)
 
 fun AccountDto.toAccount(): Account {
     return Account(
@@ -50,7 +55,8 @@ fun AccountDto.toAccount(): Account {
         updatedAt = updatedAt,
         userCreatedSequence = userCreatedSequence,
         __v = __v,
-        role = role
+        role = role,
+        enabled = enabled
     )
 }
 

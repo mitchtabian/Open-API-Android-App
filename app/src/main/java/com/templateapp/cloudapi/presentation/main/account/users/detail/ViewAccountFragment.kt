@@ -13,9 +13,12 @@ import com.templateapp.cloudapi.business.domain.util.*
 import com.templateapp.cloudapi.business.domain.util.Constants.Companion.BASE_URL
 import com.templateapp.cloudapi.business.domain.util.ErrorHandling.Companion.ERROR_TASK_DOES_NOT_EXIST
 import com.templateapp.cloudapi.databinding.FragmentViewAccountBinding
-import com.templateapp.cloudapi.databinding.FragmentViewTaskBinding
 import com.templateapp.cloudapi.presentation.main.account.BaseAccountFragment
 import com.templateapp.cloudapi.presentation.util.processQueue
+import android.widget.Switch
+
+
+
 
 class ViewAccountFragment : BaseAccountFragment()
 {
@@ -80,9 +83,25 @@ class ViewAccountFragment : BaseAccountFragment()
     }
 
     private fun setAccountProperties(account: Account){
+
         binding.accountName.setText(account.name)
-        binding.age.setText(account.age)
+        //binding.age.setText(account.age)
         binding.email.setText(account.email)
+        binding.enabled.setChecked(account.enabled)
+        binding.role.setText(account.role.title)
+
+        var createdAtList: List<String> = account.createdAt.split('T')
+        var updatedAtList: List<String> = account.updatedAt.split('T')
+
+
+        var createdAtTime = createdAtList[1].split(':')
+        var updatedAtTime = updatedAtList[1].split(':')
+
+        var createdAt = createdAtList[0] + " " + createdAtTime[0] + ":" + createdAtTime[1]
+        var updatedAt = updatedAtList[0] + " " + updatedAtTime[0] + ":" + updatedAtTime[1]
+
+        binding.createdAt.setText(createdAt)
+        binding.updatedAt.setText(updatedAt)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -108,7 +127,7 @@ class ViewAccountFragment : BaseAccountFragment()
             viewModel.state.value?.let { state ->
                 state.account?.let { account ->
                     val bundle = bundleOf("accountId" to account._id)
-                    findNavController().navigate(R.id.action_accountFragment_to_viewAccountFragment, bundle)
+                    findNavController().navigate(R.id.action_manageUsersFragment_to_viewAccountFragment, bundle)
                 } ?: throw Exception("Null Task")
             }?: throw Exception("Null Task")
         }catch (e: Exception){

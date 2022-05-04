@@ -9,6 +9,7 @@ import com.templateapp.cloudapi.business.domain.util.StateMessage
 import com.templateapp.cloudapi.business.domain.util.SuccessHandling
 import com.templateapp.cloudapi.business.domain.util.UIComponentType
 import com.templateapp.cloudapi.business.domain.util.doesMessageAlreadyExistInQueue
+import com.templateapp.cloudapi.business.interactors.account.GetAccountFromCache
 import com.templateapp.cloudapi.business.interactors.task.ConfirmTaskExistsOnServer
 import com.templateapp.cloudapi.business.interactors.task.DeleteTask
 import com.templateapp.cloudapi.business.interactors.task.GetTaskFromCache
@@ -26,7 +27,7 @@ class ViewAccountViewModel
 @Inject
 constructor(
     private val sessionManager: SessionManager,
-    //private val getAccountFromCache: GetAccountFromCache,
+    private val getAccountFromCache: GetAccountFromCache,
     //private val confirmAccountExistsOnServer: ConfirmAccountExistsOnServer,
     //private val deleteAccount: DeleteAccount,
     private val savedStateHandle: SavedStateHandle,
@@ -199,9 +200,9 @@ constructor(
      * @param callback: If the task is successfully retrieved from cache, execute to determine if the authenticated user is the owner.
      */
     private fun getAccount(id: String, callback: OnCompleteCallback){
-       /* state.value?.let { state ->
-            getTaskFromCache.execute(
-                id = id
+        state.value?.let { state ->
+            getAccountFromCache.execute(
+                _id = id
             ).onEach { dataState ->
                 this.state.value = state.copy(isLoading = dataState.isLoading)
 
@@ -214,7 +215,7 @@ constructor(
                     appendToMessageQueue(stateMessage)
                 }
             }.launchIn(viewModelScope)
-        }*/
+        }
     }
 
 

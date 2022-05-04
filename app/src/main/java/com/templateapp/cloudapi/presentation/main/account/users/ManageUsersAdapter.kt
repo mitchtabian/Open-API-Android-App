@@ -11,8 +11,7 @@ import com.templateapp.cloudapi.business.domain.models.Account
 import com.templateapp.cloudapi.business.domain.models.Task
 import com.templateapp.cloudapi.business.domain.util.Constants.Companion.BASE_URL
 import com.templateapp.cloudapi.business.domain.util.DateUtils
-import com.templateapp.cloudapi.databinding.FragmentManageUsersBinding
-import com.templateapp.cloudapi.databinding.LayoutTaskListItemBinding
+import com.templateapp.cloudapi.databinding.*
 
 class ManageUsersAdapter(
     private val interaction: Interaction? = null
@@ -41,7 +40,7 @@ class ManageUsersAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return AccountViewHolder(
-            FragmentManageUsersBinding.inflate(
+            LayoutAccountListItemBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
@@ -90,7 +89,7 @@ class ManageUsersAdapter(
 
     class AccountViewHolder
     constructor(
-        private val binding: FragmentManageUsersBinding,
+        private val binding: LayoutAccountListItemBinding,
         private val interaction: Interaction?
     ) : RecyclerView.ViewHolder(binding.root) {
 
@@ -99,7 +98,7 @@ class ManageUsersAdapter(
                 interaction?.onItemSelected(adapterPosition, item)
             }
 
-            binding.taskTitle.text = item.name
+            binding.username.text = item.name
         }
     }
 

@@ -188,6 +188,7 @@ class TaskFragment : BaseTaskFragment(),
 
     override fun onItemSelected(position: Int, item: Task) {
 
+        println("USLA SAM ddddddd")
         try{
             viewModel.state.value?.let { state ->
                     val bundle = bundleOf("taskId" to item.id)
