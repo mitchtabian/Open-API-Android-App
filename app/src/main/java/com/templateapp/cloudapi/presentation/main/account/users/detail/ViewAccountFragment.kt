@@ -85,7 +85,7 @@ class ViewAccountFragment : BaseAccountFragment()
     private fun setAccountProperties(account: Account){
 
         binding.accountName.setText(account.name)
-        //binding.age.setText(account.age)
+        binding.age.setText(account.age.toString())
         binding.email.setText(account.email)
         binding.enabled.setChecked(account.enabled)
         binding.role.setText(account.role.title)
@@ -127,7 +127,7 @@ class ViewAccountFragment : BaseAccountFragment()
             viewModel.state.value?.let { state ->
                 state.account?.let { account ->
                     val bundle = bundleOf("accountId" to account._id)
-                    findNavController().navigate(R.id.action_manageUsersFragment_to_viewAccountFragment, bundle)
+                    findNavController().navigate(R.id.action_showAccountFragment_to_changeAccountFragment, bundle)
                 } ?: throw Exception("Null Task")
             }?: throw Exception("Null Task")
         }catch (e: Exception){

@@ -28,6 +28,9 @@ interface AccountDao {
     @Query("UPDATE account_properties SET email = :email, name = :name WHERE _id = :id")
     suspend fun updateAccount(id: String, email: String, name: String)
 
+    @Query("UPDATE account_properties SET email = :email, name = :name, age =:age, enabled =:enabled WHERE _id = :id")
+    suspend fun changeAccount(id: String, email: String, name: String, age: Int, enabled: Boolean)
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(account: AccountEntity): Long
 

@@ -2,6 +2,7 @@ package com.templateapp.cloudapi.di.account
 
 import com.templateapp.cloudapi.business.datasource.network.main.OpenApiMainService
 import com.templateapp.cloudapi.business.datasource.cache.account.AccountDao
+import com.templateapp.cloudapi.business.datasource.cache.account.RoleDao
 import com.templateapp.cloudapi.business.datasource.cache.auth.AuthTokenDao
 import com.templateapp.cloudapi.business.datasource.cache.task.TaskDao
 import com.templateapp.cloudapi.business.interactors.account.*
@@ -40,6 +41,16 @@ object AccountModule {
 
     @Singleton
     @Provides
+    fun provideChangeAccount(
+        service: OpenApiMainService,
+        cache: AccountDao,
+        serverMsgTranslator: ServerMsgTranslator
+    ): ChangeAccount{
+        return ChangeAccount(service, cache, serverMsgTranslator)
+    }
+
+    @Singleton
+    @Provides
     fun provideGetAccountFromCache(
         cache: AccountDao,
         serverMsgTranslator: ServerMsgTranslator
@@ -65,6 +76,16 @@ object AccountModule {
         serverMsgTranslator: ServerMsgTranslator
     ): GetAllUsers {
         return GetAllUsers(service, cache, serverMsgTranslator)
+    }
+
+    @Singleton
+    @Provides
+    fun provideAllRoles(
+        service: OpenApiMainService,
+       // cache: RoleDao,
+        serverMsgTranslator: ServerMsgTranslator
+    ): GetAllRoles {
+        return GetAllRoles(service, serverMsgTranslator)
     }
 }
 

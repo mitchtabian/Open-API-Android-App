@@ -1,66 +1,111 @@
-package com.templateapp.cloudapi.presentation.main.account.update
+package com.templateapp.cloudapi.presentation.main.account.users.update
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.templateapp.cloudapi.business.domain.util.StateMessage
-import com.templateapp.cloudapi.business.domain.util.SuccessHandling
-import com.templateapp.cloudapi.business.domain.util.UIComponentType
-import com.templateapp.cloudapi.business.domain.util.doesMessageAlreadyExistInQueue
+import com.templateapp.cloudapi.business.domain.models.Role
+import com.templateapp.cloudapi.business.domain.util.*
+import com.templateapp.cloudapi.business.interactors.account.ChangeAccount
 import com.templateapp.cloudapi.business.interactors.account.GetAccountFromCache
-import com.templateapp.cloudapi.business.interactors.account.UpdateAccount
+import com.templateapp.cloudapi.business.interactors.account.GetAllRoles
+import com.templateapp.cloudapi.business.interactors.account.GetAllUsers
+import com.templateapp.cloudapi.presentation.main.account.users.ManageUsersEvents
 import com.templateapp.cloudapi.presentation.session.SessionManager
+import dagger.Provides
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 @HiltViewModel
-class UpdateAccountViewModel
+class ChangeAccountViewModel
 @Inject
 constructor(
     private val sessionManager: SessionManager,
-    private val updateAccount: UpdateAccount,
+    private val changeAccount: ChangeAccount,
     private val getAccountFromCache: GetAccountFromCache,
+    private val getAllRoles: GetAllRoles,
     savedStateHandle: SavedStateHandle,
 ): ViewModel(){
 
     private val TAG: String = "AppDebug"
 
-    val state: MutableLiveData<UpdateAccountState> = MutableLiveData(UpdateAccountState())
+    val state: MutableLiveData<ChangeAccountState> = MutableLiveData(ChangeAccountState())
 
     init {
         savedStateHandle.get<String>("accountId")?.let { accountId ->
-            onTriggerEvent(UpdateAccountEvents.GetAccountFromCache(accountId))
+            onTriggerEvent(ChangeAccountEvents.GetAccountFromCache(accountId))
         }
     }
 
-    fun onTriggerEvent(event: UpdateAccountEvents){
+    fun onTriggerEvent(event: ChangeAccountEvents){
         when(event){
-            is UpdateAccountEvents.OnUpdateEmail -> {
+            is ChangeAccountEvents.OnUpdateEmail -> {
                 onUpdateEmail(event.email)
             }
-            is UpdateAccountEvents.OnUpdateUsername -> {
+            is ChangeAccountEvents.OnUpdateUsername -> {
                 onUpdateUsername(event.username)
             }
-            is UpdateAccountEvents.GetAccountFromCache -> {
+            is ChangeAccountEvents.OnUpdateAge -> {
+                onUpdateAge(event.age)
+            }
+            is ChangeAccountEvents.OnUpdateEnabled -> {
+                onUpdateEnabled(event.enabled)
+            }
+            is ChangeAccountEvents.GetAccountFromCache -> {
                 getAccount(event._id)
             }
-            is UpdateAccountEvents.Update -> {
+            is ChangeAccountEvents.Update -> {
                 update(
                     email = event.email,
-                    username = event.username
+                    username = event.username,
+                    age = event.age,
+                    enabled = event.enabled
                 )
             }
-            is UpdateAccountEvents.OnRemoveHeadFromQueue -> {
+            is ChangeAccountEvents.OnRemoveHeadFromQueue -> {
                 removeHeadFromQueue()
             }
-            is UpdateAccountEvents.OnUpdateComplete -> {
+            is ChangeAccountEvents.OnUpdateComplete -> {
                 onUpdateComplete()
             }
+
+            is ChangeAccountEvents.GetRoles -> {
+                getRoles()
+            }
         }
+    }
+
+    private fun getRoles() : List<Role> {
+        var lista : List<Role> = emptyList()
+        state.value?.let { state ->
+            getAllRoles.execute(
+                authToken = sessionManager.state.value?.authToken,
+            ).onEach { dataState ->
+                this.state.value = state.copy(isLoading = dataState.isLoading)
+
+                dataState.data?.let { list ->
+                    this.state.value = state.copy(roles = list)
+
+                  lista = list;
+
+                    return@let lista;
+                }
+
+                dataState.stateMessage?.let { stateMessage ->
+                    if(stateMessage.response.message?.contains(ErrorHandling.INVALID_PAGE) == true){
+                        //onUpdateQueryExhausted(true)
+                    }else{
+                        appendToMessageQueue(stateMessage)
+                    }
+                }
+
+            }.launchIn(viewModelScope)
+        }
+        println("lista" + lista)
+        return lista;
     }
 
     private fun removeHeadFromQueue(){
@@ -94,9 +139,29 @@ constructor(
     }
 
     private fun onUpdateEmail(email: String){
+        var l: List<Role> = getRoles();
+        print("uiui" + l);
+
         state.value?.let { state ->
             state.account?.let { account ->
                 val new = account.copy(email = email)
+                this.state.value = state.copy(account = new)
+            }
+        }
+    }
+    private fun onUpdateEnabled(enabled: Boolean){
+        state.value?.let { state ->
+            state.account?.let { account ->
+                val new = account.copy(enabled = enabled)
+                this.state.value = state.copy(account = new)
+            }
+        }
+    }
+
+    private fun onUpdateAge(age: Int){
+        state.value?.let { state ->
+            state.account?.let { account ->
+                val new = account.copy(age = age)
                 this.state.value = state.copy(account = new)
             }
         }
@@ -112,6 +177,10 @@ constructor(
     }
 
     private fun getAccount(id: String) {
+
+        var l: List<Role> = getRoles();
+        print("uiui" + l);
+
         state.value?.let { state ->
             getAccountFromCache.execute(
                 _id = id,
@@ -130,20 +199,22 @@ constructor(
         }
     }
 
-    private fun update(email: String, username: String,){
+    private fun update(email: String, username: String, age: Int, enabled: Boolean){
         state.value?.let { state ->
-            updateAccount.execute(
+            changeAccount.execute(
                 authToken = sessionManager.state.value?.authToken,
                 _id = sessionManager.state.value?.authToken?.accountId,
                 email = email,
-                name = username
+                name = username,
+                age = age,
+                enabled = enabled
             ).onEach { dataState ->
                 this.state.value = state.copy(isLoading = dataState.isLoading)
 
                 dataState.data?.let { response ->
                     if(response.message == SuccessHandling.SUCCESS_ACCOUNT_UPDATED){
 
-                        onTriggerEvent(UpdateAccountEvents.OnUpdateComplete)
+                        onTriggerEvent(ChangeAccountEvents.OnUpdateComplete)
                     }else{
 
                         appendToMessageQueue(

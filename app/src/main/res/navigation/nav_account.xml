@@ -64,6 +64,10 @@
                 app:argType="string"
                 android:defaultValue="-1" />
 
+        <action android:id="@+id/action_showAccountFragment_to_changeAccountFragment"
+                app:destination="@id/changeAccountFragment"
+                />
+
     </fragment>
 
     <fragment android:id="@+id/changePasswordFragment"
@@ -78,6 +82,17 @@
             android:name="com.templateapp.cloudapi.presentation.main.account.update.UpdateAccountFragment"
             android:label="@string/fragment_update_account"
             tools:layout="@layout/fragment_update_account">
+
+        <argument
+                android:name="accountId"
+                app:argType="string"
+                android:defaultValue="-1" />
+    </fragment>
+
+    <fragment android:id="@+id/changeAccountFragment"
+            android:name="com.templateapp.cloudapi.presentation.main.account.users.update.ChangeAccountFragment"
+            android:label="@string/fragment_update_account"
+            tools:layout="@layout/fragment_change_account">
 
         <argument
                 android:name="accountId"

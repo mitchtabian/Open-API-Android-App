@@ -21,8 +21,10 @@
         <entry key="..\:/Users/lunaz/OneDrive/Desktop/Posao/UVC/Cloud-Android-App-Template/app/src/main/res/layout/activity_main.xml" value="0.11666666666666667" />
         <entry key="..\:/Users/lunaz/OneDrive/Desktop/Posao/UVC/Cloud-Android-App-Template/app/src/main/res/layout/fragment_account.xml" value="0.1" />
         <entry key="..\:/Users/lunaz/OneDrive/Desktop/Posao/UVC/Cloud-Android-App-Template/app/src/main/res/layout/fragment_accounts.xml" value="0.1" />
+        <entry key="..\:/Users/lunaz/OneDrive/Desktop/Posao/UVC/Cloud-Android-App-Template/app/src/main/res/layout/fragment_change_account.xml" value="0.2517985611510791" />
         <entry key="..\:/Users/lunaz/OneDrive/Desktop/Posao/UVC/Cloud-Android-App-Template/app/src/main/res/layout/fragment_change_password.xml" value="0.11666666666666667" />
         <entry key="..\:/Users/lunaz/OneDrive/Desktop/Posao/UVC/Cloud-Android-App-Template/app/src/main/res/layout/fragment_create_task.xml" value="0.11666666666666667" />
+        <entry key="..\:/Users/lunaz/OneDrive/Desktop/Posao/UVC/Cloud-Android-App-Template/app/src/main/res/layout/fragment_edit_account.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/lunaz/OneDrive/Desktop/Posao/UVC/Cloud-Android-App-Template/app/src/main/res/layout/fragment_forgot_password.xml" value="0.11666666666666667" />
         <entry key="..\:/Users/lunaz/OneDrive/Desktop/Posao/UVC/Cloud-Android-App-Template/app/src/main/res/layout/fragment_launcher.xml" value="0.11666666666666667" />
         <entry key="..\:/Users/lunaz/OneDrive/Desktop/Posao/UVC/Cloud-Android-App-Template/app/src/main/res/layout/fragment_login.xml" value="0.11666666666666667" />
@@ -31,8 +33,9 @@
         <entry key="..\:/Users/lunaz/OneDrive/Desktop/Posao/UVC/Cloud-Android-App-Template/app/src/main/res/layout/fragment_register.xml" value="0.15625" />
         <entry key="..\:/Users/lunaz/OneDrive/Desktop/Posao/UVC/Cloud-Android-App-Template/app/src/main/res/layout/fragment_register_admin.xml" value="0.1625" />
         <entry key="..\:/Users/lunaz/OneDrive/Desktop/Posao/UVC/Cloud-Android-App-Template/app/src/main/res/layout/fragment_task.xml" value="0.264" />
-        <entry key="..\:/Users/lunaz/OneDrive/Desktop/Posao/UVC/Cloud-Android-App-Template/app/src/main/res/layout/fragment_update_account.xml" value="0.176" />
-        <entry key="..\:/Users/lunaz/OneDrive/Desktop/Posao/UVC/Cloud-Android-App-Template/app/src/main/res/layout/fragment_update_task.xml" value="0.11666666666666667" />
+        <entry key="..\:/Users/lunaz/OneDrive/Desktop/Posao/UVC/Cloud-Android-App-Template/app/src/main/res/layout/fragment_update_account.xml" value="0.4" />
+        <entry key="..\:/Users/lunaz/OneDrive/Desktop/Posao/UVC/Cloud-Android-App-Template/app/src/main/res/layout/fragment_update_account1.xml" value="0.203125" />
+        <entry key="..\:/Users/lunaz/OneDrive/Desktop/Posao/UVC/Cloud-Android-App-Template/app/src/main/res/layout/fragment_update_task.xml" value="0.1" />
         <entry key="..\:/Users/lunaz/OneDrive/Desktop/Posao/UVC/Cloud-Android-App-Template/app/src/main/res/layout/fragment_view_account.xml" value="0.26738794435857804" />
         <entry key="..\:/Users/lunaz/OneDrive/Desktop/Posao/UVC/Cloud-Android-App-Template/app/src/main/res/layout/fragment_view_task.xml" value="0.11666666666666667" />
         <entry key="..\:/Users/lunaz/OneDrive/Desktop/Posao/UVC/Cloud-Android-App-Template/app/src/main/res/layout/layout_account_list_item.xml" value="0.18854166666666666" />

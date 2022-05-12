@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import java.lang.Exception
 
-class UpdateAccount(
+class ChangeAccount(
     private val service: OpenApiMainService,
     private val cache: AccountDao,
     private val serverMsgTranslator: ServerMsgTranslator
@@ -23,6 +23,8 @@ class UpdateAccount(
         _id: String?,
         email: String,
         name: String,
+        age: Int,
+        enabled: Boolean
     ): Flow<DataState<Response>> = flow {
         emit(DataState.loading<Response>())
         if(authToken == null){
@@ -33,10 +35,12 @@ class UpdateAccount(
         }
 
         // Update network
-        val response = service.updateAccount(
+        val response = service.changeAccount(
             authorization = authToken.token,
             email = email,
             name = name,
+            age = age,
+            enabled = enabled
         )
 
         response.response?.let {
@@ -50,10 +54,12 @@ class UpdateAccount(
 
 
         // update cache
-        cache.updateAccount(
+        cache.changeAccount(
             id = _id,
             email = email,
             name = name,
+            age = age,
+            enabled = enabled
         )
 
         // Tell the UI it was successful

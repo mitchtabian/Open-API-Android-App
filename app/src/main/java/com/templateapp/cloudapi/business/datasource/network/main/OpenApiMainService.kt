@@ -28,6 +28,16 @@ interface OpenApiMainService {
         @Field("name") name: String
     ): AccountUpdateResponse
 
+    @PATCH("users/update")
+    @FormUrlEncoded
+    suspend fun changeAccount(
+        @Header("Authorization") authorization: String,
+        @Field("email") email: String,
+        @Field("name") name: String,
+        @Field("age") age: Int,
+        @Field("enabled") enabled: Boolean
+    ): AccountUpdateResponse
+
     @PATCH("users/me/change_password")
     @FormUrlEncoded
     suspend fun updatePassword(
@@ -105,6 +115,11 @@ interface OpenApiMainService {
         @Query("skip") skip: Int,
         @Query("limit") limit: Int,
     ): UserListResponse
+
+    @GET("roles")
+    suspend fun getAllRoles(
+        @Header("Authorization") authorization: String,
+    ): RolesResponse
 
 }
 

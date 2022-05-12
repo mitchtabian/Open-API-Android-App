@@ -38,7 +38,7 @@ data class AccountEntity(
     val __v: Int,
 
     @ColumnInfo(name = "role")
-    @TypeConverters(RoleEntity::class)
+    @TypeConverters(RoleConverter::class)
     val role: Role,
 
     )
