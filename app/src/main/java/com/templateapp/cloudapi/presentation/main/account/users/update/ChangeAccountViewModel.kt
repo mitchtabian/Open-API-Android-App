@@ -1,10 +1,23 @@
 package com.templateapp.cloudapi.presentation.main.account.users.update
 
+import android.content.Context
+import android.os.DropBoxManager
 import android.util.Log
+import android.view.View
+import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.Spinner
+import android.widget.TextView
+import androidx.databinding.BindingAdapter
+import androidx.databinding.InverseBindingAdapter
+import androidx.databinding.InverseBindingListener
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.recyclerview.widget.RecyclerView
+import com.templateapp.cloudapi.R
 import com.templateapp.cloudapi.business.domain.models.Role
 import com.templateapp.cloudapi.business.domain.util.*
 import com.templateapp.cloudapi.business.interactors.account.ChangeAccount
@@ -23,10 +36,10 @@ import javax.inject.Inject
 class ChangeAccountViewModel
 @Inject
 constructor(
-    private val sessionManager: SessionManager,
+    public val sessionManager: SessionManager,
     private val changeAccount: ChangeAccount,
     private val getAccountFromCache: GetAccountFromCache,
-    private val getAllRoles: GetAllRoles,
+    public val getAllRoles: GetAllRoles,
     savedStateHandle: SavedStateHandle,
 ): ViewModel(){
 
@@ -37,16 +50,52 @@ constructor(
     init {
         savedStateHandle.get<String>("accountId")?.let { accountId ->
             onTriggerEvent(ChangeAccountEvents.GetAccountFromCache(accountId))
+            onTriggerEvent(ChangeAccountEvents.GetRoles)
+        }
+
+
+    }
+    @InverseBindingAdapter(attribute = "selectedRole")
+    fun getSelectedRole(spinner: Spinner): Role {
+        return spinner.selectedItem as Role
+    }
+
+    private fun setSpinnerListener(spinner: Spinner, listener: InverseBindingListener) {
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) = listener.onChange()
+            override fun onNothingSelected(adapterView: AdapterView<*>) = listener.onChange()
         }
     }
 
+    private fun setCurrentSelection(spinner: Spinner, selectedItem: Role): Boolean {
+        for (index in 0 until spinner.adapter.count) {
+            if (spinner.getItemAtPosition(index) == selectedItem.title) {
+                spinner.setSelection(index)
+                return true
+            }
+        }
+        return false
+    }
+
+    @BindingAdapter(value = ["roles", "selectedRole", "selectedRoleAttrChanged"], requireAll = false)
+    fun setRoles(spinner: Spinner, roles: List<Role>?, selectedRole: Role, listener: InverseBindingListener) {
+        if (roles == null) return
+        spinner.adapter = NameAdapter(spinner.context, android.R.layout.simple_spinner_dropdown_item, roles)
+        setCurrentSelection(spinner, selectedRole)
+        setSpinnerListener(spinner, listener)
+    }
+
     fun onTriggerEvent(event: ChangeAccountEvents){
+
         when(event){
             is ChangeAccountEvents.OnUpdateEmail -> {
                 onUpdateEmail(event.email)
             }
             is ChangeAccountEvents.OnUpdateUsername -> {
                 onUpdateUsername(event.username)
+            }
+            is ChangeAccountEvents.OnUpdateRole -> {
+                onUpdateRole(event.role)
             }
             is ChangeAccountEvents.OnUpdateAge -> {
                 onUpdateAge(event.age)
@@ -62,7 +111,10 @@ constructor(
                     email = event.email,
                     username = event.username,
                     age = event.age,
-                    enabled = event.enabled
+                    enabled = event.enabled,
+                    role = event.role,
+                    initEmail = event.initEmail,
+                    initName = event.initName
                 )
             }
             is ChangeAccountEvents.OnRemoveHeadFromQueue -> {
@@ -78,7 +130,7 @@ constructor(
         }
     }
 
-    private fun getRoles() : List<Role> {
+    public fun getRoles() : List<Role> {
         var lista : List<Role> = emptyList()
         state.value?.let { state ->
             getAllRoles.execute(
@@ -88,12 +140,8 @@ constructor(
 
                 dataState.data?.let { list ->
                     this.state.value = state.copy(roles = list)
-
-                  lista = list;
-
-                    return@let lista;
+                    println("ototoot" + list)
                 }
-
                 dataState.stateMessage?.let { stateMessage ->
                     if(stateMessage.response.message?.contains(ErrorHandling.INVALID_PAGE) == true){
                         //onUpdateQueryExhausted(true)
@@ -104,7 +152,6 @@ constructor(
 
             }.launchIn(viewModelScope)
         }
-        println("lista" + lista)
         return lista;
     }
 
@@ -139,8 +186,6 @@ constructor(
     }
 
     private fun onUpdateEmail(email: String){
-        var l: List<Role> = getRoles();
-        print("uiui" + l);
 
         state.value?.let { state ->
             state.account?.let { account ->
@@ -176,10 +221,16 @@ constructor(
         }
     }
 
-    private fun getAccount(id: String) {
+    private fun onUpdateRole(role: Role){
+        state.value?.let { state ->
+            state.account?.let { account ->
+                val new = account.copy(role = role)
+                this.state.value = state.copy(account = new)
+            }
+        }
+    }
 
-        var l: List<Role> = getRoles();
-        print("uiui" + l);
+    private fun getAccount(id: String) {
 
         state.value?.let { state ->
             getAccountFromCache.execute(
@@ -199,7 +250,7 @@ constructor(
         }
     }
 
-    private fun update(email: String, username: String, age: Int, enabled: Boolean){
+    private fun update(email: String, username: String, age: Int, enabled: Boolean, role: String, initEmail: String, initName: String){
         state.value?.let { state ->
             changeAccount.execute(
                 authToken = sessionManager.state.value?.authToken,
@@ -207,7 +258,10 @@ constructor(
                 email = email,
                 name = username,
                 age = age,
-                enabled = enabled
+                enabled = enabled,
+                role = role,
+                initEmail = initEmail,
+                initName = initName
             ).onEach { dataState ->
                 this.state.value = state.copy(isLoading = dataState.isLoading)
 
@@ -236,7 +290,24 @@ constructor(
 }
 
 
+class NameAdapter(context: Context, textViewResourceId: Int, private val values: List<Role>) : ArrayAdapter<Role>(context, textViewResourceId, values) {
 
+    override fun getCount() = values.size
+    override fun getItem(position: Int) = values[position]
+    override fun getItemId(position: Int) = position.toLong()
+
+    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+        val label = super.getView(position, convertView, parent) as TextView
+        label.text = values[position].title
+        return label
+    }
+
+    override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
+        val label = super.getDropDownView(position, convertView, parent) as TextView
+        label.text = values[position].title
+        return label
+    }
+}
 
 
 

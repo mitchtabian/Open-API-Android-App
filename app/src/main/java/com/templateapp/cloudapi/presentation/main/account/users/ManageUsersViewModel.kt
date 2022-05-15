@@ -76,7 +76,7 @@ constructor(
 
                 dataState.data?.let { list ->
                     this.state.value = state.copy(usersList = list)
-                    println(list)
+
                 }
                 dataState.stateMessage?.let { stateMessage ->
                     if(stateMessage.response.message?.contains(ErrorHandling.INVALID_PAGE) == true){

@@ -4,6 +4,7 @@ import com.templateapp.cloudapi.api.handleUseCaseException
 import com.templateapp.cloudapi.business.datasource.network.main.OpenApiMainService
 import com.templateapp.cloudapi.business.domain.models.AuthToken
 import com.templateapp.cloudapi.business.datasource.cache.account.AccountDao
+import com.templateapp.cloudapi.business.domain.models.Role
 import com.templateapp.cloudapi.business.domain.util.*
 import com.templateapp.cloudapi.business.domain.util.ErrorHandling.Companion.GENERIC_ERROR
 import com.templateapp.cloudapi.business.domain.util.SuccessHandling.Companion.SUCCESS_ACCOUNT_UPDATED
@@ -24,7 +25,10 @@ class ChangeAccount(
         email: String,
         name: String,
         age: Int,
-        enabled: Boolean
+        enabled: Boolean,
+        role: String,
+        initEmail: String,
+        initName: String
     ): Flow<DataState<Response>> = flow {
         emit(DataState.loading<Response>())
         if(authToken == null){
@@ -40,7 +44,10 @@ class ChangeAccount(
             email = email,
             name = name,
             age = age,
-            enabled = enabled
+            enabled = enabled,
+            role = role,
+            initEmail = initEmail,
+            initName = initName
         )
 
         response.response?.let {
@@ -59,7 +66,8 @@ class ChangeAccount(
             email = email,
             name = name,
             age = age,
-            enabled = enabled
+            enabled = enabled,
+            role = role
         )
 
         // Tell the UI it was successful

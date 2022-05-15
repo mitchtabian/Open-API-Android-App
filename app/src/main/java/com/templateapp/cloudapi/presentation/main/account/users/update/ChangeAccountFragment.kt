@@ -2,22 +2,41 @@ package com.templateapp.cloudapi.presentation.main.account.users.update
 
 import android.os.Bundle
 import android.view.*
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.Spinner
+import android.widget.SpinnerAdapter
+import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.InverseBindingListener
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.AsyncDifferConfig
+import androidx.recyclerview.widget.AsyncListDiffer
 import com.templateapp.cloudapi.R
 import com.templateapp.cloudapi.business.domain.models.Account
+import com.templateapp.cloudapi.business.domain.models.Role
+import com.templateapp.cloudapi.business.domain.util.DataState
+import com.templateapp.cloudapi.business.domain.util.ErrorHandling
+import com.templateapp.cloudapi.business.domain.util.MessageType
 import com.templateapp.cloudapi.business.domain.util.StateMessageCallback
 import com.templateapp.cloudapi.databinding.FragmentChangeAccountBinding
 import com.templateapp.cloudapi.databinding.FragmentUpdateAccountBinding
 import com.templateapp.cloudapi.presentation.main.account.BaseAccountFragment
+import com.templateapp.cloudapi.presentation.main.account.users.ManageUsersAdapter
+import com.templateapp.cloudapi.presentation.main.account.users.ManageUsersEvents
 import com.templateapp.cloudapi.presentation.util.processQueue
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 class ChangeAccountFragment : BaseAccountFragment() {
 
     private val viewModel: ChangeAccountViewModel by viewModels()
-
     private var _binding: FragmentChangeAccountBinding? = null
     private val binding get() = _binding!!
+
+    private var email: String = ""
+    private var name: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -27,6 +46,7 @@ class ChangeAccountFragment : BaseAccountFragment() {
         _binding = FragmentChangeAccountBinding.inflate(layoutInflater)
         return binding.root
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -56,19 +76,63 @@ class ChangeAccountFragment : BaseAccountFragment() {
 
     }
 
+
     private fun setAccountDataFields(account: Account){
+        email = account.email
+        name = account.name
         binding.email.setText(account.email)
         binding.username.setText(account.name)
         binding.age.setText(account.age.toString())
         binding.enabled.setChecked(account.enabled)
+        var createdAtList: List<String> = account.createdAt.split('T')
+        var updatedAtList: List<String> = account.updatedAt.split('T')
+
+
+        var createdAtTime = createdAtList[1].split(':')
+        var updatedAtTime = updatedAtList[1].split(':')
+
+        var createdAt = createdAtList[0] + " " + createdAtTime[0] + ":" + createdAtTime[1]
+        var updatedAt = updatedAtList[0] + " " + updatedAtTime[0] + ":" + updatedAtTime[1]
+
+        binding.createdAt.setText(createdAt)
+        binding.updatedAt.setText(updatedAt)
+
+        var roles : List<Role>? = emptyList();
+        var roleUser: Role = Role("625d59e2949d171c2c0bb52b", "User")
+        var roleGuest: Role = Role("625d59e2949d171c2c0bb52a", "Guest")
+        roles = roles?.plus(roleUser)
+        roles = roles?.plus(roleGuest)
+
+        if (roles != null) {
+
+            val adapter = activity?.let {
+                ArrayAdapter<Role>(
+                    it,
+                    android.R.layout.simple_spinner_item,
+                    roles
+                )
+            }
+            if (adapter != null) {
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            }
+            binding.roleSpinner!!.setAdapter(adapter)
+
+
+        }
     }
 
     private fun saveChanges(){
+       // var role: Role = Role("625d59e2949d171c2c0bb52b", "User")
+      // println("bibibib" + email)
         viewModel.onTriggerEvent(ChangeAccountEvents.Update(
             email = binding.email.text.toString(),
             username = binding.username.text.toString(),
             age = Integer.parseInt(binding.age.text.toString()),
             enabled = Boolean.equals(binding.enabled.text),
+            role = binding.roleSpinner.selectedItem.toString(),
+            initEmail = email,
+            initName = name
+
         ))
         uiCommunicationListener.hideSoftKeyboard()
     }

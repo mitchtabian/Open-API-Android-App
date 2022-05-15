@@ -2,6 +2,7 @@ package com.templateapp.cloudapi.business.datasource.network.main
 
 import com.templateapp.cloudapi.business.datasource.network.GenericResponse
 import com.templateapp.cloudapi.business.datasource.network.main.responses.*
+import com.templateapp.cloudapi.business.domain.models.Role
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.*
@@ -35,7 +36,10 @@ interface OpenApiMainService {
         @Field("email") email: String,
         @Field("name") name: String,
         @Field("age") age: Int,
-        @Field("enabled") enabled: Boolean
+        @Field("enabled") enabled: Boolean,
+        @Field("role") role: String,
+        @Field("initEmail") initEmail: String,
+        @Field("initName") initName: String
     ): AccountUpdateResponse
 
     @PATCH("users/me/change_password")

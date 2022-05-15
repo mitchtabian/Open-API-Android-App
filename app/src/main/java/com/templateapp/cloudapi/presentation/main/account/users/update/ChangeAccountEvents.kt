@@ -1,5 +1,6 @@
 package com.templateapp.cloudapi.presentation.main.account.users.update
 
+import com.templateapp.cloudapi.business.domain.models.Role
 import com.templateapp.cloudapi.presentation.main.account.users.ManageUsersEvents
 
 
@@ -13,13 +14,19 @@ sealed class ChangeAccountEvents{
         val email: String,
         val username: String,
         val age: Int,
-        val enabled: Boolean
+        val enabled: Boolean,
+        val role: String,
+        val initEmail: String,
+        val initName: String
     ): ChangeAccountEvents()
 
     data class OnUpdateEmail(
         val email: String
     ): ChangeAccountEvents()
 
+    data class OnUpdateRole(
+        val role: Role
+    ): ChangeAccountEvents()
 
     data class OnUpdateEnabled(
         val enabled: Boolean

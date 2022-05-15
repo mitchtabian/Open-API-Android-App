@@ -1,4 +1,10 @@
 <resources>
+    <string-array name="roles">
+        <item>Admin</item>
+        <item>User</item>
+        <item>Guest</item>
+    </string-array>
+
     <string name="app_name">CloudAPI</string>
 
     <!-- Intent extras -->

@@ -12,6 +12,7 @@
         <entry key="..\:/Android Studio Projects/Open-API-Android-App/app/src/main/res/layout/fragment_change_password.xml" value="0.25" />
         <entry key="..\:/Android Studio Projects/Open-API-Android-App/app/src/main/res/layout/fragment_update_account.xml" value="0.25" />
         <entry key="..\:/Android Studio Projects/Open-API-Android-App/app/src/main/res/layout/layout_blog_list_item.xml" value="0.1" />
+        <entry key="..\:/Users/lunaz/AppData/Local/Android/Sdk/platforms/android-30/data/res/layout/simple_spinner_item.xml" value="0.178125" />
         <entry key="..\:/Users/lunaz/OneDrive/Desktop/Posao/UVC/Cloud-Android-App-Template/app/src/main/res/drawable/ic_account_circle_white_24dp.xml" value="0.2296875" />
         <entry key="..\:/Users/lunaz/OneDrive/Desktop/Posao/UVC/Cloud-Android-App-Template/app/src/main/res/drawable/ic_add_circle_outline_white_24dp.xml" value="0.2296875" />
         <entry key="..\:/Users/lunaz/OneDrive/Desktop/Posao/UVC/Cloud-Android-App-Template/app/src/main/res/drawable/ic_launcher_background.xml" value="0.2296875" />
@@ -21,7 +22,7 @@
         <entry key="..\:/Users/lunaz/OneDrive/Desktop/Posao/UVC/Cloud-Android-App-Template/app/src/main/res/layout/activity_main.xml" value="0.11666666666666667" />
         <entry key="..\:/Users/lunaz/OneDrive/Desktop/Posao/UVC/Cloud-Android-App-Template/app/src/main/res/layout/fragment_account.xml" value="0.1" />
         <entry key="..\:/Users/lunaz/OneDrive/Desktop/Posao/UVC/Cloud-Android-App-Template/app/src/main/res/layout/fragment_accounts.xml" value="0.1" />
-        <entry key="..\:/Users/lunaz/OneDrive/Desktop/Posao/UVC/Cloud-Android-App-Template/app/src/main/res/layout/fragment_change_account.xml" value="0.2517985611510791" />
+        <entry key="..\:/Users/lunaz/OneDrive/Desktop/Posao/UVC/Cloud-Android-App-Template/app/src/main/res/layout/fragment_change_account.xml" value="0.1" />
         <entry key="..\:/Users/lunaz/OneDrive/Desktop/Posao/UVC/Cloud-Android-App-Template/app/src/main/res/layout/fragment_change_password.xml" value="0.11666666666666667" />
         <entry key="..\:/Users/lunaz/OneDrive/Desktop/Posao/UVC/Cloud-Android-App-Template/app/src/main/res/layout/fragment_create_task.xml" value="0.11666666666666667" />
         <entry key="..\:/Users/lunaz/OneDrive/Desktop/Posao/UVC/Cloud-Android-App-Template/app/src/main/res/layout/fragment_edit_account.xml" value="0.25416666666666665" />

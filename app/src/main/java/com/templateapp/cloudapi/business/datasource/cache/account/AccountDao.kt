@@ -8,6 +8,7 @@ import androidx.room.Query
 import com.templateapp.cloudapi.business.datasource.cache.task.TaskDao
 import com.templateapp.cloudapi.business.datasource.cache.task.TaskEntity
 import com.templateapp.cloudapi.business.datasource.cache.task.TaskQueryUtils
+import com.templateapp.cloudapi.business.domain.models.Role
 import com.templateapp.cloudapi.business.domain.util.Constants
 
 @Dao
@@ -28,8 +29,8 @@ interface AccountDao {
     @Query("UPDATE account_properties SET email = :email, name = :name WHERE _id = :id")
     suspend fun updateAccount(id: String, email: String, name: String)
 
-    @Query("UPDATE account_properties SET email = :email, name = :name, age =:age, enabled =:enabled WHERE _id = :id")
-    suspend fun changeAccount(id: String, email: String, name: String, age: Int, enabled: Boolean)
+    @Query("UPDATE account_properties SET email = :email, name = :name, age =:age, enabled =:enabled, role =:role WHERE _id = :id")
+    suspend fun changeAccount(id: String, email: String, name: String, age: Int, enabled: Boolean, role: String)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(account: AccountEntity): Long
