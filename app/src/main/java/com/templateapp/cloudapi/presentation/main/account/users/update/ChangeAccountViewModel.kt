@@ -50,8 +50,8 @@ constructor(
     init {
         savedStateHandle.get<String>("accountId")?.let { accountId ->
             onTriggerEvent(ChangeAccountEvents.GetAccountFromCache(accountId))
-            onTriggerEvent(ChangeAccountEvents.GetRoles)
         }
+        onTriggerEvent(ChangeAccountEvents.GetRoles)
 
 
     }

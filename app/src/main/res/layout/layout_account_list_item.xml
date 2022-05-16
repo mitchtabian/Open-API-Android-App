@@ -5,8 +5,9 @@
         android:layout_height="wrap_content"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         app:cardElevation="10dp"
-        app:cardCornerRadius="2dp"
+        app:cardCornerRadius="10dp"
         app:cardPreventCornerOverlap="false"
+        app:cardBackgroundColor="#1E1C1C"
         >
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -26,10 +27,11 @@
                 >
             <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="50dp"
                     android:id="@+id/username"
                     android:text="@string/user_name"
-                    android:textColor="#000"
+                    android:gravity="center"
+                    android:textColor="#fff"
                     android:textSize="19sp"
                     />
 

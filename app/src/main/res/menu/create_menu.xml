@@ -6,7 +6,9 @@
     <item
             android:id="@+id/create"
             android:title="@string/create_task"
+            android:textColor="#D8D4D4"
             app:showAsAction="ifRoom"
+
             />
 
 

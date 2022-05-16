@@ -7,7 +7,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         tools:context=".presentation.main.account.users.detail.ViewAccountFragment"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
-        android:background="#fff"
+        android:background="#000000"
         >
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -16,192 +16,471 @@
             android:layout_marginBottom="20dp"
 
             >
-        <TextView
-                android:id="@+id/username"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                android:layout_marginTop="10dp"
-                android:orientation="vertical"
-                android:text="@string/field_username"
-                android:textColor="@color/grey5"
-                android:textSize="15sp" />
 
-        <TextView
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                app:layout_constraintTop_toTopOf="@+id/username"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                android:id="@+id/account_name"
-                android:gravity="center_vertical"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="20dp"
-                android:text="@string/user_name"
-                android:textColor="#000"
-                android:textSize="19sp"
-                android:textStyle="bold"
-                />
 
         <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/account_name"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:orientation="vertical"
-                android:padding="10dp"
                 android:id="@+id/container1"
                 >
 
-            <TextView
-                    android:id="@+id/roleLabel"
+            <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    android:layout_marginTop="10dp"
-                    android:orientation="vertical"
-                    android:text="@string/role_field"
-                    android:textColor="@color/grey5"
-                    android:textSize="15sp" />
+                    android:clickable="true"
+                    android:layout_marginTop="30dp">
 
-            <TextView
+                <ImageView
+                        android:id="@+id/ivContactItem1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="30dp"
+                        android:layout_marginTop="40dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:src="@drawable/ic_baseline_person_24" />
+
+
+                <TextView
+                        android:id="@+id/username"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="1dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_toEndOf="@id/ivContactItem1"
+                        android:orientation="vertical"
+                        android:text="@string/usernameLabel"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                        android:textColor="@color/grey5"
+                        android:textSize="15sp"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                        android:id="@+id/account_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="?attr/actionBarSize"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="20dp"
+                        android:layout_toEndOf="@id/ivContactItem1"
+                        android:gravity="center_vertical"
+                        android:text="@string/user_name"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                        android:textColor="#D8D4D4"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/username" />
+
+
+                <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="65dp"
+                        android:layout_marginRight="30dp"
+                        android:layout_marginBottom="8dp"
+                        android:background="#595555"
+                        android:layout_toEndOf="@id/ivContactItem1"
+                        />
+            </RelativeLayout>
+
+
+
+
+            <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/role"
-                    android:text="@string/role"
-                    android:textColor="@color/grey5"
-                    android:textSize="15sp"
-                    />
+                    android:clickable="true">
+
+                <ImageView
+                        android:id="@+id/ivContactItem2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="30dp"
+                        android:layout_marginTop="40dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:src="@drawable/ic_baseline_admin_panel_settings_24" />
 
 
-            <TextView
-                    android:id="@+id/emailLabel"
+                <TextView
+                        android:id="@+id/roleLabel"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        android:layout_marginTop="10dp"
+                        android:orientation="vertical"
+                        android:text="@string/role_field"
+                        android:textColor="@color/grey5"
+                        android:textSize="15sp"
+                        android:layout_toEndOf="@id/ivContactItem2"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                        />
+
+
+                <TextView
+                        android:id="@+id/role"
+                        android:layout_width="match_parent"
+                        android:layout_height="?attr/actionBarSize"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="20dp"
+                        android:layout_toEndOf="@id/ivContactItem2"
+                        android:gravity="center_vertical"
+                        android:text="@string/role"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                        android:textColor="#FFD8D4D4"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/roleLabel" />
+
+                <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="65dp"
+                        android:layout_marginRight="30dp"
+                        android:layout_marginBottom="8dp"
+                        android:background="#595555"
+                        android:layout_toEndOf="@id/ivContactItem2"
+                        />
+
+            </RelativeLayout>
+
+
+
+
+            <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    android:layout_marginTop="10dp"
-                    android:orientation="vertical"
-                    android:text="@string/email_field"
-                    android:textColor="@color/grey5"
-                    android:textSize="15sp" />
+                    android:clickable="true">
 
-            <TextView
+                <ImageView
+                        android:id="@+id/ivContactItem3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="30dp"
+                        android:layout_marginTop="40dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:src="@drawable/ic_baseline_alternate_email_24" />
+
+
+
+                <TextView
+                        android:id="@+id/emailLabel"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        android:layout_marginTop="10dp"
+                        android:orientation="vertical"
+                        android:text="@string/email_field"
+                        android:textColor="@color/grey5"
+                        android:textSize="15sp"
+                        android:layout_toEndOf="@id/ivContactItem3"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                        />
+
+                <TextView
+                        android:id="@+id/email"
+                        android:layout_width="match_parent"
+                        android:layout_height="?attr/actionBarSize"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="20dp"
+                        android:layout_toEndOf="@id/ivContactItem3"
+                        android:gravity="center_vertical"
+                        android:text="@string/arg_email"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                        android:textColor="#FFD8D4D4"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/emailLabel" />
+
+
+                <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="65dp"
+                        android:layout_marginRight="30dp"
+                        android:layout_marginBottom="8dp"
+                        android:background="#595555"
+                        android:layout_toEndOf="@id/ivContactItem3"
+                        />
+
+            </RelativeLayout>
+
+
+
+            <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/email"
-                    android:text="@string/arg_email"
-                    android:textColor="@color/grey5"
-                    android:textSize="15sp"
-                    />
+                    android:clickable="true">
 
-            <TextView
-                    android:id="@+id/ageLAbel"
+                <ImageView
+                        android:id="@+id/ivContactItem4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="30dp"
+                        android:layout_marginTop="40dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:src="@drawable/ic_baseline_emoji_people_24" />
+
+
+
+                <TextView
+                        android:id="@+id/ageLAbel"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        android:layout_marginTop="10dp"
+                        android:orientation="vertical"
+                        android:text="@string/age_field"
+                        android:textColor="@color/grey5"
+                        android:textSize="15sp"
+                        android:layout_toEndOf="@id/ivContactItem4"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                        />
+
+
+                <TextView
+                        android:id="@+id/age"
+                        android:layout_width="match_parent"
+                        android:layout_height="?attr/actionBarSize"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="20dp"
+                        android:layout_toEndOf="@id/ivContactItem4"
+                        android:gravity="center_vertical"
+                        android:text="30"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                        android:textColor="#FFD8D4D4"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/ageLAbel" />
+
+
+
+                <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="65dp"
+                        android:layout_marginRight="30dp"
+                        android:layout_marginBottom="8dp"
+                        android:background="#595555"
+                        android:layout_toEndOf="@id/ivContactItem4"
+                        />
+
+            </RelativeLayout>
+
+
+
+            <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    android:layout_marginTop="10dp"
-                    android:orientation="vertical"
-                    android:text="@string/age_field"
-                    android:textColor="@color/grey5"
-                    android:textSize="15sp" />
+                    android:clickable="true">
 
-            <TextView
+                <ImageView
+                        android:id="@+id/ivContactItem5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="30dp"
+                        android:layout_marginTop="40dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:src="@drawable/ic_baseline_create_24" />
+
+
+                <TextView
+                        android:id="@+id/created"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_toEndOf="@id/ivContactItem5"
+                        android:orientation="vertical"
+                        android:text="@string/createdAt_field"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                        android:textColor="@color/grey5"
+                        android:textSize="15sp"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                        android:id="@+id/createdAt"
+                        android:layout_width="match_parent"
+                        android:layout_height="?attr/actionBarSize"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_toEndOf="@id/ivContactItem5"
+                        android:gravity="center_vertical"
+                        android:text="1111"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                        android:textColor="#FFD8D4D4"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/created" />
+
+
+
+                <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="65dp"
+                        android:layout_marginRight="30dp"
+                        android:layout_marginBottom="8dp"
+                        android:background="#595555"
+                        android:layout_toEndOf="@id/ivContactItem5"
+                        />
+
+            </RelativeLayout>
+
+
+
+            <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/age"
-                    android:text="30"
-                    android:textColor="@color/grey5"
-                    android:textSize="13sp"
-                    android:layout_marginTop="10dp"
-                    />
+                    android:clickable="true">
+
+                <ImageView
+                        android:id="@+id/ivContactItem6"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="30dp"
+                        android:layout_marginTop="40dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:src="@drawable/ic_baseline_update_24" />
 
 
-            <TextView
-                    android:id="@+id/created"
+
+
+                <TextView
+                        android:id="@+id/updated"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        android:layout_marginTop="10dp"
+                        android:orientation="vertical"
+                        android:text="@string/updatedAt_field"
+                        android:textColor="@color/grey5"
+                        android:textSize="15sp"
+                        android:layout_toEndOf="@id/ivContactItem6"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                        />
+
+                <TextView
+                        android:id="@+id/updatedAt"
+                        android:layout_width="match_parent"
+                        android:layout_height="?attr/actionBarSize"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="20dp"
+                        android:layout_toEndOf="@id/ivContactItem6"
+                        android:gravity="center_vertical"
+                        android:text="1111"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                        android:textColor="#FFD8D4D4"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/updated"
+                        />
+
+
+                <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="65dp"
+                        android:layout_marginRight="30dp"
+                        android:layout_marginBottom="8dp"
+                        android:background="#595555"
+                        android:layout_toEndOf="@id/ivContactItem6"
+                        />
+
+
+            </RelativeLayout>
+
+
+
+            <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    android:layout_marginTop="10dp"
-                    android:orientation="vertical"
-                    android:text="@string/createdAt_field"
-                    android:textColor="@color/grey5"
-                    android:textSize="15sp" />
+                    android:clickable="true">
 
-            <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/createdAt"
-                    android:text="1111"
-                    android:textColor="@color/grey5"
-                    android:textSize="13sp"
-                    android:layout_marginTop="10dp"
-                    />
+                <ImageView
+                        android:id="@+id/ivContactItem7"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="30dp"
+                        android:layout_marginTop="30dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:src="@drawable/ic_baseline_check_24" />
 
 
-            <TextView
-                    android:id="@+id/updated"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    android:layout_marginTop="10dp"
-                    android:orientation="vertical"
-                    android:text="@string/updatedAt_field"
-                    android:textColor="@color/grey5"
-                    android:textSize="15sp" />
-            <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/updatedAt"
-                    android:text="1111"
-                    android:textColor="@color/grey5"
-                    android:textSize="13sp"
-                    android:layout_marginTop="10dp"
-                    />
 
-            <Switch
-                    android:id="@+id/enabled"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Enabled"
-                    android:checked="false"
-                    android:clickable="false"/>
+
+                <TextView
+                        android:id="@+id/enabledLabel"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        android:layout_marginTop="30dp"
+                        android:orientation="vertical"
+                        android:text="@string/enabled"
+                        android:textColor="#FFD8D4D4"
+                        android:textSize="15sp"
+                        android:layout_marginStart="10dp"
+                        android:layout_toEndOf="@id/ivContactItem7"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                        />
+
+                <Switch
+                        android:id="@+id/enabled"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="30dp"
+                        android:checked="false"
+                        android:clickable="false"
+                        android:shadowColor="@color/white"
+                        android:textColor="@color/white" />
+
+            </RelativeLayout>
 
             <View
                     android:layout_width="match_parent"
-                    android:layout_height="0.5dp"
-                    android:background="@color/grey4"
+                    android:layout_height="1dp"
                     android:layout_marginTop="10dp"
-                    >
+                    android:layout_marginRight="30dp"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginLeft="30dp"
+                    android:background="#595555"
+                    android:layout_toEndOf="@id/ivContactItem7"
+                    />
 
-            </View>
-
-
-            <Button
-                    android:id="@+id/delete_button"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/red_button_drawable"
-                    android:text="@string/delete"
-                    android:textAllCaps="false"
-                    android:textColor="#fff"
-                    android:textSize="16sp"
-                    android:layout_marginTop="50dp"
-                    android:layout_marginBottom="30dp"
-                    android:visibility="invisible"/>
 
         </LinearLayout>
 

@@ -9,7 +9,7 @@ import com.templateapp.cloudapi.business.datasource.cache.auth.AuthTokenEntity
 import com.templateapp.cloudapi.business.datasource.cache.task.TaskDao
 import com.templateapp.cloudapi.business.datasource.cache.task.TaskEntity
 
-@Database(entities = [AuthTokenEntity::class, AccountEntity::class, TaskEntity::class], version = 1)
+@Database(entities = [AuthTokenEntity::class, AccountEntity::class, TaskEntity::class, RoleEntity::class], version = 1)
 @TypeConverters(RoleConverter::class)
 abstract class AppDatabase: RoomDatabase() {
 

@@ -69,15 +69,21 @@ class ChangeAccountFragment : BaseAccountFragment() {
             if(state.isUpdateComplete){
                 findNavController().popBackStack(R.id.accountFragment, false)
             }
+
             state.account?.let { account ->
                 setAccountDataFields(state.account)
             }
+            state.roles?.let { roles ->
+                setAccountDataFieldsRoles(state.roles)
+             }
         })
 
     }
 
 
     private fun setAccountDataFields(account: Account){
+
+        println(account)
         email = account.email
         name = account.name
         binding.email.setText(account.email)
@@ -97,14 +103,20 @@ class ChangeAccountFragment : BaseAccountFragment() {
         binding.createdAt.setText(createdAt)
         binding.updatedAt.setText(updatedAt)
 
-        var roles : List<Role>? = emptyList();
+        /*var roles : List<Role>? = emptyList();
         var roleUser: Role = Role("625d59e2949d171c2c0bb52b", "User")
         var roleGuest: Role = Role("625d59e2949d171c2c0bb52a", "Guest")
         roles = roles?.plus(roleUser)
         roles = roles?.plus(roleGuest)
+*/
+    }
+
+    private fun setAccountDataFieldsRoles(roles: List<Role>){
+        println(roles)
 
         if (roles != null) {
 
+            println(roles)
             val adapter = activity?.let {
                 ArrayAdapter<Role>(
                     it,

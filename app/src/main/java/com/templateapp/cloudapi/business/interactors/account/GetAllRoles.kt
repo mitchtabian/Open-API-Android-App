@@ -30,7 +30,7 @@ import java.lang.Exception
 
 class GetAllRoles(
     private val service: OpenApiMainService,
-   // private val cache: RoleDao,
+    private val cache: RoleDao,
     private val serverMsgTranslator: ServerMsgTranslator
 ) {
 
@@ -50,7 +50,7 @@ class GetAllRoles(
             ).roles.map { it.toRole() }
 
             // Insert into cache
-          /*  for (role in roles) {
+           for (role in roles) {
                 try {
                     cache.insert(role.toEntity())
                 } catch (e: Exception) {
@@ -58,9 +58,9 @@ class GetAllRoles(
                 }
             }
             val cachedUsers = cache.getAllRoles().map { it.toRole() }
-*/
 
-            emit(DataState.data(response = null, data = roles))
+
+            emit(DataState.data(response = null, data = cachedUsers))
 
         } catch (e: Exception) {
             emit(

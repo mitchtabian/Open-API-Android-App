@@ -43,10 +43,6 @@ class ViewAccountFragment : BaseAccountFragment()
         subscribeObservers()
         uiCommunicationListener.expandAppBar()
 
-        binding.deleteButton.setOnClickListener {
-            viewModel.onTriggerEvent(ViewAccountEvents.DeleteAccount)
-        }
-
         // If an update occurred from UpdateTaskFragment, refresh the Task
         findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>(SHOULD_REFRESH)?.observe(viewLifecycleOwner) { shouldRefresh ->
             shouldRefresh?.run {
@@ -105,19 +101,15 @@ class ViewAccountFragment : BaseAccountFragment()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-
             inflater.inflate(R.menu.edit_view_menu, menu)
-
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-
             when(item.itemId){
                 R.id.edit -> {
                     navUpdateTaskFragment()
                     return true
                 }
-
         }
         return super.onOptionsItemSelected(item)
     }

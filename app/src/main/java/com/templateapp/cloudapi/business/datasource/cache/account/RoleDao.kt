@@ -10,15 +10,20 @@ import dagger.Provides
 
 @Dao
 interface RoleDao {
-    /*@Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(role: RoleEntity): Long*/
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAndReplace(account: RoleEntity): Long
 
-   /* @Query("""
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertOrIgnore(account: RoleEntity): Long
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(account: RoleEntity): Long
+
+    @Query("""
         SELECT * FROM role_properties
         """)
-    suspend fun getAllRoles(
-    ): List<RoleEntity>*/
+    suspend fun getAllRoles(): List<RoleEntity>
 
 }
 

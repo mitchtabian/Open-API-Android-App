@@ -38,6 +38,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginBottom="@dimen/bottom_nav_height"
                 app:defaultNavHost="true"
+                android:background="#000"
                 app:navGraph="@navigation/nav_main"
                 />
 
@@ -63,7 +64,7 @@
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:layout_gravity="bottom"
-            android:background="#fff"
+            android:background="#000"
             app:itemTextColor="@color/bottom_nav_selector"
             app:itemIconTint="@color/bottom_nav_selector"
             app:menu="@menu/main_bottom_navigation_menu"

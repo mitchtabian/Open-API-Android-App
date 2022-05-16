@@ -7,6 +7,9 @@ import dagger.Provides
 import org.json.JSONObject
 
 
+@Entity(
+    tableName = "role_properties",
+)
 data class RoleEntity(
 
     @PrimaryKey(autoGenerate = false)

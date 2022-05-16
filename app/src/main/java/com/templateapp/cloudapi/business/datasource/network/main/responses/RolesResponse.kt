@@ -8,7 +8,6 @@ class RolesResponse (
     @SerializedName("roles")
     var roles: List<RoleDto>,
 
-
     @SerializedName("count")
     var count: Int
 )

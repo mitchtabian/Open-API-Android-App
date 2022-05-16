@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "85f3bfc45dabbd4f2c08e24de7b0df61",
+    "identityHash": "3ec4153404eca6e702288e6dd41c1576",
     "entities": [
       {
         "tableName": "auth_token",
@@ -177,12 +177,38 @@
         },
         "indices": [],
         "foreignKeys": []
+      },
+      {
+        "tableName": "role_properties",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`_id` TEXT NOT NULL, `title` TEXT NOT NULL, PRIMARY KEY(`_id`))",
+        "fields": [
+          {
+            "fieldPath": "_id",
+            "columnName": "_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "title",
+            "columnName": "title",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "_id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '85f3bfc45dabbd4f2c08e24de7b0df61')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '3ec4153404eca6e702288e6dd41c1576')"
     ]
   }
 }

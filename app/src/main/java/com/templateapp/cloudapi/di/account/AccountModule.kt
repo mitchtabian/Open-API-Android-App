@@ -82,10 +82,10 @@ object AccountModule {
     @Provides
     fun provideAllRoles(
         service: OpenApiMainService,
-       // cache: RoleDao,
+        cache: RoleDao,
         serverMsgTranslator: ServerMsgTranslator
     ): GetAllRoles {
-        return GetAllRoles(service, serverMsgTranslator)
+        return GetAllRoles(service, cache, serverMsgTranslator)
     }
 }
 

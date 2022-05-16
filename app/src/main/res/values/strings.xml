@@ -44,6 +44,7 @@
     <string name="fragment_update_account">Update account</string>
     <string name="arg_email">arg_email</string>
     <string name="arg_username">arg_username</string>
+
     <string name="enter_a_username">Enter a username</string>
     <string name="enter_your_email">Enter your email</string>
     <string name="current_password">Current password</string>
@@ -145,6 +146,9 @@
     <string name="age_field" translatable="false">Age</string>
     <string name="updatedAt_field" translatable="false">Updated at</string>
     <string name="createdAt_field" translatable="false">Created at</string>
+    <string name="enabled" translatable="false">Enabled</string>
+    <string name="edit" translatable="false">Edit</string>
+    <string name="usernameLabel" translatable="false">Username</string>
 
 </resources>
 

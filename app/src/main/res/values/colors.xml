@@ -2,7 +2,7 @@
 <resources>
 
     <!-- Main theme colors -->
-    <color name="colorPrimary">#fff</color>
+    <color name="colorPrimary">#000</color>
     <color name="colorPrimaryDark">#7d7d7d</color>
     <color name="colorAccent">#FF4081</color>
 
@@ -19,8 +19,9 @@
     <color name="grey3">#a8a8a8</color>
     <color name="grey4">#7d7d7d</color>
     <color name="grey5">#5c5c5c</color>
+    <color name="white">#fff</color>
 
-    <color name="default_background_color">#EEEEEE</color>
+    <color name="default_background_color">#000000</color>
 
 
 
