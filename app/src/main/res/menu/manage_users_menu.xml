@@ -6,8 +6,8 @@
     <item
             android:id="@+id/add"
             android:title="+"
-            app:showAsAction="ifRoom"/>
-            //android:icon="@drawable/ic_add"/>
+            app:showAsAction="ifRoom"
+            android:icon="@drawable/ic_baseline_add_circle_24"/>
 
 
 </menu>

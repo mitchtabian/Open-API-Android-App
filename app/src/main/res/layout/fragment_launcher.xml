@@ -7,7 +7,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         tools:context=".presentation.auth.launcher.LauncherFragment"
         android:fillViewport="true"
-        android:background="#fff"
+        android:background="@drawable/rvika141100017"
         >
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -29,7 +29,7 @@
                 android:layout_width="0dp"
                 android:layout_height="75dp"
                 android:id="@+id/app_logo"
-                android:src="@drawable/codingwithmitch_logo"
+                android:src="@drawable/ic_baseline_cloud_24"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"

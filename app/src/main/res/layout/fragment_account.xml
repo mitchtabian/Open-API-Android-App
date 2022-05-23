@@ -7,7 +7,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         tools:context=".presentation.main.account.detail.AccountFragment"
         android:fillViewport="true"
-        android:background="#fff"
+        android:background="#121212"
 
         >
 
@@ -27,27 +27,28 @@
         </View>
 
         <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/email_input_layout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintBottom_toTopOf="@+id/username_input_layout"
-                android:padding="16dp"
+                android:padding="30dp"
                 app:helperText="@string/email_field"
-                android:id="@+id/email_input_layout"
-                app:layout_constraintVertical_chainStyle="packed"
+                app:helperTextTextColor="@color/white"
+                android:layout_marginTop="10dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/focusable_view"
                 app:layout_constraintVertical_bias=".1"
-                >
+                app:layout_constraintVertical_chainStyle="packed"
+             >
 
             <TextView
+                    android:id="@+id/email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/email"
-                    android:textColor="#000"
                     android:hint="@string/your_email"
-                    android:textSize="20sp"
-                    />
+                    android:textColor="#EDEDED"
+                    android:textColorHint="@color/white"
+                    android:textSize="20sp" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -58,9 +59,9 @@
                 app:layout_constraintTop_toBottomOf="@+id/email_input_layout"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintBottom_toTopOf="@+id/change_password"
-                android:padding="16dp"
+                android:padding="30dp"
                 app:helperText="@string/field_username"
+                app:helperTextTextColor="@color/white"
                 android:id="@+id/username_input_layout"
                 >
 
@@ -68,35 +69,23 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/username"
-                    android:textColor="#000"
                     android:hint="@string/your_username"
+                    android:textColorHint="@color/white"
+                    android:textColor="#EDEDED"
                     android:textSize="20sp"
                     />
 
         </com.google.android.material.textfield.TextInputLayout>
 
 
-        <TextView
-                android:id="@+id/change_password"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:gravity="center"
-                android:text="@string/change_password"
-                android:textColor="@color/link_blue"
-                android:textSize="18sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/username_input_layout" />
+
 
         <Button
                 android:id="@+id/logout_button"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="140dp"
                 android:layout_marginRight="15dp"
                 android:layout_marginBottom="30dp"
                 android:background="@drawable/main_button_drawable"
@@ -108,7 +97,7 @@
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/change_password"
+                app:layout_constraintTop_toBottomOf="@+id/email_input_layout"
                 app:layout_constraintVertical_bias="0.435" />
 
         <Button
@@ -116,9 +105,9 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
-                android:layout_marginTop="50dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginRight="15dp"
-                android:layout_marginBottom="30dp"
+                android:layout_marginBottom="0dp"
                 android:background="@drawable/main_button_drawable"
                 android:text="@string/all_users"
                 android:textAllCaps="false"
@@ -130,6 +119,21 @@
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/logout_button"
                 app:layout_constraintVertical_bias="0.0" />
+
+        <TextView
+                android:id="@+id/change_password"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="0dp"
+                android:gravity="center"
+                android:text="@string/change_password"
+                android:textColor="@color/link_blue"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/button" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 

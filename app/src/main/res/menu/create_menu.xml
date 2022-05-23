@@ -8,7 +8,7 @@
             android:title="@string/create_task"
             android:textColor="#D8D4D4"
             app:showAsAction="ifRoom"
-
+            android:icon="@drawable/ic_baseline_check_24_white"
             />
 
 

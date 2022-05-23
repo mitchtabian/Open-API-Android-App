@@ -21,8 +21,8 @@ import com.templateapp.cloudapi.presentation.util.processQueue
 class CreateTaskFragment : BaseCreateTaskFragment() {
 
     private val requestOptions = RequestOptions
-        .placeholderOf(R.drawable.default_image)
-        .error(R.drawable.default_image)
+        .placeholderOf(R.drawable.default_white)
+        .error(R.drawable.default_white)
 
     private val viewModel: CreateTaskViewModel by viewModels()
 
@@ -114,7 +114,7 @@ class CreateTaskFragment : BaseCreateTaskFragment() {
         } else {
             Glide.with(this)
                 .setDefaultRequestOptions(requestOptions)
-                .load(R.drawable.default_image)
+                .load(R.drawable.default_white)
                 .into(binding.taskImage)
         }
 

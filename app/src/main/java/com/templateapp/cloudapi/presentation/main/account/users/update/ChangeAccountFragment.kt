@@ -56,7 +56,7 @@ class ChangeAccountFragment : BaseAccountFragment() {
 
     private fun subscribeObservers(){
         viewModel.state.observe(viewLifecycleOwner, { state ->
-            uiCommunicationListener.displayProgressBar(state.isLoading)
+            //uiCommunicationListener.displayProgressBar(state.isLoading)
             processQueue(
                 context = context,
                 queue = state.queue,
@@ -120,12 +120,12 @@ class ChangeAccountFragment : BaseAccountFragment() {
             val adapter = activity?.let {
                 ArrayAdapter<Role>(
                     it,
-                    android.R.layout.simple_spinner_item,
+                    R.layout.simple_spinner_item,
                     roles
                 )
             }
             if (adapter != null) {
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                adapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item)
             }
             binding.roleSpinner!!.setAdapter(adapter)
 

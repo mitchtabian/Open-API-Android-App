@@ -4,7 +4,7 @@
 
     <item android:id="@+id/action_filter_settings"
           android:title="@string/filter"
-          android:icon="@drawable/ic_filter_list_grey_24dp"
+          android:icon="@drawable/ic_baseline_filter_list_24"
           android:orderInCategory="100"
           app:showAsAction="always" />
 
@@ -13,6 +13,7 @@
             android:icon="@android:drawable/ic_menu_search"
             app:showAsAction="always"
             app:actionViewClass="androidx.appcompat.widget.SearchView"
-            android:title="@string/search"/>
+            android:title="BLABLAa"/>
+
 
 </menu>

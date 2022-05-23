@@ -6,7 +6,7 @@
         android:layout_height="match_parent"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         tools:context=".presentation.main.MainActivity"
-        android:background="#fff">
+        android:background="#FFFFFF">
 
     <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
@@ -19,6 +19,9 @@
                 android:layout_height="?attr/actionBarSize"
                 android:id="@+id/tool_bar"
                 app:layout_scrollFlags="scroll|enterAlways"
+                app:titleTextColor="@color/white"
+                app:subtitleTextColor="@color/white"
+                android:background="@drawable/untitled"
                 >
 
         </com.google.android.material.appbar.MaterialToolbar>

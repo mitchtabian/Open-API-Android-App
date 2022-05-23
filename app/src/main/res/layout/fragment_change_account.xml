@@ -7,7 +7,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         tools:context=".presentation.main.account.users.detail.ViewAccountFragment"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
-        android:background="#000000"
+        android:background="@drawable/default_image"
         >
 
 
@@ -47,7 +47,7 @@
 
 
                 <TextView
-                        android:id="@+id/username"
+                        android:id="@+id/account_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="1dp"
@@ -63,10 +63,10 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                 <EditText
-                        android:id="@+id/account_name"
-                        android:layout_width="match_parent"
+                        android:id="@+id/username"
+                        android:layout_width="320dp"
                         android:layout_height="?attr/actionBarSize"
-                        android:layout_marginStart="10dp"
+                        android:layout_marginStart="0dp"
                         android:layout_marginTop="20dp"
                         android:layout_toEndOf="@id/ivContactItem1"
                         android:gravity="center_vertical"
@@ -77,18 +77,17 @@
                         android:textStyle="bold"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toTopOf="@+id/username" />
+                        app:layout_constraintTop_toTopOf="@+id/account_name" />
 
 
                 <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:layout_marginTop="65dp"
+                        android:layout_marginTop="69dp"
                         android:layout_marginRight="30dp"
                         android:layout_marginBottom="8dp"
-                        android:background="#595555"
                         android:layout_toEndOf="@id/ivContactItem1"
-                        />
+                        android:background="@color/grey3" />
             </RelativeLayout>
 
 
@@ -128,14 +127,13 @@
 
                 <Spinner
                         android:id="@+id/role_spinner"
-                        android:layout_width="match_parent"
-                        android:layout_height="?attr/actionBarSize"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginTop="20dp"
+                        android:layout_width="320dp"
+                        android:layout_height="30dp"
+                        android:layout_marginStart="0dp"
+                        android:layout_marginTop="35dp"
                         android:layout_toEndOf="@id/ivContactItem2"
                         android:entries="@array/roles"
                         android:textSize="18sp"
-                        android:textColor = "@color/white"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintRight_toRightOf="parent"
                         app:layout_constraintTop_toTopOf="@+id/roleLabel" />
@@ -143,10 +141,10 @@
                 <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:layout_marginTop="65dp"
+                        android:layout_marginTop="69dp"
                         android:layout_marginRight="30dp"
                         android:layout_marginBottom="8dp"
-                        android:background="#595555"
+                        android:background="@color/grey3"
                         android:layout_toEndOf="@id/ivContactItem2"
                         />
 
@@ -190,9 +188,9 @@
 
                 <EditText
                         android:id="@+id/email"
-                        android:layout_width="match_parent"
+                        android:layout_width="320dp"
                         android:layout_height="?attr/actionBarSize"
-                        android:layout_marginStart="10dp"
+                        android:layout_marginStart="0dp"
                         android:layout_marginTop="20dp"
                         android:layout_toEndOf="@id/ivContactItem3"
                         android:gravity="center_vertical"
@@ -209,10 +207,10 @@
                 <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:layout_marginTop="65dp"
+                        android:layout_marginTop="69dp"
                         android:layout_marginRight="30dp"
                         android:layout_marginBottom="8dp"
-                        android:background="#595555"
+                        android:background="@color/grey3"
                         android:layout_toEndOf="@id/ivContactItem3"
                         />
 
@@ -256,9 +254,9 @@
 
                 <EditText
                         android:id="@+id/age"
-                        android:layout_width="match_parent"
+                        android:layout_width="320dp"
                         android:layout_height="?attr/actionBarSize"
-                        android:layout_marginStart="10dp"
+                        android:layout_marginStart="0dp"
                         android:layout_marginTop="20dp"
                         android:layout_toEndOf="@id/ivContactItem4"
                         android:gravity="center_vertical"
@@ -276,10 +274,10 @@
                 <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:layout_marginTop="65dp"
+                        android:layout_marginTop="69dp"
                         android:layout_marginRight="30dp"
                         android:layout_marginBottom="8dp"
-                        android:background="#595555"
+                        android:background="@color/grey3"
                         android:layout_toEndOf="@id/ivContactItem4"
                         />
 
@@ -320,9 +318,9 @@
 
                 <EditText
                         android:id="@+id/createdAt"
-                        android:layout_width="match_parent"
+                        android:layout_width="320dp"
                         android:layout_height="?attr/actionBarSize"
-                        android:layout_marginStart="10dp"
+                        android:layout_marginStart="0dp"
                         android:layout_marginTop="20dp"
                         android:layout_marginBottom="10dp"
                         android:layout_toEndOf="@id/ivContactItem5"
@@ -341,10 +339,10 @@
                 <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:layout_marginTop="65dp"
+                        android:layout_marginTop="69dp"
                         android:layout_marginRight="30dp"
                         android:layout_marginBottom="8dp"
-                        android:background="#595555"
+                        android:background="@color/grey3"
                         android:layout_toEndOf="@id/ivContactItem5"
                         />
 
@@ -388,9 +386,9 @@
 
                 <EditText
                         android:id="@+id/updatedAt"
-                        android:layout_width="match_parent"
+                        android:layout_width="320dp"
                         android:layout_height="?attr/actionBarSize"
-                        android:layout_marginStart="10dp"
+                        android:layout_marginStart="0dp"
                         android:layout_marginTop="20dp"
                         android:layout_toEndOf="@id/ivContactItem6"
                         android:gravity="center_vertical"
@@ -408,10 +406,10 @@
                 <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:layout_marginTop="65dp"
+                        android:layout_marginTop="69dp"
                         android:layout_marginRight="30dp"
                         android:layout_marginBottom="8dp"
-                        android:background="#595555"
+                        android:background="@color/grey3"
                         android:layout_toEndOf="@id/ivContactItem6"
                         />
 
@@ -457,7 +455,7 @@
 
                 <Switch
                         android:id="@+id/enabled"
-                        android:layout_width="match_parent"
+                        android:layout_width="390dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="30dp"
                         android:checked="false"
@@ -474,7 +472,7 @@
                     android:layout_marginRight="30dp"
                     android:layout_marginBottom="8dp"
                     android:layout_marginLeft="30dp"
-                    android:background="#595555"
+                    android:background="@color/grey3"
                     android:layout_toEndOf="@id/ivContactItem7"
                     />
 

@@ -77,14 +77,6 @@ constructor(
         return false
     }
 
-    @BindingAdapter(value = ["roles", "selectedRole", "selectedRoleAttrChanged"], requireAll = false)
-    fun setRoles(spinner: Spinner, roles: List<Role>?, selectedRole: Role, listener: InverseBindingListener) {
-        if (roles == null) return
-        spinner.adapter = NameAdapter(spinner.context, android.R.layout.simple_spinner_dropdown_item, roles)
-        setCurrentSelection(spinner, selectedRole)
-        setSpinnerListener(spinner, listener)
-    }
-
     fun onTriggerEvent(event: ChangeAccountEvents){
 
         when(event){
@@ -140,7 +132,6 @@ constructor(
 
                 dataState.data?.let { list ->
                     this.state.value = state.copy(roles = list)
-                    println("ototoot" + list)
                 }
                 dataState.stateMessage?.let { stateMessage ->
                     if(stateMessage.response.message?.contains(ErrorHandling.INVALID_PAGE) == true){
@@ -289,25 +280,6 @@ constructor(
 
 }
 
-
-class NameAdapter(context: Context, textViewResourceId: Int, private val values: List<Role>) : ArrayAdapter<Role>(context, textViewResourceId, values) {
-
-    override fun getCount() = values.size
-    override fun getItem(position: Int) = values[position]
-    override fun getItemId(position: Int) = position.toLong()
-
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        val label = super.getView(position, convertView, parent) as TextView
-        label.text = values[position].title
-        return label
-    }
-
-    override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
-        val label = super.getDropDownView(position, convertView, parent) as TextView
-        label.text = values[position].title
-        return label
-    }
-}
 
 
 

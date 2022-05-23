@@ -72,7 +72,7 @@ class AccountFragment : BaseAccountFragment() {
     private fun subscribeObservers(){
         viewModel.state.observe(viewLifecycleOwner) { state ->
 
-            uiCommunicationListener.displayProgressBar(state.isLoading)
+            //uiCommunicationListener.displayProgressBar(state.isLoading)
 
             processQueue(
                 context = context,

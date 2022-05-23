@@ -7,7 +7,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         tools:context=".presentation.main.account.users.detail.ViewAccountFragment"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
-        android:background="#000000"
+        android:background="@drawable/default_image"
         >
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -85,9 +85,8 @@
                         android:layout_marginTop="65dp"
                         android:layout_marginRight="30dp"
                         android:layout_marginBottom="8dp"
-                        android:background="#595555"
                         android:layout_toEndOf="@id/ivContactItem1"
-                        />
+                        android:background="@color/grey3" />
             </RelativeLayout>
 
 
@@ -149,7 +148,7 @@
                         android:layout_marginTop="65dp"
                         android:layout_marginRight="30dp"
                         android:layout_marginBottom="8dp"
-                        android:background="#595555"
+                        android:background="@color/grey3"
                         android:layout_toEndOf="@id/ivContactItem2"
                         />
 
@@ -215,7 +214,7 @@
                         android:layout_marginTop="65dp"
                         android:layout_marginRight="30dp"
                         android:layout_marginBottom="8dp"
-                        android:background="#595555"
+                        android:background="@color/grey3"
                         android:layout_toEndOf="@id/ivContactItem3"
                         />
 
@@ -282,7 +281,7 @@
                         android:layout_marginTop="65dp"
                         android:layout_marginRight="30dp"
                         android:layout_marginBottom="8dp"
-                        android:background="#595555"
+                        android:background="@color/grey3"
                         android:layout_toEndOf="@id/ivContactItem4"
                         />
 
@@ -347,7 +346,7 @@
                         android:layout_marginTop="65dp"
                         android:layout_marginRight="30dp"
                         android:layout_marginBottom="8dp"
-                        android:background="#595555"
+                        android:background="@color/grey3"
                         android:layout_toEndOf="@id/ivContactItem5"
                         />
 
@@ -414,7 +413,7 @@
                         android:layout_marginTop="65dp"
                         android:layout_marginRight="30dp"
                         android:layout_marginBottom="8dp"
-                        android:background="#595555"
+                        android:background="@color/grey3"
                         android:layout_toEndOf="@id/ivContactItem6"
                         />
 
@@ -460,13 +459,14 @@
 
                 <Switch
                         android:id="@+id/enabled"
-                        android:layout_width="match_parent"
+                        android:layout_width="380dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="30dp"
                         android:checked="false"
                         android:clickable="false"
                         android:shadowColor="@color/white"
-                        android:textColor="@color/white" />
+                        android:textColor="@color/white"
+                        android:textColorHighlight="#2196F3"/>
 
             </RelativeLayout>
 
@@ -477,7 +477,7 @@
                     android:layout_marginRight="30dp"
                     android:layout_marginBottom="8dp"
                     android:layout_marginLeft="30dp"
-                    android:background="#595555"
+                    android:background="@color/grey3"
                     android:layout_toEndOf="@id/ivContactItem7"
                     />
 
