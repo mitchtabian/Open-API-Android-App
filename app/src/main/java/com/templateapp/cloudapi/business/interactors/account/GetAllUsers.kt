@@ -46,6 +46,54 @@ class GetAllUsers(
         }
         // get Tasks from network
         try { // catch network exception
+
+            var keepSearching = true;
+            while(keepSearching){
+                val cachedUsers = cache.getAllAccounts(
+                    page = page
+                 )
+                val cachedUsersSize = cachedUsers.size
+
+                // println(cachedUsers)
+
+
+                // Stop searching once no tasks were deleted from the cache, as they all appear to be also on the server.
+                if(cachedUsersSize == cachedUsers.size)
+                    keepSearching = false;
+            }
+
+            // Return cache to the caller
+            val cachedUsers = cache.getAllAccounts(
+                page = page
+            ).map { it.toAccount() }
+
+
+            for(cachedUser in cachedUsers) {
+                try { // try to load each task and check if it exists on the server
+                    cache.deleteAccount(cachedUser._id)
+                    /* val serverAccount = service.getAccountById(
+                         "${authToken.token}",
+                         id = cachedUser._id
+                     )
+                     println("sesss"  + serverAccount)
+                     // If task was not found on server, delete task from cache.
+                     if(serverAccount?.error?.contains(ErrorHandling.ERROR_USER_DOES_NOT_EXIST) == true) {
+                         println("kshksdhkfhfkxjd")
+                         cache.deleteAccount(cachedUser._id)
+                     }*/
+                } catch (e: Exception) {
+                    emit(
+                        DataState.error<List<Account>>(
+                            response = Response(
+                                message = "Unable to get the account from the server. Bad connection?",
+                                uiComponentType = UIComponentType.None(),
+                                messageType = MessageType.Error()
+                            )
+                        )
+                    )
+                }
+            }
+
             val users = service.getAllUsers(
                 "${authToken.token}",
                 skip = (page - 1) * Constants.PAGINATION_PAGE_SIZE,
@@ -61,46 +109,7 @@ class GetAllUsers(
                 }
             }
 
-            var keepSearching = true;
-            while(keepSearching){
-                val cachedUsers = cache.getAllAccounts(
-                    page = page
-                )
-                val cachedUsersSize = cachedUsers.size
-
-                for(cachedUser in cachedUsers){
-                    try { // try to load each task and check if it exists on the server
-                        val serverAccount = service.getAccountById(
-                            "${authToken.token}",
-                            id = cachedUser._id
-                        )
-                        // If task was not found on server, delete task from cache.
-                        if(serverAccount?.error?.contains(ErrorHandling.ERROR_USER_DOES_NOT_EXIST) == true) {
-                            cache.deleteAccount(cachedUser._id)
-                        }
-                    }catch (e: Exception){
-                        emit(
-                            DataState.error<List<Account>>(
-                                response = Response(
-                                    message = "Unable to get the account from the server. Bad connection?",
-                                    uiComponentType = UIComponentType.None(),
-                                    messageType = MessageType.Error()
-                                )
-                            )
-                        )
-                    }
-                }
-                // Stop searching once no tasks were deleted from the cache, as they all appear to be also on the server.
-                if(cachedUsersSize == cachedUsers.size)
-                    keepSearching = false;
-            }
-
-            // Return cache to the caller
-            val cachedUsers = cache.getAllAccounts(
-                page = page
-            ).map { it.toAccount() }
-
-            emit(DataState.data(response = null, data = cachedUsers))
+            emit(DataState.data(response = null, data = users))
 
         } catch (e: Exception) {
             emit(

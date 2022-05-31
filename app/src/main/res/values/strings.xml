@@ -53,7 +53,7 @@
     <string name="change_password">Change password</string>
     <string name="your_email">Your email</string>
     <string name="your_username">Your username</string>
-    <string name="register">Register</string>
+    <string name="register">Insert an email of a new user</string>
     <string name="search">Search</string>
     <string name="filter">Filter</string>
     <string name="update_password">Update password</string>
@@ -113,7 +113,7 @@
     <string name="error_no_query_pagination_result">No query pagination result.</string>
     <string name="error_task_does_not_exist_on_the_server">Task does not exist on the server.</string>
     <string name="error_invalid_updates">Invalid updates.</string>
-    <string name="test" translatable="false">Invalid updates.</string>
+    <string name="test"  >Invalid updates.</string>
 
     <string name="error_internal_server_error">Internal server error. Please try again.</string>
 
@@ -134,21 +134,28 @@
     <string name="error_role_not_admin">Unable to make changes. Logged in user is not admin.</string>
 
 
-    <string name="all_users" translatable="false">Manage users</string>
-    <string name="add_user" translatable="false">+</string>
+    <string name="all_users"  >Manage users</string>
+    <string name="add_user"  >+</string>
 
-    <string name="fragment_manage_users" translatable="false">Manage users</string>
-    <string name="register_new_user" translatable="false">Register new user</string>
-    <string name="role" translatable="false">User</string>
-    <string name="name" translatable="false">Name</string>
-    <string name="email" translatable="false">Email</string>
-    <string name="role_field" translatable="false">Role</string>
-    <string name="age_field" translatable="false">Age</string>
-    <string name="updatedAt_field" translatable="false">Updated at</string>
-    <string name="createdAt_field" translatable="false">Created at</string>
-    <string name="enabled" translatable="false">Enabled</string>
-    <string name="edit" translatable="false">Edit</string>
-    <string name="usernameLabel" translatable="false">Username</string>
+    <string name="fragment_manage_users"  >Manage users</string>
+    <string name="register_new_user"  >Register new user</string>
+    <string name="role"  >User</string>
+    <string name="name"  >Name</string>
+    <string name="email"  >Email</string>
+    <string name="role_field"  >Role</string>
+    <string name="age_field"  >Age</string>
+    <string name="updatedAt_field"  >Updated at</string>
+    <string name="createdAt_field"  >Created at</string>
+    <string name="enabled"  >Enabled</string>
+    <string name="edit"  >Edit</string>
+    <string name="usernameLabel"  >Username</string>
+
+
+    <string name="error_user_does_not_exist_on_the_server" >That User does not exist on the server.</string>
+    <string name="error_cant_register"  >ou do not have the right to register.</string>
+    <string name="error_already_sent_registration_email"  >You have already sent an email for registration.</string>
+    <string name="error_fill_all_fields"  >Please fill all fields.</string>
+
 
 </resources>
 

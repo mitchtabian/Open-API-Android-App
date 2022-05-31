@@ -27,16 +27,12 @@ class Register(
 ){
     fun execute(
         email: String,
-        username: String,
-        password: String,
-        confirmPassword: String,
-    ): Flow<DataState<AuthToken>> = flow {
-        emit(DataState.loading<AuthToken>())
+
+    ): Flow<DataState<String>> = flow {
+        emit(DataState.loading<String>())
         val registerResponse = service.register(
             email = email,
-            name = username,
-            password = password,
-            confirm_password = confirmPassword,
+
         )
         // Incorrect login credentials counts as a 200 response from server, so need to handle that
         registerResponse.error?.let{
@@ -44,35 +40,8 @@ class Register(
         }
 
         // cache account information
-        accountDao.insertAndReplace(
-            Account(
-                _id = registerResponse.user._id,
-                email = registerResponse.user.email,
-                name = registerResponse.user.name,
-                age = registerResponse.user.age,
-                createdAt = registerResponse.user.createdAt,
-                updatedAt = registerResponse.user.updatedAt,
-                userCreatedSequence = registerResponse.user.userCreatedSequence,
-                __v = registerResponse.user.__v,
-                role=registerResponse.user.role,
-                enabled = registerResponse.user.enabled
 
-            ).toEntity()
-        )
-
-        // cache the auth token
-        val authToken = AuthToken(
-            registerResponse.user._id,
-            registerResponse.token
-        )
-        val result = authTokenDao.insert(authToken.toEntity())
-        // can't proceed unless token can be cached
-        if(result < 0){
-            throw Exception(ERROR_SAVE_AUTH_TOKEN)
-        }
-        // save authenticated user to datastore for auto-login next time
-        appDataStoreManager.setValue(DataStoreKeys.PREVIOUS_AUTH_USER, email)
-        emit(DataState.data(data = authToken, response = null))
+        emit(DataState.data(data = "Success", response = null))
     }.catch { e ->
         emit(handleUseCaseException(e, serverMsgTranslator))
     }

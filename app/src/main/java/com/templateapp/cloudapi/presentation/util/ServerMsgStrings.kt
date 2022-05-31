@@ -38,5 +38,10 @@ companion object {
     const val ERROR_ADMIN_ALREADY_EXISTS= "{\"error\":\"Unable to make a new account. Admin already exists!'\"}"
     const val ERROR_ROLE_NOT_ADMIN= "{\"error\":\"Unable to make changes. Logged in user is not admin.'\"}"
 
+    const val ERROR_USER_DOES_NOT_EXIST_ON_THE_SERVER= "{\"error\":\"That User does not exist on the server.'\"}"
+    const val ERROR_CANT_REGISTER ="{\"error\":\"You do not have the right to register.'\"}"
+    const val ERROR_ALREADY_SENT_REGISTRATION_EMAIL= "{\" error\":\"You have already sent an email for registration.'\"}"
+    const val ERROR_FILL_ALL_FIELDS= "{\"error\":\"Please fill all fields.'\"}"
+
 }
 }

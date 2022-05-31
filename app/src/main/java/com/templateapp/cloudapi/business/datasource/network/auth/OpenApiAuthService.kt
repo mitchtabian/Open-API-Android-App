@@ -17,9 +17,6 @@ interface OpenApiAuthService {
     @FormUrlEncoded
     suspend fun register(
         @Field("email") email: String,
-        @Field("name") name: String,
-        @Field("password") password: String,
-        @Field("confirm_password") confirm_password: String
     ): RegistrationResponse
 
 

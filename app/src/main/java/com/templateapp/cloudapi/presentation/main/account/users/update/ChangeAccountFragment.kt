@@ -36,6 +36,7 @@ class ChangeAccountFragment : BaseAccountFragment() {
     private val binding get() = _binding!!
 
     private var email: String = ""
+    private lateinit var role: Role;
     private var name: String = ""
 
     override fun onCreateView(
@@ -83,9 +84,10 @@ class ChangeAccountFragment : BaseAccountFragment() {
 
     private fun setAccountDataFields(account: Account){
 
-        println(account)
+        println("nhnvnvbvn" + account)
         email = account.email
         name = account.name
+        role = account.role
         binding.email.setText(account.email)
         binding.username.setText(account.name)
         binding.age.setText(account.age.toString())
@@ -112,11 +114,10 @@ class ChangeAccountFragment : BaseAccountFragment() {
     }
 
     private fun setAccountDataFieldsRoles(roles: List<Role>){
-        println(roles)
+
 
         if (roles != null) {
 
-            println(roles)
             val adapter = activity?.let {
                 ArrayAdapter<Role>(
                     it,
@@ -128,6 +129,15 @@ class ChangeAccountFragment : BaseAccountFragment() {
                 adapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item)
             }
             binding.roleSpinner!!.setAdapter(adapter)
+            for(i in 0 until roles.size step 1){
+                if(role.title.equals(roles[i].title)){
+
+
+                    binding.roleSpinner.setSelection(i);
+
+                }
+            }
+
 
 
         }
@@ -135,12 +145,13 @@ class ChangeAccountFragment : BaseAccountFragment() {
 
     private fun saveChanges(){
        // var role: Role = Role("625d59e2949d171c2c0bb52b", "User")
-      // println("bibibib" + email)
+
+        println(binding.roleSpinner.selectedItem.toString())
         viewModel.onTriggerEvent(ChangeAccountEvents.Update(
             email = binding.email.text.toString(),
             username = binding.username.text.toString(),
             age = Integer.parseInt(binding.age.text.toString()),
-            enabled = Boolean.equals(binding.enabled.text),
+            enabled = binding.enabled.isChecked,
             role = binding.roleSpinner.selectedItem.toString(),
             initEmail = email,
             initName = name

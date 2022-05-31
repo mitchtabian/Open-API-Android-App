@@ -32,6 +32,7 @@ import com.templateapp.cloudapi.business.domain.util.*
 import com.templateapp.cloudapi.databinding.FragmentManageUsersBinding
 import com.templateapp.cloudapi.databinding.FragmentTaskBinding
 import com.templateapp.cloudapi.presentation.main.account.BaseAccountFragment
+import com.templateapp.cloudapi.presentation.main.account.users.detail.ViewAccountEvents
 import com.templateapp.cloudapi.presentation.main.task.BaseTaskFragment
 import com.templateapp.cloudapi.presentation.main.task.list.TaskEvents
 import com.templateapp.cloudapi.presentation.util.TopSpacingItemDecoration
@@ -132,12 +133,17 @@ class ManageUsersFragment : BaseAccountFragment(),
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
         when(item.itemId){
-            R.id.action_filter_settings -> {
+            R.id.add -> {
+
+                        findNavController().navigate(R.id.action_manageUsersFragment_to_registerUserFragment)
+
                 return true
             }
+
         }
         return super.onOptionsItemSelected(item)
     }
+
 
     override fun onItemSelected(position: Int, item: Account) {
 

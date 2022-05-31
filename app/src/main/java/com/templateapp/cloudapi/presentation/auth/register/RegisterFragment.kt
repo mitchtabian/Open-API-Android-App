@@ -4,7 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
+import com.templateapp.cloudapi.R
 import com.templateapp.cloudapi.business.domain.util.StateMessageCallback
 import com.templateapp.cloudapi.databinding.FragmentRegisterBinding
 import com.templateapp.cloudapi.presentation.auth.BaseAuthFragment
@@ -37,7 +40,7 @@ class RegisterFragment : BaseAuthFragment() {
 
     private fun subscribeObservers() {
         viewModel.state.observe(viewLifecycleOwner) { state ->
-            uiCommunicationListener.displayProgressBar(state.isLoading)
+            //uiCommunicationListener.displayProgressBar(state.isLoading)
             processQueue(
                 context = context,
                 queue = state.queue,
@@ -51,31 +54,20 @@ class RegisterFragment : BaseAuthFragment() {
 
     private fun setRegisterFields(
         email: String,
-        username: String,
-        password: String,
-        confirmPassword: String
     ){
         binding.inputEmail.setText(email)
-        binding.inputUsername.setText(username)
-        binding.inputPassword.setText(password)
-        binding.inputPasswordConfirm.setText(confirmPassword)
     }
 
     private fun cacheState(){
         viewModel.onTriggerEvent(RegisterEvents.OnUpdateEmail(binding.inputEmail.text.toString()))
-        viewModel.onTriggerEvent(RegisterEvents.OnUpdateUsername(binding.inputUsername.text.toString()))
-        viewModel.onTriggerEvent(RegisterEvents.OnUpdatePassword(binding.inputPassword.text.toString()))
-        viewModel.onTriggerEvent(RegisterEvents.OnUpdateConfirmPassword(binding.inputPasswordConfirm.text.toString()))
     }
 
     private fun register() {
         cacheState()
         viewModel.onTriggerEvent(RegisterEvents.Register(
             email = binding.inputEmail.text.toString(),
-            username = binding.inputUsername.text.toString(),
-            password = binding.inputPassword.text.toString(),
-            confirmPassword = binding.inputPasswordConfirm.text.toString(),
         ))
+        Toast.makeText(context,"You have successfully sent an email",Toast.LENGTH_SHORT).show();
     }
 
     override fun onPause() {

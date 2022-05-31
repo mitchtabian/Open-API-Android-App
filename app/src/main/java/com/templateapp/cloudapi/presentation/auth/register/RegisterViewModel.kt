@@ -31,23 +31,12 @@ constructor(
             is RegisterEvents.Register -> {
                 register(
                     email = event.email,
-                    username = event.username,
-                    password = event.password,
-                    confirmPassword = event.confirmPassword,
                 )
             }
             is RegisterEvents.OnUpdateEmail -> {
                 onUpdateEmail(event.email)
             }
-            is RegisterEvents.OnUpdateUsername -> {
-                onUpdateUsername(event.username)
-            }
-            is RegisterEvents.OnUpdatePassword -> {
-                onUpdatePassword(event.password)
-            }
-            is RegisterEvents.OnUpdateConfirmPassword -> {
-                onUpdateConfirmPassword(event.confirmPassword)
-            }
+
             is RegisterEvents.OnRemoveHeadFromQueue -> {
                 removeHeadFromQueue()
             }
@@ -80,22 +69,18 @@ constructor(
 
     private fun register(
         email: String,
-        username: String,
-        password: String,
-        confirmPassword: String
+
     ) {
         // TODO("Perform some simple form validation?")
         state.value?.let { state ->
             register.execute(
                 email = email,
-                username = username,
-                password = password,
-                confirmPassword = confirmPassword,
+
             ).onEach { dataState ->
                 this.state.value = state.copy(isLoading = dataState.isLoading)
 
-                dataState.data?.let { authToken ->
-                    sessionManager.onTriggerEvent(SessionEvents.Login(authToken))
+                dataState.data?.let { success ->
+                    //sessionManager.onTriggerEvent(SessionEvents.Login(success))
                 }
 
                 dataState.stateMessage?.let { stateMessage ->
@@ -105,23 +90,6 @@ constructor(
         }
     }
 
-    private fun onUpdateConfirmPassword(confirmPassword: String) {
-        state.value?.let { state ->
-            this.state.value = state.copy(confirmPassword = confirmPassword)
-        }
-    }
-
-    private fun onUpdatePassword(password: String) {
-        state.value?.let { state ->
-            this.state.value = state.copy(password = password)
-        }
-    }
-
-    private fun onUpdateUsername(username: String) {
-        state.value?.let { state ->
-            this.state.value = state.copy(username = username)
-        }
-    }
 
     private fun onUpdateEmail(email: String) {
         state.value?.let { state ->

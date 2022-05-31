@@ -43,7 +43,12 @@ class AccountDto(
     @SerializedName("error")
     val error: String?,
 
-)
+) {
+    override fun toString(): String {
+        return "AccountDto(_id='$_id', email='$email', name='$name', age=$age, enabled=$enabled, createdAt='$createdAt', updatedAt='$updatedAt', userCreatedSequence=$userCreatedSequence, role=$role, __v=$__v, error=$error)"
+    }
+}
+
 
 fun AccountDto.toAccount(): Account {
     return Account(
