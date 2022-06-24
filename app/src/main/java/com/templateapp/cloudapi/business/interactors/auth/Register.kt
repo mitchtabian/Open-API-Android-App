@@ -28,20 +28,32 @@ class Register(
     fun execute(
         email: String,
 
-    ): Flow<DataState<String>> = flow {
-        emit(DataState.loading<String>())
+    ): Flow<DataState<Response>> = flow {
+        emit(DataState.loading<Response>())
         val registerResponse = service.register(
             email = email,
 
         )
-        // Incorrect login credentials counts as a 200 response from server, so need to handle that
-        registerResponse.error?.let{
-            throw Exception(it)
+
+        registerResponse.response?.let {
+            if(registerResponse.response != SuccessHandling.SUCCESS_ACCOUNT_UPDATED){
+                throw Exception(ErrorHandling.ERROR_UPDATE_ACCOUNT)
+            }
+        }?:run{
+            throw Exception(ErrorHandling.ERROR_UPDATE_ACCOUNT)
         }
 
         // cache account information
 
-        emit(DataState.data(data = "Success", response = null))
+        emit(DataState.data<Response>(
+            data = Response(
+                message = SuccessHandling.SUCCESS_ACCOUNT_UPDATED,
+                uiComponentType = UIComponentType.Toast(),
+                messageType = MessageType.Success()
+            ),
+            response = null
+        ))
+
     }.catch { e ->
         emit(handleUseCaseException(e, serverMsgTranslator))
     }

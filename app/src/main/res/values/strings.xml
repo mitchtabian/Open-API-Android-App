@@ -154,7 +154,18 @@
     <string name="error_user_does_not_exist_on_the_server" >That User does not exist on the server.</string>
     <string name="error_cant_register"  >ou do not have the right to register.</string>
     <string name="error_already_sent_registration_email"  >You have already sent an email for registration.</string>
-    <string name="error_fill_all_fields"  >Please fill all fields.</string>
+    <string name="error_fill_all_fields">Please fill all fields.</string>
+
+
+    <string name="pair_device" translatable="false">Pair new device</string>
+    <string name="my_account" translatable="false">My account</string>
+
+    <string name="fragment_settings" translatable="false">Settings</string>
+
+    <string name="device" translatable="false">Device</string>
+    <string name="find_devices" translatable="false">Find available devices</string>
+    <string name="please_authenticate" translatable="false">Please authenticate</string>
+
 
 
 </resources>

@@ -9,6 +9,7 @@ import androidx.navigation.fragment.findNavController
 import com.templateapp.cloudapi.R
 import com.templateapp.cloudapi.business.datasource.network.main.OpenApiMainService
 import com.templateapp.cloudapi.databinding.FragmentLauncherBinding
+import com.templateapp.cloudapi.presentation.UDP_Client
 import com.templateapp.cloudapi.presentation.auth.BaseAuthFragment
 import com.templateapp.cloudapi.presentation.auth.register.RegisterState
 import kotlinx.coroutines.flow.*
@@ -34,6 +35,9 @@ class LauncherFragment: BaseAuthFragment() {
 
         //search()
 
+       /* val Client = UDP_Client()
+        Client.Message = "Your message"
+        Client.NachrichtSenden()*/
         var openApiMainService: OpenApiMainService
 
 

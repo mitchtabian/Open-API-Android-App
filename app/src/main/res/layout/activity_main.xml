@@ -6,7 +6,7 @@
         android:layout_height="match_parent"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         tools:context=".presentation.main.MainActivity"
-        android:background="#FFFFFF">
+        android:background="#000000">
 
     <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"

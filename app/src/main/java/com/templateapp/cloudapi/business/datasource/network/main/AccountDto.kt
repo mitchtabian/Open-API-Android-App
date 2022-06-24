@@ -20,7 +20,6 @@ class AccountDto(
     @SerializedName("age")
     val age: Int,
 
-
     @SerializedName("enabled")
     val enabled: Boolean,
 

@@ -16,6 +16,7 @@ companion object {
     const val ERROR_NO_QUERY_PAGINATION_RESULT= "{\"error\":\"No query/pagination result.\"}"
     const val ERROR_TASK_DOES_NOT_EXIST_ON_THE_SERVER= "{\"error\":\"That Task does not exist on the server.\"}"
     const val ERROR_INVALID_UPDATES= "{\"error\":\"Invalid updates!\"}"
+    const val ERROR_FILL_ALL_FIELDS= "{\"error\":\"Please fill all fields.\"}"
 
     //html errors
 
@@ -35,13 +36,13 @@ companion object {
     const val RESPONSE_PASSWORD_UPDATE_SUCCESS= "{\"response\":\"User password update success.\"}"
 
 
-    const val ERROR_ADMIN_ALREADY_EXISTS= "{\"error\":\"Unable to make a new account. Admin already exists!'\"}"
-    const val ERROR_ROLE_NOT_ADMIN= "{\"error\":\"Unable to make changes. Logged in user is not admin.'\"}"
+    const val ERROR_ADMIN_ALREADY_EXISTS= "{\"error\":\"Unable to make a new account. Admin already exists!\"}"
+    const val ERROR_ROLE_NOT_ADMIN= "{\"error\":\"Unable to make changes. Logged in user is not admin.\"}"
 
-    const val ERROR_USER_DOES_NOT_EXIST_ON_THE_SERVER= "{\"error\":\"That User does not exist on the server.'\"}"
-    const val ERROR_CANT_REGISTER ="{\"error\":\"You do not have the right to register.'\"}"
-    const val ERROR_ALREADY_SENT_REGISTRATION_EMAIL= "{\" error\":\"You have already sent an email for registration.'\"}"
-    const val ERROR_FILL_ALL_FIELDS= "{\"error\":\"Please fill all fields.'\"}"
+    const val ERROR_USER_DOES_NOT_EXIST_ON_THE_SERVER= "{\"error\":\"That User does not exist on the server.\"}"
+    const val ERROR_CANT_REGISTER ="{\"error\":\"You do not have the right to register.\"}"
+    const val ERROR_ALREADY_SENT_REGISTRATION_EMAIL= "{\" error\":\"You have already sent an email for registration.\"}"
 
+    const val ERROR_AUTHENTICATE= "{\"error\":\"Please authenticate.\"}"
 }
 }

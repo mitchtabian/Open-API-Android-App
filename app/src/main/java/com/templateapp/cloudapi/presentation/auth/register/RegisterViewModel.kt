@@ -1,13 +1,16 @@
 package com.templateapp.cloudapi.presentation.auth.register
 
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.templateapp.cloudapi.business.domain.util.StateMessage
+import com.templateapp.cloudapi.business.domain.util.SuccessHandling
 import com.templateapp.cloudapi.business.domain.util.UIComponentType
 import com.templateapp.cloudapi.business.domain.util.doesMessageAlreadyExistInQueue
 import com.templateapp.cloudapi.business.interactors.auth.Register
+import com.templateapp.cloudapi.presentation.main.account.update.UpdateAccountEvents
 import com.templateapp.cloudapi.presentation.session.SessionEvents
 import com.templateapp.cloudapi.presentation.session.SessionManager
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -40,6 +43,16 @@ constructor(
             is RegisterEvents.OnRemoveHeadFromQueue -> {
                 removeHeadFromQueue()
             }
+
+            is RegisterEvents.OnUpdateComplete -> {
+                onUpdateComplete()
+            }
+        }
+    }
+
+    private fun onUpdateComplete(){
+        state.value?.let { state ->
+            this.state.value = state.copy(isComplete = true)
         }
     }
 
@@ -79,9 +92,19 @@ constructor(
             ).onEach { dataState ->
                 this.state.value = state.copy(isLoading = dataState.isLoading)
 
-                dataState.data?.let { success ->
-                    //sessionManager.onTriggerEvent(SessionEvents.Login(success))
+                dataState.data?.let { response ->
+                    if(response.message == SuccessHandling.SUCCESS_ACCOUNT_UPDATED){
+                        onTriggerEvent(RegisterEvents.OnUpdateComplete)
+                    }else{
+
+                        appendToMessageQueue(
+                            stateMessage = StateMessage(
+                                response = response
+                            )
+                        )
+                    }
                 }
+
 
                 dataState.stateMessage?.let { stateMessage ->
                     appendToMessageQueue(stateMessage)

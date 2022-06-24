@@ -4,6 +4,7 @@ import android.app.Application
 import com.templateapp.cloudapi.R
 import com.templateapp.cloudapi.presentation.util.ServerMsgStrings.Companion.ERROR_ADMIN_ALREADY_EXISTS
 import com.templateapp.cloudapi.presentation.util.ServerMsgStrings.Companion.ERROR_ALREADY_SENT_REGISTRATION_EMAIL
+import com.templateapp.cloudapi.presentation.util.ServerMsgStrings.Companion.ERROR_AUTHENTICATE
 import com.templateapp.cloudapi.presentation.util.ServerMsgStrings.Companion.ERROR_CANT_REGISTER
 import com.templateapp.cloudapi.presentation.util.ServerMsgStrings.Companion.ERROR_EMAIL_EXISTS
 import com.templateapp.cloudapi.presentation.util.ServerMsgStrings.Companion.ERROR_FILL_ALL_FIELDS
@@ -83,6 +84,8 @@ class ServerMsgTranslator (
 
         ERROR_ADMIN_ALREADY_EXISTS to application.getString(R.string.error_admin_already_exists),
         ERROR_ROLE_NOT_ADMIN to application.getString(R.string.error_role_not_admin),
+        ERROR_AUTHENTICATE to application.getString(R.string.please_authenticate),
+
 
 
 
@@ -105,6 +108,7 @@ class ServerMsgTranslator (
 
     /* Return translations. This function will append [NO TRANSLATION] if no entry found. */
     fun getTranslation(from: String?): String{
+        System.err.println(from)
         from?.let{
             translationsStrings.get(from)?.let { return it }; return "[NO TRANSLATION] $from"
         }

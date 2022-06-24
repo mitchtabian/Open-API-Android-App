@@ -49,7 +49,14 @@ class RegisterFragment : BaseAuthFragment() {
                         viewModel.onTriggerEvent(RegisterEvents.OnRemoveHeadFromQueue)
                     }
                 })
+            if(state.isComplete){
+                findNavController().popBackStack(R.id.accountFragment, false)
+                Toast.makeText(context ,"You have successfully sent an email", Toast.LENGTH_SHORT).show();
+            }
+
         }
+
+
     }
 
     private fun setRegisterFields(
@@ -67,7 +74,7 @@ class RegisterFragment : BaseAuthFragment() {
         viewModel.onTriggerEvent(RegisterEvents.Register(
             email = binding.inputEmail.text.toString(),
         ))
-        Toast.makeText(context,"You have successfully sent an email",Toast.LENGTH_SHORT).show();
+
     }
 
     override fun onPause() {

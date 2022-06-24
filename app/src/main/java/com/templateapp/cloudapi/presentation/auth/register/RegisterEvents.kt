@@ -1,5 +1,7 @@
 package com.templateapp.cloudapi.presentation.auth.register
 
+import com.templateapp.cloudapi.presentation.main.account.update.UpdateAccountEvents
+
 
 sealed class RegisterEvents{
 
@@ -11,5 +13,7 @@ sealed class RegisterEvents{
         val email: String
     ): RegisterEvents()
 
+
+    object OnUpdateComplete: RegisterEvents()
     object OnRemoveHeadFromQueue: RegisterEvents()
 }

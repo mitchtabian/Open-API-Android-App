@@ -1,4 +1,4 @@
-package com.templateapp.cloudapi.presentation.main.account.detail
+package com.templateapp.cloudapi.presentation.main.account.settings
 
 import android.os.Bundle
 import android.view.*
@@ -11,88 +11,49 @@ import com.templateapp.cloudapi.R
 import com.templateapp.cloudapi.business.domain.models.Account
 import com.templateapp.cloudapi.business.domain.util.StateMessageCallback
 import com.templateapp.cloudapi.databinding.FragmentAccountBinding
+import com.templateapp.cloudapi.databinding.FragmentSettingsBinding
 import com.templateapp.cloudapi.presentation.main.account.BaseAccountFragment
-import com.templateapp.cloudapi.presentation.main.account.update.UpdateAccountEvents
 import com.templateapp.cloudapi.presentation.util.processQueue
 import kotlinx.android.synthetic.main.fragment_account.*
 
-class AccountFragment : BaseAccountFragment() {
+class SettingsFragment : BaseAccountFragment() {
 
-    private val viewModel: AccountViewModel by viewModels()
+    private val viewModel: SettingsViewModel by viewModels()
 
-    private var _binding: FragmentAccountBinding? = null
+    private var _binding: FragmentSettingsBinding? = null
     private val binding get() = _binding!!
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentAccountBinding.inflate(layoutInflater)
+        _binding = FragmentSettingsBinding.inflate(layoutInflater)
         return binding.root
     }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setHasOptionsMenu(true)
 
 
-
-        binding.account.setOnClickListener{
-            findNavController().navigate(R.id.action_accountFragment_to_settingsFragment)
+        binding.changePassword.setOnClickListener{
+            findNavController().navigate(R.id.action_accountFragment_to_changePasswordFragment)
         }
 
-        binding.button.setOnClickListener {
-            findNavController().navigate(R.id.action_accountFragment_to_manageUsersFragment)
+        binding.logoutButton.setOnClickListener {
+            viewModel.onTriggerEvent(SettingsEvents.Logout)
         }
 
-        binding.pairDevice.setOnClickListener {
-            findNavController().navigate(R.id.action_accountFragment_to_manageDevicesFragment)
-        }
-
-        //val btn: Button = R.id.see_all_users
-
-
-        viewModel.onTriggerEvent(AccountEvents.GetAccount)
 
         subscribeObservers()
-
-       /* if(viewModel.checkAdminRole()){
-            markButtonDisable(button)
-        }else{
-
-            markButtonEnable(button)
-        }*/
-
+        viewModel.onTriggerEvent(SettingsEvents.GetAccount)
 
     }
 
-    private fun markButtonDisable(button: Button) {
-        button.isVisible = false
-    }
 
-    private fun markButtonEnable(button: Button) {
-        button.isVisible = true
-    }
 
     private fun subscribeObservers(){
-        viewModel.state.observe(viewLifecycleOwner, { state ->
-            //uiCommunicationListener.displayProgressBar(state.isLoading)
-            processQueue(
-                context = context,
-                queue = state.queue,
-                stateMessageCallback = object: StateMessageCallback {
-                    override fun removeMessageFromStack() {
-                        viewModel.onTriggerEvent(AccountEvents.OnRemoveHeadFromQueue)
-                    }
-                }
-            )
-            if(state.isAdmin){
-                markButtonEnable(button)
-                markButtonEnable(pair_device)
-            }
-
-        })
-
         viewModel.state.observe(viewLifecycleOwner) { state ->
 
             //uiCommunicationListener.displayProgressBar(state.isLoading)
@@ -102,18 +63,20 @@ class AccountFragment : BaseAccountFragment() {
                 queue = state.queue,
                 stateMessageCallback = object : StateMessageCallback {
                     override fun removeMessageFromStack() {
-                        viewModel.onTriggerEvent(AccountEvents.OnRemoveHeadFromQueue)
+                        viewModel.onTriggerEvent(SettingsEvents.OnRemoveHeadFromQueue)
                     }
                 })
-            if(!state.isAdmin){
-                markButtonDisable(button)
-                markButtonDisable(pair_device)
-            }
 
+            state.account?.let { account ->
+                setAccountDataFields(account)
+            }
         }
     }
 
-
+    private fun setAccountDataFields(account: Account){
+        binding.email.text = account.email
+        binding.username.text = account.name
+    }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.edit_view_menu, menu)

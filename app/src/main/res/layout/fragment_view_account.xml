@@ -459,14 +459,15 @@
 
                 <Switch
                         android:id="@+id/enabled"
-                        android:layout_width="380dp"
+                        android:layout_width="match_parent"
+                        android:layout_marginEnd="30dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="30dp"
                         android:checked="false"
                         android:clickable="false"
                         android:shadowColor="@color/white"
                         android:textColor="@color/white"
-                        android:textColorHighlight="#2196F3"/>
+                        android:textColorHighlight="#2196F3" />
 
             </RelativeLayout>
 

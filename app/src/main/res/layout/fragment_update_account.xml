@@ -7,7 +7,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         tools:context=".presentation.main.account.update.UpdateAccountFragment"
         android:fillViewport="true"
-        android:background="#fff">
+        android:background="@drawable/default_image">
 
     <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -28,11 +28,12 @@
                 >
             <EditText
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="#000"
+                    android:layout_height="50dp"
+                    android:textColor="@color/grey3"
                     android:inputType="textEmailAddress"
                     android:id="@+id/input_email"
                     android:imeOptions="flagNoExtractUi"
+                    android:background="@drawable/rounded_corner"
                     />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -51,12 +52,13 @@
                 >
             <EditText
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="50dp"
                     android:id="@+id/input_username"
-                    android:textColor="#000"
+                    android:textColor="@color/grey3"
                     android:inputType="text"
                     android:layout_marginTop="30dp"
                     android:imeOptions="flagNoExtractUi"
+                    android:background="@drawable/rounded_corner"
                     />
 
         </com.google.android.material.textfield.TextInputLayout>

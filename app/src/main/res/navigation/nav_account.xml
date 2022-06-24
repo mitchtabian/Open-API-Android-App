@@ -8,8 +8,28 @@
 
     <fragment android:id="@+id/accountFragment"
             android:name="com.templateapp.cloudapi.presentation.main.account.detail.AccountFragment"
-            android:label="@string/fragment_account"
+            android:label="@string/fragment_settings"
             tools:layout="@layout/fragment_account">
+
+        <action android:id="@+id/action_accountFragment_to_settingsFragment"
+                app:destination="@id/settingsFragment"
+                />
+
+
+        <action android:id="@+id/action_accountFragment_to_manageUsersFragment"
+                app:destination="@id/manageUsersFragment"
+                />
+
+        <action android:id="@+id/action_accountFragment_to_manageDevicesFragment"
+                app:destination="@id/manageDevicesFragment"
+                />
+
+    </fragment>
+
+    <fragment android:id="@+id/settingsFragment"
+            android:name="com.templateapp.cloudapi.presentation.main.account.settings.SettingsFragment"
+            android:label="@string/fragment_account"
+            tools:layout="@layout/fragment_settings">
 
         <action android:id="@+id/action_accountFragment_to_changePasswordFragment"
                 app:destination="@id/changePasswordFragment"
@@ -18,13 +38,6 @@
         <action android:id="@+id/action_accountFragment_to_updateAccountFragment"
                 app:destination="@id/updateAccountFragment"
                 />
-
-        <action android:id="@+id/action_accountFragment_to_manageUsersFragment"
-                app:destination="@id/manageUsersFragment"
-                />
-
-
-
 
     </fragment>
 
@@ -50,6 +63,14 @@
             android:name="com.templateapp.cloudapi.presentation.auth.register.RegisterFragment"
             android:label="@string/register_new_user"
             tools:layout="@layout/fragment_register">
+
+    </fragment>
+
+    <fragment
+            android:id="@+id/manageDevicesFragment"
+            android:name="com.templateapp.cloudapi.presentation.main.devices.ManageDeviceFragment"
+            android:label="@string/find_devices"
+            tools:layout="@layout/fragment_manage_devices">
 
     </fragment>
 
