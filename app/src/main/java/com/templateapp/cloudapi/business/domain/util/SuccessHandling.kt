@@ -17,6 +17,8 @@ class SuccessHandling {
         const val SUCCESS_TASK_EXISTS_ON_SERVER = "Task exists on the server and in the cache."
 
         const val SUCCESS_ACCOUNT_UPDATED = "User information update success."
+
+        const val RESPONSE_REGISTRATION_MAIL_SENT= "Registration mail sent."
         const val SUCCESS_PASSWORD_UPDATED = "User password update success."
 
         const val SUCCESS_LOGOUT = "Logout success."

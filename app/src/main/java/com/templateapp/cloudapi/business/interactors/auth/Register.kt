@@ -27,27 +27,29 @@ class Register(
 ){
     fun execute(
         email: String,
+        role: String
 
     ): Flow<DataState<Response>> = flow {
         emit(DataState.loading<Response>())
         val registerResponse = service.register(
             email = email,
+            role = role
 
         )
 
         registerResponse.response?.let {
-            if(registerResponse.response != SuccessHandling.SUCCESS_ACCOUNT_UPDATED){
-                throw Exception(ErrorHandling.ERROR_UPDATE_ACCOUNT)
+            if(registerResponse.response != SuccessHandling.RESPONSE_REGISTRATION_MAIL_SENT){
+                throw Exception(ErrorHandling.ERROR_SENDING_MAIL)
             }
         }?:run{
-            throw Exception(ErrorHandling.ERROR_UPDATE_ACCOUNT)
+            throw Exception(ErrorHandling.ERROR_SENDING_MAIL)
         }
 
         // cache account information
 
         emit(DataState.data<Response>(
             data = Response(
-                message = SuccessHandling.SUCCESS_ACCOUNT_UPDATED,
+                message = SuccessHandling.RESPONSE_REGISTRATION_MAIL_SENT,
                 uiComponentType = UIComponentType.Toast(),
                 messageType = MessageType.Success()
             ),

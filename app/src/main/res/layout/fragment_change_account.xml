@@ -65,10 +65,10 @@
                 <EditText
                         android:id="@+id/username"
                         android:layout_width="match_parent"
-                        android:layout_marginEnd="30dp"
                         android:layout_height="?attr/actionBarSize"
                         android:layout_marginStart="0dp"
                         android:layout_marginTop="20dp"
+                        android:layout_marginEnd="30dp"
                         android:layout_toEndOf="@id/ivContactItem1"
                         android:gravity="center_vertical"
                         android:text="@string/user_name"

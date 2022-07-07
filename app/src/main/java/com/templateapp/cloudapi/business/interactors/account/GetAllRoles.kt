@@ -63,10 +63,11 @@ class GetAllRoles(
             emit(DataState.data(response = null, data = cachedUsers))
 
         } catch (e: Exception) {
+            System.out.println("dkjhdkj" + e)
             emit(
                 DataState.error<List<Role>>(
                     response = Response(
-                        message = "Unable get all users.",
+                        message = "Unable get all roles.",
                         uiComponentType = UIComponentType.None(),
                         messageType = MessageType.Error()
                     )

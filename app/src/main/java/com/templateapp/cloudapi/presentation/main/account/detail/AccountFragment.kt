@@ -53,6 +53,7 @@ class AccountFragment : BaseAccountFragment() {
 
 
         viewModel.onTriggerEvent(AccountEvents.GetAccount)
+        viewModel.onTriggerEvent(AccountEvents.CheckIfAdmin)
 
         subscribeObservers()
 

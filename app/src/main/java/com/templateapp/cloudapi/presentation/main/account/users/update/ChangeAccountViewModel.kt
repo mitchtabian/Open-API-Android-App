@@ -55,28 +55,6 @@ constructor(
 
 
     }
-    @InverseBindingAdapter(attribute = "selectedRole")
-    fun getSelectedRole(spinner: Spinner): Role {
-        return spinner.selectedItem as Role
-    }
-
-    private fun setSpinnerListener(spinner: Spinner, listener: InverseBindingListener) {
-        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) = listener.onChange()
-            override fun onNothingSelected(adapterView: AdapterView<*>) = listener.onChange()
-        }
-    }
-
-    private fun setCurrentSelection(spinner: Spinner, selectedItem: Role): Boolean {
-        for (index in 0 until spinner.adapter.count) {
-            if (spinner.getItemAtPosition(index) == selectedItem.title) {
-                spinner.setSelection(index)
-                return true
-            }
-        }
-        return false
-    }
-
     fun onTriggerEvent(event: ChangeAccountEvents){
 
         when(event){

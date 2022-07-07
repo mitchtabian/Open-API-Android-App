@@ -84,7 +84,6 @@ class ChangeAccountFragment : BaseAccountFragment() {
 
     private fun setAccountDataFields(account: Account){
 
-        println("nhnvnvbvn" + account)
         email = account.email
         name = account.name
         role = account.role
@@ -105,12 +104,6 @@ class ChangeAccountFragment : BaseAccountFragment() {
         binding.createdAt.setText(createdAt)
         binding.updatedAt.setText(updatedAt)
 
-        /*var roles : List<Role>? = emptyList();
-        var roleUser: Role = Role("625d59e2949d171c2c0bb52b", "User")
-        var roleGuest: Role = Role("625d59e2949d171c2c0bb52a", "Guest")
-        roles = roles?.plus(roleUser)
-        roles = roles?.plus(roleGuest)
-*/
     }
 
     private fun setAccountDataFieldsRoles(roles: List<Role>){

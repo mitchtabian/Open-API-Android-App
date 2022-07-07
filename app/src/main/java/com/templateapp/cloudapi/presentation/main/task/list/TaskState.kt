@@ -15,4 +15,5 @@ data class TaskState(
     val filter: TaskFilterOptions = DATE_CREATED,
     val order: TaskOrderOptions = ASC,
     val queue: Queue<StateMessage> = Queue(mutableListOf()),
+
 )

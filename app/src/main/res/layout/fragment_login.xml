@@ -39,15 +39,18 @@
                 android:layout_marginTop="30dp"
                 >
 
+
+
             <EditText
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:id="@+id/input_email"
                     android:textColor="@color/grey3"
+                    android:textAlignment="center"
                     android:hint="@string/email_field"
                     android:inputType="textEmailAddress"
                     android:background="@drawable/rounded_corner"
-
+                    android:gravity="center"
                     />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -69,9 +72,10 @@
                     android:id="@+id/input_password"
                     android:textColor="@color/grey3"
                     android:hint="@string/field_password"
+                    android:textAlignment="center"
                     android:inputType="textPassword"
                     android:background="@drawable/rounded_corner"
-
+android:gravity="center"
                     />
 
         </com.google.android.material.textfield.TextInputLayout>

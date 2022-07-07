@@ -44,5 +44,6 @@ companion object {
     const val ERROR_ALREADY_SENT_REGISTRATION_EMAIL= "{\" error\":\"You have already sent an email for registration.\"}"
 
     const val ERROR_AUTHENTICATE= "{\"error\":\"Please authenticate.\"}"
+
 }
 }

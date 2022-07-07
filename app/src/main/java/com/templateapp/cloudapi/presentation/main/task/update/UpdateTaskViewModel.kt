@@ -26,7 +26,7 @@ import javax.inject.Inject
 class UpdateTaskViewModel
 @Inject
 constructor(
-    private val sessionManager: SessionManager,
+    public val sessionManager: SessionManager,
     private val getTaskFromCache: GetTaskFromCache,
     private val updateTask: UpdateTask,
     savedStateHandle: SavedStateHandle,

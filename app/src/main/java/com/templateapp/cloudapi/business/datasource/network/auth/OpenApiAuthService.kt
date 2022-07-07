@@ -17,6 +17,7 @@ interface OpenApiAuthService {
     @FormUrlEncoded
     suspend fun register(
         @Field("email") email: String,
+        @Field("role") role: String,
     ): RegistrationResponse
 
 

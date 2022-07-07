@@ -37,17 +37,91 @@
                 android:id="@+id/input_email_layout"
                 android:layout_marginTop="30dp"
                 >
-
-            <EditText
+            <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:id="@+id/input_email"
-                    android:textColor="@color/grey3"
-                    android:hint="@string/email_field"
-                    android:inputType="textEmailAddress"
-                    android:background="@drawable/rounded_corner"
-                    />
+                    android:layout_height="wrap_content"
+                    android:clickable="true">
+            <TextView
+                    android:id="@+id/account_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="1dp"
+                    android:layout_marginTop="10dp"
+                    android:orientation="vertical"
+                    android:text="@string/email_field"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:textColor="@color/grey5"
+                    android:textSize="15sp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
+
+                <EditText
+                        android:id="@+id/input_email"
+                        android:layout_width="match_parent"
+                        android:layout_height="?attr/actionBarSize"
+                        android:layout_marginStart="0dp"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginEnd="30dp"
+                        android:gravity="center_vertical"
+                        android:hint="@string/email_field"
+                        android:inputType="textEmailAddress"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                        android:textColor="#D8D4D4"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/account_name" />
+
+                <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="69dp"
+                        android:layout_marginRight="30dp"
+                        android:layout_marginBottom="8dp"
+                        android:background="@color/grey3" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true">
+            <TextView
+                    android:id="@+id/role_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="1dp"
+                    android:layout_marginTop="10dp"
+                    android:orientation="vertical"
+                    android:text="@string/role_field"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:textColor="@color/grey5"
+                    android:textSize="15sp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            <Spinner
+                    android:id="@+id/role_spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_marginStart="0dp"
+                    android:layout_marginTop="35dp"
+                    android:entries="@array/roles"
+                    android:textSize="18sp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/role_name" />
+
+            <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="69dp"
+                    android:layout_marginRight="30dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@color/grey3" />
+            </RelativeLayout>
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button

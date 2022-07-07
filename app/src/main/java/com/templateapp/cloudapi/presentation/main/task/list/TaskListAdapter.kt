@@ -1,5 +1,7 @@
 package com.templateapp.cloudapi.presentation.main.task.list
 
+import android.graphics.drawable.Drawable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.*
@@ -11,16 +13,35 @@ import com.templateapp.cloudapi.business.domain.models.Task
 import com.templateapp.cloudapi.business.domain.util.Constants.Companion.BASE_URL
 import com.templateapp.cloudapi.business.domain.util.DateUtils
 import com.templateapp.cloudapi.databinding.LayoutTaskListItemBinding
+import kotlin.math.log
+import com.bumptech.glide.load.model.LazyHeaders
+
+import com.bumptech.glide.load.model.GlideUrl
+import com.bumptech.glide.request.target.Target
+import com.templateapp.cloudapi.business.datasource.cache.auth.toEntity
+import com.templateapp.cloudapi.business.domain.models.AuthToken
+import com.templateapp.cloudapi.business.domain.util.StateMessageCallback
+import com.templateapp.cloudapi.presentation.session.SessionEvents
+import com.templateapp.cloudapi.presentation.session.SessionManager
+import com.templateapp.cloudapi.presentation.util.processQueue
+import javax.inject.Inject
+
 
 class TaskListAdapter(
-    private val interaction: Interaction? = null
-) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    private val interaction: Interaction? = null,
 
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val requestOptions = RequestOptions
         .placeholderOf(R.drawable.default_image)
         .error(R.drawable.default_image)
 
     private val TAG: String = "AppDebug"
+
+    public var authToken: AuthToken? = null
+    fun getAuth(authTokenInput: AuthToken?){
+        authToken = authTokenInput
+
+    }
 
     val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Task>() {
 
@@ -41,6 +62,7 @@ class TaskListAdapter(
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+
         return TaskViewHolder(
             LayoutTaskListItemBinding.inflate(
                 LayoutInflater.from(parent.context),
@@ -49,6 +71,7 @@ class TaskListAdapter(
             ),
             requestOptions = requestOptions,
             interaction = interaction,
+            authTokenInput = authToken
         )
     }
 
@@ -85,16 +108,20 @@ class TaskListAdapter(
         return differ.currentList.size
     }
 
-    fun submitList(tasksList: List<Task>?, ){
+    fun submitList(tasksList: List<Task>?){
         val newList = tasksList?.toMutableList()
         differ.submitList(newList)
     }
+
+
 
     class TaskViewHolder
     constructor(
         private val binding: LayoutTaskListItemBinding,
         private val requestOptions: RequestOptions,
-        private val interaction: Interaction?
+        private val interaction: Interaction?,
+        private val authTokenInput: AuthToken?
+
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: Task) {
@@ -102,14 +129,28 @@ class TaskListAdapter(
                 interaction?.onItemSelected(adapterPosition, item)
             }
 
-            Glide.with(binding.root)
-                .setDefaultRequestOptions(requestOptions)
-                .load(BASE_URL + item.image)
-                .transition(withCrossFade())
-                .into(binding.taskImage)
-            binding.taskTitle.text = item.title
-            binding.taskOwner.text = item.username
-            binding.taskUpdateDate.text = DateUtils.convertLongToStringDate(item.updatedAt)
+            Log.d("GlideTest", BASE_URL + item.image)
+
+            System.out.println(authTokenInput.toString())
+            val ABC = "application/json";
+            if (authTokenInput != null) {
+                val url = "http://192.168.64.149:3000/" + item.image
+                val glideUrl = GlideUrl(
+                    url,
+                    LazyHeaders.Builder()
+                        .addHeader("Authorization", authTokenInput.toString())
+                        .addHeader("Accept", ABC)
+                        .build()
+                )
+                Glide.with(binding.root)
+                    .setDefaultRequestOptions(requestOptions)
+                    .load(glideUrl)
+                    .transition(withCrossFade())
+                    .into(binding.taskImage)
+                binding.taskTitle.text = item.title
+                binding.taskOwner.text = item.username
+                binding.taskUpdateDate.text = DateUtils.convertLongToStringDate(item.updatedAt)
+            }
         }
     }
 

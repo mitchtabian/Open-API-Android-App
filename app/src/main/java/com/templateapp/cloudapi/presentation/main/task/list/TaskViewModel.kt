@@ -24,7 +24,7 @@ import javax.inject.Inject
 class TaskViewModel
 @Inject
 constructor(
-    private val sessionManager: SessionManager,
+    val sessionManager: SessionManager,
     private val searchTasks: SearchTasks,
     private val getOrderAndFilter: GetOrderAndFilter,
     private val appDataStoreManager: AppDataStore,

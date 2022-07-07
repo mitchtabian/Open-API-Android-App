@@ -11,6 +11,8 @@ sealed class AccountEvents{
 
     object ManageDevices: AccountEvents()
 
+    object CheckIfAdmin: AccountEvents()
+
     object GetAccount: AccountEvents()
 
     object MyAccount: AccountEvents()

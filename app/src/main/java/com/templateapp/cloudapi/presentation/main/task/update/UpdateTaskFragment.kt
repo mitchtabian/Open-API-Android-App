@@ -11,10 +11,13 @@ import androidx.core.net.toUri
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.model.GlideUrl
+import com.bumptech.glide.load.model.LazyHeaders
 import com.bumptech.glide.request.RequestOptions
 import com.canhub.cropper.CropImage
 import com.canhub.cropper.CropImageView
 import com.templateapp.cloudapi.R
+import com.templateapp.cloudapi.business.domain.models.AuthToken
 import com.templateapp.cloudapi.business.domain.util.Constants.Companion.BASE_URL
 import com.templateapp.cloudapi.business.domain.util.StateMessageCallback
 import com.templateapp.cloudapi.databinding.FragmentUpdateTaskBinding
@@ -30,6 +33,7 @@ class UpdateTaskFragment : BaseTaskFragment() {
 
     private val viewModel: UpdateTaskViewModel by viewModels()
 
+    private var authToken: AuthToken? = null
     private var _binding: FragmentUpdateTaskBinding? = null
     private val binding get() = _binding!!
 
@@ -93,6 +97,9 @@ class UpdateTaskFragment : BaseTaskFragment() {
                         viewModel.onTriggerEvent(UpdateTaskEvents.OnRemoveHeadFromQueue)
                     }
                 })
+
+            authToken = viewModel.sessionManager.state.value?.authToken
+
             state.task?.let { task ->
                 val image = state.newImageUri
                 setTaskProperties(
@@ -112,21 +119,44 @@ class UpdateTaskFragment : BaseTaskFragment() {
     }
 
     private fun setTaskProperties(title: String?, body: String?, image: Uri?) {
-        image?.let {
-            if("content://" in image.toString()) {
-                Glide.with(this)
-                    .setDefaultRequestOptions(requestOptions)
-                    .load(it)
-                    .into(binding.taskImage)
-            }else{
-                Glide.with(this)
-                    .setDefaultRequestOptions(requestOptions)
-                    .load(BASE_URL + it)
-                    .into(binding.taskImage)
-            }
+
+
+
+        val ABC = "application/json";
+if(authToken!=null) {
+    image?.let {
+        if ("content://" in image.toString()) {
+            val url = it.toString()
+            val glideUrl = GlideUrl(
+                url,
+                LazyHeaders.Builder()
+                    .addHeader("Authorization", authToken.toString())
+                    .addHeader("Accept", ABC)
+                    .build()
+            )
+            Glide.with(this)
+                .setDefaultRequestOptions(requestOptions)
+                .load(glideUrl)
+                .into(binding.taskImage)
+        } else {
+
+            val url = BASE_URL + it
+            val glideUrl = GlideUrl(
+                url,
+                LazyHeaders.Builder()
+                    .addHeader("Authorization", authToken.toString())
+                    .addHeader("Accept", ABC)
+                    .build()
+            )
+            Glide.with(this)
+                .setDefaultRequestOptions(requestOptions)
+                .load(glideUrl)
+                .into(binding.taskImage)
         }
-        binding.taskTitle.setText(title)
-        binding.taskDescription.setText(body)
+    }
+    binding.taskTitle.setText(title)
+    binding.taskDescription.setText(body)
+}
     }
 
     private fun saveChanges() {

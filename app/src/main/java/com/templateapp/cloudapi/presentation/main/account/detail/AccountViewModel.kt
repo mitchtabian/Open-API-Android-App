@@ -42,6 +42,9 @@ constructor(
             is AccountEvents.OnAdmin -> {
                 onAdmin()
             }
+            is AccountEvents.CheckIfAdmin -> {
+                checkAdminRole()
+            }
             is AccountEvents.ManageUsers -> {
                 manageUsers()
             }
@@ -59,7 +62,6 @@ constructor(
     }
 
     private fun getAccount() {
-        checkAdminRole()
 
         state.value?.let { state ->
             getAccount.execute(
@@ -96,9 +98,7 @@ constructor(
 
                     println(account.role.title)
 
-                    println("dddddd")
                     if(account.role.title == "Admin"){
-                        println("jfsbfjsbjdfh")
                        onAdmin()
                     }
                 }

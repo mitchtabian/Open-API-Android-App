@@ -1,17 +1,13 @@
 package com.templateapp.cloudapi.presentation.auth.register
 
 import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.templateapp.cloudapi.business.domain.util.StateMessage
-import com.templateapp.cloudapi.business.domain.util.SuccessHandling
-import com.templateapp.cloudapi.business.domain.util.UIComponentType
-import com.templateapp.cloudapi.business.domain.util.doesMessageAlreadyExistInQueue
+import com.templateapp.cloudapi.business.domain.models.Role
+import com.templateapp.cloudapi.business.domain.util.*
+import com.templateapp.cloudapi.business.interactors.account.GetAllRoles
 import com.templateapp.cloudapi.business.interactors.auth.Register
-import com.templateapp.cloudapi.presentation.main.account.update.UpdateAccountEvents
-import com.templateapp.cloudapi.presentation.session.SessionEvents
 import com.templateapp.cloudapi.presentation.session.SessionManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
@@ -22,20 +18,33 @@ import javax.inject.Inject
 class RegisterViewModel
 @Inject
 constructor(
-    private val register: Register,
+    private val registerf: Register,
     private val sessionManager: SessionManager,
+
+    private val getAllRoles: GetAllRoles,
 ) : ViewModel() {
     private val TAG: String = "AppDebug"
 
     val state: MutableLiveData<RegisterState> = MutableLiveData(RegisterState())
-
+    init {
+            onTriggerEvent(RegisterEvents.GetRoles)
+    }
     fun onTriggerEvent(event: RegisterEvents) {
         when (event) {
-            is RegisterEvents.Register -> {
+            is RegisterEvents.Registration -> {
                 register(
                     email = event.email,
+                    role = event.role,
                 )
             }
+
+            is RegisterEvents.OnUpdateRole -> {
+                onUpdateRole(event.role)
+            }
+            is RegisterEvents.GetRoles -> {
+            getRoles()
+            }
+
             is RegisterEvents.OnUpdateEmail -> {
                 onUpdateEmail(event.email)
             }
@@ -46,6 +55,52 @@ constructor(
 
             is RegisterEvents.OnUpdateComplete -> {
                 onUpdateComplete()
+            }
+        }
+    }
+
+
+    public fun getRoles() : List<Role> {
+        var lista : List<Role> = emptyList()
+        state.value?.let { state ->
+            getAllRoles.execute(
+                authToken = sessionManager.state.value?.authToken,
+            ).onEach { dataState ->
+                this.state.value = state.copy(isLoading = dataState.isLoading)
+
+                dataState.data?.let { list ->
+                    System.out.println("role " + list)
+                    this.state.value = state.copy(roles = list)
+
+                }
+                dataState.stateMessage?.let { stateMessage ->
+                    if(stateMessage.response.message?.contains(ErrorHandling.INVALID_PAGE) == true){
+                        //onUpdateQueryExhausted(true)
+                    }else{
+                        appendToMessageQueue(stateMessage)
+                    }
+                }
+
+            }.launchIn(viewModelScope)
+        }
+        return lista;
+    }
+
+    private fun onUpdateEmail(email: String){
+
+        state.value?.let { state ->
+            state.register?.let { register ->
+                val new = register.copy(email = email)
+                this.state.value = state.copy(register = new)
+            }
+        }
+    }
+
+    private fun onUpdateRole(role: Role){
+        state.value?.let { state ->
+            state.register?.let { register ->
+                val new = register.copy(role = role)
+                this.state.value = state.copy(register = new)
             }
         }
     }
@@ -82,21 +137,29 @@ constructor(
 
     private fun register(
         email: String,
+        role: String
 
     ) {
         // TODO("Perform some simple form validation?")
+
+
+        print("fkdfksjdfksjdkfhsjdfksdfj")
         state.value?.let { state ->
-            register.execute(
+            registerf.execute(
                 email = email,
+                role = role
 
             ).onEach { dataState ->
                 this.state.value = state.copy(isLoading = dataState.isLoading)
 
                 dataState.data?.let { response ->
-                    if(response.message == SuccessHandling.SUCCESS_ACCOUNT_UPDATED){
+                    if(response.message == SuccessHandling.RESPONSE_REGISTRATION_MAIL_SENT){
+
+                        print("eeeeee")
                         onTriggerEvent(RegisterEvents.OnUpdateComplete)
                     }else{
 
+                        print("dddddsss")
                         appendToMessageQueue(
                             stateMessage = StateMessage(
                                 response = response
@@ -113,12 +176,6 @@ constructor(
         }
     }
 
-
-    private fun onUpdateEmail(email: String) {
-        state.value?.let { state ->
-            this.state.value = state.copy(email = email)
-        }
-    }
 
 }
 

@@ -44,6 +44,7 @@ class TaskFragment : BaseTaskFragment(),
     private val viewModel: TaskViewModel by viewModels()
     private lateinit var menu: Menu
 
+    private var recyclerAdapterHolder: TaskListAdapter.TaskViewHolder? = null // can leak memory so need to null
     private var _binding: FragmentTaskBinding? = null
     private val binding get() = _binding!!
 
@@ -78,10 +79,12 @@ class TaskFragment : BaseTaskFragment(),
                         viewModel.onTriggerEvent(TaskEvents.OnRemoveHeadFromQueue)
                     }
                 })
-
             recyclerAdapter?.apply {
                 submitList(tasksList = state.tasksList)
+                getAuth( viewModel.sessionManager.state.value?.authToken)
             }
+
+
         })
     }
 

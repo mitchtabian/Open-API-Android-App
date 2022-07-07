@@ -38,7 +38,7 @@
             android:layout_width="0dp"
             android:layout_height="75dp"
             android:id="@+id/splash_logo"
-            android:src="@drawable/codingwithmitch_logo"
+            android:src="@drawable/logo"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
