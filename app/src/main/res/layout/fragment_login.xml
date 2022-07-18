@@ -47,10 +47,12 @@
                     android:id="@+id/input_email"
                     android:textColor="@color/grey3"
                     android:textAlignment="center"
+                    android:padding="16dp"
                     android:hint="@string/email_field"
                     android:inputType="textEmailAddress"
                     android:background="@drawable/rounded_corner"
                     android:gravity="center"
+
                     />
 
         </com.google.android.material.textfield.TextInputLayout>
