@@ -134,7 +134,7 @@ class TaskListAdapter(
             System.out.println(authTokenInput.toString())
             val ABC = "application/json";
             if (authTokenInput != null) {
-                val url = "http://192.168.1.10:3000/" + item.image
+                val url = "http://192.168.1.152:3000/" + item.image
                 val glideUrl = GlideUrl(
                     url,
                     LazyHeaders.Builder()

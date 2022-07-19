@@ -34,6 +34,9 @@ constructor(
 
     val state: MutableLiveData<AccountState> = MutableLiveData(AccountState())
 
+    init {
+        checkAdminRole()
+    }
     fun onTriggerEvent(event: AccountEvents) {
         when (event) {
             is AccountEvents.MyAccount -> {

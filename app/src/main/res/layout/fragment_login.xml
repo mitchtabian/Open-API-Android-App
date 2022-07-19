@@ -8,6 +8,7 @@
         tools:context=".presentation.auth.login.LoginFragment"
         android:background="@drawable/default_image">
 
+
     <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -27,56 +28,60 @@
                 android:layout_marginTop="50dp"
                 />
 
+
+
+
         <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_width="350dp"
+                android:layout_height="60dp"
                 app:layout_constraintTop_toBottomOf="@+id/login_text"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintBottom_toTopOf="@+id/input_password_layout"
-                android:padding="16dp"
+
                 android:id="@+id/input_email_layout"
                 android:layout_marginTop="30dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+
+                android:background="@drawable/rounded_corner"
                 >
 
 
-
             <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
                     android:id="@+id/input_email"
-                    android:textColor="@color/grey3"
-                    android:textAlignment="center"
-                    android:padding="16dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
                     android:hint="@string/email_field"
                     android:inputType="textEmailAddress"
-                    android:background="@drawable/rounded_corner"
-                    android:gravity="center"
+                    android:textAlignment="center"
+                    android:textColor="@color/grey3"
 
                     />
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_width="350dp"
+                android:layout_height="60dp"
                 app:layout_constraintTop_toBottomOf="@+id/input_email_layout"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintBottom_toTopOf="@+id/login_button"
-                android:padding="16dp"
+                android:layout_marginTop="30dp"
                 android:id="@+id/input_password_layout"
+                android:background="@drawable/rounded_corner"
                 >
 
             <EditText
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="match_parent"
                     android:id="@+id/input_password"
                     android:textColor="@color/grey3"
                     android:hint="@string/field_password"
                     android:textAlignment="center"
                     android:inputType="textPassword"
-                    android:background="@drawable/rounded_corner"
 android:gravity="center"
                     />
 
@@ -95,7 +100,7 @@ android:gravity="center"
                 android:textAllCaps="false"
                 android:textColor="#fff"
                 android:textSize="16sp"
-                android:layout_margin="15dp"
+                android:layout_margin="30dp"
                 />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
