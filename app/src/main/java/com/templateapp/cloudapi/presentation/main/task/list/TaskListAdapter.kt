@@ -133,7 +133,7 @@ class TaskListAdapter(
 
             val ABC = "application/json";
             if (authTokenInput != null) {
-                val url = "http://192.168.1.152:3000/" + item.image
+                val url = "http://appcloud-env.eba-theyd4uu.eu-central-1.elasticbeanstalk.com/" + item.image
                 val glideUrl = GlideUrl(
                     url,
                     LazyHeaders.Builder()

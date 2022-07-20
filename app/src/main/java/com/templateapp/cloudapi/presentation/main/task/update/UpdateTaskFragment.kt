@@ -140,7 +140,7 @@ if(authToken!=null) {
                 .into(binding.taskImage)
         } else {
 
-            val url = "http://192.168.1.152:3000/" + it
+            val url ="http://appcloud-env.eba-theyd4uu.eu-central-1.elasticbeanstalk.com/" + it
             val glideUrl = GlideUrl(
                 url,
                 LazyHeaders.Builder()
