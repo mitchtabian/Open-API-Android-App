@@ -45,9 +45,6 @@ class PublishTask(
 
         // If they don't have a paid membership account it will still return a 200 with failure message
         // Need to account for that
-        if (createResponse.response.equals(SuccessHandling.RESPONSE_MUST_BECOME_CODINGWITHMITCH_MEMBER)) { // failure
-            throw Exception(SuccessHandling.RESPONSE_MUST_BECOME_CODINGWITHMITCH_MEMBER)
-        }
 
         if(createResponse.response == ErrorHandling.GENERIC_ERROR){
             throw Exception(createResponse.error)

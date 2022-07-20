@@ -131,7 +131,6 @@ class TaskListAdapter(
 
             Log.d("GlideTest", BASE_URL + item.image)
 
-            System.out.println(authTokenInput.toString())
             val ABC = "application/json";
             if (authTokenInput != null) {
                 val url = "http://192.168.1.152:3000/" + item.image

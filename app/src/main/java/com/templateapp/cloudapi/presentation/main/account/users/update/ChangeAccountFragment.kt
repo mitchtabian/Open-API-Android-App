@@ -139,7 +139,6 @@ class ChangeAccountFragment : BaseAccountFragment() {
     private fun saveChanges(){
        // var role: Role = Role("625d59e2949d171c2c0bb52b", "User")
 
-        println(binding.roleSpinner.selectedItem.toString())
         viewModel.onTriggerEvent(ChangeAccountEvents.Update(
             email = binding.email.text.toString(),
             username = binding.username.text.toString(),

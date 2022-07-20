@@ -38,7 +38,6 @@ class RegisterFragment : BaseAuthFragment() {
 
         binding.registerButton.setOnClickListener {
 
-            System.out.println("ovde sam usla 2")
             register()
         }
         subscribeObservers()

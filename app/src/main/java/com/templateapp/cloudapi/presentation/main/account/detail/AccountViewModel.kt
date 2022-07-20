@@ -99,7 +99,6 @@ constructor(
                 dataState.data?.let { account ->
                     this.state.value = state.copy(account = account)
 
-                    println(account.role.title)
 
                     if(account.role.title == "Admin"){
                        onAdmin()

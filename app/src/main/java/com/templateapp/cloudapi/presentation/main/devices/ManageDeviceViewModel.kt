@@ -9,7 +9,6 @@ import com.templateapp.cloudapi.business.domain.util.*
 import com.templateapp.cloudapi.business.interactors.account.GetAccountFromCache
 import com.templateapp.cloudapi.business.interactors.account.GetAllUsers
 import com.templateapp.cloudapi.business.interactors.account.UpdateAccount
-import com.templateapp.cloudapi.presentation.UDP_Client
 import com.templateapp.cloudapi.presentation.main.task.list.TaskEvents
 import com.templateapp.cloudapi.presentation.session.SessionManager
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -92,10 +91,10 @@ constructor(
 
     private fun getDevices() {
 
-        val Client = UDP_Client()
+      /*  val Client = UDP_Client()
         Client.Message = "Your message 3"
         Client.NachrichtSenden()
-
+*/
         /*state.value?.let { state ->
             getAllUsers.execute(
                 authToken = sessionManager.state.value?.authToken,

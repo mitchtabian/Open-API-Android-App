@@ -69,7 +69,6 @@ constructor(
                 this.state.value = state.copy(isLoading = dataState.isLoading)
 
                 dataState.data?.let { list ->
-                    System.out.println("role " + list)
                     this.state.value = state.copy(roles = list)
 
                 }
