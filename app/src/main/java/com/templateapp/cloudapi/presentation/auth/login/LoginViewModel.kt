@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.templateapp.cloudapi.R
 import com.templateapp.cloudapi.business.domain.util.StateMessage
 import com.templateapp.cloudapi.business.domain.util.UIComponentType
 import com.templateapp.cloudapi.business.domain.util.doesMessageAlreadyExistInQueue

@@ -142,7 +142,6 @@ constructor(
         // TODO("Perform some simple form validation?")
 
 
-        print("fkdfksjdfksjdkfhsjdfksdfj")
         state.value?.let { state ->
             registerf.execute(
                 email = email,
@@ -154,11 +153,9 @@ constructor(
                 dataState.data?.let { response ->
                     if(response.message == SuccessHandling.RESPONSE_REGISTRATION_MAIL_SENT){
 
-                        print("eeeeee")
                         onTriggerEvent(RegisterEvents.OnUpdateComplete)
                     }else{
 
-                        print("dddddsss")
                         appendToMessageQueue(
                             stateMessage = StateMessage(
                                 response = response

@@ -127,30 +127,16 @@ if(authToken!=null) {
     image?.let {
         if ("content://" in image.toString()) {
             val url = it.toString()
-            val glideUrl = GlideUrl(
-                url,
-                LazyHeaders.Builder()
-                    .addHeader("Authorization", authToken.toString())
-                    .addHeader("Accept", ABC)
-                    .build()
-            )
+
             Glide.with(this)
                 .setDefaultRequestOptions(requestOptions)
-                .load(glideUrl)
+                .load(it.toString())
                 .into(binding.taskImage)
         } else {
 
-            val url ="http://appcloud-env.eba-theyd4uu.eu-central-1.elasticbeanstalk.com/" + it
-            val glideUrl = GlideUrl(
-                url,
-                LazyHeaders.Builder()
-                    .addHeader("Authorization", authToken.toString())
-                    .addHeader("Accept", ABC)
-                    .build()
-            )
             Glide.with(this)
                 .setDefaultRequestOptions(requestOptions)
-                .load(glideUrl)
+                .load("http://appcloud-env.eba-theyd4uu.eu-central-1.elasticbeanstalk.com/" + it)
                 .into(binding.taskImage)
         }
     }

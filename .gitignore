@@ -11,3 +11,4 @@
 /build
 /captures
 .externalNativeBuild
+/app/schemas/com.templateapp.cloudapi.business.datasource.cache.AppDatabase/*.json

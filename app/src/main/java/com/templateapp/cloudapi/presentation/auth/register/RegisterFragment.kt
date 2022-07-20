@@ -108,10 +108,8 @@ class RegisterFragment : BaseAuthFragment() {
 
     private fun register() {
 
-        print("eeee")
         cacheState()
 
-        print("ssssaaa")
         viewModel.onTriggerEvent(RegisterEvents.Registration(
             email = binding.inputEmail.text.toString(),
             role = binding.roleSpinner.selectedItem.toString(),

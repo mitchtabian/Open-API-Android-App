@@ -165,6 +165,7 @@
     <string name="device" translatable="false">Device</string>
     <string name="find_devices" translatable="false">Find available devices</string>
     <string name="please_authenticate" translatable="false">Please authenticate</string>
+    <string name="api" translatable="false">/api</string>
 
 
 
