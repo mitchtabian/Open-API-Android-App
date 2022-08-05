@@ -13,7 +13,6 @@ import com.templateapp.cloudapi.business.interactors.account.GetAccountFromCache
 import com.templateapp.cloudapi.business.interactors.account.GetAllUsers
 import com.templateapp.cloudapi.business.interactors.account.UpdateAccount
 import com.templateapp.cloudapi.business.interactors.auth.GetDevice
-import com.templateapp.cloudapi.presentation.UDP_Client
 import com.templateapp.cloudapi.presentation.main.account.detail.AccountState
 import com.templateapp.cloudapi.presentation.main.task.list.TaskEvents
 import com.templateapp.cloudapi.presentation.session.SessionManager
@@ -138,7 +137,7 @@ constructor(
         Client.Message = "Your message 3"
         Client.NachrichtSenden()*/
 
-       main()
+       //main()
         /*state.value?.let { state ->
             getAllUsers.execute(
                 authToken = sessionManager.state.value?.authToken,
