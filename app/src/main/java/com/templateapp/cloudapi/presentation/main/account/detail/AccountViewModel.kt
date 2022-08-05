@@ -15,6 +15,8 @@ import com.templateapp.cloudapi.business.interactors.account.GetAccount
 import com.templateapp.cloudapi.presentation.main.account.settings.SettingsEvents
 import com.templateapp.cloudapi.presentation.main.account.update.UpdateAccountEvents
 import com.templateapp.cloudapi.presentation.main.account.users.ManageUsersFragment
+import com.templateapp.cloudapi.presentation.main.task.detail.OnCompleteCallback
+import com.templateapp.cloudapi.presentation.main.task.detail.ViewTaskEvents
 import com.templateapp.cloudapi.presentation.session.SessionEvents
 import com.templateapp.cloudapi.presentation.session.SessionManager
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -39,9 +41,21 @@ constructor(
     }
     fun onTriggerEvent(event: AccountEvents) {
         when (event) {
+
+
             is AccountEvents.MyAccount -> {
-                myAccount()
+                myAccount(
+                    object: OnCompleteCallback {
+                        override fun done() {
+
+                                    onTriggerEvent(AccountEvents.CheckIfAdmin(id = "1"))
+
+                            }
+
+                    }
+                )
             }
+
             is AccountEvents.OnAdmin -> {
                 onAdmin()
             }
@@ -59,12 +73,28 @@ constructor(
             }
 
             is AccountEvents.GetAccount -> {
-                getAccount()
+                getAccount(
+                    object: OnCompleteCallback { // Determine if task exists on server
+                        override fun done() {
+                            state.value?.let { state ->
+                                state.account?.let { account ->
+                                    onTriggerEvent(AccountEvents.CheckIfAdmin(id = "1"))
+                                }
+                            }
+                        }
+                    }
+                )
             }
         }
     }
 
-    private fun getAccount() {
+    private fun myAccount(callback: OnCompleteCallback){
+
+                    callback.done()
+
+    }
+
+    private fun getAccount(callback: OnCompleteCallback) {
 
         state.value?.let { state ->
             getAccount.execute(
@@ -73,9 +103,12 @@ constructor(
                 this.state.value = state.copy(isLoading = dataState.isLoading)
 
                 dataState.data?.let { account ->
-                    this.state.value = state.copy(account = account)
 
+                    this.state.value = state.copy(account = account)
+                    callback.done()
                 }
+
+
 
                 dataState.stateMessage?.let { stateMessage ->
                     appendToMessageQueue(stateMessage)
@@ -143,9 +176,6 @@ constructor(
         }
     }
 
-    private fun myAccount() {
-
-    }
 
     private fun manageUsers() {
         //manageUsersFragment.onCreateView();

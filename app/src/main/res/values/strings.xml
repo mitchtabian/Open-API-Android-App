@@ -108,7 +108,7 @@
     <string name="error_unable_to_authenticate">Unable to authenticate.</string>
     <string name="error_invalid_user_updates">Invalid user updates</string>
     <string name="error_invalid_email_updates">Invalid email updates.</string>
-    <string name="error_incorrect_current_password">Password is incorrect.</string>
+    <string name="error_incorrect_current_password">Current password is incorrect.</string>
     <string name="error_incorrect_password_mismatch">Passwords do not match.</string>
     <string name="error_no_query_pagination_result">No query pagination result.</string>
     <string name="error_task_does_not_exist_on_the_server">Task does not exist on the server.</string>

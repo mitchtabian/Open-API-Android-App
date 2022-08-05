@@ -4,9 +4,9 @@ class Constants {
 
     companion object{
 
-        const val BASE_URL = "http://appcloud-env.eba-theyd4uu.eu-central-1.elasticbeanstalk.com/"
+        //const val BASE_URL = "http://appcloud-env.eba-theyd4uu.eu-central-1.elasticbeanstalk.com/"
         //const val PASSWORD_RESET_URL: String = "http://appcloud-env.eba-theyd4uu.eu-central-1.elasticbeanstalk.com/passwordresetform"
-        //const val BASE_URL = "http://192.168.64.149:3000/"
+        const val BASE_URL = "http://192.168.1.126:3000/"
 
         const val PASSWORD_RESET_URL: String = "http://appcloud-env.eba-theyd4uu.eu-central-1.elasticbeanstalk.com/passwordresetform"
         //const val BASE_URL = "http://127.0.0.1:3000/"

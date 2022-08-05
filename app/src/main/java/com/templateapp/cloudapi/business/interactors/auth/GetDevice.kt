@@ -1,4 +1,4 @@
-package com.templateapp.cloudapi.business.interactors.account
+package com.templateapp.cloudapi.business.interactors.auth
 
 import com.templateapp.cloudapi.api.handleUseCaseException
 import com.templateapp.cloudapi.business.datasource.network.main.OpenApiMainService
@@ -19,40 +19,22 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import java.lang.Exception
 
-class GetAccount(
+class GetDevice(
     private val service: OpenApiMainService,
-    private val accountCache: AccountDao,
-    private val tokenCache: AuthTokenDao,
+    //private val accountCache: AccountDao,
     private val serverMsgTranslator: ServerMsgTranslator
 ) {
     private val TAG: String = "AppDebug"
 
     fun execute(
-        authToken: AuthToken?,
-    ): Flow<DataState<Account>> = flow {
-        emit(DataState.loading<Account>())
+    ): Flow<DataState<String>> = flow {
+        emit(DataState.loading<String>())
 
-        if(authToken == null){
-            throw Exception(ERROR_AUTH_TOKEN_INVALID)
-        }
         // get from network
-        val account = service.getAccount(authToken.token).toAccount()
+        val account = service.getDevices()
 
-        // update/insert into the cache
-        accountCache.insertAndReplace(account.toEntity())
 
-        if(tokenCache.searchById(account._id)==null)
-            tokenCache.insert(authToken.toEntity())
-
-        // emit from cache
-        val cachedAccount = accountCache.searchByPk(account._id)?.toAccount()
-
-        if(cachedAccount == null){
-            throw Exception(ERROR_UNABLE_TO_RETRIEVE_ACCOUNT_DETAILS)
-
-        }
-
-        emit(DataState.data(response = null, cachedAccount))
+        emit(DataState.data(response = null, account.toString()))
     }.catch { e ->
         emit(handleUseCaseException(e, serverMsgTranslator))
     }

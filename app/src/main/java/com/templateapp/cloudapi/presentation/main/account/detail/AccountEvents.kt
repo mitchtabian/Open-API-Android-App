@@ -11,7 +11,7 @@ sealed class AccountEvents{
 
     object ManageDevices: AccountEvents()
 
-    object CheckIfAdmin: AccountEvents()
+    data class CheckIfAdmin( val id: String): AccountEvents()
 
     object GetAccount: AccountEvents()
 

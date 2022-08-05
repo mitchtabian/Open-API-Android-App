@@ -52,8 +52,9 @@ class AccountFragment : BaseAccountFragment() {
         //val btn: Button = R.id.see_all_users
 
 
+        viewModel.onTriggerEvent(AccountEvents.MyAccount)
         viewModel.onTriggerEvent(AccountEvents.GetAccount)
-        viewModel.onTriggerEvent(AccountEvents.CheckIfAdmin)
+        //viewModel.onTriggerEvent(AccountEvents.CheckIfAdmin)
 
         subscribeObservers()
 
@@ -88,8 +89,7 @@ class AccountFragment : BaseAccountFragment() {
                 }
             )
             if(state.isAdmin){
-                markButtonEnable(button)
-                markButtonEnable(pair_device)
+                adaptViewToAuthorMode();
             }
 
         })
@@ -115,6 +115,11 @@ class AccountFragment : BaseAccountFragment() {
     }
 
 
+    private fun adaptViewToAuthorMode(){
+        activity?.invalidateOptionsMenu()
+        binding.button.visibility = View.VISIBLE
+        binding.pairDevice.visibility = View.VISIBLE
+    }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.edit_view_menu, menu)

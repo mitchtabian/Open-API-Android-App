@@ -138,11 +138,13 @@ class ChangeAccountFragment : BaseAccountFragment() {
 
     private fun saveChanges(){
        // var role: Role = Role("625d59e2949d171c2c0bb52b", "User")
-
+        var age  = binding.age.text.toString();
+        if(binding.age.text.toString() == ""){
+            age = "0";}
         viewModel.onTriggerEvent(ChangeAccountEvents.Update(
             email = binding.email.text.toString(),
             username = binding.username.text.toString(),
-            age = Integer.parseInt(binding.age.text.toString()),
+            age = Integer.parseInt(age),
             enabled = binding.enabled.isChecked,
             role = binding.roleSpinner.selectedItem.toString(),
             initEmail = email,
@@ -170,10 +172,13 @@ class ChangeAccountFragment : BaseAccountFragment() {
     private fun cacheState(){
         val email = binding.email.text.toString()
         val username = binding.username.text.toString()
-        val age = binding.age.text.toString()
+        var age = binding.age.text.toString()
         val enabled = binding.enabled.text.toString()
         viewModel.onTriggerEvent(ChangeAccountEvents.OnUpdateEmail(email))
         viewModel.onTriggerEvent(ChangeAccountEvents.OnUpdateUsername(username))
+        if(binding.age.text.toString() == ""){
+            age = "0";
+        }
         viewModel.onTriggerEvent(ChangeAccountEvents.OnUpdateAge(Integer.parseInt(age)))
         viewModel.onTriggerEvent(ChangeAccountEvents.OnUpdateEnabled(Boolean.equals(enabled)))
     }

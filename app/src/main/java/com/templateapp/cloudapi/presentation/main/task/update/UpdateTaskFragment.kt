@@ -123,23 +123,38 @@ class UpdateTaskFragment : BaseTaskFragment() {
 
 
         val ABC = "application/json";
-if(authToken!=null) {
-    image?.let {
-        if ("content://" in image.toString()) {
-            val url = it.toString()
+        if(authToken!=null) {
+            image?.let {
+                if ("content://" in image.toString()) {
+                    val url = it.toString()
+                    val glideUrl = GlideUrl(
+                        url,
+                        LazyHeaders.Builder()
+                            .addHeader("Authorization", authToken.toString())
+                            .addHeader("Accept", ABC)
+                            .build()
 
-            Glide.with(this)
-                .setDefaultRequestOptions(requestOptions)
-                .load(it.toString())
-                .into(binding.taskImage)
-        } else {
+        )
+        Glide.with(this)
+            .setDefaultRequestOptions(requestOptions)
+            .load(glideUrl)
+            .into(binding.taskImage)
+    } else {
 
-            Glide.with(this)
-                .setDefaultRequestOptions(requestOptions)
-                .load("http://appcloud-env.eba-theyd4uu.eu-central-1.elasticbeanstalk.com/" + it)
-                .into(binding.taskImage)
-        }
+        val url ="http://192.168.1.10:3000/" + it
+        val glideUrl = GlideUrl(
+            url,
+            LazyHeaders.Builder()
+                .addHeader("Authorization", authToken.toString())
+                .addHeader("Accept", ABC)
+                .build()
+        )
+        Glide.with(this)
+            .setDefaultRequestOptions(requestOptions)
+            .load(glideUrl)
+            .into(binding.taskImage)
     }
+}
     binding.taskTitle.setText(title)
     binding.taskDescription.setText(body)
 }

@@ -129,14 +129,19 @@ class TaskListAdapter(
                 interaction?.onItemSelected(adapterPosition, item)
             }
 
-
             val ABC = "application/json";
             if (authTokenInput != null) {
-                val url = "http://appcloud-env.eba-theyd4uu.eu-central-1.elasticbeanstalk.com/" + item.image
-
+                val url = "http://192.168.1.10:3000/" + item.image
+                val glideUrl = GlideUrl(
+                    url,
+                    LazyHeaders.Builder()
+                        .addHeader("Authorization", authTokenInput.toString())
+                        .addHeader("Accept", ABC)
+                        .build()
+                )
                 Glide.with(binding.root)
                     .setDefaultRequestOptions(requestOptions)
-                    .load(url)
+                    .load(glideUrl)
                     .transition(withCrossFade())
                     .into(binding.taskImage)
                 binding.taskTitle.text = item.title

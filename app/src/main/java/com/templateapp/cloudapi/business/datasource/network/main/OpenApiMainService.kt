@@ -127,5 +127,11 @@ interface OpenApiMainService {
         @Header("Authorization") authorization: String,
     ): RolesResponse
 
+
+    @GET(API+ "/all_devices")
+    suspend fun getDevices(
+    ): DeviceDto
+
+
 }
 
